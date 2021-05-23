@@ -1,0 +1,155 @@
+syntax = "proto3";
+
+package snappyv1;
+
+//server -> client
+
+enum Platform {
+    PLATFORM_WINDOWS = 0;
+    PLATFORM_LINUX = 1;
+    PLATFORM_MACOS = 2;
+    PLATFORM_RASPBERRY = 3;
+    PLATFORM_ANDROID = 4;
+}
+
+enum SourceType {
+    SOURCE_TYPE_VIDEO = 0;
+    SOURCE_TYPE_AUDIO = 1;
+    SOURCE_TYPE_INPUT = 2;
+}
+
+enum SourceSubType {
+    SOURCE_SUB_TYPE_X11 = 0;
+    SOURCE_SUB_TYPE_WAYLAND = 1;
+    SOURCE_SUB_TYPE_CAMERA = 2;
+    SOURCE_SUB_TYPE_KEYBOARD = 3;
+    SOURCE_SUB_TYPE_POINTER = 4;
+}
+
+enum EncoderType {
+    ENCODER_TYPE_H264_SOFTWARE = 0;
+    ENCODER_TYPE_H264_HARDWARE = 1;
+    ENCODER_TYPE_MP3_SOFTWARE = 2;
+    ENCODER_TYPE_MP3_HARDWARE = 3;
+}
+
+enum Command {
+    COMMAND_INIT = 0;
+    COMMAND_START = 1;
+    COMMAND_STOP = 2;
+    COMMAND_DESTROY = 3;
+}
+
+enum ParameterType {
+    PARAMETER_TYPE_STRING = 0;
+    PARAMETER_TYPE_BOOL = 1;
+    PARAMETER_TYPE_UINT32 = 2;
+    PARAMETER_TYPE_DOUBLE = 3;
+}
+
+message Parameter {
+
+    message ValueString {
+        string value = 1;
+    }
+
+    message ValueBool {
+        bool value = 1;
+    }
+
+    message ValueUint32 {
+        uint32 value = 1;
+        optional uint32 min = 2;
+        optional uint32 max = 3;
+    }
+
+    message ValueDouble {
+        double value = 1;
+        optional double min = 2;
+        optional double max = 3;
+    }
+
+    ParameterType param_type = 1;
+    string param_key = 2;
+    oneof param_value {
+        ValueString value_string = 3;
+        ValueBool value_bool = 4;
+        ValueUint32 value_uint32 = 5;
+        ValueDouble value_double = 6;
+    }
+}
+
+//private
+message Source {
+    SourceType type = 1;
+    SourceSubType sub_type = 2;
+    repeated Parameter parameters = 3;
+}
+
+//private
+message Encoder {
+    EncoderType type = 1;
+    repeated Parameter parameters = 2;
+}
+
+message ServerInfo {
+    Platform platform = 1;
+    repeated Source available_sources = 3;
+    repeated Encoder available_encoders = 4;
+}
+
+message StreamsChange {
+
+    message StreamChange {
+        uint32 id = 1;
+        optional Source source = 2;
+        optional Encoder encoder = 3;
+        optional Command command = 4;
+    }
+
+    repeated StreamChange streams = 2;
+}
+
+message StreamStatistics {
+    uint32 last_frame = 1;
+    uint32 average_frame_qp = 2;
+    uint32 encode_ts_start_ms = 3;
+    uint32 encode_ts_end_ms = 4;
+    uint32 tx_ts_start_ms = 5;
+    uint32 tx_ts_end_ms = 6;
+}
+
+message StreamData {
+    uint32 stream_id = 1;
+    bytes payload = 2;
+}
+
+enum MessageType {
+    MESSAGE_TYPE_SERVER_INFO = 0;
+    MESSAGE_TYPE_STREAMS_CHANGE = 1;
+    MESSAGE_TYPE_STREAM_DATA = 2;
+}
+
+message Message {
+    MessageType type = 1;
+    oneof message {
+        ServerInfo server_info = 2;
+        StreamsChange stream_change = 3;
+        StreamData stream_data = 4;
+    }
+}
+
+
+//client -> server
+//message Pointer {
+//    uint32 absx = 1;
+//    uint32 absy = 2;
+//    optional int32 mask = 3;
+//    optional bool down = 4;
+//}
+//
+//message Keyboard {
+//    uint32 keysym = 1;
+//    uint32 keycode = 2;
+//    bool down = 3;
+//}

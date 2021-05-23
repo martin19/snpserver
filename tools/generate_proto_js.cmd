@@ -1,0 +1,1 @@
+.\\protobuf-3.17.0\\cmake\\cmake-build-release\\protoc.exe --proto_path=..\\proto --js_out=c:\\tmp\\protojs ..\\proto\\snappyv1.proto
