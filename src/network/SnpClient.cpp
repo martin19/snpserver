@@ -4,6 +4,9 @@
 #include <stream/SnpSinkNetwork.h>
 #include <stream/SnpSourceModesetting.h>
 #include <stream/SnpEncoderMmalH264.h>
+#include <stream/video/SnpSourceModesetting.h>
+#include <stream/video/SnpEncoderMmalH264.h>
+#include <stream/network/SnpSinkNetwork.h>
 #include "SnpSocket.h"
 
 SnpClient::SnpClient(SnpSocket *server, struct lws *wsi) : server(server), wsi(wsi) {
@@ -67,6 +70,7 @@ void SnpClient::onStreamsChange(const snappyv1::StreamsChange &msg) {
     //snpSinkNetworkOptions.inputDescriptor = snpEncoderMmalH264.getOutputDescriptor();
     auto *snpSinkNetwork = new SnpSinkNetwork(snpSinkNetworkOptions);
 
+    //setup pipe
     SnpPipelineOptions pipelineOptions;
     pipelineOptions.source = snpSourceModesetting;
     pipelineOptions.encoder = snpEncoderMmalH264;

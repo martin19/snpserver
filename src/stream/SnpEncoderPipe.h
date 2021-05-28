@@ -12,12 +12,6 @@ struct SnpPipelineOptions {
 };
 
 class SnpEncoderPipe {
-private:
-    SnpPipelineOptions options {};
-    SnpSource *source;
-    SnpEncoder *encoder;
-    SnpSink *sink;
-    bool running = false;
 public:
     SnpEncoderPipe(SnpPipelineOptions &options);
     SnpSource *getSource();
@@ -26,8 +20,14 @@ public:
 
     void start();
     void stop();
-
-    void onFrameDataCb(uint8_t *buffer, int len, bool complete);
+private:
+    SnpPipelineOptions options {};
+    SnpSource *source;
+    SnpEncoder *encoder;
+    SnpSink *sink;
+    bool enabled = false;
+    void onSourceFrameDataCb(uint8_t *buffer, int len, bool complete);
+    void onEncoderFrameDataCb(uint8_t *buffer, int len, bool complete);
 };
 
 
