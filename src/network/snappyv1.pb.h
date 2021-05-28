@@ -47,7 +47,7 @@ struct TableStruct_snappyv1_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[13]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[15]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -85,6 +85,12 @@ extern SourceDefaultTypeInternal _Source_default_instance_;
 class StreamData;
 struct StreamDataDefaultTypeInternal;
 extern StreamDataDefaultTypeInternal _StreamData_default_instance_;
+class StreamDataKeyboard;
+struct StreamDataKeyboardDefaultTypeInternal;
+extern StreamDataKeyboardDefaultTypeInternal _StreamDataKeyboard_default_instance_;
+class StreamDataPointer;
+struct StreamDataPointerDefaultTypeInternal;
+extern StreamDataPointerDefaultTypeInternal _StreamDataPointer_default_instance_;
 class StreamStatistics;
 struct StreamStatisticsDefaultTypeInternal;
 extern StreamStatisticsDefaultTypeInternal _StreamStatistics_default_instance_;
@@ -106,6 +112,8 @@ template<> ::snappyv1::Parameter_ValueUint32* Arena::CreateMaybeMessage<::snappy
 template<> ::snappyv1::ServerInfo* Arena::CreateMaybeMessage<::snappyv1::ServerInfo>(Arena*);
 template<> ::snappyv1::Source* Arena::CreateMaybeMessage<::snappyv1::Source>(Arena*);
 template<> ::snappyv1::StreamData* Arena::CreateMaybeMessage<::snappyv1::StreamData>(Arena*);
+template<> ::snappyv1::StreamDataKeyboard* Arena::CreateMaybeMessage<::snappyv1::StreamDataKeyboard>(Arena*);
+template<> ::snappyv1::StreamDataPointer* Arena::CreateMaybeMessage<::snappyv1::StreamDataPointer>(Arena*);
 template<> ::snappyv1::StreamStatistics* Arena::CreateMaybeMessage<::snappyv1::StreamStatistics>(Arena*);
 template<> ::snappyv1::StreamsChange* Arena::CreateMaybeMessage<::snappyv1::StreamsChange>(Arena*);
 template<> ::snappyv1::StreamsChange_StreamChange* Arena::CreateMaybeMessage<::snappyv1::StreamsChange_StreamChange>(Arena*);
@@ -199,12 +207,14 @@ enum EncoderType : int {
   ENCODER_TYPE_H264_HARDWARE = 1,
   ENCODER_TYPE_MP3_SOFTWARE = 2,
   ENCODER_TYPE_MP3_HARDWARE = 3,
+  ENCODER_TYPE_KEYBOARD = 4,
+  ENCODER_TYPE_MOUSE = 5,
   EncoderType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
   EncoderType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
 bool EncoderType_IsValid(int value);
 constexpr EncoderType EncoderType_MIN = ENCODER_TYPE_H264_SOFTWARE;
-constexpr EncoderType EncoderType_MAX = ENCODER_TYPE_MP3_HARDWARE;
+constexpr EncoderType EncoderType_MAX = ENCODER_TYPE_MOUSE;
 constexpr int EncoderType_ARRAYSIZE = EncoderType_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* EncoderType_descriptor();
@@ -2518,6 +2528,319 @@ class Message final :
 
   friend struct ::TableStruct_snappyv1_2eproto;
 };
+// -------------------------------------------------------------------
+
+class StreamDataPointer final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:snappyv1.StreamDataPointer) */ {
+ public:
+  inline StreamDataPointer() : StreamDataPointer(nullptr) {}
+  ~StreamDataPointer() override;
+  explicit constexpr StreamDataPointer(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  StreamDataPointer(const StreamDataPointer& from);
+  StreamDataPointer(StreamDataPointer&& from) noexcept
+    : StreamDataPointer() {
+    *this = ::std::move(from);
+  }
+
+  inline StreamDataPointer& operator=(const StreamDataPointer& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline StreamDataPointer& operator=(StreamDataPointer&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const StreamDataPointer& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const StreamDataPointer* internal_default_instance() {
+    return reinterpret_cast<const StreamDataPointer*>(
+               &_StreamDataPointer_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    13;
+
+  friend void swap(StreamDataPointer& a, StreamDataPointer& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(StreamDataPointer* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(StreamDataPointer* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline StreamDataPointer* New() const final {
+    return new StreamDataPointer();
+  }
+
+  StreamDataPointer* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<StreamDataPointer>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const StreamDataPointer& from);
+  void MergeFrom(const StreamDataPointer& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(StreamDataPointer* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "snappyv1.StreamDataPointer";
+  }
+  protected:
+  explicit StreamDataPointer(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kAbsxFieldNumber = 1,
+    kAbsyFieldNumber = 2,
+    kMaskFieldNumber = 3,
+  };
+  // uint32 absx = 1;
+  void clear_absx();
+  ::PROTOBUF_NAMESPACE_ID::uint32 absx() const;
+  void set_absx(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_absx() const;
+  void _internal_set_absx(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // uint32 absy = 2;
+  void clear_absy();
+  ::PROTOBUF_NAMESPACE_ID::uint32 absy() const;
+  void set_absy(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_absy() const;
+  void _internal_set_absy(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // optional int32 mask = 3;
+  bool has_mask() const;
+  private:
+  bool _internal_has_mask() const;
+  public:
+  void clear_mask();
+  ::PROTOBUF_NAMESPACE_ID::int32 mask() const;
+  void set_mask(::PROTOBUF_NAMESPACE_ID::int32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::int32 _internal_mask() const;
+  void _internal_set_mask(::PROTOBUF_NAMESPACE_ID::int32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:snappyv1.StreamDataPointer)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::HasBits<1> _has_bits_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 absx_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 absy_;
+  ::PROTOBUF_NAMESPACE_ID::int32 mask_;
+  friend struct ::TableStruct_snappyv1_2eproto;
+};
+// -------------------------------------------------------------------
+
+class StreamDataKeyboard final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:snappyv1.StreamDataKeyboard) */ {
+ public:
+  inline StreamDataKeyboard() : StreamDataKeyboard(nullptr) {}
+  ~StreamDataKeyboard() override;
+  explicit constexpr StreamDataKeyboard(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  StreamDataKeyboard(const StreamDataKeyboard& from);
+  StreamDataKeyboard(StreamDataKeyboard&& from) noexcept
+    : StreamDataKeyboard() {
+    *this = ::std::move(from);
+  }
+
+  inline StreamDataKeyboard& operator=(const StreamDataKeyboard& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline StreamDataKeyboard& operator=(StreamDataKeyboard&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const StreamDataKeyboard& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const StreamDataKeyboard* internal_default_instance() {
+    return reinterpret_cast<const StreamDataKeyboard*>(
+               &_StreamDataKeyboard_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    14;
+
+  friend void swap(StreamDataKeyboard& a, StreamDataKeyboard& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(StreamDataKeyboard* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(StreamDataKeyboard* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline StreamDataKeyboard* New() const final {
+    return new StreamDataKeyboard();
+  }
+
+  StreamDataKeyboard* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<StreamDataKeyboard>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const StreamDataKeyboard& from);
+  void MergeFrom(const StreamDataKeyboard& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(StreamDataKeyboard* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "snappyv1.StreamDataKeyboard";
+  }
+  protected:
+  explicit StreamDataKeyboard(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kKeysymFieldNumber = 1,
+    kKeycodeFieldNumber = 2,
+    kDownFieldNumber = 3,
+  };
+  // uint32 keysym = 1;
+  void clear_keysym();
+  ::PROTOBUF_NAMESPACE_ID::uint32 keysym() const;
+  void set_keysym(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_keysym() const;
+  void _internal_set_keysym(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // uint32 keycode = 2;
+  void clear_keycode();
+  ::PROTOBUF_NAMESPACE_ID::uint32 keycode() const;
+  void set_keycode(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_keycode() const;
+  void _internal_set_keycode(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // bool down = 3;
+  void clear_down();
+  bool down() const;
+  void set_down(bool value);
+  private:
+  bool _internal_down() const;
+  void _internal_set_down(bool value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:snappyv1.StreamDataKeyboard)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 keysym_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 keycode_;
+  bool down_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_snappyv1_2eproto;
+};
 // ===================================================================
 
 
@@ -4082,9 +4405,149 @@ inline void Message::clear_has_message() {
 inline Message::MessageCase Message::message_case() const {
   return Message::MessageCase(_oneof_case_[0]);
 }
+// -------------------------------------------------------------------
+
+// StreamDataPointer
+
+// uint32 absx = 1;
+inline void StreamDataPointer::clear_absx() {
+  absx_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StreamDataPointer::_internal_absx() const {
+  return absx_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StreamDataPointer::absx() const {
+  // @@protoc_insertion_point(field_get:snappyv1.StreamDataPointer.absx)
+  return _internal_absx();
+}
+inline void StreamDataPointer::_internal_set_absx(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  absx_ = value;
+}
+inline void StreamDataPointer::set_absx(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_absx(value);
+  // @@protoc_insertion_point(field_set:snappyv1.StreamDataPointer.absx)
+}
+
+// uint32 absy = 2;
+inline void StreamDataPointer::clear_absy() {
+  absy_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StreamDataPointer::_internal_absy() const {
+  return absy_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StreamDataPointer::absy() const {
+  // @@protoc_insertion_point(field_get:snappyv1.StreamDataPointer.absy)
+  return _internal_absy();
+}
+inline void StreamDataPointer::_internal_set_absy(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  absy_ = value;
+}
+inline void StreamDataPointer::set_absy(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_absy(value);
+  // @@protoc_insertion_point(field_set:snappyv1.StreamDataPointer.absy)
+}
+
+// optional int32 mask = 3;
+inline bool StreamDataPointer::_internal_has_mask() const {
+  bool value = (_has_bits_[0] & 0x00000001u) != 0;
+  return value;
+}
+inline bool StreamDataPointer::has_mask() const {
+  return _internal_has_mask();
+}
+inline void StreamDataPointer::clear_mask() {
+  mask_ = 0;
+  _has_bits_[0] &= ~0x00000001u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 StreamDataPointer::_internal_mask() const {
+  return mask_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::int32 StreamDataPointer::mask() const {
+  // @@protoc_insertion_point(field_get:snappyv1.StreamDataPointer.mask)
+  return _internal_mask();
+}
+inline void StreamDataPointer::_internal_set_mask(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _has_bits_[0] |= 0x00000001u;
+  mask_ = value;
+}
+inline void StreamDataPointer::set_mask(::PROTOBUF_NAMESPACE_ID::int32 value) {
+  _internal_set_mask(value);
+  // @@protoc_insertion_point(field_set:snappyv1.StreamDataPointer.mask)
+}
+
+// -------------------------------------------------------------------
+
+// StreamDataKeyboard
+
+// uint32 keysym = 1;
+inline void StreamDataKeyboard::clear_keysym() {
+  keysym_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StreamDataKeyboard::_internal_keysym() const {
+  return keysym_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StreamDataKeyboard::keysym() const {
+  // @@protoc_insertion_point(field_get:snappyv1.StreamDataKeyboard.keysym)
+  return _internal_keysym();
+}
+inline void StreamDataKeyboard::_internal_set_keysym(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  keysym_ = value;
+}
+inline void StreamDataKeyboard::set_keysym(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_keysym(value);
+  // @@protoc_insertion_point(field_set:snappyv1.StreamDataKeyboard.keysym)
+}
+
+// uint32 keycode = 2;
+inline void StreamDataKeyboard::clear_keycode() {
+  keycode_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StreamDataKeyboard::_internal_keycode() const {
+  return keycode_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StreamDataKeyboard::keycode() const {
+  // @@protoc_insertion_point(field_get:snappyv1.StreamDataKeyboard.keycode)
+  return _internal_keycode();
+}
+inline void StreamDataKeyboard::_internal_set_keycode(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  keycode_ = value;
+}
+inline void StreamDataKeyboard::set_keycode(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_keycode(value);
+  // @@protoc_insertion_point(field_set:snappyv1.StreamDataKeyboard.keycode)
+}
+
+// bool down = 3;
+inline void StreamDataKeyboard::clear_down() {
+  down_ = false;
+}
+inline bool StreamDataKeyboard::_internal_down() const {
+  return down_;
+}
+inline bool StreamDataKeyboard::down() const {
+  // @@protoc_insertion_point(field_get:snappyv1.StreamDataKeyboard.down)
+  return _internal_down();
+}
+inline void StreamDataKeyboard::_internal_set_down(bool value) {
+  
+  down_ = value;
+}
+inline void StreamDataKeyboard::set_down(bool value) {
+  _internal_set_down(value);
+  // @@protoc_insertion_point(field_set:snappyv1.StreamDataKeyboard.down)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

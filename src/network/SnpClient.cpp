@@ -6,7 +6,7 @@
 #include <stream/SnpEncoderMmalH264.h>
 #include "SnpSocket.h"
 
-SnpClient::SnpClient(SnpSocket *server, const websocketpp::connection_hdl &hdl) : server(server), hdl(hdl) {
+SnpClient::SnpClient(SnpSocket *server, struct lws *wsi) : server(server), wsi(wsi) {
     connectionStartTs = std::time(nullptr);
 }
 
@@ -35,14 +35,6 @@ void SnpClient::onMessage(uint8_t *data, int len) {
         default:
             fprintf(stderr, "received unknown message.\n");
     }
-}
-
-void SnpClient::send(uint8_t *buffer, int len) {
-    server->send(hdl, buffer, len);
-}
-
-void SnpClient::send(std::string &message) {
-    server->send(hdl, message);
 }
 
 bool SnpClient::operator<(const SnpClient &right) const {
@@ -79,7 +71,7 @@ void SnpClient::onStreamsChange(const snappyv1::StreamsChange &msg) {
     pipelineOptions.source = snpSourceModesetting;
     pipelineOptions.encoder = snpEncoderMmalH264;
     pipelineOptions.sink = snpSinkNetwork;
-    fixedVideoPipeline = new SnpPipeline(pipelineOptions);
+    fixedVideoPipeline = new SnpEncoderPipe(pipelineOptions);
     printf("starting h264 pipeline\n");
     fixedVideoPipeline->start();
 }
@@ -89,12 +81,13 @@ void SnpClient::onStreamData(const snappyv1::StreamData &msg) {
 }
 
 void SnpClient::sendStreamData(uint8_t *data, int len) {
-    auto *streamData = new snappyv1::StreamData();
+    using namespace snappyv1;
+    auto *streamData = new StreamData();
     streamData->set_payload(data, len);
     streamData->set_stream_id(0);
-    snappyv1::Message msg = snappyv1::Message();
-    msg.set_type(snappyv1::MESSAGE_TYPE_STREAM_DATA);
-    msg.set_allocated_stream_data(streamData);
-    std::string s = msg.SerializeAsString();
-    send(s);
+    auto msg = new Message();
+    msg->set_type(snappyv1::MESSAGE_TYPE_STREAM_DATA);
+    msg->set_allocated_stream_data(streamData);
+    this->server->sendMessage(msg, wsi);
+    //TODO: msg should be freed or created as local variable? lookup protobuf docs
 }

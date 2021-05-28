@@ -20,7 +20,7 @@ if(MMALH264_FOUND)
     )
     set(MMALH264_SOURCES
         src/stream/SnpEncoderMmalH264.cpp
-            src/websocket/MiniWebsocket.cpp src/websocket/MiniWebsocket.h)
+    )
 endif(MMALH264_FOUND)
 
 include_directories(
@@ -37,13 +37,18 @@ add_executable(snpserver
     src/util/loguru.cpp
     src/network/SnpProtocol.cpp
     src/network/SnpProtocol.h
-    src/stream/SnpSource.cpp
-    src/stream/SnpEncoder.cpp
-    src/stream/SnpSink.cpp
-    src/stream/SnpChain.cpp
-    src/stream/SnpSourceModesetting.cpp
-    src/stream/SnpSinkNetwork.cpp
+    # video stream
+    src/stream/video/SnpSourceModesetting.cpp
+    # input stream
+    src/stream/input/SnpSinkMouse.cpp
+    src/stream/input/SnpSinkKeyboard.cpp
+    # network sink/source
+    src/stream/network/SnpSourceNetwork.cpp
+    src/stream/network/SnpSinkNetwork.cpp
     ${MMALH264_SOURCES}
+
+    #in flux
+    src/stream/SnpEncoderPipe.cpp
 )
 
 target_link_libraries(snpserver

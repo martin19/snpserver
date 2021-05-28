@@ -21,8 +21,13 @@ bool SnpSourceModesetting::init() {
     drmModeFBPtr fb;
     int ret = -1;
 
-    uint32_t fbId = 0xce; //with hardware cursor
+//    uint32_t fbId = 0xce; //with hardware cursor
+//    uint32_t fbId = 0xcf; //with hardware cursor
 //  uint32_t fb_id = 0xd1; //cursor plane test
+
+//    uint32_t fbId = 0xcd; //with hardware cursor
+    uint32_t fbId = 0xcd;
+//    uint32_t fbId = 0xcf;
 
     //TODO: determine primary framebufferId!
     //TODO: how to detect framebuffer has changed?

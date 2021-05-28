@@ -1,74 +1,230 @@
 #include "SnpSocket.h"
 
-#include <utility>
+#include "libwebsockets.h"
 #include "SnpProtocol.h"
 //#include "util/loguru.h"
+#include "snappyv1.pb.h"
+
+static struct lws_protocols protocols[] = {
+    { "http", SnpSocket::callback_http, 0 },
+    { NULL, NULL, 0, 0 } /* terminator */
+};
 
 SnpSocket::SnpSocket() {
-    // Set logging settings
-    endpoint.set_error_channels(websocketpp::log::elevel::all);
-    endpoint.set_access_channels(websocketpp::log::alevel::all ^ websocketpp::log::alevel::frame_payload);
-
-    endpoint.set_message_handler(bind(&SnpSocket::onMessage, this, std::placeholders::_1, std::placeholders::_2));
-    endpoint.set_open_handler(bind(&SnpSocket::onOpen, this, std::placeholders::_1));
-    endpoint.set_close_handler(bind(&SnpSocket::onClose, this, std::placeholders::_1));
-
-    // Initialize Asio
-    endpoint.init_asio();
+    memset(&info, 0, sizeof info);
+    info.port = 9002;
+    info.protocols = protocols;
+    info.pt_serv_buf_size = 32 * 1024;
+    info.user = this;
+    context = lws_create_context(&info);
+    messageBufferLen = 0;
 }
 
 SnpSocket::~SnpSocket() {
-    printf("Cleaning up socket.\n");
-    endpoint.stop_listening();
-    endpoint.stop();
+    lws_context_destroy(context);
 }
 
 void SnpSocket::run() {
-    // Listen on port 9002
-    endpoint.listen(9002);
-    printf("Listening on port 9002\n");
-
-    // Queues a connection accept operation
-    endpoint.start_accept();
-
-    // Start the Asio io_service run loop
-    endpoint.run();
+    int n = 0;
+    while (n >= 0 /* && !interrupted*/)
+        n = lws_service(context, 0);
 }
 
-void SnpSocket::send(websocketpp::connection_hdl hdl, uint8_t *buffer, int len) {
-    endpoint.send(hdl, buffer, len, websocketpp::frame::opcode::binary);
+
+int SnpSocket::callback_http(struct lws *wsi,
+                         lws_callback_reasons reason,
+                         void *user, void *in, size_t len) {
+
+    SnpSocket* self = nullptr;
+    if(wsi != nullptr) {
+        lws_context *context = lws_get_context(wsi);
+        self = reinterpret_cast<SnpSocket*>(lws_context_user(context));
+    }
+
+//    struct per_session_data__minimal_server_echo *pss =
+//        (struct per_session_data__minimal_server_echo *)user;
+    struct vhd_minimal_server_echo *vhd = (struct vhd_minimal_server_echo *)
+        lws_protocol_vh_priv_get(lws_get_vhost(wsi),
+                                 lws_get_protocol(wsi));
+    const struct msg *pmsg;
+//    struct msg amsg;
+
+    switch(reason) {
+        case LWS_CALLBACK_PROTOCOL_INIT: {
+            printf("LWS_CALLBACK_PROTOCOL_INIT\n");
+        } break;
+        case LWS_CALLBACK_WSI_CREATE: {
+            printf("LWS_CALLBACK_WSI_CREATE\n");
+        } break;
+        case LWS_CALLBACK_HTTP_CONFIRM_UPGRADE: {
+            printf("LWS_CALLBACK_HTTP_CONFIRM_UPGRADE\n");
+        } break;
+        case LWS_CALLBACK_HTTP_BIND_PROTOCOL: {
+            printf("LWS_CALLBACK_HTTP_BIND_PROTOCOL\n");
+        } break;
+        case LWS_CALLBACK_ADD_HEADERS: {
+            printf("LWS_CALLBACK_ADD_HEADERS\n");
+        } break;
+        case LWS_CALLBACK_ESTABLISHED: {
+            printf("LWS_CALLBACK_ESTABLISHED\n");
+            if(self != nullptr) {
+                auto *client = new SnpClient(self, wsi);
+                self->clients.insert(std::pair(wsi, client));
+                self->sendServerInfo(wsi);
+            }
+        } break;
+        case LWS_CALLBACK_RECEIVE: {
+            printf("LWS_CALLBACK_RECEIVE\n");
+
+            int first = lws_is_first_fragment(wsi);
+            int final = lws_is_final_fragment(wsi);
+            int binary = lws_frame_is_binary(wsi);
+
+            //TODO: use logging facility, looks nice
+            printf("LWS_CALLBACK_RECEIVE: %4d (rpp %5d, first %d, last %d, bin %d)\n",
+                      (int)len, (int)lws_remaining_packet_payload(wsi),
+                      first, final, binary);
+
+            if (len) {
+                lwsl_hexdump_notice(in, len);
+            }
+
+            if(first && final && binary) {
+                self->onMessage(wsi, (uint8_t*)in, len);
+            } else {
+                lwsl_err("Did not receive a full binary message, packet is fragemented - cannot handle fragmented packets yet.");
+            }
+
+            break;
+
+        } break;
+        case LWS_CALLBACK_CLOSED: {
+            //TODO: remove client pointer and clean up.
+            printf("LWS_CALLBACK_CLOSED\n");
+        } break;
+        case LWS_CALLBACK_FILTER_PROTOCOL_CONNECTION: {
+            printf("LWS_CALLBACK_FILTER_PROTOCOL_CONNECTION\n");
+        } break;
+        case LWS_CALLBACK_WSI_DESTROY: {
+            printf("LWS_CALLBACK_WSI_DESTROY\n");
+        } break;
+        case LWS_CALLBACK_SERVER_NEW_CLIENT_INSTANTIATED: {
+            printf("LWS_CALLBACK_SERVER_NEW_CLIENT_INSTANTIATED\n");
+        } break;
+        case LWS_CALLBACK_CLOSED_HTTP: {
+            printf("LWS_CALLBACK_CLOSED_HTTP\n");
+        } break;
+        case LWS_CALLBACK_FILTER_NETWORK_CONNECTION: {
+            printf("LWS_CALLBACK_FILTER_NETWORK_CONNECTION\n");
+        } break;
+        case LWS_CALLBACK_CONNECTING: {
+            printf("LWS_CALLBACK_CONNECTING\n");
+        } break;
+        case LWS_CALLBACK_PROTOCOL_DESTROY: {
+            printf("LWS_CALLBACK_PROTOCOL_DESTROY\n");
+        } break;
+        case LWS_CALLBACK_SERVER_WRITEABLE: {
+//            printf("LWS_CALLBACK_SERVER_WRITEABLE\n");
+            if(self->messageBufferLen) {
+                int written = lws_write(wsi, &self->messageBuffer[LWS_PRE], self->messageBufferLen, LWS_WRITE_BINARY);
+//                printf("%d of %d bytes written\n", written, self->messageBufferLen);
+                self->messageBufferLen = 0;
+            }
+        } break;
+        case LWS_CALLBACK_CLIENT_WRITEABLE: {
+            printf("LWS_CALLBACK_CLIENT_WRITEABLE\n");
+        } break;
+        case LWS_CALLBACK_HTTP: {
+            printf("LWS_CALLBACK_HTTP\n");
+        } break;
+        default: {
+            printf("unhandled callback %d\n", reason);
+        }
+    }
+    return 0;
 }
 
-void SnpSocket::send(websocketpp::connection_hdl hdl, std::string &message) {
-    printf("sending message len=%d\n", message.size());
-    endpoint.send(hdl, message, websocketpp::frame::opcode::binary);
-}
+void SnpSocket::sendMessage(snappyv1::Message *msg, struct lws *wsi) {
+    //send next message.
+    messageBufferLen = msg->ByteSizeLong();
+    msg->SerializeToArray(&messageBuffer[LWS_PRE], messageBufferLen);
+    lws_callback_on_writable(wsi);
 
-void SnpSocket::onMessage(websocketpp::connection_hdl hdl, server::message_ptr msg) {
-    SnpClient client = clients.at(hdl);
-    client.onMessage((uint8_t*)msg->get_raw_payload().data(), msg->get_raw_payload().length());
-}
-
-void SnpSocket::onClose(websocketpp::connection_hdl hdl) {
-    clients.erase(hdl);
-    logConnections();
-}
-
-void SnpSocket::onOpen(websocketpp::connection_hdl hdl) {
-    SnpClient client(this, hdl);
-    clients.insert(std::pair(hdl, client));
-    SnpProtocol::sendServerInfo(client);
-    logConnections();
-}
-
-void SnpSocket::logConnections() {
-    for(const auto& it : clients) {
-        server::connection_ptr c = endpoint.get_con_from_hdl(it.first);
-        std::cout << "Host:" << c->get_host() << ", Port:" << c->get_port() << "Ts:" << it.second.getConnectionStartTs() << std::endl;
-        std::cout << "Remoteendpoint:" << c->get_remote_endpoint() << std::endl;
+    //busy wait until messageBuffer is empty
+    while(messageBufferLen) {
+        printf("*");
+        fflush(stdout);
+        lws_callback_on_writable(wsi);
+        lws_service(context, 0);
     }
 }
 
-std::map<websocketpp::connection_hdl, SnpClient, std::owner_less<websocketpp::connection_hdl>> &SnpSocket::getClients() {
-    return clients;
+void SnpSocket::sendServerInfo(lws* wsi) {
+    printf("sendServerInfo\n");
+
+    using namespace snappyv1;
+    auto serverInfo = new ServerInfo();
+    serverInfo->set_platform(PLATFORM_RASPBERRY);
+
+    //add one source
+    Source *source = serverInfo->add_available_sources();
+    source->set_type(SOURCE_TYPE_VIDEO);
+    source->set_sub_type(SOURCE_SUB_TYPE_X11);
+
+    //parameter width
+    {
+        Parameter *p = source->add_parameters();
+        p->set_param_type(PARAMETER_TYPE_UINT32);
+        p->set_param_key("width");
+        auto *value = new Parameter_ValueUint32();
+        value->set_value(1920);
+        p->set_allocated_value_uint32(value);
+    }
+
+    //parameter height
+    {
+        Parameter *p = source->add_parameters();
+        p->set_param_type(PARAMETER_TYPE_UINT32);
+        p->set_param_key("height");
+        auto *value = new Parameter_ValueUint32();
+        value->set_value(1080);
+        p->set_allocated_value_uint32(value);
+    }
+
+    Encoder *encoder = serverInfo->add_available_encoders();
+    encoder->set_type(ENCODER_TYPE_H264_HARDWARE);
+
+    //parameter qp
+    {
+        Parameter *p = encoder->add_parameters();
+        p->set_param_type(PARAMETER_TYPE_UINT32);
+        p->set_param_key("qp");
+        auto *value = new Parameter_ValueUint32();
+        value->set_value(42);
+        value->set_min(10);
+        value->set_max(50);
+        p->set_allocated_value_uint32(value);
+    }
+
+    //parameter string
+    {
+        Parameter *p = encoder->add_parameters();
+        p->set_param_type(PARAMETER_TYPE_STRING);
+        p->set_param_key("fookey");
+        auto *value = new Parameter_ValueString();
+        value->set_value("barvalue");
+        p->set_allocated_value_string(value);
+    }
+
+    //wrap server info message in envelope
+    auto *msgEnvelope = new Message();
+    msgEnvelope->set_type(MESSAGE_TYPE_SERVER_INFO);
+    msgEnvelope->set_allocated_server_info(serverInfo);
+
+    sendMessage(msgEnvelope, wsi);
+}
+
+void SnpSocket::onMessage(lws *wsi, uint8_t* buffer, int len) {
+    SnpClient *client = clients.at(wsi);
+    client->onMessage(buffer, len);
 }

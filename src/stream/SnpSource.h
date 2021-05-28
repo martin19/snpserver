@@ -30,14 +30,12 @@ class SnpSource {
 public:
     explicit SnpSource(const SnpSourceOptions &options) {};
     virtual ~SnpSource() = default;
-
     virtual SnpSourceOutputDescriptor getOutputDescriptor() = 0;
-
-    virtual void startCapture() = 0;
-    virtual void stopCapture() = 0;
-
-    virtual bool isFrameReady() = 0;
-    virtual void getNextFrame(uint8_t *frame) = 0;
+    void setOnFrameDataCb(std::function<void(uint8_t *data, int len, bool complete)> cb) {
+        onFrameDataCb = cb;
+    }
+protected:
+    std::function<void(uint8_t *data, int len, bool complete)> onFrameDataCb = nullptr;
 };
 
 #endif //SNPSERVER_SNPSOURCE_H

@@ -111,10 +111,10 @@ bool SnpEncoderMmalH264::mmalEncoderInit() {
     format_in->es->video.frame_rate.den = 1;
     format_in->es->video.par.num = 1;
     format_in->es->video.par.den = 1;
-//    format_in->es->video.crop.x = 0;
-//    format_in->es->video.crop.y = 0;
-//    format_in->es->video.crop.width = frame_width;
-//    format_in->es->video.crop.height = frame_height;
+    format_in->es->video.crop.x = 0;
+    format_in->es->video.crop.y = 0;
+    format_in->es->video.crop.width = this->width;
+    format_in->es->video.crop.height = this->height;
 
     /* If the data is known to be framed then the following flag should be set:
      * format_in->flags |= MMAL_ES_FORMAT_FLAG_FRAMED; */
@@ -141,7 +141,7 @@ bool SnpEncoderMmalH264::mmalEncoderInit() {
     mmal_port_parameter_set_boolean(encoder_input, MMAL_PARAMETER_ZERO_COPY, 1);
 
     //additional parameters
-    mmal_port_parameter_set_boolean(encoder_output, MMAL_PARAMETER_MINIMISE_FRAGMENTATION, 1);
+//    mmal_port_parameter_set_boolean(encoder_output, MMAL_PARAMETER_MINIMISE_FRAGMENTATION, 1);
 //    mmal_port_parameter_set_boolean(encoder_output, MMAL_PARAMETER_VIDEO_ENCODE_H264_DISABLE_CABAC, 1);
 //    mmal_port_parameter_set_boolean(encoder_input, MMAL_PARAMETER_VIDEO_IMMUTABLE_INPUT, 1);
 
@@ -167,25 +167,25 @@ bool SnpEncoderMmalH264::mmalEncoderInit() {
 
     //quality (quantisationParameter 0..51)
     {
-        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_INITIAL_QUANT, sizeof(param)}, 20};
+        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_INITIAL_QUANT, sizeof(param)}, 30};
         status = mmal_port_parameter_set(encoder_output, &param.hdr);
         CHECK_STATUS(status, "failed to set port parameter MMAL_PARAMETER_VIDEO_ENCODE_INITIAL_QUANT");
     }
 
     {
-        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_MIN_QUANT, sizeof(param)}, 20};
+        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_MIN_QUANT, sizeof(param)}, 30};
         status = mmal_port_parameter_set(encoder_output, &param.hdr);
         CHECK_STATUS(status, "failed to set port parameter MMAL_PARAMETER_VIDEO_ENCODE_MIN_QUANT");
     }
 
     {
-        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_MAX_QUANT, sizeof(param)}, 20};
+        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_MAX_QUANT, sizeof(param)}, 30};
         status = mmal_port_parameter_set(encoder_output, &param.hdr);
         CHECK_STATUS(status, "failed to set port parameter MMAL_PARAMETER_VIDEO_ENCODE_MAX_QUANT");
     }
 
     {
-        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_INTRAPERIOD, sizeof(param)}, 300};
+        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_INTRAPERIOD, sizeof(param)}, 800};
         status = mmal_port_parameter_set(encoder_output, &param.hdr);
         CHECK_STATUS(status, "failed to set port parameter MMAL_PARAMETER_INTRAPERIOD");
     }
@@ -258,7 +258,7 @@ bool SnpEncoderMmalH264::mmalEncoderEncode() {
 
     /* Send data to decode to the input port of the video encoder */
     if ((bufferHeader = mmal_queue_get(pool_in->queue)) != nullptr) {
-        bufferHeader->length = width * height * bpp;
+        bufferHeader->length = width * height * 3; //why 3!?
         bufferHeader->offset = 0;
         bufferHeader->pts = bufferHeader->dts = MMAL_TIME_UNKNOWN;
         bufferHeader->flags = MMAL_BUFFER_HEADER_FLAG_EOS;

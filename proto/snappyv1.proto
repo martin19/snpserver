@@ -139,17 +139,14 @@ message Message {
     }
 }
 
+message StreamDataPointer {
+    uint32 absx = 1;
+    uint32 absy = 2;
+    optional int32 mask = 3;
+}
 
-//client -> server
-//message Pointer {
-//    uint32 absx = 1;
-//    uint32 absy = 2;
-//    optional int32 mask = 3;
-//    optional bool down = 4;
-//}
-//
-//message Keyboard {
-//    uint32 keysym = 1;
-//    uint32 keycode = 2;
-//    bool down = 3;
-//}
+message StreamDataKeyboard {
+    uint32 keysym = 1;
+    uint32 keycode = 2;
+    bool down = 3;
+}

@@ -1,5 +1,5 @@
-#ifndef SNPSERVER_SNPPIPELINE_H
-#define SNPSERVER_SNPPIPELINE_H
+#ifndef SNPSERVER_SNPENCODERPIPE_H
+#define SNPSERVER_SNPENCODERPIPE_H
 
 #include "SnpSource.h"
 #include "SnpEncoder.h"
@@ -11,7 +11,7 @@ struct SnpPipelineOptions {
     class SnpSink *sink;
 };
 
-class SnpPipeline {
+class SnpEncoderPipe {
 private:
     SnpPipelineOptions options {};
     SnpSource *source;
@@ -19,7 +19,7 @@ private:
     SnpSink *sink;
     bool running = false;
 public:
-    SnpPipeline(SnpPipelineOptions &options);
+    SnpEncoderPipe(SnpPipelineOptions &options);
     SnpSource *getSource();
     SnpEncoder *getEncoder();
     SnpSink *getSink();
@@ -31,4 +31,4 @@ public:
 };
 
 
-#endif //SNPSERVER_SNPPIPELINE_H
+#endif //SNPSERVER_SNPENCODERPIPE_H

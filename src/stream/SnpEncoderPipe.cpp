@@ -1,30 +1,30 @@
 #include <functional>
-#include "SnpPipeline.h"
+#include "SnpEncoderPipe.h"
 #include "SnpSinkNetwork.h"
 #include "SnpSourceModesetting.h"
 #include "SnpEncoderMmalH264.h"
 
-SnpPipeline::SnpPipeline(SnpPipelineOptions &options) {
+SnpEncoderPipe::SnpEncoderPipe(SnpPipelineOptions &options) {
     this->source = options.source;
     this->encoder = options.encoder;
     this->sink = options.sink;
 }
 
-SnpSource *SnpPipeline::getSource() {
+SnpSource *SnpEncoderPipe::getSource() {
     return this->source;
 }
 
-SnpEncoder *SnpPipeline::getEncoder() {
+SnpEncoder *SnpEncoderPipe::getEncoder() {
     return this->encoder;
 }
 
-SnpSink *SnpPipeline::getSink() {
+SnpSink *SnpEncoderPipe::getSink() {
     return this->sink;
 }
 
-void SnpPipeline::start() {
+void SnpEncoderPipe::start() {
     this->running = true;
-    this->encoder->setOnFrameDataCb(std::bind(&SnpPipeline::onFrameDataCb, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    this->encoder->setOnFrameDataCb(std::bind(&SnpEncoderPipe::onFrameDataCb, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     while(this->running) {
         if(this->source->isFrameReady()) {
             this->encoder->process();
@@ -32,10 +32,10 @@ void SnpPipeline::start() {
     }
 }
 
-void SnpPipeline::onFrameDataCb(uint8_t *buffer, int len, bool complete) {
+void SnpEncoderPipe::onFrameDataCb(uint8_t *buffer, int len, bool complete) {
     this->sink->process(buffer, len, complete);
 }
 
-void SnpPipeline::stop() {
+void SnpEncoderPipe::stop() {
     this->running = false;
 }

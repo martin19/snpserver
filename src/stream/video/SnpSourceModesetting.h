@@ -2,13 +2,7 @@
 #define SNPSERVER_SNPSOURCEMODESETTING_H
 
 #include <string>
-#include "SnpSource.h"
-
-//typedef enum {
-//    videoCaptureCopyTypeMMap = 0,
-//    videoCaptureCopyTypeCopy = 1,
-//    videoCaptureCopyTypeBoth = 2,
-//};
+#include "../SnpSource.h"
 
 struct SnpSourceModesettingOptions : public SnpSourceOptions {
     std::string device;
@@ -31,13 +25,6 @@ private:
 public:
     explicit SnpSourceModesetting(const SnpSourceModesettingOptions &options);
     ~SnpSourceModesetting() override;
-
-    SnpSourceOutputDescriptor getOutputDescriptor();
-
-    void startCapture() override;
-    void stopCapture() override;
-    bool isFrameReady() override;
-    void getNextFrame(uint8_t *frame) override;
 };
 
 

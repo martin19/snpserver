@@ -1,26 +1,24 @@
-#ifndef SNPSERVER_SNPENCODER_H
-#define SNPSERVER_SNPENCODER_H
+#ifndef SNPSERVER_SNPDECODER_H
+#define SNPSERVER_SNPDECODER_H
 
 #include <cstdint>
 #include <string>
 #include <functional>
 #include "SnpSource.h"
 
-struct SnpEncoderOutputDescriptor {
+struct SnpDecoderOutputDescriptor {
 
 };
 
-struct SnpEncoderOptions {
+struct SnpDecoderOptions {
     SnpSourceOutputDescriptor inputDescriptor;
-    SnpEncoderOutputDescriptor outputDescriptor;
+    SnpDecoderOutputDescriptor outputDescriptor;
 };
 
-//typedef void (*OnFrameDataCb)(uint8_t *data, int len, bool complete);
-
-class SnpEncoder {
+class SnpDecoder {
 public:
-    explicit SnpEncoder(const SnpEncoderOptions &options) {};
-    virtual ~SnpEncoder() = default;
+    explicit SnpDecoder(const SnpDecoderOptions &options) {};
+    virtual ~SnpDecoder() = default;
 
     virtual void process() = 0;
     void setOnFrameDataCb(std::function<void(uint8_t *data, int len, bool complete)> cb) {
@@ -30,4 +28,5 @@ protected:
     std::function<void(uint8_t *data, int len, bool complete)> onFrameDataCb = nullptr;
 };
 
-#endif //SNPSERVER_SNPENCODER_H
+
+#endif //SNPSERVER_SNPDECODER_H

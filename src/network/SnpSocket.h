@@ -1,40 +1,37 @@
 #ifndef SNAPPYVNC_SERVER_H
 #define SNAPPYVNC_SERVER_H
 
-// The ASIO_STANDALONE define is necessary to use the standalone version of Asio.
-// Remove if you are using Boost Asio.
-#define ASIO_STANDALONE
-
-#include <websocketpp/config/asio_no_tls.hpp>
-#include <websocketpp/server.hpp>
-
+#include "libwebsockets.h"
 #include <functional>
 #include <set>
 #include "SnpClient.h"
 
-typedef websocketpp::server<websocketpp::config::asio> server;
-
 class SnpSocket {
 public:
     SnpSocket();
-
-    virtual ~SnpSocket();
+    ~SnpSocket();
 
     void run();
-    void send(websocketpp::connection_hdl hdl, uint8_t *buffer, int len);
-    void send(websocketpp::connection_hdl hdl, std::string &message);
-private:
-    std::map<websocketpp::connection_hdl, SnpClient, std::owner_less<websocketpp::connection_hdl>> clients;
-public:
-    std::map<websocketpp::connection_hdl, SnpClient, std::owner_less<websocketpp::connection_hdl>> &getClients();
+    static int callback_http(struct lws *wsi,
+                             lws_callback_reasons reason,
+                             void *user, void *in, size_t len);
 
+    void sendMessage(snappyv1::Message *msg, struct lws *wsi);
 private:
-    void onOpen(websocketpp::connection_hdl);
-    void onClose(websocketpp::connection_hdl);
-    void onMessage(websocketpp::connection_hdl, server::message_ptr msg);
-    void logConnections();
-
-    server endpoint;
+    struct lws_context_creation_info info;
+    struct lws_context *context;
+    std::map<lws*, SnpClient*> clients;
+    void sendServerInfo(lws* wsi);
+    void onMessage(lws *wsi, uint8_t *message, int len);
+    uint8_t messageBuffer[1024000];
+    int messageBufferLen;
 };
 
 #endif //SNAPPYVNC_SERVER_H
+
+
+//    void send(websocketpp::connection_hdl hdl, std::string &message);
+//private:
+////    std::map<websocketpp::connection_hdl, SnpClient, std::owner_less<websocketpp::connection_hdl>> clients;
+//public:
+//    std::map<websocketpp::connection_hdl, SnpClient, std::owner_less<websocketpp::connection_hdl>> &getClients();

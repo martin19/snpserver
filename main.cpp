@@ -16,6 +16,7 @@ int main() {
     SnpSocket s;
     s.run();
 
+    //    s.run();
 //    while(1) {
 //        for(auto& it : s.getClients()) {
 //            std::string s = std::string("Hello Client");
