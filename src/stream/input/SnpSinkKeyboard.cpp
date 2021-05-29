@@ -7,7 +7,9 @@
 #include <network/snappyv1.pb.h>
 #include "keymap_atset1_linux.h"
 
-SnpSinkKeyboard::SnpSinkKeyboard(const SnpSinkKeyboardOptions &options) : SnpSink(options) {
+SnpSinkKeyboard::SnpSinkKeyboard(const SnpSinkKeyboardOptions &options) : SnpComponent(options) {
+    addInput(new SnpPort());
+    getInput(0)->setOnDataCb(std::bind(&SnpSinkKeyboard::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     initKeyboard();
 }
 
@@ -32,7 +34,7 @@ static void emit(int fd, int type, int code, int val) {
     }
 }
 
-void SnpSinkKeyboard::process(uint8_t *data, int len, bool complete) {
+void SnpSinkKeyboard::onInputData(const uint8_t *data, int len, bool complete) {
     snappyv1::StreamDataKeyboard streamDataKeyboard = snappyv1::StreamDataKeyboard();
     streamDataKeyboard.ParseFromArray(data, len);
 

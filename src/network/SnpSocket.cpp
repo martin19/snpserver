@@ -1,8 +1,6 @@
 #include "SnpSocket.h"
 
 #include "libwebsockets.h"
-#include "SnpProtocol.h"
-//#include "util/loguru.h"
 #include "snappyv1.pb.h"
 
 static struct lws_protocols protocols[] = {

@@ -1,17 +1,17 @@
 #ifndef SNPSERVER_SNPSINKKEYBOARD_H
 #define SNPSERVER_SNPSINKKEYBOARD_H
 
-#include <stream/SnpSink.h>
+#include "SnpSinkMouse.h"
 
-struct SnpSinkKeyboardOptions : public SnpSinkOptions {
+struct SnpSinkKeyboardOptions : public SnpComponentOptions {
 };
 
-class SnpSinkKeyboard : public SnpSink {
+class SnpSinkKeyboard : public SnpComponent {
 public:
     explicit SnpSinkKeyboard(const SnpSinkKeyboardOptions &options);
     ~SnpSinkKeyboard() override;
-    void process(uint8_t *data, int len, bool complete) override;
 private:
+    void onInputData(const uint8_t *data, int len, bool complete);
     int fid;
     bool initKeyboard();
     void keyDown(int key);

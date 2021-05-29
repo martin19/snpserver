@@ -5,12 +5,16 @@
 
 #define CHECK_STATUS(status, msg) if (status != MMAL_SUCCESS) { fprintf(stderr, msg"\n"); goto error; }
 
-SnpEncoderMmalH264::SnpEncoderMmalH264(const SnpEncoderMmalH264Options &options) : SnpEncoder(options) {
-    width = options.inputDescriptor.width;
-    height = options.inputDescriptor.height;
-    bpp = options.inputDescriptor.bpp;
-    device = options.inputDescriptor.device;
-    dmaBufFd = options.inputDescriptor.dmaBufFd;
+SnpEncoderMmalH264::SnpEncoderMmalH264(const SnpEncoderMmalH264Options &options) : SnpComponent(options) {
+    width = options.width;
+    height = options.height;
+    bpp = options.bpp;
+
+    addInput(new SnpPort());
+    addOutput(new SnpPort());
+
+    getInput(0)->setOnDataCb(std::bind(&SnpEncoderMmalH264::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+
     mmalEncoderInit();
 }
 
@@ -18,7 +22,7 @@ SnpEncoderMmalH264::~SnpEncoderMmalH264() {
     mmalEncoderDestroy();
 }
 
-void SnpEncoderMmalH264::process() {
+void SnpEncoderMmalH264::onInputData(const uint8_t *data, int len, bool complete) {
     mmalEncoderEncode();
 }
 
@@ -55,15 +59,16 @@ uint8_t *SnpEncoderMmalH264::mmalDmaBufAllocator(MMAL_PORT_T *port, uint32_t pay
     unsigned int vcsm_handle = 0;
     unsigned int vc_opaque_handle = 0;
     auto *ctx = (SnpEncoderMmalH264 *) port->userdata;
+    SnpPort *inputPort = ctx->getInput(0);
 
     if(vcsm_init() != 0) {
         fprintf(stderr, "Cannot init vcsm (vcsm_init)\n");
         goto error;
     }
 
-    vcsm_handle = vcsm_import_dmabuf(ctx->dmaBufFd, ctx->device.c_str());
+    vcsm_handle = vcsm_import_dmabuf(inputPort->dmaBufFd, inputPort->device.c_str());
     if(!vcsm_handle) {
-        fprintf(stderr, "Cannot import dmabuf vcsm_import_dmabuf(dmabuf=%d, device=%s)\n", ctx->dmaBufFd, ctx->device.c_str());
+        fprintf(stderr, "Cannot import dmabuf vcsm_import_dmabuf(dmabuf=%d, device=%s)\n", inputPort->dmaBufFd, inputPort->device.c_str());
         goto error;
     }
     printf("vcsm_handle = %d\n", vcsm_handle);
@@ -284,10 +289,11 @@ error:
 }
 
 void SnpEncoderMmalH264::mmalOnFrameCallback(MMAL_BUFFER_HEADER_T *bufferHeader) {
+    SnpPort *outputPort = this->getOutput(0);
     if(bufferHeader->flags & MMAL_BUFFER_HEADER_FLAG_NAL_END) {
-        onFrameDataCb(bufferHeader->data, bufferHeader->length, true);
+        outputPort->onDataCb(bufferHeader->data, bufferHeader->length, true);
     } else {
-        onFrameDataCb(bufferHeader->data, bufferHeader->length, false);
+        outputPort->onDataCb(bufferHeader->data, bufferHeader->length, false);
     }
 }
 

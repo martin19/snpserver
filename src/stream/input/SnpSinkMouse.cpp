@@ -7,12 +7,16 @@
 #include <memory.h>
 #include <network/snappyv1.pb.h>
 
-SnpSinkMouse::SnpSinkMouse(const SnpSinkMouseOptions &options) : SnpSink(options) {
+SnpSinkMouse::SnpSinkMouse(const SnpSinkMouseOptions &options) : SnpComponent(options) {
     initMouse();
     fid = -1;
     width = options.width;
     height = options.height;
     previousButtonMask = 0;
+
+    addInput(new SnpPort());
+
+    getInput(0)->setOnDataCb(std::bind(&SnpSinkMouse::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
 SnpSinkMouse::~SnpSinkMouse() {
@@ -36,7 +40,7 @@ static void emit(int fd, int type, int code, int val) {
     }
 }
 
-void SnpSinkMouse::process(uint8_t *data, int len, bool complete) {
+void SnpSinkMouse::onInputData(const uint8_t *data, int len, bool complete) {
     //TODO: only complete messages are accepted, verify and clean up interface.
     snappyv1::StreamDataPointer streamDataPointer = snappyv1::StreamDataPointer();
     streamDataPointer.ParseFromArray(data, len);

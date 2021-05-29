@@ -1,7 +1,7 @@
 #ifndef SNPSERVER_SNPENCODERMMALH264_H
 #define SNPSERVER_SNPENCODERMMALH264_H
 
-#include <stream/SnpEncoder.h>
+#include <stream/SnpComponent.h>
 #include <string>
 
 #include "interface/mmal/mmal.h"
@@ -14,18 +14,18 @@
 #include "interface/mmal/core/mmal_port_private.h"
 
 
-struct SnpEncoderMmalH264Options : public SnpEncoderOptions {
+struct SnpEncoderMmalH264Options : public SnpComponentOptions {
+    uint32_t width;
+    uint32_t height;
+    uint32_t bpp;
     uint32_t qp;
 };
 
-class SnpEncoderMmalH264 : public SnpEncoder {
+class SnpEncoderMmalH264 : public SnpComponent {
 public:
     explicit SnpEncoderMmalH264(const SnpEncoderMmalH264Options &options);
     ~SnpEncoderMmalH264() override;
-    void process() override;
 private:
-    std::string device;
-    int dmaBufFd;
     uint32_t width;
     uint32_t height;
     uint32_t bpp;
@@ -35,6 +35,8 @@ private:
     MMAL_COMPONENT_T *encoder = nullptr;
     MMAL_POOL_T *pool_in = nullptr;
     MMAL_POOL_T *pool_out = nullptr;
+
+    void onInputData(const uint8_t *data, int len, bool complete);
 
     bool mmalEncoderInit();
     bool mmalEncoderEncode();

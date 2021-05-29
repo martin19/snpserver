@@ -1,19 +1,19 @@
 #ifndef SNPSERVER_SNPSINKMOUSE_H
 #define SNPSERVER_SNPSINKMOUSE_H
 
-#include <stream/SnpSink.h>
+#include <stream/SnpComponent.h>
 
-struct SnpSinkMouseOptions : public SnpSinkOptions {
+struct SnpSinkMouseOptions : public SnpComponentOptions {
     int width;
     int height;
 };
 
-class SnpSinkMouse : public SnpSink {
+class SnpSinkMouse : public SnpComponent {
 public:
     explicit SnpSinkMouse(const SnpSinkMouseOptions &options);
     virtual ~SnpSinkMouse();
-    void process(uint8_t *data, int len, bool complete) override;
 private:
+    void onInputData(const uint8_t *data, int len, bool complete);
     int fid;
     int width;
     int height;

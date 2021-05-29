@@ -7,19 +7,25 @@
 #include <unistd.h>
 #include <cstring>
 
-SnpSourceModesetting::SnpSourceModesetting(const SnpSourceModesettingOptions &options):SnpSource(options) {
-    this->device = options.device;
+SnpSourceModesetting::SnpSourceModesetting(const SnpSourceModesettingOptions &options): SnpComponent(options) {
+
+    addOutput(new SnpPort());
+    device = options.device;
     init();
+
 }
 
 SnpSourceModesetting::~SnpSourceModesetting() {
-    if(deviceFd) close(deviceFd);
+    if(getOutput(0)->deviceFd) close(getOutput(0)->deviceFd);
 }
 
 bool SnpSourceModesetting::init() {
     bool result = true;
     drmModeFBPtr fb;
     int ret = -1;
+
+    int deviceFd = -1;
+    int dmaBufFd = -1;
 
 //    uint32_t fbId = 0xce; //with hardware cursor
 //    uint32_t fbId = 0xcf; //with hardware cursor
@@ -50,15 +56,14 @@ bool SnpSourceModesetting::init() {
            fbId, fb->width, fb->height, fb->pitch, fb->bpp, fb->depth, fb->handle);
 
     ret = drmPrimeHandleToFD(deviceFd, fb->handle, 0, &dmaBufFd);
-//    if(!ret) {
-//        result = false;
-//        fprintf(stderr, "Cannot get framebuffer file descriptor\n", fbId);
-//        goto error;
-//    }
 
     printf("drmPrimeHandleToFD = %d, fd = %d\n", ret, dmaBufFd);
 
-    this->dmaBufFd = dmaBufFd;
+
+    getOutput(0)->device = device;
+    getOutput(0)->deviceFd = deviceFd;
+    getOutput(0)->dmaBufFd = dmaBufFd;
+
     this->width = fb->width;
     this->height = fb->height;
     this->pitch = fb->pitch;
@@ -70,64 +75,25 @@ error:
     return result;
 }
 
-bool SnpSourceModesetting::initMmap() {
-    bool result = true;
-    uint8_t *map;
-    map = (uint8_t*)mmap(nullptr, this->width * this->height * this->bpp, PROT_READ, MAP_SHARED, this->dmaBufFd, 0);
-    if (map == MAP_FAILED) {
-        fprintf(stderr, "mmap failed: %s\n", strerror(errno));
-        result = false;
-        goto error;
-    }
-    this->dmaBuf = map;
-    return result;
-error:
-    return result;
-}
-
-bool SnpSourceModesetting::destroyMmap() {
-    bool result = true;
-    int ret = -1;
-    ret = munmap(this->dmaBuf, this->width * this->height * this->bpp);
-    if (!ret) {
-        fprintf(stderr, "mmap failed: %s\n", strerror(errno));
-        result = false;
-        goto error;
-    }
-    return result;
-error:
-    return result;
-}
-
-SnpSourceOutputDescriptor SnpSourceModesetting::getOutputDescriptor() {
-    SnpSourceOutputDescriptor descriptor;
-    descriptor.width = width;
-    descriptor.height = height;
-    descriptor.bpp = bpp;
-    descriptor.device = device;
-    descriptor.deviceFd = deviceFd;
-    descriptor.dmaBufFd = dmaBufFd;
-    return descriptor;
-}
-
-void SnpSourceModesetting::startCapture() {
-    //TODO: create capture timer to respect fps
-    //TODO: emit frameReady according to fps
-}
-
-void SnpSourceModesetting::stopCapture() {
-    //TODO: stop capture timer
-}
-
-bool SnpSourceModesetting::isFrameReady() {
-    //without a timer, there is always a next frame ready.
-    return true;
-}
-
-void SnpSourceModesetting::getNextFrame(uint8_t *frame) {
-    //TODO:
-    // * pass pointer to next frame
-    // * if memory mapped
-}
+//void SnpSourceModesetting::startCapture() {
+//    //TODO: create capture timer to respect fps
+//    //TODO: emit frameReady according to fps
+//}
+//
+//void SnpSourceModesetting::stopCapture() {
+//    //TODO: stop capture timer
+//}
+//
+//bool SnpSourceModesetting::isFrameReady() {
+//    //without a timer, there is always a next frame ready.
+//    getOutput(0)->onDataCb(nullptr, 0, true);
+//    return true;
+//}
+//
+//void SnpSourceModesetting::getNextFrame(uint8_t *frame) {
+//    //TODO:
+//    // * pass pointer to next frame
+//    // * if memory mapped
+//}
 
 

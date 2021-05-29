@@ -2,29 +2,24 @@
 #define SNPSERVER_SNPSOURCEMODESETTING_H
 
 #include <string>
-#include "../SnpSource.h"
+#include "../SnpComponent.h"
 
-struct SnpSourceModesettingOptions : public SnpSourceOptions {
+struct SnpSourceModesettingOptions : public SnpComponentOptions {
     std::string device;
+    int fps;
 };
 
-class SnpSourceModesetting : public SnpSource {
+class SnpSourceModesetting : public SnpComponent {
 public:
     explicit SnpSourceModesetting(const SnpSourceModesettingOptions &options);
     ~SnpSourceModesetting() override;
 private:
+    bool init();
     std::string device;
-    int deviceFd;
-    uint8_t *dmaBuf;
-    int dmaBufFd;
     uint32_t width;
     uint32_t height;
     uint32_t pitch;
     uint32_t bpp;
-    bool init();
-    bool initMmap();
-    bool destroyMmap();
 };
-
 
 #endif //SNPSERVER_SNPSOURCEMODESETTING_H

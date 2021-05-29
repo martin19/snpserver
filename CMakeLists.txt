@@ -19,7 +19,7 @@ if(MMALH264_FOUND)
             /usr/include/libdrm #todo move this
     )
     set(MMALH264_SOURCES
-        src/stream/SnpEncoderMmalH264.cpp
+        src/stream/video/SnpEncoderMmalH264.cpp
     )
 endif(MMALH264_FOUND)
 
@@ -37,6 +37,9 @@ add_executable(snpserver
     src/util/loguru.cpp
     src/network/SnpProtocol.cpp
     src/network/SnpProtocol.h
+    # stream
+    src/stream/SnpComponent.cpp
+    src/stream/SnpPort.cpp
     # video stream
     src/stream/video/SnpSourceModesetting.cpp
     # input stream
@@ -48,7 +51,7 @@ add_executable(snpserver
     ${MMALH264_SOURCES}
 
     #in flux
-    src/stream/SnpEncoderPipe.cpp
+        src/stream/SnpPipe.cpp
 )
 
 target_link_libraries(snpserver
