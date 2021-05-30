@@ -12,21 +12,21 @@ class SnpComponent {
 public:
     explicit SnpComponent(const SnpComponentOptions &options) {};
     virtual ~SnpComponent();
-    bool isEnabled() const {
+    virtual bool isEnabled() const {
         return enabled;
     }
-    void setEnabled(bool enabled) {
+    virtual void setEnabled(bool enabled) {
         this->enabled = enabled;
     }
 
-    SnpPort *getInput(int i);
-    SnpPort *getOutput(int i);
-    void addInput(SnpPort *port);
-    void addOutput(SnpPort *port);
+    SnpPort *getInputPort(int i);
+    SnpPort *getOutputPort(int i);
+    void addInputPort(SnpPort *port);
+    void addOutputPort(SnpPort *port);
 
 private:
-    std::vector<SnpPort*> input;
-    std::vector<SnpPort*> output;
+    std::vector<SnpPort*> inputPorts;
+    std::vector<SnpPort*> outputPorts;
     bool enabled;
 };
 

@@ -24,19 +24,16 @@ if(MMALH264_FOUND)
 endif(MMALH264_FOUND)
 
 include_directories(
-        src
-        LIBWEBSOCKETS_INCLUDE_DIR
+    src
+    LIBWEBSOCKETS_INCLUDE_DIR
 )
 
 add_executable(snpserver
     main.cpp
     src/network/snappyv1.pb.cc
-    src/network/SnpProtocol.cpp
     src/network/SnpClient.cpp
     src/network/SnpSocket.cpp
     src/util/loguru.cpp
-    src/network/SnpProtocol.cpp
-    src/network/SnpProtocol.h
     # stream
     src/stream/SnpComponent.cpp
     src/stream/SnpPort.cpp
@@ -44,6 +41,7 @@ add_executable(snpserver
     src/stream/video/SnpSourceModesetting.cpp
     # input stream
     src/stream/input/SnpSinkMouse.cpp
+    src/stream/input/keymap_atset1_linux.c
     src/stream/input/SnpSinkKeyboard.cpp
     # network sink/source
     src/stream/network/SnpSourceNetwork.cpp

@@ -14,9 +14,9 @@ SnpSinkMouse::SnpSinkMouse(const SnpSinkMouseOptions &options) : SnpComponent(op
     height = options.height;
     previousButtonMask = 0;
 
-    addInput(new SnpPort());
+    addInputPort(new SnpPort());
 
-    getInput(0)->setOnDataCb(std::bind(&SnpSinkMouse::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkMouse::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
 SnpSinkMouse::~SnpSinkMouse() {

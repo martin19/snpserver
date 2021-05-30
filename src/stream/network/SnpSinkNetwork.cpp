@@ -2,13 +2,13 @@
 
 #define SNP_SINK_NETWORK_BUFFER_SIZE 500000
 
-SnpSinkNetwork::SnpSinkNetwork(const SnpSinkNetworkOptions &options) : SnpSink(options) {
+SnpSinkNetwork::SnpSinkNetwork(const SnpSinkNetworkOptions &options) : SnpComponent(options) {
     streamId = options.streamId;
     client = options.client;
 
-    addInput(new SnpPort());
+    addInputPort(new SnpPort());
 
-    getInput(0)->setOnDataCb(std::bind(&SnpSinkNetwork::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkNetwork::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
     buffer.reserve(SNP_SINK_NETWORK_BUFFER_SIZE);
 }

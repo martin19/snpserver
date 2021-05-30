@@ -12,13 +12,13 @@ void SnpPort::init() {
 //TODO
 }
 
-bool SnpPort::connect(SnpPort *portFrom, SnpPort *portTo) {
-    portTo->setOnDataCb(portFrom->onDataCb);
+bool SnpPort::connect(SnpPort *sourcePort, SnpPort *targetPort) {
+    sourcePort->targetPort = targetPort;
 
-    portTo->device = portFrom->device;
-    portTo->deviceFd = portFrom->deviceFd;
-    portTo->dmaBuf = portFrom->dmaBuf;
-    portTo->dmaBufFd = portFrom->dmaBufFd;
+    targetPort->device = sourcePort->device;
+    targetPort->deviceFd = sourcePort->deviceFd;
+    targetPort->dmaBuf = sourcePort->dmaBuf;
+    targetPort->dmaBufFd = sourcePort->dmaBufFd;
 }
 
 bool SnpPort::initMmap() {

@@ -10,12 +10,10 @@ SnpEncoderMmalH264::SnpEncoderMmalH264(const SnpEncoderMmalH264Options &options)
     height = options.height;
     bpp = options.bpp;
 
-    addInput(new SnpPort());
-    addOutput(new SnpPort());
+    addInputPort(new SnpPort());
+    addOutputPort(new SnpPort());
 
-    getInput(0)->setOnDataCb(std::bind(&SnpEncoderMmalH264::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-
-    mmalEncoderInit();
+    getInputPort(0)->setOnDataCb(std::bind(&SnpEncoderMmalH264::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
 SnpEncoderMmalH264::~SnpEncoderMmalH264() {
@@ -24,6 +22,15 @@ SnpEncoderMmalH264::~SnpEncoderMmalH264() {
 
 void SnpEncoderMmalH264::onInputData(const uint8_t *data, int len, bool complete) {
     mmalEncoderEncode();
+}
+
+void SnpEncoderMmalH264::setEnabled(bool enabled) {
+    SnpComponent::setEnabled(enabled);
+    if(enabled) {
+        mmalEncoderInit();
+    } else {
+        mmalEncoderDestroy();
+    }
 }
 
 void SnpEncoderMmalH264::mmalControlCallback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer) {
@@ -59,7 +66,7 @@ uint8_t *SnpEncoderMmalH264::mmalDmaBufAllocator(MMAL_PORT_T *port, uint32_t pay
     unsigned int vcsm_handle = 0;
     unsigned int vc_opaque_handle = 0;
     auto *ctx = (SnpEncoderMmalH264 *) port->userdata;
-    SnpPort *inputPort = ctx->getInput(0);
+    SnpPort *inputPort = ctx->getInputPort(0);
 
     if(vcsm_init() != 0) {
         fprintf(stderr, "Cannot init vcsm (vcsm_init)\n");
@@ -255,6 +262,7 @@ void SnpEncoderMmalH264::mmalEncoderCleanup() {/* Cleanup everything */
 }
 
 bool SnpEncoderMmalH264::mmalEncoderEncode() {
+    printf("encode\n");
     MMAL_STATUS_T status = MMAL_SUCCESS;
     MMAL_BUFFER_HEADER_T *bufferHeader;
 
@@ -289,11 +297,11 @@ error:
 }
 
 void SnpEncoderMmalH264::mmalOnFrameCallback(MMAL_BUFFER_HEADER_T *bufferHeader) {
-    SnpPort *outputPort = this->getOutput(0);
+    SnpPort *outputPort = this->getOutputPort(0);
     if(bufferHeader->flags & MMAL_BUFFER_HEADER_FLAG_NAL_END) {
-        outputPort->onDataCb(bufferHeader->data, bufferHeader->length, true);
+        outputPort->onData(bufferHeader->data, bufferHeader->length, true);
     } else {
-        outputPort->onDataCb(bufferHeader->data, bufferHeader->length, false);
+        outputPort->onData(bufferHeader->data, bufferHeader->length, false);
     }
 }
 
