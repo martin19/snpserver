@@ -207,14 +207,12 @@ enum EncoderType : int {
   ENCODER_TYPE_H264_HARDWARE = 1,
   ENCODER_TYPE_MP3_SOFTWARE = 2,
   ENCODER_TYPE_MP3_HARDWARE = 3,
-  ENCODER_TYPE_KEYBOARD = 4,
-  ENCODER_TYPE_MOUSE = 5,
   EncoderType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
   EncoderType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
 bool EncoderType_IsValid(int value);
 constexpr EncoderType EncoderType_MIN = ENCODER_TYPE_H264_SOFTWARE;
-constexpr EncoderType EncoderType_MAX = ENCODER_TYPE_MOUSE;
+constexpr EncoderType EncoderType_MAX = ENCODER_TYPE_MP3_HARDWARE;
 constexpr int EncoderType_ARRAYSIZE = EncoderType_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* EncoderType_descriptor();
@@ -947,12 +945,12 @@ class Parameter final :
   static const Parameter& default_instance() {
     return *internal_default_instance();
   }
-  enum ParamValueCase {
+  enum ValueCase {
     kValueString = 3,
     kValueBool = 4,
     kValueUint32 = 5,
     kValueDouble = 6,
-    PARAM_VALUE_NOT_SET = 0,
+    VALUE_NOT_SET = 0,
   };
 
   static inline const Parameter* internal_default_instance() {
@@ -1029,34 +1027,34 @@ class Parameter final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kParamKeyFieldNumber = 2,
-    kParamTypeFieldNumber = 1,
+    kKeyFieldNumber = 2,
+    kTypeFieldNumber = 1,
     kValueStringFieldNumber = 3,
     kValueBoolFieldNumber = 4,
     kValueUint32FieldNumber = 5,
     kValueDoubleFieldNumber = 6,
   };
-  // string param_key = 2;
-  void clear_param_key();
-  const std::string& param_key() const;
+  // string key = 2;
+  void clear_key();
+  const std::string& key() const;
   template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_param_key(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_param_key();
-  PROTOBUF_FUTURE_MUST_USE_RESULT std::string* release_param_key();
-  void set_allocated_param_key(std::string* param_key);
+  void set_key(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_key();
+  PROTOBUF_FUTURE_MUST_USE_RESULT std::string* release_key();
+  void set_allocated_key(std::string* key);
   private:
-  const std::string& _internal_param_key() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_param_key(const std::string& value);
-  std::string* _internal_mutable_param_key();
+  const std::string& _internal_key() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_key(const std::string& value);
+  std::string* _internal_mutable_key();
   public:
 
-  // .snappyv1.ParameterType param_type = 1;
-  void clear_param_type();
-  ::snappyv1::ParameterType param_type() const;
-  void set_param_type(::snappyv1::ParameterType value);
+  // .snappyv1.ParameterType type = 1;
+  void clear_type();
+  ::snappyv1::ParameterType type() const;
+  void set_type(::snappyv1::ParameterType value);
   private:
-  ::snappyv1::ParameterType _internal_param_type() const;
-  void _internal_set_param_type(::snappyv1::ParameterType value);
+  ::snappyv1::ParameterType _internal_type() const;
+  void _internal_set_type(::snappyv1::ParameterType value);
   public:
 
   // .snappyv1.Parameter.ValueString value_string = 3;
@@ -1131,8 +1129,8 @@ class Parameter final :
       ::snappyv1::Parameter_ValueDouble* value_double);
   ::snappyv1::Parameter_ValueDouble* unsafe_arena_release_value_double();
 
-  void clear_param_value();
-  ParamValueCase param_value_case() const;
+  void clear_value();
+  ValueCase value_case() const;
   // @@protoc_insertion_point(class_scope:snappyv1.Parameter)
  private:
   class _Internal;
@@ -1141,22 +1139,22 @@ class Parameter final :
   void set_has_value_uint32();
   void set_has_value_double();
 
-  inline bool has_param_value() const;
-  inline void clear_has_param_value();
+  inline bool has_value() const;
+  inline void clear_has_value();
 
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr param_key_;
-  int param_type_;
-  union ParamValueUnion {
-    constexpr ParamValueUnion() : _constinit_{} {}
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr key_;
+  int type_;
+  union ValueUnion {
+    constexpr ValueUnion() : _constinit_{} {}
       ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized _constinit_;
     ::snappyv1::Parameter_ValueString* value_string_;
     ::snappyv1::Parameter_ValueBool* value_bool_;
     ::snappyv1::Parameter_ValueUint32* value_uint32_;
     ::snappyv1::Parameter_ValueDouble* value_double_;
-  } param_value_;
+  } value_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   ::PROTOBUF_NAMESPACE_ID::uint32 _oneof_case_[1];
 
@@ -3085,74 +3083,74 @@ inline void Parameter_ValueDouble::set_max(double value) {
 
 // Parameter
 
-// .snappyv1.ParameterType param_type = 1;
-inline void Parameter::clear_param_type() {
-  param_type_ = 0;
+// .snappyv1.ParameterType type = 1;
+inline void Parameter::clear_type() {
+  type_ = 0;
 }
-inline ::snappyv1::ParameterType Parameter::_internal_param_type() const {
-  return static_cast< ::snappyv1::ParameterType >(param_type_);
+inline ::snappyv1::ParameterType Parameter::_internal_type() const {
+  return static_cast< ::snappyv1::ParameterType >(type_);
 }
-inline ::snappyv1::ParameterType Parameter::param_type() const {
-  // @@protoc_insertion_point(field_get:snappyv1.Parameter.param_type)
-  return _internal_param_type();
+inline ::snappyv1::ParameterType Parameter::type() const {
+  // @@protoc_insertion_point(field_get:snappyv1.Parameter.type)
+  return _internal_type();
 }
-inline void Parameter::_internal_set_param_type(::snappyv1::ParameterType value) {
+inline void Parameter::_internal_set_type(::snappyv1::ParameterType value) {
   
-  param_type_ = value;
+  type_ = value;
 }
-inline void Parameter::set_param_type(::snappyv1::ParameterType value) {
-  _internal_set_param_type(value);
-  // @@protoc_insertion_point(field_set:snappyv1.Parameter.param_type)
+inline void Parameter::set_type(::snappyv1::ParameterType value) {
+  _internal_set_type(value);
+  // @@protoc_insertion_point(field_set:snappyv1.Parameter.type)
 }
 
-// string param_key = 2;
-inline void Parameter::clear_param_key() {
-  param_key_.ClearToEmpty();
+// string key = 2;
+inline void Parameter::clear_key() {
+  key_.ClearToEmpty();
 }
-inline const std::string& Parameter::param_key() const {
-  // @@protoc_insertion_point(field_get:snappyv1.Parameter.param_key)
-  return _internal_param_key();
+inline const std::string& Parameter::key() const {
+  // @@protoc_insertion_point(field_get:snappyv1.Parameter.key)
+  return _internal_key();
 }
 template <typename ArgT0, typename... ArgT>
 inline PROTOBUF_ALWAYS_INLINE
-void Parameter::set_param_key(ArgT0&& arg0, ArgT... args) {
+void Parameter::set_key(ArgT0&& arg0, ArgT... args) {
  
- param_key_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:snappyv1.Parameter.param_key)
+ key_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:snappyv1.Parameter.key)
 }
-inline std::string* Parameter::mutable_param_key() {
-  // @@protoc_insertion_point(field_mutable:snappyv1.Parameter.param_key)
-  return _internal_mutable_param_key();
+inline std::string* Parameter::mutable_key() {
+  // @@protoc_insertion_point(field_mutable:snappyv1.Parameter.key)
+  return _internal_mutable_key();
 }
-inline const std::string& Parameter::_internal_param_key() const {
-  return param_key_.Get();
+inline const std::string& Parameter::_internal_key() const {
+  return key_.Get();
 }
-inline void Parameter::_internal_set_param_key(const std::string& value) {
+inline void Parameter::_internal_set_key(const std::string& value) {
   
-  param_key_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+  key_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
 }
-inline std::string* Parameter::_internal_mutable_param_key() {
+inline std::string* Parameter::_internal_mutable_key() {
   
-  return param_key_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+  return key_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
 }
-inline std::string* Parameter::release_param_key() {
-  // @@protoc_insertion_point(field_release:snappyv1.Parameter.param_key)
-  return param_key_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+inline std::string* Parameter::release_key() {
+  // @@protoc_insertion_point(field_release:snappyv1.Parameter.key)
+  return key_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
 }
-inline void Parameter::set_allocated_param_key(std::string* param_key) {
-  if (param_key != nullptr) {
+inline void Parameter::set_allocated_key(std::string* key) {
+  if (key != nullptr) {
     
   } else {
     
   }
-  param_key_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), param_key,
+  key_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), key,
       GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set_allocated:snappyv1.Parameter.param_key)
+  // @@protoc_insertion_point(field_set_allocated:snappyv1.Parameter.key)
 }
 
 // .snappyv1.Parameter.ValueString value_string = 3;
 inline bool Parameter::_internal_has_value_string() const {
-  return param_value_case() == kValueString;
+  return value_case() == kValueString;
 }
 inline bool Parameter::has_value_string() const {
   return _internal_has_value_string();
@@ -3163,20 +3161,20 @@ inline void Parameter::set_has_value_string() {
 inline void Parameter::clear_value_string() {
   if (_internal_has_value_string()) {
     if (GetArenaForAllocation() == nullptr) {
-      delete param_value_.value_string_;
+      delete value_.value_string_;
     }
-    clear_has_param_value();
+    clear_has_value();
   }
 }
 inline ::snappyv1::Parameter_ValueString* Parameter::release_value_string() {
   // @@protoc_insertion_point(field_release:snappyv1.Parameter.value_string)
   if (_internal_has_value_string()) {
-    clear_has_param_value();
-      ::snappyv1::Parameter_ValueString* temp = param_value_.value_string_;
+    clear_has_value();
+      ::snappyv1::Parameter_ValueString* temp = value_.value_string_;
     if (GetArenaForAllocation() != nullptr) {
       temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
     }
-    param_value_.value_string_ = nullptr;
+    value_.value_string_ = nullptr;
     return temp;
   } else {
     return nullptr;
@@ -3184,7 +3182,7 @@ inline ::snappyv1::Parameter_ValueString* Parameter::release_value_string() {
 }
 inline const ::snappyv1::Parameter_ValueString& Parameter::_internal_value_string() const {
   return _internal_has_value_string()
-      ? *param_value_.value_string_
+      ? *value_.value_string_
       : reinterpret_cast< ::snappyv1::Parameter_ValueString&>(::snappyv1::_Parameter_ValueString_default_instance_);
 }
 inline const ::snappyv1::Parameter_ValueString& Parameter::value_string() const {
@@ -3194,29 +3192,29 @@ inline const ::snappyv1::Parameter_ValueString& Parameter::value_string() const 
 inline ::snappyv1::Parameter_ValueString* Parameter::unsafe_arena_release_value_string() {
   // @@protoc_insertion_point(field_unsafe_arena_release:snappyv1.Parameter.value_string)
   if (_internal_has_value_string()) {
-    clear_has_param_value();
-    ::snappyv1::Parameter_ValueString* temp = param_value_.value_string_;
-    param_value_.value_string_ = nullptr;
+    clear_has_value();
+    ::snappyv1::Parameter_ValueString* temp = value_.value_string_;
+    value_.value_string_ = nullptr;
     return temp;
   } else {
     return nullptr;
   }
 }
 inline void Parameter::unsafe_arena_set_allocated_value_string(::snappyv1::Parameter_ValueString* value_string) {
-  clear_param_value();
+  clear_value();
   if (value_string) {
     set_has_value_string();
-    param_value_.value_string_ = value_string;
+    value_.value_string_ = value_string;
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:snappyv1.Parameter.value_string)
 }
 inline ::snappyv1::Parameter_ValueString* Parameter::_internal_mutable_value_string() {
   if (!_internal_has_value_string()) {
-    clear_param_value();
+    clear_value();
     set_has_value_string();
-    param_value_.value_string_ = CreateMaybeMessage< ::snappyv1::Parameter_ValueString >(GetArenaForAllocation());
+    value_.value_string_ = CreateMaybeMessage< ::snappyv1::Parameter_ValueString >(GetArenaForAllocation());
   }
-  return param_value_.value_string_;
+  return value_.value_string_;
 }
 inline ::snappyv1::Parameter_ValueString* Parameter::mutable_value_string() {
   // @@protoc_insertion_point(field_mutable:snappyv1.Parameter.value_string)
@@ -3225,7 +3223,7 @@ inline ::snappyv1::Parameter_ValueString* Parameter::mutable_value_string() {
 
 // .snappyv1.Parameter.ValueBool value_bool = 4;
 inline bool Parameter::_internal_has_value_bool() const {
-  return param_value_case() == kValueBool;
+  return value_case() == kValueBool;
 }
 inline bool Parameter::has_value_bool() const {
   return _internal_has_value_bool();
@@ -3236,20 +3234,20 @@ inline void Parameter::set_has_value_bool() {
 inline void Parameter::clear_value_bool() {
   if (_internal_has_value_bool()) {
     if (GetArenaForAllocation() == nullptr) {
-      delete param_value_.value_bool_;
+      delete value_.value_bool_;
     }
-    clear_has_param_value();
+    clear_has_value();
   }
 }
 inline ::snappyv1::Parameter_ValueBool* Parameter::release_value_bool() {
   // @@protoc_insertion_point(field_release:snappyv1.Parameter.value_bool)
   if (_internal_has_value_bool()) {
-    clear_has_param_value();
-      ::snappyv1::Parameter_ValueBool* temp = param_value_.value_bool_;
+    clear_has_value();
+      ::snappyv1::Parameter_ValueBool* temp = value_.value_bool_;
     if (GetArenaForAllocation() != nullptr) {
       temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
     }
-    param_value_.value_bool_ = nullptr;
+    value_.value_bool_ = nullptr;
     return temp;
   } else {
     return nullptr;
@@ -3257,7 +3255,7 @@ inline ::snappyv1::Parameter_ValueBool* Parameter::release_value_bool() {
 }
 inline const ::snappyv1::Parameter_ValueBool& Parameter::_internal_value_bool() const {
   return _internal_has_value_bool()
-      ? *param_value_.value_bool_
+      ? *value_.value_bool_
       : reinterpret_cast< ::snappyv1::Parameter_ValueBool&>(::snappyv1::_Parameter_ValueBool_default_instance_);
 }
 inline const ::snappyv1::Parameter_ValueBool& Parameter::value_bool() const {
@@ -3267,29 +3265,29 @@ inline const ::snappyv1::Parameter_ValueBool& Parameter::value_bool() const {
 inline ::snappyv1::Parameter_ValueBool* Parameter::unsafe_arena_release_value_bool() {
   // @@protoc_insertion_point(field_unsafe_arena_release:snappyv1.Parameter.value_bool)
   if (_internal_has_value_bool()) {
-    clear_has_param_value();
-    ::snappyv1::Parameter_ValueBool* temp = param_value_.value_bool_;
-    param_value_.value_bool_ = nullptr;
+    clear_has_value();
+    ::snappyv1::Parameter_ValueBool* temp = value_.value_bool_;
+    value_.value_bool_ = nullptr;
     return temp;
   } else {
     return nullptr;
   }
 }
 inline void Parameter::unsafe_arena_set_allocated_value_bool(::snappyv1::Parameter_ValueBool* value_bool) {
-  clear_param_value();
+  clear_value();
   if (value_bool) {
     set_has_value_bool();
-    param_value_.value_bool_ = value_bool;
+    value_.value_bool_ = value_bool;
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:snappyv1.Parameter.value_bool)
 }
 inline ::snappyv1::Parameter_ValueBool* Parameter::_internal_mutable_value_bool() {
   if (!_internal_has_value_bool()) {
-    clear_param_value();
+    clear_value();
     set_has_value_bool();
-    param_value_.value_bool_ = CreateMaybeMessage< ::snappyv1::Parameter_ValueBool >(GetArenaForAllocation());
+    value_.value_bool_ = CreateMaybeMessage< ::snappyv1::Parameter_ValueBool >(GetArenaForAllocation());
   }
-  return param_value_.value_bool_;
+  return value_.value_bool_;
 }
 inline ::snappyv1::Parameter_ValueBool* Parameter::mutable_value_bool() {
   // @@protoc_insertion_point(field_mutable:snappyv1.Parameter.value_bool)
@@ -3298,7 +3296,7 @@ inline ::snappyv1::Parameter_ValueBool* Parameter::mutable_value_bool() {
 
 // .snappyv1.Parameter.ValueUint32 value_uint32 = 5;
 inline bool Parameter::_internal_has_value_uint32() const {
-  return param_value_case() == kValueUint32;
+  return value_case() == kValueUint32;
 }
 inline bool Parameter::has_value_uint32() const {
   return _internal_has_value_uint32();
@@ -3309,20 +3307,20 @@ inline void Parameter::set_has_value_uint32() {
 inline void Parameter::clear_value_uint32() {
   if (_internal_has_value_uint32()) {
     if (GetArenaForAllocation() == nullptr) {
-      delete param_value_.value_uint32_;
+      delete value_.value_uint32_;
     }
-    clear_has_param_value();
+    clear_has_value();
   }
 }
 inline ::snappyv1::Parameter_ValueUint32* Parameter::release_value_uint32() {
   // @@protoc_insertion_point(field_release:snappyv1.Parameter.value_uint32)
   if (_internal_has_value_uint32()) {
-    clear_has_param_value();
-      ::snappyv1::Parameter_ValueUint32* temp = param_value_.value_uint32_;
+    clear_has_value();
+      ::snappyv1::Parameter_ValueUint32* temp = value_.value_uint32_;
     if (GetArenaForAllocation() != nullptr) {
       temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
     }
-    param_value_.value_uint32_ = nullptr;
+    value_.value_uint32_ = nullptr;
     return temp;
   } else {
     return nullptr;
@@ -3330,7 +3328,7 @@ inline ::snappyv1::Parameter_ValueUint32* Parameter::release_value_uint32() {
 }
 inline const ::snappyv1::Parameter_ValueUint32& Parameter::_internal_value_uint32() const {
   return _internal_has_value_uint32()
-      ? *param_value_.value_uint32_
+      ? *value_.value_uint32_
       : reinterpret_cast< ::snappyv1::Parameter_ValueUint32&>(::snappyv1::_Parameter_ValueUint32_default_instance_);
 }
 inline const ::snappyv1::Parameter_ValueUint32& Parameter::value_uint32() const {
@@ -3340,29 +3338,29 @@ inline const ::snappyv1::Parameter_ValueUint32& Parameter::value_uint32() const 
 inline ::snappyv1::Parameter_ValueUint32* Parameter::unsafe_arena_release_value_uint32() {
   // @@protoc_insertion_point(field_unsafe_arena_release:snappyv1.Parameter.value_uint32)
   if (_internal_has_value_uint32()) {
-    clear_has_param_value();
-    ::snappyv1::Parameter_ValueUint32* temp = param_value_.value_uint32_;
-    param_value_.value_uint32_ = nullptr;
+    clear_has_value();
+    ::snappyv1::Parameter_ValueUint32* temp = value_.value_uint32_;
+    value_.value_uint32_ = nullptr;
     return temp;
   } else {
     return nullptr;
   }
 }
 inline void Parameter::unsafe_arena_set_allocated_value_uint32(::snappyv1::Parameter_ValueUint32* value_uint32) {
-  clear_param_value();
+  clear_value();
   if (value_uint32) {
     set_has_value_uint32();
-    param_value_.value_uint32_ = value_uint32;
+    value_.value_uint32_ = value_uint32;
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:snappyv1.Parameter.value_uint32)
 }
 inline ::snappyv1::Parameter_ValueUint32* Parameter::_internal_mutable_value_uint32() {
   if (!_internal_has_value_uint32()) {
-    clear_param_value();
+    clear_value();
     set_has_value_uint32();
-    param_value_.value_uint32_ = CreateMaybeMessage< ::snappyv1::Parameter_ValueUint32 >(GetArenaForAllocation());
+    value_.value_uint32_ = CreateMaybeMessage< ::snappyv1::Parameter_ValueUint32 >(GetArenaForAllocation());
   }
-  return param_value_.value_uint32_;
+  return value_.value_uint32_;
 }
 inline ::snappyv1::Parameter_ValueUint32* Parameter::mutable_value_uint32() {
   // @@protoc_insertion_point(field_mutable:snappyv1.Parameter.value_uint32)
@@ -3371,7 +3369,7 @@ inline ::snappyv1::Parameter_ValueUint32* Parameter::mutable_value_uint32() {
 
 // .snappyv1.Parameter.ValueDouble value_double = 6;
 inline bool Parameter::_internal_has_value_double() const {
-  return param_value_case() == kValueDouble;
+  return value_case() == kValueDouble;
 }
 inline bool Parameter::has_value_double() const {
   return _internal_has_value_double();
@@ -3382,20 +3380,20 @@ inline void Parameter::set_has_value_double() {
 inline void Parameter::clear_value_double() {
   if (_internal_has_value_double()) {
     if (GetArenaForAllocation() == nullptr) {
-      delete param_value_.value_double_;
+      delete value_.value_double_;
     }
-    clear_has_param_value();
+    clear_has_value();
   }
 }
 inline ::snappyv1::Parameter_ValueDouble* Parameter::release_value_double() {
   // @@protoc_insertion_point(field_release:snappyv1.Parameter.value_double)
   if (_internal_has_value_double()) {
-    clear_has_param_value();
-      ::snappyv1::Parameter_ValueDouble* temp = param_value_.value_double_;
+    clear_has_value();
+      ::snappyv1::Parameter_ValueDouble* temp = value_.value_double_;
     if (GetArenaForAllocation() != nullptr) {
       temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
     }
-    param_value_.value_double_ = nullptr;
+    value_.value_double_ = nullptr;
     return temp;
   } else {
     return nullptr;
@@ -3403,7 +3401,7 @@ inline ::snappyv1::Parameter_ValueDouble* Parameter::release_value_double() {
 }
 inline const ::snappyv1::Parameter_ValueDouble& Parameter::_internal_value_double() const {
   return _internal_has_value_double()
-      ? *param_value_.value_double_
+      ? *value_.value_double_
       : reinterpret_cast< ::snappyv1::Parameter_ValueDouble&>(::snappyv1::_Parameter_ValueDouble_default_instance_);
 }
 inline const ::snappyv1::Parameter_ValueDouble& Parameter::value_double() const {
@@ -3413,43 +3411,43 @@ inline const ::snappyv1::Parameter_ValueDouble& Parameter::value_double() const 
 inline ::snappyv1::Parameter_ValueDouble* Parameter::unsafe_arena_release_value_double() {
   // @@protoc_insertion_point(field_unsafe_arena_release:snappyv1.Parameter.value_double)
   if (_internal_has_value_double()) {
-    clear_has_param_value();
-    ::snappyv1::Parameter_ValueDouble* temp = param_value_.value_double_;
-    param_value_.value_double_ = nullptr;
+    clear_has_value();
+    ::snappyv1::Parameter_ValueDouble* temp = value_.value_double_;
+    value_.value_double_ = nullptr;
     return temp;
   } else {
     return nullptr;
   }
 }
 inline void Parameter::unsafe_arena_set_allocated_value_double(::snappyv1::Parameter_ValueDouble* value_double) {
-  clear_param_value();
+  clear_value();
   if (value_double) {
     set_has_value_double();
-    param_value_.value_double_ = value_double;
+    value_.value_double_ = value_double;
   }
   // @@protoc_insertion_point(field_unsafe_arena_set_allocated:snappyv1.Parameter.value_double)
 }
 inline ::snappyv1::Parameter_ValueDouble* Parameter::_internal_mutable_value_double() {
   if (!_internal_has_value_double()) {
-    clear_param_value();
+    clear_value();
     set_has_value_double();
-    param_value_.value_double_ = CreateMaybeMessage< ::snappyv1::Parameter_ValueDouble >(GetArenaForAllocation());
+    value_.value_double_ = CreateMaybeMessage< ::snappyv1::Parameter_ValueDouble >(GetArenaForAllocation());
   }
-  return param_value_.value_double_;
+  return value_.value_double_;
 }
 inline ::snappyv1::Parameter_ValueDouble* Parameter::mutable_value_double() {
   // @@protoc_insertion_point(field_mutable:snappyv1.Parameter.value_double)
   return _internal_mutable_value_double();
 }
 
-inline bool Parameter::has_param_value() const {
-  return param_value_case() != PARAM_VALUE_NOT_SET;
+inline bool Parameter::has_value() const {
+  return value_case() != VALUE_NOT_SET;
 }
-inline void Parameter::clear_has_param_value() {
-  _oneof_case_[0] = PARAM_VALUE_NOT_SET;
+inline void Parameter::clear_has_value() {
+  _oneof_case_[0] = VALUE_NOT_SET;
 }
-inline Parameter::ParamValueCase Parameter::param_value_case() const {
-  return Parameter::ParamValueCase(_oneof_case_[0]);
+inline Parameter::ValueCase Parameter::value_case() const {
+  return Parameter::ValueCase(_oneof_case_[0]);
 }
 // -------------------------------------------------------------------
 

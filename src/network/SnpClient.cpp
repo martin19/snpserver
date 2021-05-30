@@ -15,7 +15,6 @@ SnpClient::SnpClient(SnpSocket *server, struct lws *wsi) : server(server), wsi(w
 }
 
 SnpClient::~SnpClient() {
-    //TODO: cleanup fixed pipes
     if(fixedVideoPipe) {
         fixedVideoPipe->stop();
         for(auto & pComponent : fixedVideoPipe->getComponents()) {
@@ -71,60 +70,69 @@ void SnpClient::onStreamsChange(const snappyv1::StreamsChange &msg) {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Create a fixed video pipe
     {
-        SnpSourceModesettingOptions snpSourceModesettingOptions;
-        snpSourceModesettingOptions.device = "/dev/dri/card0";
-        snpSourceModesettingOptions.fps = 30;
-        auto *snpSourceModesetting = new SnpSourceModesetting(snpSourceModesettingOptions);
+        SnpSourceModesettingOptions sourceModesettingOptions;
+        sourceModesettingOptions.device = "/dev/dri/card0";
+        sourceModesettingOptions.fps = 30;
+        auto *sourceModesetting = new SnpSourceModesetting(sourceModesettingOptions);
         ///
-        SnpEncoderMmalH264Options snpEncoderMmalH264Options = {};
-        snpEncoderMmalH264Options.qp = 20;
-        auto *snpEncoderMmalH264 = new SnpEncoderMmalH264(snpEncoderMmalH264Options);
+        SnpEncoderMmalH264Options encoderMmalH264Options = {};
+        encoderMmalH264Options.qp = 20;
+        encoderMmalH264Options.width = sourceModesetting->width;
+        encoderMmalH264Options.height = sourceModesetting->height;
+        encoderMmalH264Options.bpp = sourceModesetting->bpp;
+        auto *encoderMmalH264 = new SnpEncoderMmalH264(encoderMmalH264Options);
         ///
-        SnpSinkNetworkOptions snpSinkNetworkOptions = {};
-        snpSinkNetworkOptions.client = this;
-        snpSinkNetworkOptions.streamId = 0;
-        auto *snpSinkNetwork = new SnpSinkNetwork(snpSinkNetworkOptions);
+        SnpSinkNetworkOptions sinkNetworkOptions = {};
+        sinkNetworkOptions.client = this;
+        sinkNetworkOptions.streamId = 0;
+        auto *sinkNetwork = new SnpSinkNetwork(sinkNetworkOptions);
 
-        SnpPort::connect(snpSourceModesetting->getOutput(0), snpEncoderMmalH264->getInput(0));
-        SnpPort::connect(snpEncoderMmalH264->getOutput(0), snpSinkNetwork->getInput(0));
+        SnpPort::connect(sourceModesetting->getOutputPort(0), encoderMmalH264->getInputPort(0));
+        SnpPort::connect(encoderMmalH264->getOutputPort(0), sinkNetwork->getInputPort(0));
 
         SnpPipeOptions videoPipeOptions = {};
         fixedVideoPipe = new SnpPipe(videoPipeOptions);
+        fixedVideoPipe->addComponent(sourceModesetting);
+        fixedVideoPipe->addComponent(encoderMmalH264);
+        fixedVideoPipe->addComponent(sinkNetwork);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Create a fixed mouse pipe (streamId=1)
     {
-        SnpSourceNetworkOptions snpSourceNetworkOptions = {};
-        snpSourceNetworkOptions.client = this;
-        snpSourceNetworkOptions.streamId = 1;
-        auto *snpSourceNetwork = new SnpSourceNetwork(snpSourceNetworkOptions);
-        SnpSinkMouseOptions snpSinkMouseOptions = {};
-        auto *snpSinkMouse = new SnpSinkMouse(snpSinkMouseOptions);
-        SnpPort::connect(snpSourceNetwork->getOutput(0), snpSinkMouse->getInput(0));
+        SnpSourceNetworkOptions sourceNetworkOptions = {};
+        sourceNetworkOptions.client = this;
+        sourceNetworkOptions.streamId = 1;
+        auto *sourceNetwork = new SnpSourceNetwork(sourceNetworkOptions);
+        SnpSinkMouseOptions sinkMouseOptions = {};
+        auto *snpSinkMouse = new SnpSinkMouse(sinkMouseOptions);
+        SnpPort::connect(sourceNetwork->getOutputPort(0), snpSinkMouse->getInputPort(0));
 
         SnpPipeOptions mousePipeOptions = {};
         fixedMousePipe = new SnpPipe(mousePipeOptions);
+        fixedMousePipe->addComponent(sourceNetwork);
+        fixedMousePipe->addComponent(snpSinkMouse);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Create a fixed keyboard pipe (streamId=2)
     {
-        SnpSourceNetworkOptions snpSourceNetworkOptions = {};
-        snpSourceNetworkOptions.client = this;
-        snpSourceNetworkOptions.streamId = 2;
-        auto *snpSourceNetwork = new SnpSourceNetwork(snpSourceNetworkOptions);
-        SnpSinkKeyboardOptions snpSinkKeyboardOptions = {};
-        auto *snpSinkKeyboard = new SnpSinkKeyboard(snpSinkKeyboardOptions);
-        SnpPort::connect(snpSourceNetwork->getOutput(0), snpSinkKeyboard->getInput(0));
+        SnpSourceNetworkOptions sourceNetworkOptions = {};
+        sourceNetworkOptions.client = this;
+        sourceNetworkOptions.streamId = 2;
+        auto *sourceNetwork = new SnpSourceNetwork(sourceNetworkOptions);
+        SnpSinkKeyboardOptions sinkKeyboardOptions = {};
+        auto *sinkKeyboard = new SnpSinkKeyboard(sinkKeyboardOptions);
+        SnpPort::connect(sourceNetwork->getOutputPort(0), sinkKeyboard->getInputPort(0));
 
         SnpPipeOptions mousePipeOptions = {};
         fixedKeyboardPipe = new SnpPipe(mousePipeOptions);
+        fixedKeyboardPipe->addComponent(sourceNetwork);
+        fixedKeyboardPipe->addComponent(sinkKeyboard);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     fixedVideoPipe->start();
     fixedMousePipe->start();
     fixedKeyboardPipe->start();
-    //TODO: kill pipes.
 }
 
 void SnpClient::setStreamListener(uint32_t streamId, StreamListener streamListener) {
@@ -146,9 +154,8 @@ void SnpClient::sendStreamData(uint32_t streamId, uint8_t *data, int len) {
     auto *streamData = new StreamData();
     streamData->set_payload(data, len);
     streamData->set_stream_id(streamId);
-    auto msg = new Message();
-    msg->set_type(snappyv1::MESSAGE_TYPE_STREAM_DATA);
-    msg->set_allocated_stream_data(streamData);
-    this->server->sendMessage(msg, wsi);
-    //TODO: msg should be freed or created as local variable? lookup protobuf docs
+    Message msg;
+    msg.set_type(snappyv1::MESSAGE_TYPE_STREAM_DATA);
+    msg.set_allocated_stream_data(streamData);
+    this->server->sendMessage(&msg, wsi);
 }

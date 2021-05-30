@@ -5,11 +5,12 @@
 #include <unistd.h>
 #include <memory.h>
 #include <network/snappyv1.pb.h>
-#include "keymap_atset1_linux.h"
+
+extern "C" unsigned short code_map_atset1_to_linux[57470];
 
 SnpSinkKeyboard::SnpSinkKeyboard(const SnpSinkKeyboardOptions &options) : SnpComponent(options) {
-    addInput(new SnpPort());
-    getInput(0)->setOnDataCb(std::bind(&SnpSinkKeyboard::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    addInputPort(new SnpPort());
+    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkKeyboard::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     initKeyboard();
 }
 

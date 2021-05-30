@@ -71,8 +71,8 @@ struct Parameter_ValueDoubleDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT Parameter_ValueDoubleDefaultTypeInternal _Parameter_ValueDouble_default_instance_;
 constexpr Parameter::Parameter(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : param_key_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
-  , param_type_(0)
+  : key_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , type_(0)
 
   , _oneof_case_{}{}
 struct ParameterDefaultTypeInternal {
@@ -274,13 +274,13 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_snappyv1_2eproto::offsets[] PR
   ~0u,  // no _extensions_
   PROTOBUF_FIELD_OFFSET(::snappyv1::Parameter, _oneof_case_[0]),
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::snappyv1::Parameter, param_type_),
-  PROTOBUF_FIELD_OFFSET(::snappyv1::Parameter, param_key_),
+  PROTOBUF_FIELD_OFFSET(::snappyv1::Parameter, type_),
+  PROTOBUF_FIELD_OFFSET(::snappyv1::Parameter, key_),
   ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
   ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
   ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
   ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
-  PROTOBUF_FIELD_OFFSET(::snappyv1::Parameter, param_value_),
+  PROTOBUF_FIELD_OFFSET(::snappyv1::Parameter, value_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::snappyv1::Source, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -408,76 +408,75 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 };
 
 const char descriptor_table_protodef_snappyv1_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
-  "\n\016snappyv1.proto\022\010snappyv1\"\230\004\n\tParameter"
-  "\022+\n\nparam_type\030\001 \001(\0162\027.snappyv1.Paramete"
-  "rType\022\021\n\tparam_key\030\002 \001(\t\0227\n\014value_string"
-  "\030\003 \001(\0132\037.snappyv1.Parameter.ValueStringH"
-  "\000\0223\n\nvalue_bool\030\004 \001(\0132\035.snappyv1.Paramet"
-  "er.ValueBoolH\000\0227\n\014value_uint32\030\005 \001(\0132\037.s"
-  "nappyv1.Parameter.ValueUint32H\000\0227\n\014value"
-  "_double\030\006 \001(\0132\037.snappyv1.Parameter.Value"
-  "DoubleH\000\032\034\n\013ValueString\022\r\n\005value\030\001 \001(\t\032\032"
-  "\n\tValueBool\022\r\n\005value\030\001 \001(\010\032P\n\013ValueUint3"
-  "2\022\r\n\005value\030\001 \001(\r\022\020\n\003min\030\002 \001(\rH\000\210\001\001\022\020\n\003ma"
-  "x\030\003 \001(\rH\001\210\001\001B\006\n\004_minB\006\n\004_max\032P\n\013ValueDou"
-  "ble\022\r\n\005value\030\001 \001(\001\022\020\n\003min\030\002 \001(\001H\000\210\001\001\022\020\n\003"
-  "max\030\003 \001(\001H\001\210\001\001B\006\n\004_minB\006\n\004_maxB\r\n\013param_"
-  "value\"\200\001\n\006Source\022\"\n\004type\030\001 \001(\0162\024.snappyv"
-  "1.SourceType\022)\n\010sub_type\030\002 \001(\0162\027.snappyv"
-  "1.SourceSubType\022\'\n\nparameters\030\003 \003(\0132\023.sn"
-  "appyv1.Parameter\"W\n\007Encoder\022#\n\004type\030\001 \001("
-  "\0162\025.snappyv1.EncoderType\022\'\n\nparameters\030\002"
-  " \003(\0132\023.snappyv1.Parameter\"\216\001\n\nServerInfo"
-  "\022$\n\010platform\030\001 \001(\0162\022.snappyv1.Platform\022+"
-  "\n\021available_sources\030\003 \003(\0132\020.snappyv1.Sou"
-  "rce\022-\n\022available_encoders\030\004 \003(\0132\021.snappy"
-  "v1.Encoder\"\377\001\n\rStreamsChange\0225\n\007streams\030"
-  "\002 \003(\0132$.snappyv1.StreamsChange.StreamCha"
-  "nge\032\266\001\n\014StreamChange\022\n\n\002id\030\001 \001(\r\022%\n\006sour"
-  "ce\030\002 \001(\0132\020.snappyv1.SourceH\000\210\001\001\022\'\n\007encod"
-  "er\030\003 \001(\0132\021.snappyv1.EncoderH\001\210\001\001\022\'\n\007comm"
-  "and\030\004 \001(\0162\021.snappyv1.CommandH\002\210\001\001B\t\n\007_so"
-  "urceB\n\n\010_encoderB\n\n\010_command\"\244\001\n\020StreamS"
-  "tatistics\022\022\n\nlast_frame\030\001 \001(\r\022\030\n\020average"
-  "_frame_qp\030\002 \001(\r\022\032\n\022encode_ts_start_ms\030\003 "
-  "\001(\r\022\030\n\020encode_ts_end_ms\030\004 \001(\r\022\026\n\016tx_ts_s"
-  "tart_ms\030\005 \001(\r\022\024\n\014tx_ts_end_ms\030\006 \001(\r\"0\n\nS"
-  "treamData\022\021\n\tstream_id\030\001 \001(\r\022\017\n\007payload\030"
-  "\002 \001(\014\"\305\001\n\007Message\022#\n\004type\030\001 \001(\0162\025.snappy"
-  "v1.MessageType\022+\n\013server_info\030\002 \001(\0132\024.sn"
-  "appyv1.ServerInfoH\000\0220\n\rstream_change\030\003 \001"
-  "(\0132\027.snappyv1.StreamsChangeH\000\022+\n\013stream_"
-  "data\030\004 \001(\0132\024.snappyv1.StreamDataH\000B\t\n\007me"
-  "ssage\"K\n\021StreamDataPointer\022\014\n\004absx\030\001 \001(\r"
-  "\022\014\n\004absy\030\002 \001(\r\022\021\n\004mask\030\003 \001(\005H\000\210\001\001B\007\n\005_ma"
-  "sk\"C\n\022StreamDataKeyboard\022\016\n\006keysym\030\001 \001(\r"
-  "\022\017\n\007keycode\030\002 \001(\r\022\014\n\004down\030\003 \001(\010*v\n\010Platf"
-  "orm\022\024\n\020PLATFORM_WINDOWS\020\000\022\022\n\016PLATFORM_LI"
-  "NUX\020\001\022\022\n\016PLATFORM_MACOS\020\002\022\026\n\022PLATFORM_RA"
-  "SPBERRY\020\003\022\024\n\020PLATFORM_ANDROID\020\004*Q\n\nSourc"
-  "eType\022\025\n\021SOURCE_TYPE_VIDEO\020\000\022\025\n\021SOURCE_T"
-  "YPE_AUDIO\020\001\022\025\n\021SOURCE_TYPE_INPUT\020\002*\234\001\n\rS"
-  "ourceSubType\022\027\n\023SOURCE_SUB_TYPE_X11\020\000\022\033\n"
-  "\027SOURCE_SUB_TYPE_WAYLAND\020\001\022\032\n\026SOURCE_SUB"
-  "_TYPE_CAMERA\020\002\022\034\n\030SOURCE_SUB_TYPE_KEYBOA"
-  "RD\020\003\022\033\n\027SOURCE_SUB_TYPE_POINTER\020\004*\276\001\n\013En"
-  "coderType\022\036\n\032ENCODER_TYPE_H264_SOFTWARE\020"
-  "\000\022\036\n\032ENCODER_TYPE_H264_HARDWARE\020\001\022\035\n\031ENC"
-  "ODER_TYPE_MP3_SOFTWARE\020\002\022\035\n\031ENCODER_TYPE"
-  "_MP3_HARDWARE\020\003\022\031\n\025ENCODER_TYPE_KEYBOARD"
-  "\020\004\022\026\n\022ENCODER_TYPE_MOUSE\020\005*U\n\007Command\022\020\n"
-  "\014COMMAND_INIT\020\000\022\021\n\rCOMMAND_START\020\001\022\020\n\014CO"
-  "MMAND_STOP\020\002\022\023\n\017COMMAND_DESTROY\020\003*y\n\rPar"
-  "ameterType\022\031\n\025PARAMETER_TYPE_STRING\020\000\022\027\n"
-  "\023PARAMETER_TYPE_BOOL\020\001\022\031\n\025PARAMETER_TYPE"
-  "_UINT32\020\002\022\031\n\025PARAMETER_TYPE_DOUBLE\020\003*j\n\013"
-  "MessageType\022\034\n\030MESSAGE_TYPE_SERVER_INFO\020"
-  "\000\022\037\n\033MESSAGE_TYPE_STREAMS_CHANGE\020\001\022\034\n\030ME"
-  "SSAGE_TYPE_STREAM_DATA\020\002b\006proto3"
+  "\n\016snappyv1.proto\022\010snappyv1\"\206\004\n\tParameter"
+  "\022%\n\004type\030\001 \001(\0162\027.snappyv1.ParameterType\022"
+  "\013\n\003key\030\002 \001(\t\0227\n\014value_string\030\003 \001(\0132\037.sna"
+  "ppyv1.Parameter.ValueStringH\000\0223\n\nvalue_b"
+  "ool\030\004 \001(\0132\035.snappyv1.Parameter.ValueBool"
+  "H\000\0227\n\014value_uint32\030\005 \001(\0132\037.snappyv1.Para"
+  "meter.ValueUint32H\000\0227\n\014value_double\030\006 \001("
+  "\0132\037.snappyv1.Parameter.ValueDoubleH\000\032\034\n\013"
+  "ValueString\022\r\n\005value\030\001 \001(\t\032\032\n\tValueBool\022"
+  "\r\n\005value\030\001 \001(\010\032P\n\013ValueUint32\022\r\n\005value\030\001"
+  " \001(\r\022\020\n\003min\030\002 \001(\rH\000\210\001\001\022\020\n\003max\030\003 \001(\rH\001\210\001\001"
+  "B\006\n\004_minB\006\n\004_max\032P\n\013ValueDouble\022\r\n\005value"
+  "\030\001 \001(\001\022\020\n\003min\030\002 \001(\001H\000\210\001\001\022\020\n\003max\030\003 \001(\001H\001\210"
+  "\001\001B\006\n\004_minB\006\n\004_maxB\007\n\005value\"\200\001\n\006Source\022\""
+  "\n\004type\030\001 \001(\0162\024.snappyv1.SourceType\022)\n\010su"
+  "b_type\030\002 \001(\0162\027.snappyv1.SourceSubType\022\'\n"
+  "\nparameters\030\003 \003(\0132\023.snappyv1.Parameter\"W"
+  "\n\007Encoder\022#\n\004type\030\001 \001(\0162\025.snappyv1.Encod"
+  "erType\022\'\n\nparameters\030\002 \003(\0132\023.snappyv1.Pa"
+  "rameter\"\216\001\n\nServerInfo\022$\n\010platform\030\001 \001(\016"
+  "2\022.snappyv1.Platform\022+\n\021available_source"
+  "s\030\003 \003(\0132\020.snappyv1.Source\022-\n\022available_e"
+  "ncoders\030\004 \003(\0132\021.snappyv1.Encoder\"\377\001\n\rStr"
+  "eamsChange\0225\n\007streams\030\002 \003(\0132$.snappyv1.S"
+  "treamsChange.StreamChange\032\266\001\n\014StreamChan"
+  "ge\022\n\n\002id\030\001 \001(\r\022%\n\006source\030\002 \001(\0132\020.snappyv"
+  "1.SourceH\000\210\001\001\022\'\n\007encoder\030\003 \001(\0132\021.snappyv"
+  "1.EncoderH\001\210\001\001\022\'\n\007command\030\004 \001(\0162\021.snappy"
+  "v1.CommandH\002\210\001\001B\t\n\007_sourceB\n\n\010_encoderB\n"
+  "\n\010_command\"\244\001\n\020StreamStatistics\022\022\n\nlast_"
+  "frame\030\001 \001(\r\022\030\n\020average_frame_qp\030\002 \001(\r\022\032\n"
+  "\022encode_ts_start_ms\030\003 \001(\r\022\030\n\020encode_ts_e"
+  "nd_ms\030\004 \001(\r\022\026\n\016tx_ts_start_ms\030\005 \001(\r\022\024\n\014t"
+  "x_ts_end_ms\030\006 \001(\r\"0\n\nStreamData\022\021\n\tstrea"
+  "m_id\030\001 \001(\r\022\017\n\007payload\030\002 \001(\014\"\305\001\n\007Message\022"
+  "#\n\004type\030\001 \001(\0162\025.snappyv1.MessageType\022+\n\013"
+  "server_info\030\002 \001(\0132\024.snappyv1.ServerInfoH"
+  "\000\0220\n\rstream_change\030\003 \001(\0132\027.snappyv1.Stre"
+  "amsChangeH\000\022+\n\013stream_data\030\004 \001(\0132\024.snapp"
+  "yv1.StreamDataH\000B\t\n\007message\"K\n\021StreamDat"
+  "aPointer\022\014\n\004absx\030\001 \001(\r\022\014\n\004absy\030\002 \001(\r\022\021\n\004"
+  "mask\030\003 \001(\005H\000\210\001\001B\007\n\005_mask\"C\n\022StreamDataKe"
+  "yboard\022\016\n\006keysym\030\001 \001(\r\022\017\n\007keycode\030\002 \001(\r\022"
+  "\014\n\004down\030\003 \001(\010*v\n\010Platform\022\024\n\020PLATFORM_WI"
+  "NDOWS\020\000\022\022\n\016PLATFORM_LINUX\020\001\022\022\n\016PLATFORM_"
+  "MACOS\020\002\022\026\n\022PLATFORM_RASPBERRY\020\003\022\024\n\020PLATF"
+  "ORM_ANDROID\020\004*Q\n\nSourceType\022\025\n\021SOURCE_TY"
+  "PE_VIDEO\020\000\022\025\n\021SOURCE_TYPE_AUDIO\020\001\022\025\n\021SOU"
+  "RCE_TYPE_INPUT\020\002*\234\001\n\rSourceSubType\022\027\n\023SO"
+  "URCE_SUB_TYPE_X11\020\000\022\033\n\027SOURCE_SUB_TYPE_W"
+  "AYLAND\020\001\022\032\n\026SOURCE_SUB_TYPE_CAMERA\020\002\022\034\n\030"
+  "SOURCE_SUB_TYPE_KEYBOARD\020\003\022\033\n\027SOURCE_SUB"
+  "_TYPE_POINTER\020\004*\213\001\n\013EncoderType\022\036\n\032ENCOD"
+  "ER_TYPE_H264_SOFTWARE\020\000\022\036\n\032ENCODER_TYPE_"
+  "H264_HARDWARE\020\001\022\035\n\031ENCODER_TYPE_MP3_SOFT"
+  "WARE\020\002\022\035\n\031ENCODER_TYPE_MP3_HARDWARE\020\003*U\n"
+  "\007Command\022\020\n\014COMMAND_INIT\020\000\022\021\n\rCOMMAND_ST"
+  "ART\020\001\022\020\n\014COMMAND_STOP\020\002\022\023\n\017COMMAND_DESTR"
+  "OY\020\003*y\n\rParameterType\022\031\n\025PARAMETER_TYPE_"
+  "STRING\020\000\022\027\n\023PARAMETER_TYPE_BOOL\020\001\022\031\n\025PAR"
+  "AMETER_TYPE_UINT32\020\002\022\031\n\025PARAMETER_TYPE_D"
+  "OUBLE\020\003*j\n\013MessageType\022\034\n\030MESSAGE_TYPE_S"
+  "ERVER_INFO\020\000\022\037\n\033MESSAGE_TYPE_STREAMS_CHA"
+  "NGE\020\001\022\034\n\030MESSAGE_TYPE_STREAM_DATA\020\002b\006pro"
+  "to3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_snappyv1_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_snappyv1_2eproto = {
-  false, false, 2632, descriptor_table_protodef_snappyv1_2eproto, "snappyv1.proto", 
+  false, false, 2563, descriptor_table_protodef_snappyv1_2eproto, "snappyv1.proto", 
   &descriptor_table_snappyv1_2eproto_once, nullptr, 0, 15,
   schemas, file_default_instances, TableStruct_snappyv1_2eproto::offsets,
   file_level_metadata_snappyv1_2eproto, file_level_enum_descriptors_snappyv1_2eproto, file_level_service_descriptors_snappyv1_2eproto,
@@ -548,8 +547,6 @@ bool EncoderType_IsValid(int value) {
     case 1:
     case 2:
     case 3:
-    case 4:
-    case 5:
       return true;
     default:
       return false;
@@ -1549,23 +1546,23 @@ class Parameter::_Internal {
 
 const ::snappyv1::Parameter_ValueString&
 Parameter::_Internal::value_string(const Parameter* msg) {
-  return *msg->param_value_.value_string_;
+  return *msg->value_.value_string_;
 }
 const ::snappyv1::Parameter_ValueBool&
 Parameter::_Internal::value_bool(const Parameter* msg) {
-  return *msg->param_value_.value_bool_;
+  return *msg->value_.value_bool_;
 }
 const ::snappyv1::Parameter_ValueUint32&
 Parameter::_Internal::value_uint32(const Parameter* msg) {
-  return *msg->param_value_.value_uint32_;
+  return *msg->value_.value_uint32_;
 }
 const ::snappyv1::Parameter_ValueDouble&
 Parameter::_Internal::value_double(const Parameter* msg) {
-  return *msg->param_value_.value_double_;
+  return *msg->value_.value_double_;
 }
 void Parameter::set_allocated_value_string(::snappyv1::Parameter_ValueString* value_string) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  clear_param_value();
+  clear_value();
   if (value_string) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
       ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::snappyv1::Parameter_ValueString>::GetOwningArena(value_string);
@@ -1574,13 +1571,13 @@ void Parameter::set_allocated_value_string(::snappyv1::Parameter_ValueString* va
           message_arena, value_string, submessage_arena);
     }
     set_has_value_string();
-    param_value_.value_string_ = value_string;
+    value_.value_string_ = value_string;
   }
   // @@protoc_insertion_point(field_set_allocated:snappyv1.Parameter.value_string)
 }
 void Parameter::set_allocated_value_bool(::snappyv1::Parameter_ValueBool* value_bool) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  clear_param_value();
+  clear_value();
   if (value_bool) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
       ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::snappyv1::Parameter_ValueBool>::GetOwningArena(value_bool);
@@ -1589,13 +1586,13 @@ void Parameter::set_allocated_value_bool(::snappyv1::Parameter_ValueBool* value_
           message_arena, value_bool, submessage_arena);
     }
     set_has_value_bool();
-    param_value_.value_bool_ = value_bool;
+    value_.value_bool_ = value_bool;
   }
   // @@protoc_insertion_point(field_set_allocated:snappyv1.Parameter.value_bool)
 }
 void Parameter::set_allocated_value_uint32(::snappyv1::Parameter_ValueUint32* value_uint32) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  clear_param_value();
+  clear_value();
   if (value_uint32) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
       ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::snappyv1::Parameter_ValueUint32>::GetOwningArena(value_uint32);
@@ -1604,13 +1601,13 @@ void Parameter::set_allocated_value_uint32(::snappyv1::Parameter_ValueUint32* va
           message_arena, value_uint32, submessage_arena);
     }
     set_has_value_uint32();
-    param_value_.value_uint32_ = value_uint32;
+    value_.value_uint32_ = value_uint32;
   }
   // @@protoc_insertion_point(field_set_allocated:snappyv1.Parameter.value_uint32)
 }
 void Parameter::set_allocated_value_double(::snappyv1::Parameter_ValueDouble* value_double) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  clear_param_value();
+  clear_value();
   if (value_double) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
       ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::snappyv1::Parameter_ValueDouble>::GetOwningArena(value_double);
@@ -1619,7 +1616,7 @@ void Parameter::set_allocated_value_double(::snappyv1::Parameter_ValueDouble* va
           message_arena, value_double, submessage_arena);
     }
     set_has_value_double();
-    param_value_.value_double_ = value_double;
+    value_.value_double_ = value_double;
   }
   // @@protoc_insertion_point(field_set_allocated:snappyv1.Parameter.value_double)
 }
@@ -1632,14 +1629,14 @@ Parameter::Parameter(::PROTOBUF_NAMESPACE_ID::Arena* arena)
 Parameter::Parameter(const Parameter& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  param_key_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (!from._internal_param_key().empty()) {
-    param_key_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_param_key(), 
+  key_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_key().empty()) {
+    key_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_key(), 
       GetArenaForAllocation());
   }
-  param_type_ = from.param_type_;
-  clear_has_param_value();
-  switch (from.param_value_case()) {
+  type_ = from.type_;
+  clear_has_value();
+  switch (from.value_case()) {
     case kValueString: {
       _internal_mutable_value_string()->::snappyv1::Parameter_ValueString::MergeFrom(from._internal_value_string());
       break;
@@ -1656,7 +1653,7 @@ Parameter::Parameter(const Parameter& from)
       _internal_mutable_value_double()->::snappyv1::Parameter_ValueDouble::MergeFrom(from._internal_value_double());
       break;
     }
-    case PARAM_VALUE_NOT_SET: {
+    case VALUE_NOT_SET: {
       break;
     }
   }
@@ -1664,9 +1661,9 @@ Parameter::Parameter(const Parameter& from)
 }
 
 void Parameter::SharedCtor() {
-param_key_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-param_type_ = 0;
-clear_has_param_value();
+key_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+type_ = 0;
+clear_has_value();
 }
 
 Parameter::~Parameter() {
@@ -1677,9 +1674,9 @@ Parameter::~Parameter() {
 
 void Parameter::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  param_key_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-  if (has_param_value()) {
-    clear_param_value();
+  key_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (has_value()) {
+    clear_value();
   }
 }
 
@@ -1693,38 +1690,38 @@ void Parameter::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
 
-void Parameter::clear_param_value() {
+void Parameter::clear_value() {
 // @@protoc_insertion_point(one_of_clear_start:snappyv1.Parameter)
-  switch (param_value_case()) {
+  switch (value_case()) {
     case kValueString: {
       if (GetArenaForAllocation() == nullptr) {
-        delete param_value_.value_string_;
+        delete value_.value_string_;
       }
       break;
     }
     case kValueBool: {
       if (GetArenaForAllocation() == nullptr) {
-        delete param_value_.value_bool_;
+        delete value_.value_bool_;
       }
       break;
     }
     case kValueUint32: {
       if (GetArenaForAllocation() == nullptr) {
-        delete param_value_.value_uint32_;
+        delete value_.value_uint32_;
       }
       break;
     }
     case kValueDouble: {
       if (GetArenaForAllocation() == nullptr) {
-        delete param_value_.value_double_;
+        delete value_.value_double_;
       }
       break;
     }
-    case PARAM_VALUE_NOT_SET: {
+    case VALUE_NOT_SET: {
       break;
     }
   }
-  _oneof_case_[0] = PARAM_VALUE_NOT_SET;
+  _oneof_case_[0] = VALUE_NOT_SET;
 }
 
 
@@ -1734,9 +1731,9 @@ void Parameter::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  param_key_.ClearToEmpty();
-  param_type_ = 0;
-  clear_param_value();
+  key_.ClearToEmpty();
+  type_ = 0;
+  clear_value();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1746,20 +1743,20 @@ const char* Parameter::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // .snappyv1.ParameterType param_type = 1;
+      // .snappyv1.ParameterType type = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
           ::PROTOBUF_NAMESPACE_ID::uint64 val = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-          _internal_set_param_type(static_cast<::snappyv1::ParameterType>(val));
+          _internal_set_type(static_cast<::snappyv1::ParameterType>(val));
         } else goto handle_unusual;
         continue;
-      // string param_key = 2;
+      // string key = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
-          auto str = _internal_mutable_param_key();
+          auto str = _internal_mutable_key();
           ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
-          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "snappyv1.Parameter.param_key"));
+          CHK_(::PROTOBUF_NAMESPACE_ID::internal::VerifyUTF8(str, "snappyv1.Parameter.key"));
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
@@ -1820,21 +1817,21 @@ failure:
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .snappyv1.ParameterType param_type = 1;
-  if (this->param_type() != 0) {
+  // .snappyv1.ParameterType type = 1;
+  if (this->type() != 0) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteEnumToArray(
-      1, this->_internal_param_type(), target);
+      1, this->_internal_type(), target);
   }
 
-  // string param_key = 2;
-  if (!this->param_key().empty()) {
+  // string key = 2;
+  if (!this->key().empty()) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
-      this->_internal_param_key().data(), static_cast<int>(this->_internal_param_key().length()),
+      this->_internal_key().data(), static_cast<int>(this->_internal_key().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
-      "snappyv1.Parameter.param_key");
+      "snappyv1.Parameter.key");
     target = stream->WriteStringMaybeAliased(
-        2, this->_internal_param_key(), target);
+        2, this->_internal_key(), target);
   }
 
   // .snappyv1.Parameter.ValueString value_string = 3;
@@ -1885,49 +1882,49 @@ size_t Parameter::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // string param_key = 2;
-  if (!this->param_key().empty()) {
+  // string key = 2;
+  if (!this->key().empty()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
-        this->_internal_param_key());
+        this->_internal_key());
   }
 
-  // .snappyv1.ParameterType param_type = 1;
-  if (this->param_type() != 0) {
+  // .snappyv1.ParameterType type = 1;
+  if (this->type() != 0) {
     total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->_internal_param_type());
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::EnumSize(this->_internal_type());
   }
 
-  switch (param_value_case()) {
+  switch (value_case()) {
     // .snappyv1.Parameter.ValueString value_string = 3;
     case kValueString: {
       total_size += 1 +
         ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-          *param_value_.value_string_);
+          *value_.value_string_);
       break;
     }
     // .snappyv1.Parameter.ValueBool value_bool = 4;
     case kValueBool: {
       total_size += 1 +
         ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-          *param_value_.value_bool_);
+          *value_.value_bool_);
       break;
     }
     // .snappyv1.Parameter.ValueUint32 value_uint32 = 5;
     case kValueUint32: {
       total_size += 1 +
         ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-          *param_value_.value_uint32_);
+          *value_.value_uint32_);
       break;
     }
     // .snappyv1.Parameter.ValueDouble value_double = 6;
     case kValueDouble: {
       total_size += 1 +
         ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
-          *param_value_.value_double_);
+          *value_.value_double_);
       break;
     }
-    case PARAM_VALUE_NOT_SET: {
+    case VALUE_NOT_SET: {
       break;
     }
   }
@@ -1962,13 +1959,13 @@ void Parameter::MergeFrom(const Parameter& from) {
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (!from.param_key().empty()) {
-    _internal_set_param_key(from._internal_param_key());
+  if (!from.key().empty()) {
+    _internal_set_key(from._internal_key());
   }
-  if (from.param_type() != 0) {
-    _internal_set_param_type(from._internal_param_type());
+  if (from.type() != 0) {
+    _internal_set_type(from._internal_type());
   }
-  switch (from.param_value_case()) {
+  switch (from.value_case()) {
     case kValueString: {
       _internal_mutable_value_string()->::snappyv1::Parameter_ValueString::MergeFrom(from._internal_value_string());
       break;
@@ -1985,7 +1982,7 @@ void Parameter::MergeFrom(const Parameter& from) {
       _internal_mutable_value_double()->::snappyv1::Parameter_ValueDouble::MergeFrom(from._internal_value_double());
       break;
     }
-    case PARAM_VALUE_NOT_SET: {
+    case VALUE_NOT_SET: {
       break;
     }
   }
@@ -2014,11 +2011,11 @@ void Parameter::InternalSwap(Parameter* other) {
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
       &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
-      &param_key_, GetArenaForAllocation(),
-      &other->param_key_, other->GetArenaForAllocation()
+      &key_, GetArenaForAllocation(),
+      &other->key_, other->GetArenaForAllocation()
   );
-  swap(param_type_, other->param_type_);
-  swap(param_value_, other->param_value_);
+  swap(type_, other->type_);
+  swap(value_, other->value_);
   swap(_oneof_case_[0], other->_oneof_case_[0]);
 }
 

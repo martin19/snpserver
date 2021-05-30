@@ -25,6 +25,9 @@ class SnpEncoderMmalH264 : public SnpComponent {
 public:
     explicit SnpEncoderMmalH264(const SnpEncoderMmalH264Options &options);
     ~SnpEncoderMmalH264() override;
+
+    void setEnabled(bool enabled) override;
+
 private:
     uint32_t width;
     uint32_t height;

@@ -4,15 +4,15 @@ SnpSourceNetwork::SnpSourceNetwork(const SnpSourceNetworkOptions &options) : Snp
     this->client = options.client;
     this->streamId = options.streamId;
 
-    addOutput(new SnpPort());
+    addOutputPort(new SnpPort());
 
-    client->setStreamListener(streamId, getOutput(0)->onDataCb);
+    client->setStreamListener(streamId, std::bind(&SnpSourceNetwork::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
 SnpSourceNetwork::~SnpSourceNetwork() {
 
 }
 
-void SnpSourceNetwork::onInputData(uint8_t *data, int len, bool complete) {
-    getOutput(0)->onDataCb(data, len, complete);
+void SnpSourceNetwork::onInputData(const uint8_t *data, int len, bool complete) {
+    getOutputPort(0)->onData(data, len, complete);
 }

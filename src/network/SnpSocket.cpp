@@ -172,8 +172,8 @@ void SnpSocket::sendServerInfo(lws* wsi) {
     //parameter width
     {
         Parameter *p = source->add_parameters();
-        p->set_param_type(PARAMETER_TYPE_UINT32);
-        p->set_param_key("width");
+        p->set_type(PARAMETER_TYPE_UINT32);
+        p->set_key("width");
         auto *value = new Parameter_ValueUint32();
         value->set_value(1920);
         p->set_allocated_value_uint32(value);
@@ -182,8 +182,8 @@ void SnpSocket::sendServerInfo(lws* wsi) {
     //parameter height
     {
         Parameter *p = source->add_parameters();
-        p->set_param_type(PARAMETER_TYPE_UINT32);
-        p->set_param_key("height");
+        p->set_type(PARAMETER_TYPE_UINT32);
+        p->set_key("height");
         auto *value = new Parameter_ValueUint32();
         value->set_value(1080);
         p->set_allocated_value_uint32(value);
@@ -195,8 +195,8 @@ void SnpSocket::sendServerInfo(lws* wsi) {
     //parameter qp
     {
         Parameter *p = encoder->add_parameters();
-        p->set_param_type(PARAMETER_TYPE_UINT32);
-        p->set_param_key("qp");
+        p->set_type(PARAMETER_TYPE_UINT32);
+        p->set_key("qp");
         auto *value = new Parameter_ValueUint32();
         value->set_value(42);
         value->set_min(10);
@@ -207,8 +207,8 @@ void SnpSocket::sendServerInfo(lws* wsi) {
     //parameter string
     {
         Parameter *p = encoder->add_parameters();
-        p->set_param_type(PARAMETER_TYPE_STRING);
-        p->set_param_key("fookey");
+        p->set_type(PARAMETER_TYPE_STRING);
+        p->set_key("fookey");
         auto *value = new Parameter_ValueString();
         value->set_value("barvalue");
         p->set_allocated_value_string(value);

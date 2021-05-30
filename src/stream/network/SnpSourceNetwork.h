@@ -14,7 +14,7 @@ public:
     explicit SnpSourceNetwork(const SnpSourceNetworkOptions &options);
     ~SnpSourceNetwork() override;
 private:
-    void onInputData(uint8_t *data, int len, bool complete);
+    void onInputData(const uint8_t *data, int len, bool complete);
     uint32_t streamId;
     SnpClient *client;
     std::vector<uint8_t> buffer;

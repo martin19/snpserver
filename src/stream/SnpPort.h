@@ -19,9 +19,18 @@ public:
     virtual ~SnpPort();
 
     void init();
-    static bool connect(SnpPort *portFrom, SnpPort *portTo);
 
-    std::function<void(const uint8_t *data, int len, bool complete)> onDataCb = nullptr;
+    SnpPort *targetPort;
+
+    static bool connect(SnpPort *sourcePort, SnpPort *targetPort);
+
+    void onData(const uint8_t *data, int len, bool complete) {
+        targetPort->onDataCb(data, len, complete);
+    }
+
+    void setOnDataCb(std::function<void(const uint8_t *data, int len, bool complete)> cb) {
+        onDataCb = cb;
+    }
 
     PortType type;
 
@@ -34,11 +43,8 @@ public:
     //normal buffer info
     uint8_t *buffer;
 
-    void setOnDataCb(std::function<void(const uint8_t *data, int len, bool complete)> cb) {
-        onDataCb = cb;
-    }
-
 private:
+    std::function<void(const uint8_t *data, int len, bool complete)> onDataCb = nullptr;
     bool initMmap();
     bool destroyMmap();
 };

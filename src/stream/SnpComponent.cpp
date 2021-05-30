@@ -1,26 +1,26 @@
 #include "SnpComponent.h"
 
-SnpPort* SnpComponent::getInput(int i) {
-    return input.at(i);
+SnpPort* SnpComponent::getInputPort(int i) {
+    return inputPorts.at(i);
 }
 
-void SnpComponent::addInput(SnpPort *port) {
-    input.push_back(port);
+void SnpComponent::addInputPort(SnpPort *port) {
+    inputPorts.push_back(port);
 }
 
-SnpPort* SnpComponent::getOutput(int i) {
-    return output.at(i);
+SnpPort* SnpComponent::getOutputPort(int i) {
+    return outputPorts.at(i);
 }
 
-void SnpComponent::addOutput(SnpPort *port) {
-    output.push_back(port);
+void SnpComponent::addOutputPort(SnpPort *port) {
+    outputPorts.push_back(port);
 }
 
 SnpComponent::~SnpComponent() {
-    for(auto & pPort : input) {
+    for(auto & pPort : inputPorts) {
         delete pPort;
     }
-    for(auto & pPort : output) {
+    for(auto & pPort : outputPorts) {
         delete pPort;
     }
 }

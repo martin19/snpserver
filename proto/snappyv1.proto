@@ -69,9 +69,9 @@ message Parameter {
         optional double max = 3;
     }
 
-    ParameterType param_type = 1;
-    string param_key = 2;
-    oneof param_value {
+    ParameterType type = 1;
+    string key = 2;
+    oneof value {
         ValueString value_string = 3;
         ValueBool value_bool = 4;
         ValueUint32 value_uint32 = 5;

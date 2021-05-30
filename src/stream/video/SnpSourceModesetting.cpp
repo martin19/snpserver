@@ -9,14 +9,14 @@
 
 SnpSourceModesetting::SnpSourceModesetting(const SnpSourceModesettingOptions &options): SnpComponent(options) {
 
-    addOutput(new SnpPort());
+    addOutputPort(new SnpPort());
     device = options.device;
     init();
 
 }
 
 SnpSourceModesetting::~SnpSourceModesetting() {
-    if(getOutput(0)->deviceFd) close(getOutput(0)->deviceFd);
+    if(getOutputPort(0)->deviceFd) close(getOutputPort(0)->deviceFd);
 }
 
 bool SnpSourceModesetting::init() {
@@ -32,8 +32,8 @@ bool SnpSourceModesetting::init() {
 //  uint32_t fb_id = 0xd1; //cursor plane test
 
 //    uint32_t fbId = 0xcd; //with hardware cursor
-    uint32_t fbId = 0xcd;
-//    uint32_t fbId = 0xcf;
+//    uint32_t fbId = 0xcd;
+    uint32_t fbId = 0xcf;
 
     //TODO: determine primary framebufferId!
     //TODO: how to detect framebuffer has changed?
@@ -60,9 +60,9 @@ bool SnpSourceModesetting::init() {
     printf("drmPrimeHandleToFD = %d, fd = %d\n", ret, dmaBufFd);
 
 
-    getOutput(0)->device = device;
-    getOutput(0)->deviceFd = deviceFd;
-    getOutput(0)->dmaBufFd = dmaBufFd;
+    getOutputPort(0)->device = device;
+    getOutputPort(0)->deviceFd = deviceFd;
+    getOutputPort(0)->dmaBufFd = dmaBufFd;
 
     this->width = fb->width;
     this->height = fb->height;
@@ -75,25 +75,21 @@ error:
     return result;
 }
 
-//void SnpSourceModesetting::startCapture() {
-//    //TODO: create capture timer to respect fps
-//    //TODO: emit frameReady according to fps
-//}
-//
-//void SnpSourceModesetting::stopCapture() {
-//    //TODO: stop capture timer
-//}
-//
-//bool SnpSourceModesetting::isFrameReady() {
-//    //without a timer, there is always a next frame ready.
-//    getOutput(0)->onDataCb(nullptr, 0, true);
-//    return true;
-//}
-//
-//void SnpSourceModesetting::getNextFrame(uint8_t *frame) {
-//    //TODO:
-//    // * pass pointer to next frame
-//    // * if memory mapped
-//}
-
+void SnpSourceModesetting::setEnabled(bool enabled) {
+    SnpComponent::setEnabled(enabled);
+    if(enabled) {
+        grabberThread = std::thread{[this] () {
+            while(isEnabled()) {
+                SnpPort * outputPort = getOutputPort(0);
+                outputPort->onData(nullptr, 0, true);
+//                if(outputPort && outputPort->targetPort) {
+//                    outputPort->onDataCb(nullptr, 0, true);
+//                }
+                usleep(16666);
+            }
+        }};
+    } else {
+        grabberThread.detach();
+    }
+}
 
