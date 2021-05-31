@@ -43,6 +43,7 @@ add_executable(snpserver
     src/stream/input/SnpSinkMouse.cpp
     src/stream/input/keymap_atset1_linux.c
     src/stream/input/SnpSinkKeyboard.cpp
+    src/stream/input/SnpSourceCursor.cpp
     # network sink/source
     src/stream/network/SnpSourceNetwork.cpp
     src/stream/network/SnpSinkNetwork.cpp
@@ -59,6 +60,8 @@ target_link_libraries(snpserver
     pthread
     drm
     dl
+    X11
+    Xfixes
 )
 
 #target_link_libraries(snappyVnc PRIVATE spdlog::spdlog_header_only)

@@ -32,6 +32,7 @@ private:
     SnpPipe *fixedVideoPipe = nullptr;
     SnpPipe *fixedMousePipe = nullptr;
     SnpPipe *fixedKeyboardPipe = nullptr;
+    SnpPipe *fixedCursorPipe = nullptr;
 
     std::map<uint32_t, StreamListener> streamListeners;
 

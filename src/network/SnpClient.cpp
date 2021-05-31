@@ -8,6 +8,7 @@
 #include <stream/network/SnpSourceNetwork.h>
 #include <stream/input/SnpSinkMouse.h>
 #include <stream/input/SnpSinkKeyboard.h>
+#include <stream/input/SnpSourceCursor.h>
 #include "SnpSocket.h"
 
 SnpClient::SnpClient(SnpSocket *server, struct lws *wsi) : server(server), wsi(wsi) {
@@ -32,6 +33,13 @@ SnpClient::~SnpClient() {
     if(fixedKeyboardPipe) {
         fixedKeyboardPipe->stop();
         for(auto & pComponent : fixedKeyboardPipe->getComponents()) {
+            delete pComponent;
+        }
+    }
+
+    if(fixedCursorPipe) {
+        fixedCursorPipe->stop();
+        for(auto & pComponent : fixedCursorPipe->getComponents()) {
             delete pComponent;
         }
     }
@@ -129,10 +137,27 @@ void SnpClient::onStreamsChange(const snappyv1::StreamsChange &msg) {
         fixedKeyboardPipe->addComponent(sinkKeyboard);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //create a fixed cursor pipe (streamId=3)
+    {
+        SnpSourceCursorOptions sourceCursorOptions = {};
+        auto *sourceCursor = new SnpSourceCursor(sourceCursorOptions);
+        SnpSinkNetworkOptions sinkNetworkOptions = {};
+        sinkNetworkOptions.client = this;
+        sinkNetworkOptions.streamId = 3;
+        auto *sinkNetwork = new SnpSinkNetwork(sinkNetworkOptions);
+        SnpPort::connect(sourceCursor->getOutputPort(0), sinkNetwork->getInputPort(0));
+
+        SnpPipeOptions cursorPipeOptions = {};
+        fixedCursorPipe = new SnpPipe(cursorPipeOptions);
+        fixedCursorPipe->addComponent(sourceCursor);
+        fixedCursorPipe->addComponent(sinkNetwork);
+    }
+
 
     fixedVideoPipe->start();
     fixedMousePipe->start();
     fixedKeyboardPipe->start();
+    fixedCursorPipe->start();
 }
 
 void SnpClient::setStreamListener(uint32_t streamId, StreamListener streamListener) {

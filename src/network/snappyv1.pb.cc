@@ -229,8 +229,24 @@ struct StreamDataKeyboardDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT StreamDataKeyboardDefaultTypeInternal _StreamDataKeyboard_default_instance_;
+constexpr StreamDataCursor::StreamDataCursor(
+  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
+  : image_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
+  , width_(0u)
+  , height_(0u)
+  , hotx_(0u)
+  , hoty_(0u){}
+struct StreamDataCursorDefaultTypeInternal {
+  constexpr StreamDataCursorDefaultTypeInternal()
+    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
+  ~StreamDataCursorDefaultTypeInternal() {}
+  union {
+    StreamDataCursor _instance;
+  };
+};
+PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT StreamDataCursorDefaultTypeInternal _StreamDataCursor_default_instance_;
 }  // namespace snappyv1
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_snappyv1_2eproto[15];
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_snappyv1_2eproto[16];
 static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_snappyv1_2eproto[7];
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_snappyv1_2eproto = nullptr;
 
@@ -370,6 +386,16 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_snappyv1_2eproto::offsets[] PR
   PROTOBUF_FIELD_OFFSET(::snappyv1::StreamDataKeyboard, keysym_),
   PROTOBUF_FIELD_OFFSET(::snappyv1::StreamDataKeyboard, keycode_),
   PROTOBUF_FIELD_OFFSET(::snappyv1::StreamDataKeyboard, down_),
+  ~0u,  // no _has_bits_
+  PROTOBUF_FIELD_OFFSET(::snappyv1::StreamDataCursor, _internal_metadata_),
+  ~0u,  // no _extensions_
+  ~0u,  // no _oneof_case_
+  ~0u,  // no _weak_field_map_
+  PROTOBUF_FIELD_OFFSET(::snappyv1::StreamDataCursor, width_),
+  PROTOBUF_FIELD_OFFSET(::snappyv1::StreamDataCursor, height_),
+  PROTOBUF_FIELD_OFFSET(::snappyv1::StreamDataCursor, hotx_),
+  PROTOBUF_FIELD_OFFSET(::snappyv1::StreamDataCursor, hoty_),
+  PROTOBUF_FIELD_OFFSET(::snappyv1::StreamDataCursor, image_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::snappyv1::Parameter_ValueString)},
@@ -387,6 +413,7 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOB
   { 106, -1, sizeof(::snappyv1::Message)},
   { 116, 124, sizeof(::snappyv1::StreamDataPointer)},
   { 127, -1, sizeof(::snappyv1::StreamDataKeyboard)},
+  { 135, -1, sizeof(::snappyv1::StreamDataCursor)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -405,6 +432,7 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::snappyv1::_Message_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::snappyv1::_StreamDataPointer_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::snappyv1::_StreamDataKeyboard_default_instance_),
+  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::snappyv1::_StreamDataCursor_default_instance_),
 };
 
 const char descriptor_table_protodef_snappyv1_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
@@ -451,33 +479,36 @@ const char descriptor_table_protodef_snappyv1_2eproto[] PROTOBUF_SECTION_VARIABL
   "aPointer\022\014\n\004absx\030\001 \001(\r\022\014\n\004absy\030\002 \001(\r\022\021\n\004"
   "mask\030\003 \001(\005H\000\210\001\001B\007\n\005_mask\"C\n\022StreamDataKe"
   "yboard\022\016\n\006keysym\030\001 \001(\r\022\017\n\007keycode\030\002 \001(\r\022"
-  "\014\n\004down\030\003 \001(\010*v\n\010Platform\022\024\n\020PLATFORM_WI"
-  "NDOWS\020\000\022\022\n\016PLATFORM_LINUX\020\001\022\022\n\016PLATFORM_"
-  "MACOS\020\002\022\026\n\022PLATFORM_RASPBERRY\020\003\022\024\n\020PLATF"
-  "ORM_ANDROID\020\004*Q\n\nSourceType\022\025\n\021SOURCE_TY"
-  "PE_VIDEO\020\000\022\025\n\021SOURCE_TYPE_AUDIO\020\001\022\025\n\021SOU"
-  "RCE_TYPE_INPUT\020\002*\234\001\n\rSourceSubType\022\027\n\023SO"
-  "URCE_SUB_TYPE_X11\020\000\022\033\n\027SOURCE_SUB_TYPE_W"
-  "AYLAND\020\001\022\032\n\026SOURCE_SUB_TYPE_CAMERA\020\002\022\034\n\030"
-  "SOURCE_SUB_TYPE_KEYBOARD\020\003\022\033\n\027SOURCE_SUB"
-  "_TYPE_POINTER\020\004*\213\001\n\013EncoderType\022\036\n\032ENCOD"
-  "ER_TYPE_H264_SOFTWARE\020\000\022\036\n\032ENCODER_TYPE_"
-  "H264_HARDWARE\020\001\022\035\n\031ENCODER_TYPE_MP3_SOFT"
-  "WARE\020\002\022\035\n\031ENCODER_TYPE_MP3_HARDWARE\020\003*U\n"
-  "\007Command\022\020\n\014COMMAND_INIT\020\000\022\021\n\rCOMMAND_ST"
-  "ART\020\001\022\020\n\014COMMAND_STOP\020\002\022\023\n\017COMMAND_DESTR"
-  "OY\020\003*y\n\rParameterType\022\031\n\025PARAMETER_TYPE_"
-  "STRING\020\000\022\027\n\023PARAMETER_TYPE_BOOL\020\001\022\031\n\025PAR"
-  "AMETER_TYPE_UINT32\020\002\022\031\n\025PARAMETER_TYPE_D"
-  "OUBLE\020\003*j\n\013MessageType\022\034\n\030MESSAGE_TYPE_S"
-  "ERVER_INFO\020\000\022\037\n\033MESSAGE_TYPE_STREAMS_CHA"
-  "NGE\020\001\022\034\n\030MESSAGE_TYPE_STREAM_DATA\020\002b\006pro"
-  "to3"
+  "\014\n\004down\030\003 \001(\010\"\\\n\020StreamDataCursor\022\r\n\005wid"
+  "th\030\001 \001(\r\022\016\n\006height\030\002 \001(\r\022\014\n\004hotx\030\003 \001(\r\022\014"
+  "\n\004hoty\030\004 \001(\r\022\r\n\005image\030\005 \001(\014*v\n\010Platform\022"
+  "\024\n\020PLATFORM_WINDOWS\020\000\022\022\n\016PLATFORM_LINUX\020"
+  "\001\022\022\n\016PLATFORM_MACOS\020\002\022\026\n\022PLATFORM_RASPBE"
+  "RRY\020\003\022\024\n\020PLATFORM_ANDROID\020\004*Q\n\nSourceTyp"
+  "e\022\025\n\021SOURCE_TYPE_VIDEO\020\000\022\025\n\021SOURCE_TYPE_"
+  "AUDIO\020\001\022\025\n\021SOURCE_TYPE_INPUT\020\002*\270\001\n\rSourc"
+  "eSubType\022\027\n\023SOURCE_SUB_TYPE_X11\020\000\022\033\n\027SOU"
+  "RCE_SUB_TYPE_WAYLAND\020\001\022\032\n\026SOURCE_SUB_TYP"
+  "E_CAMERA\020\002\022\034\n\030SOURCE_SUB_TYPE_KEYBOARD\020\003"
+  "\022\033\n\027SOURCE_SUB_TYPE_POINTER\020\004\022\032\n\026SOURCE_"
+  "SUB_TYPE_CURSOR\020\005*\213\001\n\013EncoderType\022\036\n\032ENC"
+  "ODER_TYPE_H264_SOFTWARE\020\000\022\036\n\032ENCODER_TYP"
+  "E_H264_HARDWARE\020\001\022\035\n\031ENCODER_TYPE_MP3_SO"
+  "FTWARE\020\002\022\035\n\031ENCODER_TYPE_MP3_HARDWARE\020\003*"
+  "U\n\007Command\022\020\n\014COMMAND_INIT\020\000\022\021\n\rCOMMAND_"
+  "START\020\001\022\020\n\014COMMAND_STOP\020\002\022\023\n\017COMMAND_DES"
+  "TROY\020\003*y\n\rParameterType\022\031\n\025PARAMETER_TYP"
+  "E_STRING\020\000\022\027\n\023PARAMETER_TYPE_BOOL\020\001\022\031\n\025P"
+  "ARAMETER_TYPE_UINT32\020\002\022\031\n\025PARAMETER_TYPE"
+  "_DOUBLE\020\003*j\n\013MessageType\022\034\n\030MESSAGE_TYPE"
+  "_SERVER_INFO\020\000\022\037\n\033MESSAGE_TYPE_STREAMS_C"
+  "HANGE\020\001\022\034\n\030MESSAGE_TYPE_STREAM_DATA\020\002b\006p"
+  "roto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_snappyv1_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_snappyv1_2eproto = {
-  false, false, 2563, descriptor_table_protodef_snappyv1_2eproto, "snappyv1.proto", 
-  &descriptor_table_snappyv1_2eproto_once, nullptr, 0, 15,
+  false, false, 2685, descriptor_table_protodef_snappyv1_2eproto, "snappyv1.proto", 
+  &descriptor_table_snappyv1_2eproto_once, nullptr, 0, 16,
   schemas, file_default_instances, TableStruct_snappyv1_2eproto::offsets,
   file_level_metadata_snappyv1_2eproto, file_level_enum_descriptors_snappyv1_2eproto, file_level_service_descriptors_snappyv1_2eproto,
 };
@@ -531,6 +562,7 @@ bool SourceSubType_IsValid(int value) {
     case 2:
     case 3:
     case 4:
+    case 5:
       return true;
     default:
       return false;
@@ -4729,6 +4761,314 @@ void StreamDataKeyboard::InternalSwap(StreamDataKeyboard* other) {
       file_level_metadata_snappyv1_2eproto[14]);
 }
 
+// ===================================================================
+
+class StreamDataCursor::_Internal {
+ public:
+};
+
+StreamDataCursor::StreamDataCursor(::PROTOBUF_NAMESPACE_ID::Arena* arena)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+  SharedCtor();
+  RegisterArenaDtor(arena);
+  // @@protoc_insertion_point(arena_constructor:snappyv1.StreamDataCursor)
+}
+StreamDataCursor::StreamDataCursor(const StreamDataCursor& from)
+  : ::PROTOBUF_NAMESPACE_ID::Message() {
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  image_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  if (!from._internal_image().empty()) {
+    image_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_image(), 
+      GetArenaForAllocation());
+  }
+  ::memcpy(&width_, &from.width_,
+    static_cast<size_t>(reinterpret_cast<char*>(&hoty_) -
+    reinterpret_cast<char*>(&width_)) + sizeof(hoty_));
+  // @@protoc_insertion_point(copy_constructor:snappyv1.StreamDataCursor)
+}
+
+void StreamDataCursor::SharedCtor() {
+image_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&width_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&hoty_) -
+    reinterpret_cast<char*>(&width_)) + sizeof(hoty_));
+}
+
+StreamDataCursor::~StreamDataCursor() {
+  // @@protoc_insertion_point(destructor:snappyv1.StreamDataCursor)
+  SharedDtor();
+  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+void StreamDataCursor::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  image_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+}
+
+void StreamDataCursor::ArenaDtor(void* object) {
+  StreamDataCursor* _this = reinterpret_cast< StreamDataCursor* >(object);
+  (void)_this;
+}
+void StreamDataCursor::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
+}
+void StreamDataCursor::SetCachedSize(int size) const {
+  _cached_size_.Set(size);
+}
+
+void StreamDataCursor::Clear() {
+// @@protoc_insertion_point(message_clear_start:snappyv1.StreamDataCursor)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  image_.ClearToEmpty();
+  ::memset(&width_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&hoty_) -
+      reinterpret_cast<char*>(&width_)) + sizeof(hoty_));
+  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
+}
+
+const char* StreamDataCursor::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
+#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  while (!ctx->Done(&ptr)) {
+    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    switch (tag >> 3) {
+      // uint32 width = 1;
+      case 1:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+          width_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // uint32 height = 2;
+      case 2:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+          height_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // uint32 hotx = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+          hotx_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // uint32 hoty = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
+          hoty_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      // bytes image = 5;
+      case 5:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 42)) {
+          auto str = _internal_mutable_image();
+          ptr = ::PROTOBUF_NAMESPACE_ID::internal::InlineGreedyStringParser(str, ptr, ctx);
+          CHK_(ptr);
+        } else goto handle_unusual;
+        continue;
+      default: {
+      handle_unusual:
+        if ((tag == 0) || ((tag & 7) == 4)) {
+          CHK_(ptr);
+          ctx->SetLastTag(tag);
+          goto success;
+        }
+        ptr = UnknownFieldParse(tag,
+            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+            ptr, ctx);
+        CHK_(ptr != nullptr);
+        continue;
+      }
+    }  // switch
+  }  // while
+success:
+  return ptr;
+failure:
+  ptr = nullptr;
+  goto success;
+#undef CHK_
+}
+
+::PROTOBUF_NAMESPACE_ID::uint8* StreamDataCursor::_InternalSerialize(
+    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+  // @@protoc_insertion_point(serialize_to_array_start:snappyv1.StreamDataCursor)
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // uint32 width = 1;
+  if (this->width() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(1, this->_internal_width(), target);
+  }
+
+  // uint32 height = 2;
+  if (this->height() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(2, this->_internal_height(), target);
+  }
+
+  // uint32 hotx = 3;
+  if (this->hotx() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(3, this->_internal_hotx(), target);
+  }
+
+  // uint32 hoty = 4;
+  if (this->hoty() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(4, this->_internal_hoty(), target);
+  }
+
+  // bytes image = 5;
+  if (!this->image().empty()) {
+    target = stream->WriteBytesMaybeAliased(
+        5, this->_internal_image(), target);
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
+        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
+  }
+  // @@protoc_insertion_point(serialize_to_array_end:snappyv1.StreamDataCursor)
+  return target;
+}
+
+size_t StreamDataCursor::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:snappyv1.StreamDataCursor)
+  size_t total_size = 0;
+
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  // Prevent compiler warnings about cached_has_bits being unused
+  (void) cached_has_bits;
+
+  // bytes image = 5;
+  if (!this->image().empty()) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
+        this->_internal_image());
+  }
+
+  // uint32 width = 1;
+  if (this->width() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
+        this->_internal_width());
+  }
+
+  // uint32 height = 2;
+  if (this->height() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
+        this->_internal_height());
+  }
+
+  // uint32 hotx = 3;
+  if (this->hotx() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
+        this->_internal_hotx());
+  }
+
+  // uint32 hoty = 4;
+  if (this->hoty() != 0) {
+    total_size += 1 +
+      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
+        this->_internal_hoty());
+  }
+
+  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
+    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
+        _internal_metadata_, total_size, &_cached_size_);
+  }
+  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
+  SetCachedSize(cached_size);
+  return total_size;
+}
+
+void StreamDataCursor::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:snappyv1.StreamDataCursor)
+  GOOGLE_DCHECK_NE(&from, this);
+  const StreamDataCursor* source =
+      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<StreamDataCursor>(
+          &from);
+  if (source == nullptr) {
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:snappyv1.StreamDataCursor)
+    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
+  } else {
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:snappyv1.StreamDataCursor)
+    MergeFrom(*source);
+  }
+}
+
+void StreamDataCursor::MergeFrom(const StreamDataCursor& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:snappyv1.StreamDataCursor)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (!from.image().empty()) {
+    _internal_set_image(from._internal_image());
+  }
+  if (from.width() != 0) {
+    _internal_set_width(from._internal_width());
+  }
+  if (from.height() != 0) {
+    _internal_set_height(from._internal_height());
+  }
+  if (from.hotx() != 0) {
+    _internal_set_hotx(from._internal_hotx());
+  }
+  if (from.hoty() != 0) {
+    _internal_set_hoty(from._internal_hoty());
+  }
+}
+
+void StreamDataCursor::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:snappyv1.StreamDataCursor)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+void StreamDataCursor::CopyFrom(const StreamDataCursor& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:snappyv1.StreamDataCursor)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool StreamDataCursor::IsInitialized() const {
+  return true;
+}
+
+void StreamDataCursor::InternalSwap(StreamDataCursor* other) {
+  using std::swap;
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
+      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
+      &image_, GetArenaForAllocation(),
+      &other->image_, other->GetArenaForAllocation()
+  );
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(StreamDataCursor, hoty_)
+      + sizeof(StreamDataCursor::hoty_)
+      - PROTOBUF_FIELD_OFFSET(StreamDataCursor, width_)>(
+          reinterpret_cast<char*>(&width_),
+          reinterpret_cast<char*>(&other->width_));
+}
+
+::PROTOBUF_NAMESPACE_ID::Metadata StreamDataCursor::GetMetadata() const {
+  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
+      &descriptor_table_snappyv1_2eproto_getter, &descriptor_table_snappyv1_2eproto_once,
+      file_level_metadata_snappyv1_2eproto[15]);
+}
+
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace snappyv1
 PROTOBUF_NAMESPACE_OPEN
@@ -4776,6 +5116,9 @@ template<> PROTOBUF_NOINLINE ::snappyv1::StreamDataPointer* Arena::CreateMaybeMe
 }
 template<> PROTOBUF_NOINLINE ::snappyv1::StreamDataKeyboard* Arena::CreateMaybeMessage< ::snappyv1::StreamDataKeyboard >(Arena* arena) {
   return Arena::CreateMessageInternal< ::snappyv1::StreamDataKeyboard >(arena);
+}
+template<> PROTOBUF_NOINLINE ::snappyv1::StreamDataCursor* Arena::CreateMaybeMessage< ::snappyv1::StreamDataCursor >(Arena* arena) {
+  return Arena::CreateMessageInternal< ::snappyv1::StreamDataCursor >(arena);
 }
 PROTOBUF_NAMESPACE_CLOSE
 

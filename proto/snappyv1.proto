@@ -24,6 +24,7 @@ enum SourceSubType {
     SOURCE_SUB_TYPE_CAMERA = 2;
     SOURCE_SUB_TYPE_KEYBOARD = 3;
     SOURCE_SUB_TYPE_POINTER = 4;
+    SOURCE_SUB_TYPE_CURSOR = 5;
 }
 
 enum EncoderType {
@@ -149,4 +150,12 @@ message StreamDataKeyboard {
     uint32 keysym = 1;
     uint32 keycode = 2;
     bool down = 3;
+}
+
+message StreamDataCursor {
+    uint32 width = 1;
+    uint32 height = 2;
+    uint32 hotx = 3;
+    uint32 hoty = 4;
+    bytes image = 5;
 }

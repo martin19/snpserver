@@ -47,7 +47,7 @@ struct TableStruct_snappyv1_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[15]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[16]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -85,6 +85,9 @@ extern SourceDefaultTypeInternal _Source_default_instance_;
 class StreamData;
 struct StreamDataDefaultTypeInternal;
 extern StreamDataDefaultTypeInternal _StreamData_default_instance_;
+class StreamDataCursor;
+struct StreamDataCursorDefaultTypeInternal;
+extern StreamDataCursorDefaultTypeInternal _StreamDataCursor_default_instance_;
 class StreamDataKeyboard;
 struct StreamDataKeyboardDefaultTypeInternal;
 extern StreamDataKeyboardDefaultTypeInternal _StreamDataKeyboard_default_instance_;
@@ -112,6 +115,7 @@ template<> ::snappyv1::Parameter_ValueUint32* Arena::CreateMaybeMessage<::snappy
 template<> ::snappyv1::ServerInfo* Arena::CreateMaybeMessage<::snappyv1::ServerInfo>(Arena*);
 template<> ::snappyv1::Source* Arena::CreateMaybeMessage<::snappyv1::Source>(Arena*);
 template<> ::snappyv1::StreamData* Arena::CreateMaybeMessage<::snappyv1::StreamData>(Arena*);
+template<> ::snappyv1::StreamDataCursor* Arena::CreateMaybeMessage<::snappyv1::StreamDataCursor>(Arena*);
 template<> ::snappyv1::StreamDataKeyboard* Arena::CreateMaybeMessage<::snappyv1::StreamDataKeyboard>(Arena*);
 template<> ::snappyv1::StreamDataPointer* Arena::CreateMaybeMessage<::snappyv1::StreamDataPointer>(Arena*);
 template<> ::snappyv1::StreamStatistics* Arena::CreateMaybeMessage<::snappyv1::StreamStatistics>(Arena*);
@@ -180,12 +184,13 @@ enum SourceSubType : int {
   SOURCE_SUB_TYPE_CAMERA = 2,
   SOURCE_SUB_TYPE_KEYBOARD = 3,
   SOURCE_SUB_TYPE_POINTER = 4,
+  SOURCE_SUB_TYPE_CURSOR = 5,
   SourceSubType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
   SourceSubType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
 bool SourceSubType_IsValid(int value);
 constexpr SourceSubType SourceSubType_MIN = SOURCE_SUB_TYPE_X11;
-constexpr SourceSubType SourceSubType_MAX = SOURCE_SUB_TYPE_POINTER;
+constexpr SourceSubType SourceSubType_MAX = SOURCE_SUB_TYPE_CURSOR;
 constexpr int SourceSubType_ARRAYSIZE = SourceSubType_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* SourceSubType_descriptor();
@@ -2839,6 +2844,187 @@ class StreamDataKeyboard final :
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_snappyv1_2eproto;
 };
+// -------------------------------------------------------------------
+
+class StreamDataCursor final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:snappyv1.StreamDataCursor) */ {
+ public:
+  inline StreamDataCursor() : StreamDataCursor(nullptr) {}
+  ~StreamDataCursor() override;
+  explicit constexpr StreamDataCursor(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  StreamDataCursor(const StreamDataCursor& from);
+  StreamDataCursor(StreamDataCursor&& from) noexcept
+    : StreamDataCursor() {
+    *this = ::std::move(from);
+  }
+
+  inline StreamDataCursor& operator=(const StreamDataCursor& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline StreamDataCursor& operator=(StreamDataCursor&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const StreamDataCursor& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const StreamDataCursor* internal_default_instance() {
+    return reinterpret_cast<const StreamDataCursor*>(
+               &_StreamDataCursor_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    15;
+
+  friend void swap(StreamDataCursor& a, StreamDataCursor& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(StreamDataCursor* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(StreamDataCursor* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline StreamDataCursor* New() const final {
+    return new StreamDataCursor();
+  }
+
+  StreamDataCursor* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<StreamDataCursor>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const StreamDataCursor& from);
+  void MergeFrom(const StreamDataCursor& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(StreamDataCursor* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "snappyv1.StreamDataCursor";
+  }
+  protected:
+  explicit StreamDataCursor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kImageFieldNumber = 5,
+    kWidthFieldNumber = 1,
+    kHeightFieldNumber = 2,
+    kHotxFieldNumber = 3,
+    kHotyFieldNumber = 4,
+  };
+  // bytes image = 5;
+  void clear_image();
+  const std::string& image() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_image(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_image();
+  PROTOBUF_FUTURE_MUST_USE_RESULT std::string* release_image();
+  void set_allocated_image(std::string* image);
+  private:
+  const std::string& _internal_image() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_image(const std::string& value);
+  std::string* _internal_mutable_image();
+  public:
+
+  // uint32 width = 1;
+  void clear_width();
+  ::PROTOBUF_NAMESPACE_ID::uint32 width() const;
+  void set_width(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_width() const;
+  void _internal_set_width(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // uint32 height = 2;
+  void clear_height();
+  ::PROTOBUF_NAMESPACE_ID::uint32 height() const;
+  void set_height(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_height() const;
+  void _internal_set_height(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // uint32 hotx = 3;
+  void clear_hotx();
+  ::PROTOBUF_NAMESPACE_ID::uint32 hotx() const;
+  void set_hotx(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_hotx() const;
+  void _internal_set_hotx(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // uint32 hoty = 4;
+  void clear_hoty();
+  ::PROTOBUF_NAMESPACE_ID::uint32 hoty() const;
+  void set_hoty(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  private:
+  ::PROTOBUF_NAMESPACE_ID::uint32 _internal_hoty() const;
+  void _internal_set_hoty(::PROTOBUF_NAMESPACE_ID::uint32 value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:snappyv1.StreamDataCursor)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr image_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 width_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 height_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 hotx_;
+  ::PROTOBUF_NAMESPACE_ID::uint32 hoty_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_snappyv1_2eproto;
+};
 // ===================================================================
 
 
@@ -4539,9 +4725,140 @@ inline void StreamDataKeyboard::set_down(bool value) {
   // @@protoc_insertion_point(field_set:snappyv1.StreamDataKeyboard.down)
 }
 
+// -------------------------------------------------------------------
+
+// StreamDataCursor
+
+// uint32 width = 1;
+inline void StreamDataCursor::clear_width() {
+  width_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StreamDataCursor::_internal_width() const {
+  return width_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StreamDataCursor::width() const {
+  // @@protoc_insertion_point(field_get:snappyv1.StreamDataCursor.width)
+  return _internal_width();
+}
+inline void StreamDataCursor::_internal_set_width(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  width_ = value;
+}
+inline void StreamDataCursor::set_width(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_width(value);
+  // @@protoc_insertion_point(field_set:snappyv1.StreamDataCursor.width)
+}
+
+// uint32 height = 2;
+inline void StreamDataCursor::clear_height() {
+  height_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StreamDataCursor::_internal_height() const {
+  return height_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StreamDataCursor::height() const {
+  // @@protoc_insertion_point(field_get:snappyv1.StreamDataCursor.height)
+  return _internal_height();
+}
+inline void StreamDataCursor::_internal_set_height(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  height_ = value;
+}
+inline void StreamDataCursor::set_height(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_height(value);
+  // @@protoc_insertion_point(field_set:snappyv1.StreamDataCursor.height)
+}
+
+// uint32 hotx = 3;
+inline void StreamDataCursor::clear_hotx() {
+  hotx_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StreamDataCursor::_internal_hotx() const {
+  return hotx_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StreamDataCursor::hotx() const {
+  // @@protoc_insertion_point(field_get:snappyv1.StreamDataCursor.hotx)
+  return _internal_hotx();
+}
+inline void StreamDataCursor::_internal_set_hotx(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  hotx_ = value;
+}
+inline void StreamDataCursor::set_hotx(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_hotx(value);
+  // @@protoc_insertion_point(field_set:snappyv1.StreamDataCursor.hotx)
+}
+
+// uint32 hoty = 4;
+inline void StreamDataCursor::clear_hoty() {
+  hoty_ = 0u;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StreamDataCursor::_internal_hoty() const {
+  return hoty_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::uint32 StreamDataCursor::hoty() const {
+  // @@protoc_insertion_point(field_get:snappyv1.StreamDataCursor.hoty)
+  return _internal_hoty();
+}
+inline void StreamDataCursor::_internal_set_hoty(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  
+  hoty_ = value;
+}
+inline void StreamDataCursor::set_hoty(::PROTOBUF_NAMESPACE_ID::uint32 value) {
+  _internal_set_hoty(value);
+  // @@protoc_insertion_point(field_set:snappyv1.StreamDataCursor.hoty)
+}
+
+// bytes image = 5;
+inline void StreamDataCursor::clear_image() {
+  image_.ClearToEmpty();
+}
+inline const std::string& StreamDataCursor::image() const {
+  // @@protoc_insertion_point(field_get:snappyv1.StreamDataCursor.image)
+  return _internal_image();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void StreamDataCursor::set_image(ArgT0&& arg0, ArgT... args) {
+ 
+ image_.SetBytes(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:snappyv1.StreamDataCursor.image)
+}
+inline std::string* StreamDataCursor::mutable_image() {
+  // @@protoc_insertion_point(field_mutable:snappyv1.StreamDataCursor.image)
+  return _internal_mutable_image();
+}
+inline const std::string& StreamDataCursor::_internal_image() const {
+  return image_.Get();
+}
+inline void StreamDataCursor::_internal_set_image(const std::string& value) {
+  
+  image_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, value, GetArenaForAllocation());
+}
+inline std::string* StreamDataCursor::_internal_mutable_image() {
+  
+  return image_.Mutable(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, GetArenaForAllocation());
+}
+inline std::string* StreamDataCursor::release_image() {
+  // @@protoc_insertion_point(field_release:snappyv1.StreamDataCursor.image)
+  return image_.Release(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArenaForAllocation());
+}
+inline void StreamDataCursor::set_allocated_image(std::string* image) {
+  if (image != nullptr) {
+    
+  } else {
+    
+  }
+  image_.SetAllocated(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), image,
+      GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set_allocated:snappyv1.StreamDataCursor.image)
+}
+
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------
