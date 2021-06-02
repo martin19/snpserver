@@ -16,6 +16,9 @@ struct SnpPortOptions {
 class SnpPort {
 public:
     SnpPort();
+
+    SnpPort(PortType type);
+
     virtual ~SnpPort();
 
     void init();

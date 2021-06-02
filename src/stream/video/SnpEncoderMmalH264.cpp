@@ -10,7 +10,7 @@ SnpEncoderMmalH264::SnpEncoderMmalH264(const SnpEncoderMmalH264Options &options)
     height = options.height;
     bpp = options.bpp;
 
-    addInputPort(new SnpPort());
+    addInputPort(new SnpPort(PORT_TYPE_BOTH));
     addOutputPort(new SnpPort());
 
     getInputPort(0)->setOnDataCb(std::bind(&SnpEncoderMmalH264::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
@@ -21,16 +21,17 @@ SnpEncoderMmalH264::~SnpEncoderMmalH264() {
 }
 
 void SnpEncoderMmalH264::onInputData(const uint8_t *data, int len, bool complete) {
+    if(!isEnabled()) return;
     mmalEncoderEncode();
 }
 
 void SnpEncoderMmalH264::setEnabled(bool enabled) {
-    SnpComponent::setEnabled(enabled);
     if(enabled) {
         mmalEncoderInit();
     } else {
         mmalEncoderDestroy();
     }
+    SnpComponent::setEnabled(enabled);
 }
 
 void SnpEncoderMmalH264::mmalControlCallback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer) {
@@ -171,27 +172,27 @@ bool SnpEncoderMmalH264::mmalEncoderInit() {
     }
 
     //seems to make image crisper and increases framerate ?
-    {
-        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_H264_DEBLOCK_IDC, sizeof(param)}, 1};
-        status = mmal_port_parameter_set(encoder_output, &param.hdr);
-        CHECK_STATUS(status, "failed to set port parameter MMAL_PARAMETER_VIDEO_ENCODE_H264_DEBLOCK_IDC");
-    }
+//    {
+//        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_H264_DEBLOCK_IDC, sizeof(param)}, 1};
+//        status = mmal_port_parameter_set(encoder_output, &param.hdr);
+//        CHECK_STATUS(status, "failed to set port parameter MMAL_PARAMETER_VIDEO_ENCODE_H264_DEBLOCK_IDC");
+//    }
 
     //quality (quantisationParameter 0..51)
     {
-        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_INITIAL_QUANT, sizeof(param)}, 30};
+        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_INITIAL_QUANT, sizeof(param)}, 15};
         status = mmal_port_parameter_set(encoder_output, &param.hdr);
         CHECK_STATUS(status, "failed to set port parameter MMAL_PARAMETER_VIDEO_ENCODE_INITIAL_QUANT");
     }
 
     {
-        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_MIN_QUANT, sizeof(param)}, 30};
+        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_MIN_QUANT, sizeof(param)}, 15};
         status = mmal_port_parameter_set(encoder_output, &param.hdr);
         CHECK_STATUS(status, "failed to set port parameter MMAL_PARAMETER_VIDEO_ENCODE_MIN_QUANT");
     }
 
     {
-        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_MAX_QUANT, sizeof(param)}, 30};
+        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_MAX_QUANT, sizeof(param)}, 15};
         status = mmal_port_parameter_set(encoder_output, &param.hdr);
         CHECK_STATUS(status, "failed to set port parameter MMAL_PARAMETER_VIDEO_ENCODE_MAX_QUANT");
     }
@@ -262,7 +263,6 @@ void SnpEncoderMmalH264::mmalEncoderCleanup() {/* Cleanup everything */
 }
 
 bool SnpEncoderMmalH264::mmalEncoderEncode() {
-    printf("encode\n");
     MMAL_STATUS_T status = MMAL_SUCCESS;
     MMAL_BUFFER_HEADER_T *bufferHeader;
 

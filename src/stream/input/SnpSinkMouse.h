@@ -19,8 +19,8 @@ private:
     int height;
     int previousButtonMask;
     bool initMouse();
-    bool setMousePosition(int x, int y);
-    bool setButton(int32_t buttonMask, int down);
+    void setMousePosition(int x, int y);
+    void setButton(int32_t buttonMask, int down);
     void destroyMouse();
 };
 

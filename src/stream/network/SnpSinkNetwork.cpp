@@ -11,6 +11,7 @@ SnpSinkNetwork::SnpSinkNetwork(const SnpSinkNetworkOptions &options) : SnpCompon
     getInputPort(0)->setOnDataCb(std::bind(&SnpSinkNetwork::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
     buffer.reserve(SNP_SINK_NETWORK_BUFFER_SIZE);
+    buffer.clear();
 }
 
 SnpSinkNetwork::~SnpSinkNetwork() {

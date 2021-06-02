@@ -1,7 +1,12 @@
+#include <iostream>
 #include "SnpPort.h"
 
 SnpPort::SnpPort() {
-    //TODO
+    type = PORT_TYPE_COPY;
+}
+
+SnpPort::SnpPort(PortType type) {
+    this->type = type;
 }
 
 SnpPort::~SnpPort() {
@@ -15,10 +20,16 @@ void SnpPort::init() {
 bool SnpPort::connect(SnpPort *sourcePort, SnpPort *targetPort) {
     sourcePort->targetPort = targetPort;
 
-    targetPort->device = sourcePort->device;
-    targetPort->deviceFd = sourcePort->deviceFd;
-    targetPort->dmaBuf = sourcePort->dmaBuf;
-    targetPort->dmaBufFd = sourcePort->dmaBufFd;
+    if((sourcePort->type == PORT_TYPE_MMAP || sourcePort->type == PORT_TYPE_BOTH) &&
+        (targetPort->type == PORT_TYPE_MMAP || targetPort->type == PORT_TYPE_BOTH)) {
+        std::cout << sourcePort->device << std::endl;
+        targetPort->device = sourcePort->device;
+        targetPort->deviceFd = sourcePort->deviceFd;
+        targetPort->dmaBuf = sourcePort->dmaBuf;
+        targetPort->dmaBufFd = sourcePort->dmaBufFd;
+    }
+
+    return true;
 }
 
 bool SnpPort::initMmap() {

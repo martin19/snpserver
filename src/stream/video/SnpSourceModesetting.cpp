@@ -9,7 +9,7 @@
 
 SnpSourceModesetting::SnpSourceModesetting(const SnpSourceModesettingOptions &options): SnpComponent(options) {
 
-    addOutputPort(new SnpPort());
+    addOutputPort(new SnpPort(PORT_TYPE_BOTH));
     device = options.device;
     init();
 
@@ -27,13 +27,13 @@ bool SnpSourceModesetting::init() {
     int deviceFd = -1;
     int dmaBufFd = -1;
 
-//    uint32_t fbId = 0xce; //with hardware cursor
+    uint32_t fbId = 0xce; //with hardware cursor
 //    uint32_t fbId = 0xcf; //with hardware cursor
 //  uint32_t fb_id = 0xd1; //cursor plane test
 
 //    uint32_t fbId = 0xcd; //with hardware cursor
 //    uint32_t fbId = 0xcd;
-    uint32_t fbId = 0xcf;
+//    uint32_t fbId = 0xcf;
 
     //TODO: determine primary framebufferId!
     //TODO: how to detect framebuffer has changed?
@@ -85,7 +85,7 @@ void SnpSourceModesetting::setEnabled(bool enabled) {
 //                if(outputPort && outputPort->targetPort) {
 //                    outputPort->onDataCb(nullptr, 0, true);
 //                }
-                usleep(16666);
+                usleep(33333);
             }
         }};
     } else {

@@ -8,15 +8,14 @@
 #include <network/snappyv1.pb.h>
 
 SnpSinkMouse::SnpSinkMouse(const SnpSinkMouseOptions &options) : SnpComponent(options) {
-    initMouse();
     fid = -1;
     width = options.width;
     height = options.height;
     previousButtonMask = 0;
 
     addInputPort(new SnpPort());
-
     getInputPort(0)->setOnDataCb(std::bind(&SnpSinkMouse::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    initMouse();
 }
 
 SnpSinkMouse::~SnpSinkMouse() {
@@ -60,7 +59,6 @@ void SnpSinkMouse::onInputData(const uint8_t *data, int len, bool complete) {
         }
         previousButtonMask = buttonMask;
     }
-
 }
 
 bool SnpSinkMouse::initMouse() {
@@ -125,13 +123,14 @@ error:
     return result;
 }
 
-bool SnpSinkMouse::setMousePosition(int x, int y) {
+void SnpSinkMouse::setMousePosition(int x, int y) {
+    std::cout << "setmouseposition " << x << "//" << y << std::endl;
     emit(fid, EV_ABS, ABS_X, x);
     emit(fid, EV_ABS, ABS_Y, y);
     emit(fid, EV_SYN, SYN_REPORT, 0);
 }
 
-bool SnpSinkMouse::setButton(int32_t button, int down) {
+void SnpSinkMouse::setButton(int32_t button, int down) {
     if(button & 1) {
         emit(fid, EV_KEY, BTN_LEFT, down);
     } else if(button & 2) {

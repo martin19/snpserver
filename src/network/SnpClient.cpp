@@ -10,6 +10,7 @@
 #include <stream/input/SnpSinkKeyboard.h>
 #include <stream/input/SnpSourceCursor.h>
 #include "SnpSocket.h"
+#include "util/loguru.h"
 
 SnpClient::SnpClient(SnpSocket *server, struct lws *wsi) : server(server), wsi(wsi) {
     connectionStartTs = std::time(nullptr);
@@ -78,6 +79,7 @@ void SnpClient::onStreamsChange(const snappyv1::StreamsChange &msg) {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Create a fixed video pipe
     {
+        LOG_F(INFO, "creating video pipe.");
         SnpSourceModesettingOptions sourceModesettingOptions;
         sourceModesettingOptions.device = "/dev/dri/card0";
         sourceModesettingOptions.fps = 30;
@@ -107,11 +109,14 @@ void SnpClient::onStreamsChange(const snappyv1::StreamsChange &msg) {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Create a fixed mouse pipe (streamId=1)
     {
+        LOG_F(INFO, "creating mouse pipe.");
         SnpSourceNetworkOptions sourceNetworkOptions = {};
         sourceNetworkOptions.client = this;
         sourceNetworkOptions.streamId = 1;
         auto *sourceNetwork = new SnpSourceNetwork(sourceNetworkOptions);
         SnpSinkMouseOptions sinkMouseOptions = {};
+        sinkMouseOptions.width = 1920;
+        sinkMouseOptions.height = 1080;
         auto *snpSinkMouse = new SnpSinkMouse(sinkMouseOptions);
         SnpPort::connect(sourceNetwork->getOutputPort(0), snpSinkMouse->getInputPort(0));
 
@@ -123,6 +128,7 @@ void SnpClient::onStreamsChange(const snappyv1::StreamsChange &msg) {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Create a fixed keyboard pipe (streamId=2)
     {
+        LOG_F(INFO, "creating keyboard pipe.");
         SnpSourceNetworkOptions sourceNetworkOptions = {};
         sourceNetworkOptions.client = this;
         sourceNetworkOptions.streamId = 2;
@@ -139,6 +145,7 @@ void SnpClient::onStreamsChange(const snappyv1::StreamsChange &msg) {
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //create a fixed cursor pipe (streamId=3)
     {
+        LOG_F(INFO, "creating cursor pipe.");
         SnpSourceCursorOptions sourceCursorOptions = {};
         auto *sourceCursor = new SnpSourceCursor(sourceCursorOptions);
         SnpSinkNetworkOptions sinkNetworkOptions = {};
@@ -153,11 +160,11 @@ void SnpClient::onStreamsChange(const snappyv1::StreamsChange &msg) {
         fixedCursorPipe->addComponent(sinkNetwork);
     }
 
-
+    LOG_F(INFO, "Starting pipes.");
     fixedVideoPipe->start();
     fixedMousePipe->start();
-    fixedKeyboardPipe->start();
-    fixedCursorPipe->start();
+//    fixedKeyboardPipe->start();
+//    fixedCursorPipe->start();
 }
 
 void SnpClient::setStreamListener(uint32_t streamId, StreamListener streamListener) {
@@ -166,7 +173,8 @@ void SnpClient::setStreamListener(uint32_t streamId, StreamListener streamListen
 
 void SnpClient::onStreamData(const snappyv1::StreamData &msg) {
     uint32_t streamId = msg.stream_id();
-    StreamListener listener = streamListeners.at(streamId);
+    auto entry = streamListeners.find(streamId);
+    StreamListener listener = entry->second;
     if(listener != nullptr) {
         const auto *data = (const uint8_t*)msg.payload().data();
         int len = msg.payload().length();

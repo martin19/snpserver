@@ -60,6 +60,9 @@ int SnpSocket::callback_http(struct lws *wsi,
         case LWS_CALLBACK_HTTP_BIND_PROTOCOL: {
             printf("LWS_CALLBACK_HTTP_BIND_PROTOCOL\n");
         } break;
+        case LWS_CALLBACK_EVENT_WAIT_CANCELLED: {
+//            printf("LWS_CALLBACK_EVENT_WAIT_CANCELLED\n");
+        } break;
         case LWS_CALLBACK_ADD_HEADERS: {
             printf("LWS_CALLBACK_ADD_HEADERS\n");
         } break;
@@ -79,12 +82,12 @@ int SnpSocket::callback_http(struct lws *wsi,
             int binary = lws_frame_is_binary(wsi);
 
             //TODO: use logging facility, looks nice
-            printf("LWS_CALLBACK_RECEIVE: %4d (rpp %5d, first %d, last %d, bin %d)\n",
-                      (int)len, (int)lws_remaining_packet_payload(wsi),
-                      first, final, binary);
+//            printf("LWS_CALLBACK_RECEIVE: %4d (rpp %5d, first %d, last %d, bin %d)\n",
+//                      (int)len, (int)lws_remaining_packet_payload(wsi),
+//                      first, final, binary);
 
             if (len) {
-                lwsl_hexdump_notice(in, len);
+//                lwsl_hexdump_notice(in, len);
             }
 
             if(first && final && binary) {
@@ -115,6 +118,9 @@ int SnpSocket::callback_http(struct lws *wsi,
         case LWS_CALLBACK_FILTER_NETWORK_CONNECTION: {
             printf("LWS_CALLBACK_FILTER_NETWORK_CONNECTION\n");
         } break;
+        case LWS_CALLBACK_WS_PEER_INITIATED_CLOSE: {
+            printf("LWS_CALLBACK_WS_PEER_INITIATED_CLOSE\n");
+        } break;
         case LWS_CALLBACK_CONNECTING: {
             printf("LWS_CALLBACK_CONNECTING\n");
         } break;
@@ -123,9 +129,9 @@ int SnpSocket::callback_http(struct lws *wsi,
         } break;
         case LWS_CALLBACK_SERVER_WRITEABLE: {
 //            printf("LWS_CALLBACK_SERVER_WRITEABLE\n");
-            if(self->messageBufferLen) {
+            if(self && self->messageBufferLen) {
                 int written = lws_write(wsi, &self->messageBuffer[LWS_PRE], self->messageBufferLen, LWS_WRITE_BINARY);
-//                printf("%d of %d bytes written\n", written, self->messageBufferLen);
+                printf("%d of %d bytes written\n", written, self->messageBufferLen);
                 self->messageBufferLen = 0;
             }
         } break;
@@ -147,14 +153,6 @@ void SnpSocket::sendMessage(snappyv1::Message *msg, struct lws *wsi) {
     messageBufferLen = msg->ByteSizeLong();
     msg->SerializeToArray(&messageBuffer[LWS_PRE], messageBufferLen);
     lws_callback_on_writable(wsi);
-
-    //busy wait until messageBuffer is empty
-    while(messageBufferLen) {
-        printf("*");
-        fflush(stdout);
-        lws_callback_on_writable(wsi);
-        lws_service(context, 0);
-    }
 }
 
 void SnpSocket::sendServerInfo(lws* wsi) {
