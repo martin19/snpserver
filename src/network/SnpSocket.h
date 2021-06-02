@@ -4,6 +4,7 @@
 #include "libwebsockets.h"
 #include <functional>
 #include <set>
+#include <queue>
 #include "SnpClient.h"
 
 class SnpSocket {
@@ -20,11 +21,14 @@ public:
 private:
     struct lws_context_creation_info info;
     struct lws_context *context;
+    struct lws_ring *ring;
     std::map<lws*, SnpClient*> clients;
     void sendServerInfo(lws* wsi);
     void onMessage(lws *wsi, uint8_t *message, int len);
-    uint8_t messageBuffer[1024000];
-    int messageBufferLen;
+    uint8_t sendBuffer[1024000];
+    int sendBufferLen;
+
+    std::queue<snappyv1::Message*> outputQueue;
 };
 
 #endif //SNAPPYVNC_SERVER_H

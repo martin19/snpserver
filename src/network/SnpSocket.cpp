@@ -15,7 +15,7 @@ SnpSocket::SnpSocket() {
     info.pt_serv_buf_size = 32 * 1024;
     info.user = this;
     context = lws_create_context(&info);
-    messageBufferLen = 0;
+    sendBufferLen = 0;
 }
 
 SnpSocket::~SnpSocket() {
@@ -75,7 +75,7 @@ int SnpSocket::callback_http(struct lws *wsi,
             }
         } break;
         case LWS_CALLBACK_RECEIVE: {
-            printf("LWS_CALLBACK_RECEIVE\n");
+//            printf("LWS_CALLBACK_RECEIVE\n");
 
             int first = lws_is_first_fragment(wsi);
             int final = lws_is_final_fragment(wsi);
@@ -95,9 +95,6 @@ int SnpSocket::callback_http(struct lws *wsi,
             } else {
                 lwsl_err("Did not receive a full binary message, packet is fragemented - cannot handle fragmented packets yet.");
             }
-
-            break;
-
         } break;
         case LWS_CALLBACK_CLOSED: {
             //TODO: remove client pointer and clean up.
@@ -129,10 +126,16 @@ int SnpSocket::callback_http(struct lws *wsi,
         } break;
         case LWS_CALLBACK_SERVER_WRITEABLE: {
 //            printf("LWS_CALLBACK_SERVER_WRITEABLE\n");
-            if(self && self->messageBufferLen) {
-                int written = lws_write(wsi, &self->messageBuffer[LWS_PRE], self->messageBufferLen, LWS_WRITE_BINARY);
-                printf("%d of %d bytes written\n", written, self->messageBufferLen);
-                self->messageBufferLen = 0;
+            if(self && !self->outputQueue.empty()) {
+                //send next message.
+                snappyv1::Message *msg = self->outputQueue.front();
+                self->sendBufferLen = msg->ByteSizeLong();
+                msg->SerializeToArray(&self->sendBuffer[LWS_PRE], self->sendBufferLen);
+                int written = lws_write(wsi, &self->sendBuffer[LWS_PRE], self->sendBufferLen, LWS_WRITE_BINARY);
+//                printf("%d of %d bytes written\n", written, self->sendBufferLen);
+                self->sendBufferLen = 0;
+                self->outputQueue.pop();
+                delete msg;
             }
         } break;
         case LWS_CALLBACK_CLIENT_WRITEABLE: {
@@ -149,9 +152,7 @@ int SnpSocket::callback_http(struct lws *wsi,
 }
 
 void SnpSocket::sendMessage(snappyv1::Message *msg, struct lws *wsi) {
-    //send next message.
-    messageBufferLen = msg->ByteSizeLong();
-    msg->SerializeToArray(&messageBuffer[LWS_PRE], messageBufferLen);
+    outputQueue.push(msg);
     lws_callback_on_writable(wsi);
 }
 

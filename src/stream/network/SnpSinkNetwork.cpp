@@ -22,6 +22,8 @@ void SnpSinkNetwork::onInputData(const uint8_t * inputBuffer, int inputLen, bool
     if(complete) {
 //        usleep(16666);
         this->client->sendStreamData(streamId, buffer.data(), buffer.size());
+        buffer.clear();
+    } else {
+        std::cout << "got incomplete frame " << inputLen << std::endl;
     }
-    buffer.clear();
 }

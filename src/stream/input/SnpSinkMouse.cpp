@@ -124,7 +124,7 @@ error:
 }
 
 void SnpSinkMouse::setMousePosition(int x, int y) {
-    std::cout << "setmouseposition " << x << "//" << y << std::endl;
+//    std::cout << "setmouseposition " << x << "//" << y << std::endl;
     emit(fid, EV_ABS, ABS_X, x);
     emit(fid, EV_ABS, ABS_Y, y);
     emit(fid, EV_SYN, SYN_REPORT, 0);

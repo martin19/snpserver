@@ -48,7 +48,6 @@ SnpClient::~SnpClient() {
 
 void SnpClient::onMessage(uint8_t *data, int len) {
     //decode message
-    printf("got a message len=%d\n",len);
     snappyv1::Message message = snappyv1::Message();
     message.ParseFromArray(data, len);
     switch(message.type()) {
@@ -187,8 +186,8 @@ void SnpClient::sendStreamData(uint32_t streamId, uint8_t *data, int len) {
     auto *streamData = new StreamData();
     streamData->set_payload(data, len);
     streamData->set_stream_id(streamId);
-    Message msg;
-    msg.set_type(snappyv1::MESSAGE_TYPE_STREAM_DATA);
-    msg.set_allocated_stream_data(streamData);
-    this->server->sendMessage(&msg, wsi);
+    auto *msg = new Message();
+    msg->set_type(snappyv1::MESSAGE_TYPE_STREAM_DATA);
+    msg->set_allocated_stream_data(streamData);
+    this->server->sendMessage(msg, wsi);
 }
