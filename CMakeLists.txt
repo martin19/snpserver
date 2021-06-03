@@ -28,6 +28,11 @@ include_directories(
     LIBWEBSOCKETS_INCLUDE_DIR
 )
 
+#TODO!
+add_library(libdrm SHARED IMPORTED)
+set_target_properties(libdrm PROPERTIES IMPORTED_LOCATION /usr/local/lib/arm-linux-gnueabihf/libdrm.so.2)
+set_target_properties(libdrm PROPERTIES VERSION 2 SOVERSION 2.4)
+
 add_executable(snpserver
     main.cpp
     src/network/snappyv1.pb.cc
@@ -39,6 +44,7 @@ add_executable(snpserver
     src/stream/SnpPort.cpp
     # video stream
     src/stream/video/SnpSourceModesetting.cpp
+    src/stream/video/SnpSourceGL.cpp
     # input stream
     src/stream/input/SnpSinkMouse.cpp
     src/stream/input/keymap_atset1_linux.c
@@ -58,10 +64,12 @@ target_link_libraries(snpserver
     ${PROTOBUF_LIBRARY}
     ${MMALH264_LIBRARIES}
     pthread
-    drm
+    libdrm
     dl
     X11
     Xfixes
+    EGL
+    GLESv2
 )
 
 #target_link_libraries(snappyVnc PRIVATE spdlog::spdlog_header_only)

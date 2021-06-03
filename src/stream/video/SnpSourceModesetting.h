@@ -24,7 +24,6 @@ public:
     uint32_t bpp;
 private:
     bool init();
-    void onInputData(const uint8_t *data, int len, bool complete);
     std::string device;
     std::thread grabberThread;
 };

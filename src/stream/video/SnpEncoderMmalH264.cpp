@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <cstdio>
 #include <fcntl.h>
+#include <iostream>
 
 #define CHECK_STATUS(status, msg) if (status != MMAL_SUCCESS) { fprintf(stderr, msg"\n"); goto error; }
 
@@ -70,7 +71,7 @@ uint8_t *SnpEncoderMmalH264::mmalDmaBufAllocator(MMAL_PORT_T *port, uint32_t pay
     SnpPort *inputPort = ctx->getInputPort(0);
 
     if(vcsm_init() != 0) {
-        fprintf(stderr, "Cannot init vcsm (vcsm_init)\n");
+        fprintf(stderr, "Cannot initDrm vcsm (vcsm_init)\n");
         goto error;
     }
 
@@ -120,7 +121,7 @@ bool SnpEncoderMmalH264::mmalEncoderInit() {
     //format_in->encoding = MMAL_ENCODING_RGBA;
     format_in->es->video.width = this->width;
     format_in->es->video.height = this->height;
-    format_in->es->video.frame_rate.num = 60;
+    format_in->es->video.frame_rate.num = 30;
     format_in->es->video.frame_rate.den = 1;
     format_in->es->video.par.num = 1;
     format_in->es->video.par.den = 1;
@@ -140,7 +141,7 @@ bool SnpEncoderMmalH264::mmalEncoderInit() {
     format_out->encoding = MMAL_ENCODING_H264;
     format_out->es->video.width = this->width;
     format_out->es->video.height = this->height;
-    format_out->es->video.frame_rate.num = 60;
+    format_out->es->video.frame_rate.num = 30;
     format_out->es->video.frame_rate.den = 1;
     format_out->es->video.par.num = 1;
     format_out->es->video.par.den = 1;
