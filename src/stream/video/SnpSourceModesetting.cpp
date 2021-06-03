@@ -85,7 +85,7 @@ void SnpSourceModesetting::setEnabled(bool enabled) {
 //                if(outputPort && outputPort->targetPort) {
 //                    outputPort->onDataCb(nullptr, 0, true);
 //                }
-//                usleep(16666);
+//                usleep(33333);
             }
         }};
     } else {

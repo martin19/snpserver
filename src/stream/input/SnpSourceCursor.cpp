@@ -48,7 +48,7 @@ void SnpSourceCursor::destroyX11Client() {
 
 void SnpSourceCursor::runX11Loop() {
     XEvent ev;
-    while(XPending(display) && isEnabled()) {
+    while(this->isEnabled()) {
         XNextEvent(display, &ev);
         if(ev.type == xFixesEventBase + XFixesCursorNotify) {
             XFixesCursorImage *x11Cursor = XFixesGetCursorImage(display);

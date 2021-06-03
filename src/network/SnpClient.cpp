@@ -162,8 +162,8 @@ void SnpClient::onStreamsChange(const snappyv1::StreamsChange &msg) {
     LOG_F(INFO, "Starting pipes.");
     fixedVideoPipe->start();
     fixedMousePipe->start();
-//    fixedKeyboardPipe->start();
-//    fixedCursorPipe->start();
+    fixedKeyboardPipe->start();
+    fixedCursorPipe->start();
 }
 
 void SnpClient::setStreamListener(uint32_t streamId, StreamListener streamListener) {

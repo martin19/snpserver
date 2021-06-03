@@ -126,16 +126,21 @@ int SnpSocket::callback_http(struct lws *wsi,
         } break;
         case LWS_CALLBACK_SERVER_WRITEABLE: {
 //            printf("LWS_CALLBACK_SERVER_WRITEABLE\n");
+            std::cout << "Output queue size = " << self->outputQueue.size() << std::endl;
             if(self && !self->outputQueue.empty()) {
                 //send next message.
                 snappyv1::Message *msg = self->outputQueue.front();
                 self->sendBufferLen = msg->ByteSizeLong();
                 msg->SerializeToArray(&self->sendBuffer[LWS_PRE], self->sendBufferLen);
-                int written = lws_write(wsi, &self->sendBuffer[LWS_PRE], self->sendBufferLen, LWS_WRITE_BINARY);
-//                printf("%d of %d bytes written\n", written, self->sendBufferLen);
+                //TODO: assuming whole message can be sent.
+                lws_write(wsi, &self->sendBuffer[LWS_PRE], self->sendBufferLen, LWS_WRITE_BINARY);
                 self->sendBufferLen = 0;
                 self->outputQueue.pop();
                 delete msg;
+            }
+
+            if(!self->outputQueue.empty()) {
+                lws_callback_on_writable(wsi);
             }
         } break;
         case LWS_CALLBACK_CLIENT_WRITEABLE: {

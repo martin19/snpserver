@@ -21,7 +21,6 @@ public:
 private:
     struct lws_context_creation_info info;
     struct lws_context *context;
-    struct lws_ring *ring;
     std::map<lws*, SnpClient*> clients;
     void sendServerInfo(lws* wsi);
     void onMessage(lws *wsi, uint8_t *message, int len);

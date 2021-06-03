@@ -120,7 +120,7 @@ bool SnpEncoderMmalH264::mmalEncoderInit() {
     //format_in->encoding = MMAL_ENCODING_RGBA;
     format_in->es->video.width = this->width;
     format_in->es->video.height = this->height;
-    format_in->es->video.frame_rate.num = 30;
+    format_in->es->video.frame_rate.num = 60;
     format_in->es->video.frame_rate.den = 1;
     format_in->es->video.par.num = 1;
     format_in->es->video.par.den = 1;
@@ -140,7 +140,7 @@ bool SnpEncoderMmalH264::mmalEncoderInit() {
     format_out->encoding = MMAL_ENCODING_H264;
     format_out->es->video.width = this->width;
     format_out->es->video.height = this->height;
-    format_out->es->video.frame_rate.num = 30;
+    format_out->es->video.frame_rate.num = 60;
     format_out->es->video.frame_rate.den = 1;
     format_out->es->video.par.num = 1;
     format_out->es->video.par.den = 1;
@@ -180,19 +180,19 @@ bool SnpEncoderMmalH264::mmalEncoderInit() {
 
     //quality (quantisationParameter 0..51)
     {
-        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_INITIAL_QUANT, sizeof(param)}, 20};
+        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_INITIAL_QUANT, sizeof(param)}, 15};
         status = mmal_port_parameter_set(encoder_output, &param.hdr);
         CHECK_STATUS(status, "failed to set port parameter MMAL_PARAMETER_VIDEO_ENCODE_INITIAL_QUANT");
     }
 
     {
-        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_MIN_QUANT, sizeof(param)}, 20};
+        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_MIN_QUANT, sizeof(param)}, 15};
         status = mmal_port_parameter_set(encoder_output, &param.hdr);
         CHECK_STATUS(status, "failed to set port parameter MMAL_PARAMETER_VIDEO_ENCODE_MIN_QUANT");
     }
 
     {
-        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_MAX_QUANT, sizeof(param)}, 20};
+        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_MAX_QUANT, sizeof(param)}, 15};
         status = mmal_port_parameter_set(encoder_output, &param.hdr);
         CHECK_STATUS(status, "failed to set port parameter MMAL_PARAMETER_VIDEO_ENCODE_MAX_QUANT");
     }
