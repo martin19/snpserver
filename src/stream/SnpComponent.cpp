@@ -5,6 +5,7 @@ SnpPort* SnpComponent::getInputPort(int i) {
 }
 
 void SnpComponent::addInputPort(SnpPort *port) {
+    port->setOwner(this);
     inputPorts.push_back(port);
 }
 
@@ -13,6 +14,7 @@ SnpPort* SnpComponent::getOutputPort(int i) {
 }
 
 void SnpComponent::addOutputPort(SnpPort *port) {
+    port->setOwner(this);
     outputPorts.push_back(port);
 }
 

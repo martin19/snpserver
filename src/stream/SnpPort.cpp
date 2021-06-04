@@ -2,10 +2,12 @@
 #include "SnpPort.h"
 
 SnpPort::SnpPort() {
+    this->owner = nullptr;
     type = PORT_TYPE_COPY;
 }
 
 SnpPort::SnpPort(PortType type) {
+    this->owner = nullptr;
     this->type = type;
 }
 
@@ -59,4 +61,12 @@ bool SnpPort::destroyMmap() {
 //    return result;
 //    error:
 //    return result;
+}
+
+SnpComponent *SnpPort::getOwner() const {
+    return owner;
+}
+
+void SnpPort::setOwner(SnpComponent *owner) {
+    SnpPort::owner = owner;
 }

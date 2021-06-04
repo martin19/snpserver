@@ -1,4 +1,5 @@
 #include "SnpEncoderMmalH264.h"
+#include "SnpSourceGL.h"
 #include <unistd.h>
 #include <cstdio>
 #include <fcntl.h>
@@ -272,6 +273,7 @@ bool SnpEncoderMmalH264::mmalEncoderEncode() {
 
     /* Send data to decode to the input port of the video encoder */
     if ((bufferHeader = mmal_queue_get(pool_in->queue)) != nullptr) {
+//        dynamic_cast<SnpSourceGL*>(getInputPort(0)->getOwner())->captureFrame();
         bufferHeader->length = width * height * 3; //why 3!?
         bufferHeader->offset = 0;
         bufferHeader->pts = bufferHeader->dts = MMAL_TIME_UNKNOWN;

@@ -36,6 +36,8 @@ public:
 
     void setEnabled(bool enabled) override;
 
+    void captureFrame();
+
     //TODO: how to pass these forward (in a generic way) to encoder?
     uint32_t width;
     uint32_t height;
@@ -47,7 +49,6 @@ private:
 
     bool initGL();
     void destroyGL();
-    void captureFrame();
 
     static bool createCaptureFb(int deviceFd, uint32_t width, uint32_t height, uint32_t bpp, Framebuffer **framebuffer);
     static bool destroyCaptureFb(Framebuffer *framebuffer);

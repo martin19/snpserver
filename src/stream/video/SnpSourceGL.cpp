@@ -255,6 +255,11 @@ bool SnpSourceGL::initGL() {
 
     eglBindAPI(EGL_OPENGL_API);
     eglDpy = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    if (eglDpy == EGL_NO_DISPLAY) {
+        fprintf(stderr, "Failed to get EGL display\n");
+        return false;
+    }
+
     EGLint ver_min, ver_maj;
     eglInitialize(eglDpy, &ver_maj, &ver_min);
     LOG_F(INFO, "EGL: version %d.%d", ver_maj, ver_min);
