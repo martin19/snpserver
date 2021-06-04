@@ -191,8 +191,32 @@ void SnpClient::sendStreamData(uint32_t streamId, uint8_t *data, int len) {
     auto *streamData = new StreamData();
     streamData->set_payload(data, len);
     streamData->set_stream_id(streamId);
+
+    //TODO: generalize timing measurement to be used with other encoder decoder chains.
+//    if(streamId == 0) {
+//        auto *frameTiming = new FrameTiming();
+//        frameTiming->set_capture_ts_start_ms(fixedVideoPipe->getComponents().at(0)->getTimestampStartMs());
+//        frameTiming->set_capture_ts_end_ms(fixedVideoPipe->getComponents().at(0)->getTimestampEndMs());
+//        frameTiming->set_encode_ts_start_ms(fixedVideoPipe->getComponents().at(1)->getTimestampStartMs());
+//        frameTiming->set_encode_ts_end_ms(fixedVideoPipe->getComponents().at(1)->getTimestampEndMs());
+//        frameTiming->set_send_ts_start_ms(fixedVideoPipe->getComponents().at(2)->getTimestampStartMs());
+//        frameTiming->set_send_ts_end_ms(fixedVideoPipe->getComponents().at(2)->getTimestampEndMs());
+//        streamData->set_allocated_frame_timing(frameTiming);
+//    }
+
+//    if(streamId == 0) {
+//        std::cout << "FrameTiming:" << std::endl;
+//        std::cout << "Capture duration: " <<
+//        (fixedVideoPipe->getComponents().at(0)->getTimestampEndMs() -
+//            fixedVideoPipe->getComponents().at(0)->getTimestampStartMs()) << "ms" << std::endl;
+//        std::cout << "Encode duration: " <<
+//                  (fixedVideoPipe->getComponents().at(1)->getTimestampEndMs() -
+//                   fixedVideoPipe->getComponents().at(1)->getTimestampStartMs()) << "ms" << std::endl;
+//    }
+
     auto *msg = new Message();
     msg->set_type(snappyv1::MESSAGE_TYPE_STREAM_DATA);
     msg->set_allocated_stream_data(streamData);
+
     this->server->sendMessage(msg, wsi);
 }

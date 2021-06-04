@@ -126,7 +126,7 @@ int SnpSocket::callback_http(struct lws *wsi,
         } break;
         case LWS_CALLBACK_SERVER_WRITEABLE: {
 //            printf("LWS_CALLBACK_SERVER_WRITEABLE\n");
-            std::cout << "Output queue size = " << self->outputQueue.size() << std::endl;
+//            std::cout << "Output queue size = " << self->outputQueue.size() << std::endl;
             if(self && !self->outputQueue.empty()) {
                 //send next message.
                 snappyv1::Message *msg = self->outputQueue.front();

@@ -111,18 +111,19 @@ message StreamsChange {
     repeated StreamChange streams = 2;
 }
 
-message StreamStatistics {
-    uint32 last_frame = 1;
-    uint32 average_frame_qp = 2;
-    uint32 encode_ts_start_ms = 3;
-    uint32 encode_ts_end_ms = 4;
-    uint32 tx_ts_start_ms = 5;
-    uint32 tx_ts_end_ms = 6;
-}
+//message FrameTiming {
+//    uint32 capture_ts_start_ms = 2;
+//    uint32 capture_ts_end_ms = 3;
+//    uint32 encode_ts_start_ms = 4;
+//    uint32 encode_ts_end_ms = 5;
+//    uint32 send_ts_start_ms = 6;
+//    uint32 send_ts_end_ms = 7;
+//}
 
 message StreamData {
     uint32 stream_id = 1;
     bytes payload = 2;
+//    optional FrameTiming frame_timing = 3;
 }
 
 enum MessageType {

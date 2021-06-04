@@ -43,6 +43,8 @@ public:
     uint32_t height;
     uint32_t pitch;
     uint32_t bpp;
+
+    uint32_t framesCaptured;
 private:
     bool initDrm();
     void destroyDrm();
@@ -64,6 +66,7 @@ private:
     EGLDisplay eglDpy;
     EGLContext eglCtx;
     GLuint captureProg;
+//    GLuint frameBuffer;
 };
 
 

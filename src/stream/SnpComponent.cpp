@@ -26,3 +26,27 @@ SnpComponent::~SnpComponent() {
         delete pPort;
     }
 }
+
+uint32_t SnpComponent::getTimestampStartMs() const {
+    return timestampStartMs;
+}
+
+void SnpComponent::setTimestampStartMs(uint32_t timestampStartMs) {
+    SnpComponent::timestampStartMs = timestampStartMs;
+}
+
+uint32_t SnpComponent::getTimestampEndMs() const {
+    return timestampEndMs;
+}
+
+void SnpComponent::setTimestampEndMs(uint32_t timestampEndMs) {
+    SnpComponent::timestampEndMs = timestampEndMs;
+}
+
+SnpPipe *SnpComponent::getOwner() const {
+    return owner;
+}
+
+void SnpComponent::setOwner(SnpPipe *owner) {
+    SnpComponent::owner = owner;
+}

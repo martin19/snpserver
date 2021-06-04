@@ -1,3 +1,4 @@
+#include <util/TimeUtil.h>
 #include "SnpSinkNetwork.h"
 
 #define SNP_SINK_NETWORK_BUFFER_SIZE 500000
@@ -20,7 +21,10 @@ SnpSinkNetwork::~SnpSinkNetwork() {
 void SnpSinkNetwork::onInputData(const uint8_t * inputBuffer, int inputLen, bool complete) {
     buffer.insert(buffer.end(), inputBuffer, inputBuffer + inputLen);
     if(complete) {
+        setTimestampStartMs(TimeUtil::getTimeNowMs());
         this->client->sendStreamData(streamId, buffer.data(), buffer.size());
+        setTimestampEndMs(TimeUtil::getTimeNowMs());
         buffer.clear();
+        this->getOwner()->framesPassed++;
     }
 }

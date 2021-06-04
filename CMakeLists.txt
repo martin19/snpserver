@@ -39,6 +39,7 @@ add_executable(snpserver
     src/network/SnpClient.cpp
     src/network/SnpSocket.cpp
     src/util/loguru.cpp
+    src/util/TimeUtil.cpp
     # stream
     src/stream/SnpComponent.cpp
     src/stream/SnpPort.cpp

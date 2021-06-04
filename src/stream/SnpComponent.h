@@ -4,6 +4,9 @@
 #include <cstdint>
 #include <string>
 #include "SnpPort.h"
+#include "SnpPipe.h"
+
+class SnpPipe;
 
 struct SnpComponentOptions {
 };
@@ -24,10 +27,20 @@ public:
     void addInputPort(SnpPort *port);
     void addOutputPort(SnpPort *port);
 
+    uint32_t getTimestampStartMs() const;
+    void setTimestampStartMs(uint32_t timestampStartMs);
+    uint32_t getTimestampEndMs() const;
+    void setTimestampEndMs(uint32_t timestampEndMs);
+    SnpPipe *getOwner() const;
+    void setOwner(SnpPipe *owner);
+
 private:
     std::vector<SnpPort*> inputPorts;
     std::vector<SnpPort*> outputPorts;
     bool enabled;
+    uint32_t timestampStartMs;
+    uint32_t timestampEndMs;
+    SnpPipe *owner;
 };
 
 #endif //SNPSERVER_SNPCOMPONENT_H

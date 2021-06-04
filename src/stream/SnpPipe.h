@@ -15,9 +15,13 @@ private:
     std::vector<SnpComponent*> components;
 public:
     const std::vector<SnpComponent *> &getComponents() const;
-
+    uint32_t framesPassed;
 private:
     bool enabled = false;
+public:
+    bool isEnabled() const;
+
+    void setEnabled(bool enabled);
 };
 
 

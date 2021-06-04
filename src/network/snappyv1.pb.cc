@@ -157,23 +157,6 @@ struct StreamsChangeDefaultTypeInternal {
   };
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT StreamsChangeDefaultTypeInternal _StreamsChange_default_instance_;
-constexpr StreamStatistics::StreamStatistics(
-  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : last_frame_(0u)
-  , average_frame_qp_(0u)
-  , encode_ts_start_ms_(0u)
-  , encode_ts_end_ms_(0u)
-  , tx_ts_start_ms_(0u)
-  , tx_ts_end_ms_(0u){}
-struct StreamStatisticsDefaultTypeInternal {
-  constexpr StreamStatisticsDefaultTypeInternal()
-    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
-  ~StreamStatisticsDefaultTypeInternal() {}
-  union {
-    StreamStatistics _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT StreamStatisticsDefaultTypeInternal _StreamStatistics_default_instance_;
 constexpr StreamData::StreamData(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
   : payload_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
@@ -246,7 +229,7 @@ struct StreamDataCursorDefaultTypeInternal {
 };
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT StreamDataCursorDefaultTypeInternal _StreamDataCursor_default_instance_;
 }  // namespace snappyv1
-static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_snappyv1_2eproto[16];
+static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_snappyv1_2eproto[15];
 static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_snappyv1_2eproto[7];
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_snappyv1_2eproto = nullptr;
 
@@ -340,17 +323,6 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_snappyv1_2eproto::offsets[] PR
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::snappyv1::StreamsChange, streams_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::snappyv1::StreamStatistics, _internal_metadata_),
-  ~0u,  // no _extensions_
-  ~0u,  // no _oneof_case_
-  ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::snappyv1::StreamStatistics, last_frame_),
-  PROTOBUF_FIELD_OFFSET(::snappyv1::StreamStatistics, average_frame_qp_),
-  PROTOBUF_FIELD_OFFSET(::snappyv1::StreamStatistics, encode_ts_start_ms_),
-  PROTOBUF_FIELD_OFFSET(::snappyv1::StreamStatistics, encode_ts_end_ms_),
-  PROTOBUF_FIELD_OFFSET(::snappyv1::StreamStatistics, tx_ts_start_ms_),
-  PROTOBUF_FIELD_OFFSET(::snappyv1::StreamStatistics, tx_ts_end_ms_),
-  ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::snappyv1::StreamData, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
@@ -408,12 +380,11 @@ static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOB
   { 61, -1, sizeof(::snappyv1::ServerInfo)},
   { 69, 78, sizeof(::snappyv1::StreamsChange_StreamChange)},
   { 82, -1, sizeof(::snappyv1::StreamsChange)},
-  { 88, -1, sizeof(::snappyv1::StreamStatistics)},
-  { 99, -1, sizeof(::snappyv1::StreamData)},
-  { 106, -1, sizeof(::snappyv1::Message)},
-  { 116, 124, sizeof(::snappyv1::StreamDataPointer)},
-  { 127, -1, sizeof(::snappyv1::StreamDataKeyboard)},
-  { 135, -1, sizeof(::snappyv1::StreamDataCursor)},
+  { 88, -1, sizeof(::snappyv1::StreamData)},
+  { 95, -1, sizeof(::snappyv1::Message)},
+  { 105, 113, sizeof(::snappyv1::StreamDataPointer)},
+  { 116, -1, sizeof(::snappyv1::StreamDataKeyboard)},
+  { 124, -1, sizeof(::snappyv1::StreamDataCursor)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -427,7 +398,6 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::snappyv1::_ServerInfo_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::snappyv1::_StreamsChange_StreamChange_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::snappyv1::_StreamsChange_default_instance_),
-  reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::snappyv1::_StreamStatistics_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::snappyv1::_StreamData_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::snappyv1::_Message_default_instance_),
   reinterpret_cast<const ::PROTOBUF_NAMESPACE_ID::Message*>(&::snappyv1::_StreamDataPointer_default_instance_),
@@ -465,50 +435,45 @@ const char descriptor_table_protodef_snappyv1_2eproto[] PROTOBUF_SECTION_VARIABL
   "1.SourceH\000\210\001\001\022\'\n\007encoder\030\003 \001(\0132\021.snappyv"
   "1.EncoderH\001\210\001\001\022\'\n\007command\030\004 \001(\0162\021.snappy"
   "v1.CommandH\002\210\001\001B\t\n\007_sourceB\n\n\010_encoderB\n"
-  "\n\010_command\"\244\001\n\020StreamStatistics\022\022\n\nlast_"
-  "frame\030\001 \001(\r\022\030\n\020average_frame_qp\030\002 \001(\r\022\032\n"
-  "\022encode_ts_start_ms\030\003 \001(\r\022\030\n\020encode_ts_e"
-  "nd_ms\030\004 \001(\r\022\026\n\016tx_ts_start_ms\030\005 \001(\r\022\024\n\014t"
-  "x_ts_end_ms\030\006 \001(\r\"0\n\nStreamData\022\021\n\tstrea"
-  "m_id\030\001 \001(\r\022\017\n\007payload\030\002 \001(\014\"\305\001\n\007Message\022"
-  "#\n\004type\030\001 \001(\0162\025.snappyv1.MessageType\022+\n\013"
-  "server_info\030\002 \001(\0132\024.snappyv1.ServerInfoH"
-  "\000\0220\n\rstream_change\030\003 \001(\0132\027.snappyv1.Stre"
-  "amsChangeH\000\022+\n\013stream_data\030\004 \001(\0132\024.snapp"
-  "yv1.StreamDataH\000B\t\n\007message\"K\n\021StreamDat"
-  "aPointer\022\014\n\004absx\030\001 \001(\r\022\014\n\004absy\030\002 \001(\r\022\021\n\004"
-  "mask\030\003 \001(\005H\000\210\001\001B\007\n\005_mask\"C\n\022StreamDataKe"
-  "yboard\022\016\n\006keysym\030\001 \001(\r\022\017\n\007keycode\030\002 \001(\r\022"
-  "\014\n\004down\030\003 \001(\010\"\\\n\020StreamDataCursor\022\r\n\005wid"
-  "th\030\001 \001(\r\022\016\n\006height\030\002 \001(\r\022\014\n\004hotx\030\003 \001(\r\022\014"
-  "\n\004hoty\030\004 \001(\r\022\r\n\005image\030\005 \001(\014*v\n\010Platform\022"
-  "\024\n\020PLATFORM_WINDOWS\020\000\022\022\n\016PLATFORM_LINUX\020"
-  "\001\022\022\n\016PLATFORM_MACOS\020\002\022\026\n\022PLATFORM_RASPBE"
-  "RRY\020\003\022\024\n\020PLATFORM_ANDROID\020\004*Q\n\nSourceTyp"
-  "e\022\025\n\021SOURCE_TYPE_VIDEO\020\000\022\025\n\021SOURCE_TYPE_"
-  "AUDIO\020\001\022\025\n\021SOURCE_TYPE_INPUT\020\002*\270\001\n\rSourc"
-  "eSubType\022\027\n\023SOURCE_SUB_TYPE_X11\020\000\022\033\n\027SOU"
-  "RCE_SUB_TYPE_WAYLAND\020\001\022\032\n\026SOURCE_SUB_TYP"
-  "E_CAMERA\020\002\022\034\n\030SOURCE_SUB_TYPE_KEYBOARD\020\003"
-  "\022\033\n\027SOURCE_SUB_TYPE_POINTER\020\004\022\032\n\026SOURCE_"
-  "SUB_TYPE_CURSOR\020\005*\213\001\n\013EncoderType\022\036\n\032ENC"
-  "ODER_TYPE_H264_SOFTWARE\020\000\022\036\n\032ENCODER_TYP"
-  "E_H264_HARDWARE\020\001\022\035\n\031ENCODER_TYPE_MP3_SO"
-  "FTWARE\020\002\022\035\n\031ENCODER_TYPE_MP3_HARDWARE\020\003*"
-  "U\n\007Command\022\020\n\014COMMAND_INIT\020\000\022\021\n\rCOMMAND_"
-  "START\020\001\022\020\n\014COMMAND_STOP\020\002\022\023\n\017COMMAND_DES"
-  "TROY\020\003*y\n\rParameterType\022\031\n\025PARAMETER_TYP"
-  "E_STRING\020\000\022\027\n\023PARAMETER_TYPE_BOOL\020\001\022\031\n\025P"
-  "ARAMETER_TYPE_UINT32\020\002\022\031\n\025PARAMETER_TYPE"
-  "_DOUBLE\020\003*j\n\013MessageType\022\034\n\030MESSAGE_TYPE"
-  "_SERVER_INFO\020\000\022\037\n\033MESSAGE_TYPE_STREAMS_C"
-  "HANGE\020\001\022\034\n\030MESSAGE_TYPE_STREAM_DATA\020\002b\006p"
-  "roto3"
+  "\n\010_command\"0\n\nStreamData\022\021\n\tstream_id\030\001 "
+  "\001(\r\022\017\n\007payload\030\002 \001(\014\"\305\001\n\007Message\022#\n\004type"
+  "\030\001 \001(\0162\025.snappyv1.MessageType\022+\n\013server_"
+  "info\030\002 \001(\0132\024.snappyv1.ServerInfoH\000\0220\n\rst"
+  "ream_change\030\003 \001(\0132\027.snappyv1.StreamsChan"
+  "geH\000\022+\n\013stream_data\030\004 \001(\0132\024.snappyv1.Str"
+  "eamDataH\000B\t\n\007message\"K\n\021StreamDataPointe"
+  "r\022\014\n\004absx\030\001 \001(\r\022\014\n\004absy\030\002 \001(\r\022\021\n\004mask\030\003 "
+  "\001(\005H\000\210\001\001B\007\n\005_mask\"C\n\022StreamDataKeyboard\022"
+  "\016\n\006keysym\030\001 \001(\r\022\017\n\007keycode\030\002 \001(\r\022\014\n\004down"
+  "\030\003 \001(\010\"\\\n\020StreamDataCursor\022\r\n\005width\030\001 \001("
+  "\r\022\016\n\006height\030\002 \001(\r\022\014\n\004hotx\030\003 \001(\r\022\014\n\004hoty\030"
+  "\004 \001(\r\022\r\n\005image\030\005 \001(\014*v\n\010Platform\022\024\n\020PLAT"
+  "FORM_WINDOWS\020\000\022\022\n\016PLATFORM_LINUX\020\001\022\022\n\016PL"
+  "ATFORM_MACOS\020\002\022\026\n\022PLATFORM_RASPBERRY\020\003\022\024"
+  "\n\020PLATFORM_ANDROID\020\004*Q\n\nSourceType\022\025\n\021SO"
+  "URCE_TYPE_VIDEO\020\000\022\025\n\021SOURCE_TYPE_AUDIO\020\001"
+  "\022\025\n\021SOURCE_TYPE_INPUT\020\002*\270\001\n\rSourceSubTyp"
+  "e\022\027\n\023SOURCE_SUB_TYPE_X11\020\000\022\033\n\027SOURCE_SUB"
+  "_TYPE_WAYLAND\020\001\022\032\n\026SOURCE_SUB_TYPE_CAMER"
+  "A\020\002\022\034\n\030SOURCE_SUB_TYPE_KEYBOARD\020\003\022\033\n\027SOU"
+  "RCE_SUB_TYPE_POINTER\020\004\022\032\n\026SOURCE_SUB_TYP"
+  "E_CURSOR\020\005*\213\001\n\013EncoderType\022\036\n\032ENCODER_TY"
+  "PE_H264_SOFTWARE\020\000\022\036\n\032ENCODER_TYPE_H264_"
+  "HARDWARE\020\001\022\035\n\031ENCODER_TYPE_MP3_SOFTWARE\020"
+  "\002\022\035\n\031ENCODER_TYPE_MP3_HARDWARE\020\003*U\n\007Comm"
+  "and\022\020\n\014COMMAND_INIT\020\000\022\021\n\rCOMMAND_START\020\001"
+  "\022\020\n\014COMMAND_STOP\020\002\022\023\n\017COMMAND_DESTROY\020\003*"
+  "y\n\rParameterType\022\031\n\025PARAMETER_TYPE_STRIN"
+  "G\020\000\022\027\n\023PARAMETER_TYPE_BOOL\020\001\022\031\n\025PARAMETE"
+  "R_TYPE_UINT32\020\002\022\031\n\025PARAMETER_TYPE_DOUBLE"
+  "\020\003*j\n\013MessageType\022\034\n\030MESSAGE_TYPE_SERVER"
+  "_INFO\020\000\022\037\n\033MESSAGE_TYPE_STREAMS_CHANGE\020\001"
+  "\022\034\n\030MESSAGE_TYPE_STREAM_DATA\020\002b\006proto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_snappyv1_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_snappyv1_2eproto = {
-  false, false, 2685, descriptor_table_protodef_snappyv1_2eproto, "snappyv1.proto", 
-  &descriptor_table_snappyv1_2eproto_once, nullptr, 0, 16,
+  false, false, 2518, descriptor_table_protodef_snappyv1_2eproto, "snappyv1.proto", 
+  &descriptor_table_snappyv1_2eproto_once, nullptr, 0, 15,
   schemas, file_default_instances, TableStruct_snappyv1_2eproto::offsets,
   file_level_metadata_snappyv1_2eproto, file_level_enum_descriptors_snappyv1_2eproto, file_level_service_descriptors_snappyv1_2eproto,
 };
@@ -3320,323 +3285,6 @@ void StreamsChange::InternalSwap(StreamsChange* other) {
 
 // ===================================================================
 
-class StreamStatistics::_Internal {
- public:
-};
-
-StreamStatistics::StreamStatistics(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
-  SharedCtor();
-  RegisterArenaDtor(arena);
-  // @@protoc_insertion_point(arena_constructor:snappyv1.StreamStatistics)
-}
-StreamStatistics::StreamStatistics(const StreamStatistics& from)
-  : ::PROTOBUF_NAMESPACE_ID::Message() {
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::memcpy(&last_frame_, &from.last_frame_,
-    static_cast<size_t>(reinterpret_cast<char*>(&tx_ts_end_ms_) -
-    reinterpret_cast<char*>(&last_frame_)) + sizeof(tx_ts_end_ms_));
-  // @@protoc_insertion_point(copy_constructor:snappyv1.StreamStatistics)
-}
-
-void StreamStatistics::SharedCtor() {
-::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-    reinterpret_cast<char*>(&last_frame_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&tx_ts_end_ms_) -
-    reinterpret_cast<char*>(&last_frame_)) + sizeof(tx_ts_end_ms_));
-}
-
-StreamStatistics::~StreamStatistics() {
-  // @@protoc_insertion_point(destructor:snappyv1.StreamStatistics)
-  SharedDtor();
-  _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-void StreamStatistics::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-}
-
-void StreamStatistics::ArenaDtor(void* object) {
-  StreamStatistics* _this = reinterpret_cast< StreamStatistics* >(object);
-  (void)_this;
-}
-void StreamStatistics::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
-}
-void StreamStatistics::SetCachedSize(int size) const {
-  _cached_size_.Set(size);
-}
-
-void StreamStatistics::Clear() {
-// @@protoc_insertion_point(message_clear_start:snappyv1.StreamStatistics)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  ::memset(&last_frame_, 0, static_cast<size_t>(
-      reinterpret_cast<char*>(&tx_ts_end_ms_) -
-      reinterpret_cast<char*>(&last_frame_)) + sizeof(tx_ts_end_ms_));
-  _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
-}
-
-const char* StreamStatistics::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
-#define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
-  while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
-    ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
-    switch (tag >> 3) {
-      // uint32 last_frame = 1;
-      case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
-          last_frame_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // uint32 average_frame_qp = 2;
-      case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
-          average_frame_qp_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // uint32 encode_ts_start_ms = 3;
-      case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
-          encode_ts_start_ms_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // uint32 encode_ts_end_ms = 4;
-      case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
-          encode_ts_end_ms_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // uint32 tx_ts_start_ms = 5;
-      case 5:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 40)) {
-          tx_ts_start_ms_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      // uint32 tx_ts_end_ms = 6;
-      case 6:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 48)) {
-          tx_ts_end_ms_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
-          CHK_(ptr);
-        } else goto handle_unusual;
-        continue;
-      default: {
-      handle_unusual:
-        if ((tag == 0) || ((tag & 7) == 4)) {
-          CHK_(ptr);
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag,
-            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-            ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
-    }  // switch
-  }  // while
-success:
-  return ptr;
-failure:
-  ptr = nullptr;
-  goto success;
-#undef CHK_
-}
-
-::PROTOBUF_NAMESPACE_ID::uint8* StreamStatistics::_InternalSerialize(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
-  // @@protoc_insertion_point(serialize_to_array_start:snappyv1.StreamStatistics)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  // uint32 last_frame = 1;
-  if (this->last_frame() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(1, this->_internal_last_frame(), target);
-  }
-
-  // uint32 average_frame_qp = 2;
-  if (this->average_frame_qp() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(2, this->_internal_average_frame_qp(), target);
-  }
-
-  // uint32 encode_ts_start_ms = 3;
-  if (this->encode_ts_start_ms() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(3, this->_internal_encode_ts_start_ms(), target);
-  }
-
-  // uint32 encode_ts_end_ms = 4;
-  if (this->encode_ts_end_ms() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(4, this->_internal_encode_ts_end_ms(), target);
-  }
-
-  // uint32 tx_ts_start_ms = 5;
-  if (this->tx_ts_start_ms() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(5, this->_internal_tx_ts_start_ms(), target);
-  }
-
-  // uint32 tx_ts_end_ms = 6;
-  if (this->tx_ts_end_ms() != 0) {
-    target = stream->EnsureSpace(target);
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(6, this->_internal_tx_ts_end_ms(), target);
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
-        _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
-  }
-  // @@protoc_insertion_point(serialize_to_array_end:snappyv1.StreamStatistics)
-  return target;
-}
-
-size_t StreamStatistics::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:snappyv1.StreamStatistics)
-  size_t total_size = 0;
-
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  // Prevent compiler warnings about cached_has_bits being unused
-  (void) cached_has_bits;
-
-  // uint32 last_frame = 1;
-  if (this->last_frame() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_last_frame());
-  }
-
-  // uint32 average_frame_qp = 2;
-  if (this->average_frame_qp() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_average_frame_qp());
-  }
-
-  // uint32 encode_ts_start_ms = 3;
-  if (this->encode_ts_start_ms() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_encode_ts_start_ms());
-  }
-
-  // uint32 encode_ts_end_ms = 4;
-  if (this->encode_ts_end_ms() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_encode_ts_end_ms());
-  }
-
-  // uint32 tx_ts_start_ms = 5;
-  if (this->tx_ts_start_ms() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_tx_ts_start_ms());
-  }
-
-  // uint32 tx_ts_end_ms = 6;
-  if (this->tx_ts_end_ms() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
-        this->_internal_tx_ts_end_ms());
-  }
-
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
-        _internal_metadata_, total_size, &_cached_size_);
-  }
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
-}
-
-void StreamStatistics::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:snappyv1.StreamStatistics)
-  GOOGLE_DCHECK_NE(&from, this);
-  const StreamStatistics* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<StreamStatistics>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:snappyv1.StreamStatistics)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:snappyv1.StreamStatistics)
-    MergeFrom(*source);
-  }
-}
-
-void StreamStatistics::MergeFrom(const StreamStatistics& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:snappyv1.StreamStatistics)
-  GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
-  (void) cached_has_bits;
-
-  if (from.last_frame() != 0) {
-    _internal_set_last_frame(from._internal_last_frame());
-  }
-  if (from.average_frame_qp() != 0) {
-    _internal_set_average_frame_qp(from._internal_average_frame_qp());
-  }
-  if (from.encode_ts_start_ms() != 0) {
-    _internal_set_encode_ts_start_ms(from._internal_encode_ts_start_ms());
-  }
-  if (from.encode_ts_end_ms() != 0) {
-    _internal_set_encode_ts_end_ms(from._internal_encode_ts_end_ms());
-  }
-  if (from.tx_ts_start_ms() != 0) {
-    _internal_set_tx_ts_start_ms(from._internal_tx_ts_start_ms());
-  }
-  if (from.tx_ts_end_ms() != 0) {
-    _internal_set_tx_ts_end_ms(from._internal_tx_ts_end_ms());
-  }
-}
-
-void StreamStatistics::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:snappyv1.StreamStatistics)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-void StreamStatistics::CopyFrom(const StreamStatistics& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:snappyv1.StreamStatistics)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
-}
-
-bool StreamStatistics::IsInitialized() const {
-  return true;
-}
-
-void StreamStatistics::InternalSwap(StreamStatistics* other) {
-  using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(StreamStatistics, tx_ts_end_ms_)
-      + sizeof(StreamStatistics::tx_ts_end_ms_)
-      - PROTOBUF_FIELD_OFFSET(StreamStatistics, last_frame_)>(
-          reinterpret_cast<char*>(&last_frame_),
-          reinterpret_cast<char*>(&other->last_frame_));
-}
-
-::PROTOBUF_NAMESPACE_ID::Metadata StreamStatistics::GetMetadata() const {
-  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
-      &descriptor_table_snappyv1_2eproto_getter, &descriptor_table_snappyv1_2eproto_once,
-      file_level_metadata_snappyv1_2eproto[10]);
-}
-
-// ===================================================================
-
 class StreamData::_Internal {
  public:
 };
@@ -3859,7 +3507,7 @@ void StreamData::InternalSwap(StreamData* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata StreamData::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_snappyv1_2eproto_getter, &descriptor_table_snappyv1_2eproto_once,
-      file_level_metadata_snappyv1_2eproto[11]);
+      file_level_metadata_snappyv1_2eproto[10]);
 }
 
 // ===================================================================
@@ -4252,7 +3900,7 @@ void Message::InternalSwap(Message* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata Message::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_snappyv1_2eproto_getter, &descriptor_table_snappyv1_2eproto_once,
-      file_level_metadata_snappyv1_2eproto[12]);
+      file_level_metadata_snappyv1_2eproto[11]);
 }
 
 // ===================================================================
@@ -4512,7 +4160,7 @@ void StreamDataPointer::InternalSwap(StreamDataPointer* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata StreamDataPointer::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_snappyv1_2eproto_getter, &descriptor_table_snappyv1_2eproto_once,
-      file_level_metadata_snappyv1_2eproto[13]);
+      file_level_metadata_snappyv1_2eproto[12]);
 }
 
 // ===================================================================
@@ -4758,7 +4406,7 @@ void StreamDataKeyboard::InternalSwap(StreamDataKeyboard* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata StreamDataKeyboard::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_snappyv1_2eproto_getter, &descriptor_table_snappyv1_2eproto_once,
-      file_level_metadata_snappyv1_2eproto[14]);
+      file_level_metadata_snappyv1_2eproto[13]);
 }
 
 // ===================================================================
@@ -5066,7 +4714,7 @@ void StreamDataCursor::InternalSwap(StreamDataCursor* other) {
 ::PROTOBUF_NAMESPACE_ID::Metadata StreamDataCursor::GetMetadata() const {
   return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
       &descriptor_table_snappyv1_2eproto_getter, &descriptor_table_snappyv1_2eproto_once,
-      file_level_metadata_snappyv1_2eproto[15]);
+      file_level_metadata_snappyv1_2eproto[14]);
 }
 
 // @@protoc_insertion_point(namespace_scope)
@@ -5101,9 +4749,6 @@ template<> PROTOBUF_NOINLINE ::snappyv1::StreamsChange_StreamChange* Arena::Crea
 }
 template<> PROTOBUF_NOINLINE ::snappyv1::StreamsChange* Arena::CreateMaybeMessage< ::snappyv1::StreamsChange >(Arena* arena) {
   return Arena::CreateMessageInternal< ::snappyv1::StreamsChange >(arena);
-}
-template<> PROTOBUF_NOINLINE ::snappyv1::StreamStatistics* Arena::CreateMaybeMessage< ::snappyv1::StreamStatistics >(Arena* arena) {
-  return Arena::CreateMessageInternal< ::snappyv1::StreamStatistics >(arena);
 }
 template<> PROTOBUF_NOINLINE ::snappyv1::StreamData* Arena::CreateMaybeMessage< ::snappyv1::StreamData >(Arena* arena) {
   return Arena::CreateMessageInternal< ::snappyv1::StreamData >(arena);

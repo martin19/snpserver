@@ -16,6 +16,7 @@
 #include <GLES2/gl2ext.h>
 #include <iostream>
 #include <unistd.h>
+#include <util/TimeUtil.h>
 //#include <GLES2/glext.h>
 
 #define ASSERT(cond)    \
@@ -29,7 +30,7 @@ SnpSourceGL::SnpSourceGL(const SnpSourceGLOptions &options) : SnpComponent(optio
     addOutputPort(new SnpPort(PORT_TYPE_BOTH));
     device = options.device;
     initDrm();
-    initGL();
+    framesCaptured = 0;
 }
 
 SnpSourceGL::~SnpSourceGL() {
@@ -223,7 +224,6 @@ static const char *fragment =
     "uniform sampler2D tex;\n"
     "void main() {\n"
     "vec2 uv = gl_FragCoord.xy / res;\n"
-    "uv.y = uv.y;\n"
     "gl_FragColor = texture2D(tex, uv);\n"
     "}\n";
 
@@ -404,6 +404,7 @@ bool SnpSourceGL::initGL() {
     glViewport(0, 0, this->width, this->height);
     glClearColor(1.0, 0, 1.0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
+    glDisable(GL_BLEND);
 
     return result;
 error:
@@ -420,23 +421,31 @@ void SnpSourceGL::destroyGL() {
 
 void SnpSourceGL::captureFrame() {
     //render loop: copy from texture1 to texture2
-//    glClearColor(1.0, 0, 1.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT);
+//    glClearColor(1.0, 0, 0, 1.0);
+//    glClear(GL_COLOR_BUFFER_BIT);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+    this->framesCaptured++;
 }
 
 void SnpSourceGL::setEnabled(bool enabled) {
     SnpComponent::setEnabled(enabled);
     if(enabled) {
         grabberThread = std::thread{[this] () {
-
             this->initGL();
-
-            while(isEnabled()) {
-                SnpPort * outputPort = this->getOutputPort(0);
-                this->captureFrame();
-                outputPort->onData(nullptr, 0, true);
-                usleep(33333);
+            while(this->isEnabled()) {
+//                std::cout << this->getOwner()->framesPassed << "/" << this->framesCaptured << std::endl;
+//                if(this->getOwner()->framesPassed >= this->framesCaptured) {
+                    setTimestampStartMs(TimeUtil::getTimeNowMs());
+                    SnpPort * outputPort = this->getOutputPort(0);
+                    this->captureFrame();
+                    setTimestampEndMs(TimeUtil::getTimeNowMs());
+                    outputPort->onData(nullptr, 0, true);
+                    usleep(33333);
+//                } else {
+//                    SnpPort * outputPort = this->getOutputPort(0);
+//                    outputPort->onData(nullptr, 0, true);
+//                    usleep(1000);
+//                }
             }
         }};
     } else {

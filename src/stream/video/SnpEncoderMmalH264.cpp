@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <fcntl.h>
 #include <iostream>
+#include <util/TimeUtil.h>
 
 #define CHECK_STATUS(status, msg) if (status != MMAL_SUCCESS) { fprintf(stderr, msg"\n"); goto error; }
 
@@ -24,6 +25,7 @@ SnpEncoderMmalH264::~SnpEncoderMmalH264() {
 
 void SnpEncoderMmalH264::onInputData(const uint8_t *data, int len, bool complete) {
     if(!isEnabled()) return;
+    setTimestampStartMs(TimeUtil::getTimeNowMs());
     mmalEncoderEncode();
 }
 
@@ -99,11 +101,11 @@ error:
 }
 
 bool SnpEncoderMmalH264::mmalEncoderInit() {
-    MMAL_STATUS_T status = MMAL_SUCCESS;
-    MMAL_PORT_T *encoder_output = nullptr;
-    MMAL_PORT_T *encoder_input = nullptr;
-    MMAL_ES_FORMAT_T *format_out = nullptr;
-    MMAL_ES_FORMAT_T *format_in = nullptr;
+    MMAL_STATUS_T status;
+    MMAL_PORT_T *encoder_output;
+    MMAL_PORT_T *encoder_input;
+    MMAL_ES_FORMAT_T *format_out;
+    MMAL_ES_FORMAT_T *format_in;
 
     vcos_semaphore_create(&this->semaphore, "example", 1);
 
@@ -182,19 +184,19 @@ bool SnpEncoderMmalH264::mmalEncoderInit() {
 
     //quality (quantisationParameter 0..51)
     {
-        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_INITIAL_QUANT, sizeof(param)}, 15};
+        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_INITIAL_QUANT, sizeof(param)}, 20};
         status = mmal_port_parameter_set(encoder_output, &param.hdr);
         CHECK_STATUS(status, "failed to set port parameter MMAL_PARAMETER_VIDEO_ENCODE_INITIAL_QUANT");
     }
 
     {
-        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_MIN_QUANT, sizeof(param)}, 15};
+        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_MIN_QUANT, sizeof(param)}, 20};
         status = mmal_port_parameter_set(encoder_output, &param.hdr);
         CHECK_STATUS(status, "failed to set port parameter MMAL_PARAMETER_VIDEO_ENCODE_MIN_QUANT");
     }
 
     {
-        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_MAX_QUANT, sizeof(param)}, 15};
+        MMAL_PARAMETER_UINT32_T param = {{MMAL_PARAMETER_VIDEO_ENCODE_MAX_QUANT, sizeof(param)}, 20};
         status = mmal_port_parameter_set(encoder_output, &param.hdr);
         CHECK_STATUS(status, "failed to set port parameter MMAL_PARAMETER_VIDEO_ENCODE_MAX_QUANT");
     }
@@ -273,11 +275,11 @@ bool SnpEncoderMmalH264::mmalEncoderEncode() {
 
     /* Send data to decode to the input port of the video encoder */
     if ((bufferHeader = mmal_queue_get(pool_in->queue)) != nullptr) {
-//        dynamic_cast<SnpSourceGL*>(getInputPort(0)->getOwner())->captureFrame();
+//      dynamic_cast<SnpSourceGL*>(getInputPort(0)->getOwner())->captureFrame();
         bufferHeader->length = width * height * 3; //why 3!?
         bufferHeader->offset = 0;
         bufferHeader->pts = bufferHeader->dts = MMAL_TIME_UNKNOWN;
-        bufferHeader->flags = MMAL_BUFFER_HEADER_FLAG_EOS;
+        bufferHeader->flags = MMAL_BUFFER_HEADER_FLAG_FRAME;
 //        client->rfbStatistics.encode_ts_start_ms = (uint32_t)(getCaptureTimeNs()/1000000);
         status = mmal_port_send_buffer(encoder->input[0], bufferHeader);
         CHECK_STATUS(status, "failed to send bufferHeader\n");
@@ -294,6 +296,7 @@ bool SnpEncoderMmalH264::mmalEncoderEncode() {
         status = mmal_port_send_buffer(encoder->output[0], bufferHeader);
         CHECK_STATUS(status, "failed to send bufferHeader");
     }
+
 error:
     if (status != MMAL_SUCCESS) mmalEncoderCleanup();
     return status == MMAL_SUCCESS;
@@ -302,8 +305,10 @@ error:
 void SnpEncoderMmalH264::mmalOnFrameCallback(MMAL_BUFFER_HEADER_T *bufferHeader) {
     SnpPort *outputPort = this->getOutputPort(0);
     if(bufferHeader->flags & MMAL_BUFFER_HEADER_FLAG_NAL_END) {
+        setTimestampEndMs(TimeUtil::getTimeNowMs());
         outputPort->onData(bufferHeader->data, bufferHeader->length, true);
     } else {
+        std::cout << "Flags:" << bufferHeader->flags << std::endl;
         outputPort->onData(bufferHeader->data, bufferHeader->length, false);
     }
 }
