@@ -8,6 +8,7 @@
 #include "stream/SnpComponent.h"
 #include <xf86drmMode.h>
 #include <xf86drm.h>
+#include <util/DrmUtil.h>
 
 struct dumb_bo {
     uint32_t handle;
@@ -15,7 +16,7 @@ struct dumb_bo {
     uint64_t size;
 };
 
-struct Framebuffer {
+struct FramebufferInfo {
     int deviceFd;
     uint32_t fbId;
     drmModeFBPtr fbPtr;
@@ -42,31 +43,41 @@ public:
     uint32_t width;
     uint32_t height;
     uint32_t pitch;
-    uint32_t bpp;
+    uint32_t bytesPerPixel;
 
     uint32_t framesCaptured;
 private:
     bool initDrm();
     void destroyDrm();
 
+    bool initMmap();
+    void destroyMmap();
+
     bool initGL();
     void destroyGL();
 
-    static bool createCaptureFb(int deviceFd, uint32_t width, uint32_t height, uint32_t bpp, Framebuffer **framebuffer);
-    static bool destroyCaptureFb(Framebuffer *framebuffer);
+    static bool discoverPrimaryFb(int deviceFd, FramebufferInfo **framebuffer);
+    static bool createCaptureFb(int deviceFd, uint32_t width, uint32_t height, uint32_t bpp, FramebufferInfo **framebuffer);
+    static bool destroyCaptureFb(FramebufferInfo *framebuffer);
     static bool createDumbBo(int deviceFd, uint32_t width, uint32_t height, uint32_t bpp, dumb_bo** pDumbBo);
     static bool destroyDumbBo(int deviceFd, dumb_bo* dumbBo);
     void onInputData(const uint8_t *data, int len, bool complete);
 
+    DrmUtil *drmUtil;
+
     std::string device;
-    Framebuffer *fbPrimary;
-    Framebuffer *fbCapture;
+    int deviceFd;
+    FramebufferInfo *fbPrimary;
+    FramebufferInfo *fbCapture;
     std::thread grabberThread;
+
+    //memory mapping
+    uint8_t *mmapFrameBuffer;
 
     EGLDisplay eglDpy;
     EGLContext eglCtx;
     GLuint captureProg;
-//    GLuint frameBuffer;
+    GLuint frameBuffer;
 };
 
 

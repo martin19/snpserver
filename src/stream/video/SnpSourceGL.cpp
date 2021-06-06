@@ -1,10 +1,14 @@
+#include "util/assert.h"
 #include <xf86drmMode.h>
 #include <xf86drm.h>
+#include <sys/mman.h>
 #include <fcntl.h>
 #include <cstring>
 #include <drm_fourcc.h>
 #include "SnpSourceGL.h"
 #include "util/loguru.h"
+#include <util/TimeUtil.h>
+#include <math.h>
 
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
@@ -16,25 +20,19 @@
 #include <GLES2/gl2ext.h>
 #include <iostream>
 #include <unistd.h>
-#include <util/TimeUtil.h>
 //#include <GLES2/glext.h>
-
-#define ASSERT(cond)    \
-	if (!(cond)) {      \
-        result = false; \
-		fprintf(stderr, "ERROR @ %s:%d: (%s) failed", __FILE__, __LINE__, #cond); \
-		goto error; \
-	}
 
 SnpSourceGL::SnpSourceGL(const SnpSourceGLOptions &options) : SnpComponent(options) {
     addOutputPort(new SnpPort(PORT_TYPE_BOTH));
     device = options.device;
-    initDrm();
     framesCaptured = 0;
+    initDrm();
+    initMmap();
 }
 
 SnpSourceGL::~SnpSourceGL() {
     destroyGL();
+    destroyMmap();
     destroyDrm();
 }
 
@@ -83,7 +81,7 @@ bool SnpSourceGL::destroyDumbBo(int deviceFd, dumb_bo *dumbBo) {
 }
 
 bool
-SnpSourceGL::createCaptureFb(int deviceFd, uint32_t width, uint32_t height, uint32_t bpp, Framebuffer **framebuffer) {
+SnpSourceGL::createCaptureFb(int deviceFd, uint32_t width, uint32_t height, uint32_t bpp, FramebufferInfo **framebuffer) {
     bool result = true;
 
     int ret = -1;
@@ -99,7 +97,7 @@ SnpSourceGL::createCaptureFb(int deviceFd, uint32_t width, uint32_t height, uint
     memset(offsets, 0, sizeof(uint32_t)*4);
     memset(modifiers, 0, sizeof(uint64_t)*4);
 
-    auto *fb = new Framebuffer();
+    auto *fb = new FramebufferInfo();
     createDumbBo(deviceFd, width, height, 32, &fb->bo);
 
     handles[0] = fb->bo->handle;
@@ -134,7 +132,7 @@ error:
     return result;
 }
 
-bool SnpSourceGL::destroyCaptureFb(Framebuffer *framebuffer) {
+bool SnpSourceGL::destroyCaptureFb(FramebufferInfo *framebuffer) {
     bool result = true;
 
     int ret = -1;
@@ -155,25 +153,44 @@ error:
     return result;
 }
 
+bool SnpSourceGL::discoverPrimaryFb(int deviceFd, FramebufferInfo **framebuffer) {
+    bool result = true;
+
+    drmModeResPtr resources = drmModeGetResources(deviceFd);
+    ASSERT(resources != nullptr);
+
+    //- get first enabled CRTC (primary crtc)
+    //- get first primary plane for CRTC
+    //- get according framebuffer
+    //read whole structure in c++ objects.
+
+    return result;
+error:
+    return result;
+}
+
 bool SnpSourceGL::initDrm() {
     bool result = true;
 
-    int drmDeviceFd;
-
-    drmDeviceFd = open(device.c_str(), O_RDWR);
-    if (drmDeviceFd < 0) {
+    deviceFd = open(device.c_str(), O_RDWR);
+    if (deviceFd < 0) {
         result = false;
         fprintf(stderr, "Cannot open modesetting device %s\n", device.c_str());
         goto error;
     }
 
     //get primary framebuffer
-    fbPrimary = new Framebuffer();
-    fbPrimary->deviceFd = drmDeviceFd;
-    //TODO: find primary framebuffer
-    fbPrimary->fbId = 0xcf;
+    fbPrimary = new FramebufferInfo();
+    fbPrimary->deviceFd = deviceFd;
 
-    fbPrimary->fbPtr = drmModeGetFB(drmDeviceFd, fbPrimary->fbId);
+    drmUtil = new DrmUtil(deviceFd);
+    drmUtil->getPrimaryFb(&fbPrimary->fbId);
+    //TODO: find primary framebuffer
+//    fbPrimary->fbId = 0xcf;
+//    fbPrimary->fbId = 0x44;
+//    fbPrimary->fbId = 0x45;
+
+    fbPrimary->fbPtr = drmModeGetFB(deviceFd, fbPrimary->fbId);
     if (!fbPrimary->fbPtr) {
         result = false;
         fprintf(stderr, "Cannot open primary framebuffer %#x", fbPrimary->fbId);
@@ -183,7 +200,7 @@ bool SnpSourceGL::initDrm() {
     LOG_F(INFO, "Primary framebuffer found: fb_id=%#x\n",  fbPrimary->fbId);
 
     //create the capture framebuffer
-    if(!createCaptureFb(drmDeviceFd, fbPrimary->fbPtr->width, fbPrimary->fbPtr->height, fbPrimary->fbPtr->bpp, &fbCapture)) {
+    if(!createCaptureFb(deviceFd, fbPrimary->fbPtr->width, fbPrimary->fbPtr->height, fbPrimary->fbPtr->bpp, &fbCapture)) {
         result = false;
         fprintf(stderr, "Cannot create capture framebuffer.");
         goto error;
@@ -191,10 +208,10 @@ bool SnpSourceGL::initDrm() {
 
     LOG_F(INFO, "Capture framebuffer created: fb_id=%#x\n", fbCapture->fbId);
 
-    drmPrimeHandleToFD(drmDeviceFd, fbPrimary->fbPtr->handle, 0, &fbPrimary->dmaBufFd);
+    drmPrimeHandleToFD(deviceFd, fbPrimary->fbPtr->handle, 0, &fbPrimary->dmaBufFd);
     LOG_F(INFO, "drmPrimeHandleToFD (primary): fd = %d", fbPrimary->dmaBufFd);
 
-    drmPrimeHandleToFD(drmDeviceFd, fbCapture->fb2Ptr->handles[0], 0, &fbCapture->dmaBufFd);
+    drmPrimeHandleToFD(deviceFd, fbCapture->fb2Ptr->handles[0], 0, &fbCapture->dmaBufFd);
     LOG_F(INFO, "drmPrimeHandleToFD (capture): fd = %d", fbCapture->dmaBufFd);
 
     //copy zero-copy information to output port
@@ -207,7 +224,7 @@ bool SnpSourceGL::initDrm() {
     this->width = fbCapture->fb2Ptr->width;
     this->height = fbCapture->fb2Ptr->height;
     this->pitch = fbCapture->fb2Ptr->pitches[0];
-    this->bpp = 32/8; //TODO: get rid of this constant
+    this->bytesPerPixel = 32 / 8; //TODO: get rid of this constant
 
     return result;
 error:
@@ -216,6 +233,29 @@ error:
 
 void SnpSourceGL::destroyDrm() {
     destroyCaptureFb(fbCapture);
+    close(deviceFd);
+}
+
+bool SnpSourceGL::initMmap() {
+    bool result = true;
+
+    mmapFrameBuffer = nullptr;
+    mmapFrameBuffer = (uint8_t*)mmap(nullptr, width * height * bytesPerPixel, PROT_READ, MAP_SHARED, fbCapture->dmaBufFd, 0);
+    if (mmapFrameBuffer == MAP_FAILED) {
+        result = false;
+        fprintf(stderr, "mmap failed: %s\n", strerror(errno));
+        goto error;
+    }
+
+    return result;
+error:
+    return result;
+}
+
+void SnpSourceGL::destroyMmap() {
+    if(mmapFrameBuffer) {
+        munmap(mmapFrameBuffer, width * height * bytesPerPixel);
+    }
 }
 
 static const char *fragment =
@@ -294,10 +334,12 @@ bool SnpSourceGL::initGL() {
         EGL_DMA_BUF_PLANE0_FD_EXT, fbPrimary->dmaBufFd,
         EGL_DMA_BUF_PLANE0_OFFSET_EXT, 0,
         EGL_DMA_BUF_PLANE0_PITCH_EXT, (int)fbPrimary->fbPtr->pitch,
-        EGL_DMA_BUF_PLANE0_MODIFIER_LO_EXT, DRM_FORMAT_MOD_BROADCOM_VC4_T_TILED & 0xFFFFFFFF,
-        EGL_DMA_BUF_PLANE0_MODIFIER_HI_EXT, DRM_FORMAT_MOD_BROADCOM_VC4_T_TILED >> 32,
-//        EGL_DMA_BUF_PLANE0_MODIFIER_LO_EXT, I915_FORMAT_MOD_X_TILED & 0xFFFFFFFF,
-//        EGL_DMA_BUF_PLANE0_MODIFIER_HI_EXT, I915_FORMAT_MOD_X_TILED >> 32,
+//TODO: how to determine correct format!
+
+//        EGL_DMA_BUF_PLANE0_MODIFIER_LO_EXT, DRM_FORMAT_MOD_BROADCOM_VC4_T_TILED & 0xFFFFFFFF,
+//        EGL_DMA_BUF_PLANE0_MODIFIER_HI_EXT, DRM_FORMAT_MOD_BROADCOM_VC4_T_TILED >> 32,
+        EGL_DMA_BUF_PLANE0_MODIFIER_LO_EXT, I915_FORMAT_MOD_X_TILED & 0xFFFFFFFF,
+        EGL_DMA_BUF_PLANE0_MODIFIER_HI_EXT, I915_FORMAT_MOD_X_TILED >> 32,
         EGL_NONE};
 
     ASSERT(eglExportDMABUFImageMESA);
@@ -380,7 +422,6 @@ bool SnpSourceGL::initGL() {
     glEnableVertexAttribArray ( 0 );
 
     //setup render to texture:
-    GLuint frameBuffer;
     glActiveTexture(GL_TEXTURE1);
     glGenFramebuffers(1, &frameBuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
@@ -402,7 +443,7 @@ bool SnpSourceGL::initGL() {
     glUniform1i(glGetUniformLocation(this->captureProg, "tex"), 0); //0 is correct, example from khronos
     glUniform2f(glGetUniformLocation(this->captureProg, "res"), this->width, this->height);
     glViewport(0, 0, this->width, this->height);
-    glClearColor(1.0, 0, 1.0, 1.0);
+    glClearColor(0, 0, 0, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
     glDisable(GL_BLEND);
 
@@ -419,33 +460,34 @@ void SnpSourceGL::destroyGL() {
     eglTerminate(eglDpy);
 }
 
+int frame = 0;
+
 void SnpSourceGL::captureFrame() {
     //render loop: copy from texture1 to texture2
-//    glClearColor(1.0, 0, 0, 1.0);
+//    glClearColor((this->framesCaptured*0.01)-std::floor(this->framesCaptured*0.01), 0, 1.0, 1.0);
 //    glClear(GL_COLOR_BUFFER_BIT);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     this->framesCaptured++;
+    frame++;
 }
+
 
 void SnpSourceGL::setEnabled(bool enabled) {
     SnpComponent::setEnabled(enabled);
     if(enabled) {
         grabberThread = std::thread{[this] () {
             this->initGL();
+            uint8_t *buffer = (uint8_t *)calloc(1, 1920*1080*4);
             while(this->isEnabled()) {
-//                std::cout << this->getOwner()->framesPassed << "/" << this->framesCaptured << std::endl;
-//                if(this->getOwner()->framesPassed >= this->framesCaptured) {
+                    std::cout << "capturing" << std::endl;
                     setTimestampStartMs(TimeUtil::getTimeNowMs());
                     SnpPort * outputPort = this->getOutputPort(0);
                     this->captureFrame();
                     setTimestampEndMs(TimeUtil::getTimeNowMs());
-                    outputPort->onData(nullptr, 0, true);
-                    usleep(33333);
-//                } else {
-//                    SnpPort * outputPort = this->getOutputPort(0);
-//                    outputPort->onData(nullptr, 0, true);
-//                    usleep(1000);
-//                }
+                    glReadPixels(0,0,1920,1080,GL_BGRA,GL_UNSIGNED_BYTE,buffer);
+                    outputPort->onData(buffer, width*height*bytesPerPixel, true);
+//                    outputPort->onData(this->mmapFrameBuffer, width*height*bytesPerPixel, true);
+//                    usleep(16666);
             }
         }};
     } else {

@@ -29,11 +29,11 @@ public:
 
     static bool connect(SnpPort *sourcePort, SnpPort *targetPort);
 
-    void onData(const uint8_t *data, int len, bool complete) {
+    void onData(const uint8_t *data, uint32_t len, bool complete) {
         targetPort->onDataCb(data, len, complete);
     }
 
-    void setOnDataCb(std::function<void(const uint8_t *data, int len, bool complete)> cb) {
+    void setOnDataCb(std::function<void(const uint8_t *data, uint32_t len, bool complete)> cb) {
         onDataCb = cb;
     }
 

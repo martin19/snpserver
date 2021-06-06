@@ -3,13 +3,14 @@
 #include <ctime>
 #include <stream/network/SnpSinkNetwork.h>
 #include <stream/video/SnpSourceModesetting.h>
-#include <stream/video/SnpEncoderMmalH264.h>
 #include <stream/network/SnpSinkNetwork.h>
 #include <stream/network/SnpSourceNetwork.h>
 #include <stream/input/SnpSinkMouse.h>
 #include <stream/input/SnpSinkKeyboard.h>
 #include <stream/input/SnpSourceCursor.h>
 #include <stream/video/SnpSourceGL.h>
+//#include <stream/video/SnpEncoderMmalH264.h>
+#include <stream/video/SnpEncoderOpenH264.h>
 #include "SnpSocket.h"
 #include "util/loguru.h"
 
@@ -89,25 +90,31 @@ void SnpClient::onStreamsChange(const snappyv1::StreamsChange &msg) {
         sourceGLOptions.fps = 30;
         auto *sourceGL = new SnpSourceGL(sourceGLOptions);
         ///
-        SnpEncoderMmalH264Options encoderMmalH264Options = {};
-        encoderMmalH264Options.qp = 20;
-        encoderMmalH264Options.width = sourceGL->width;
-        encoderMmalH264Options.height = sourceGL->height;
-        encoderMmalH264Options.bpp = sourceGL->bpp;
-        auto *encoderMmalH264 = new SnpEncoderMmalH264(encoderMmalH264Options);
+//        SnpEncoderMmalH264Options encoderMmalH264Options = {};
+//        encoderMmalH264Options.qp = 20;
+//        encoderMmalH264Options.width = sourceGL->width;
+//        encoderMmalH264Options.height = sourceGL->height;
+//        encoderMmalH264Options.bpp = sourceGL->bytesPerPixel;
+//        auto *encoderMmalH264 = new SnpEncoderMmalH264(encoderMmalH264Options);
+        SnpEncoderOpenH264Options encoderOptions = {};
+        encoderOptions.width = sourceGL->width;
+        encoderOptions.height = sourceGL->height;
+        encoderOptions.bytesPerPixel = sourceGL->bytesPerPixel;
+        auto *encoder = new SnpEncoderOpenH264(encoderOptions);
+
         ///
         SnpSinkNetworkOptions sinkNetworkOptions = {};
         sinkNetworkOptions.client = this;
         sinkNetworkOptions.streamId = 0;
         auto *sinkNetwork = new SnpSinkNetwork(sinkNetworkOptions);
 
-        SnpPort::connect(sourceGL->getOutputPort(0), encoderMmalH264->getInputPort(0));
-        SnpPort::connect(encoderMmalH264->getOutputPort(0), sinkNetwork->getInputPort(0));
+        SnpPort::connect(sourceGL->getOutputPort(0), encoder->getInputPort(0));
+        SnpPort::connect(encoder->getOutputPort(0), sinkNetwork->getInputPort(0));
 
         SnpPipeOptions videoPipeOptions = {};
         fixedVideoPipe = new SnpPipe(videoPipeOptions);
         fixedVideoPipe->addComponent(sourceGL);
-        fixedVideoPipe->addComponent(encoderMmalH264);
+        fixedVideoPipe->addComponent(encoder);
         fixedVideoPipe->addComponent(sinkNetwork);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -10,6 +10,19 @@ include_directories(${PROTOBUF_INCLUDE_DIR})
 
 find_package(LibWebSockets REQUIRED)
 
+find_package(OPENH264)
+if(OPENH264_FOUND)
+    add_definitions(-DHAVE_LIBOPENH264)
+    include_directories(
+            /usr/include
+            ${OPENH264_INCLUDE_DIR}
+            /usr/include/libdrm #todo move this
+    )
+    set(OPENH264_SOURCES
+            src/stream/video/SnpEncoderOpenH264.cpp
+            )
+endif(OPENH264_FOUND)
+
 find_package(MMALH264)
 if(MMALH264_FOUND)
     add_definitions(-DHAVE_LIBMMALH264)
@@ -28,10 +41,13 @@ include_directories(
     LIBWEBSOCKETS_INCLUDE_DIR
 )
 
-#TODO!
+#TODO! - is there a find lib drm?
 add_library(libdrm SHARED IMPORTED)
-set_target_properties(libdrm PROPERTIES IMPORTED_LOCATION /usr/local/lib/arm-linux-gnueabihf/libdrm.so.2)
-set_target_properties(libdrm PROPERTIES VERSION 2 SOVERSION 2.4)
+#raspberry
+#set_target_properties(libdrm PROPERTIES IMPORTED_LOCATION /usr/local/lib/arm-linux-gnueabihf/libdrm.so.2)
+#set_target_properties(libdrm PROPERTIES VERSION 2 SOVERSION 2.4)
+#devbox
+set_target_properties(libdrm PROPERTIES IMPORTED_LOCATION /usr/lib/x86_64-linux-gnu/libdrm.so)
 
 add_executable(snpserver
     main.cpp
@@ -40,6 +56,7 @@ add_executable(snpserver
     src/network/SnpSocket.cpp
     src/util/loguru.cpp
     src/util/TimeUtil.cpp
+    src/util/DrmUtil.cpp
     # stream
     src/stream/SnpComponent.cpp
     src/stream/SnpPort.cpp
@@ -55,15 +72,17 @@ add_executable(snpserver
     src/stream/network/SnpSourceNetwork.cpp
     src/stream/network/SnpSinkNetwork.cpp
     ${MMALH264_SOURCES}
+    ${OPENH264_SOURCES}
 
     #in flux
-        src/stream/SnpPipe.cpp
+    src/stream/SnpPipe.cpp
 )
 
 target_link_libraries(snpserver
     ${LIBWEBSOCKETS_LIBRARIES}
     ${PROTOBUF_LIBRARY}
     ${MMALH264_LIBRARIES}
+    ${OPENH264_LIBRARIES}
     pthread
     libdrm
     dl
