@@ -6,29 +6,34 @@
 #include <string>
 #include <map>
 
+struct DrmProperty {
+    drmModePropertyPtr spec;
+    uint64_t value;
+};
+
 struct Connector {
     drmModeConnectorPtr ptr;
-    std::map<std::string, drmModePropertyPtr> properties;
+    std::map<std::string, DrmProperty> props;
 };
 
 struct Encoder {
     drmModeEncoderPtr ptr;
-    std::map<std::string, drmModePropertyPtr> properties;
+    std::map<std::string, DrmProperty> props;
 };
 
 struct Crtc {
     drmModeCrtcPtr ptr;
-    std::map<std::string, drmModePropertyPtr> properties;
+    std::map<std::string, DrmProperty> props;
 };
 
 struct Plane {
     drmModePlanePtr ptr;
-    std::map<std::string, drmModePropertyPtr> properties;
+    std::map<std::string, DrmProperty> props;
 };
 
 struct FB {
     drmModeFBPtr ptr;
-    std::map<std::string, drmModePropertyPtr> properties;
+    std::map<std::string, DrmProperty> props;
 };
 
 class DrmUtil {

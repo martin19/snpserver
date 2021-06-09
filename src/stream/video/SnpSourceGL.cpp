@@ -467,6 +467,7 @@ void SnpSourceGL::captureFrame() {
 //    glClearColor((this->framesCaptured*0.01)-std::floor(this->framesCaptured*0.01), 0, 1.0, 1.0);
 //    glClear(GL_COLOR_BUFFER_BIT);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+    glFinish();
     this->framesCaptured++;
     frame++;
 }
@@ -477,17 +478,14 @@ void SnpSourceGL::setEnabled(bool enabled) {
     if(enabled) {
         grabberThread = std::thread{[this] () {
             this->initGL();
-            uint8_t *buffer = (uint8_t *)calloc(1, 1920*1080*4);
             while(this->isEnabled()) {
-                    std::cout << "capturing" << std::endl;
                     setTimestampStartMs(TimeUtil::getTimeNowMs());
                     SnpPort * outputPort = this->getOutputPort(0);
                     this->captureFrame();
                     setTimestampEndMs(TimeUtil::getTimeNowMs());
-                    glReadPixels(0,0,1920,1080,GL_BGRA,GL_UNSIGNED_BYTE,buffer);
-                    outputPort->onData(buffer, width*height*bytesPerPixel, true);
-//                    outputPort->onData(this->mmapFrameBuffer, width*height*bytesPerPixel, true);
-//                    usleep(16666);
+//                    glReadPixels(0,0,1920,1080,GL_BGRA,GL_UNSIGNED_BYTE,buffer);
+//                    outputPort->onData(buffer, width*height*bytesPerPixel, true);
+                    outputPort->onData(this->mmapFrameBuffer, width*height*bytesPerPixel, true);
             }
         }};
     } else {

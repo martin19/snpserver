@@ -1,5 +1,6 @@
 #include <fcntl.h>
 #include <unistd.h>
+#include <iostream>
 #include "DrmUtil.h"
 
 DrmUtil::DrmUtil(int deviceFd) {
@@ -43,36 +44,36 @@ void DrmUtil::closeDevice() {
 
 void DrmUtil::freeResources() {
     for(auto & connector : connectors) {
-        for(auto & property : connector.second->properties) {
-            drmModeFreeProperty(property.second);
+        for(auto & property : connector.second->props) {
+            drmModeFreeProperty(property.second.spec);
         }
         drmModeFreeConnector(connector.second->ptr);
         delete connector.second;
     }
     for(auto & encoder : encoders) {
-        for(auto & property : encoder.second->properties) {
-            drmModeFreeProperty(property.second);
+        for(auto & property : encoder.second->props) {
+            drmModeFreeProperty(property.second.spec);
         }
         drmModeFreeEncoder(encoder.second->ptr);
         delete encoder.second;
     }
     for(auto & crtc : crtcs) {
-        for(auto & property : crtc.second->properties) {
-            drmModeFreeProperty(property.second);
+        for(auto & property : crtc.second->props) {
+            drmModeFreeProperty(property.second.spec);
         }
         drmModeFreeCrtc(crtc.second->ptr);
         delete crtc.second;
     }
     for(auto & plane : planes) {
-        for(auto & property : plane.second->properties) {
-            drmModeFreeProperty(property.second);
+        for(auto & property : plane.second->props) {
+            drmModeFreeProperty(property.second.spec);
         }
         drmModeFreePlane(plane.second->ptr);
         delete plane.second;
     }
     for(auto & framebuffer : framebuffers) {
-        for(auto & property : framebuffer.second->properties) {
-            drmModeFreeProperty(property.second);
+        for(auto & property : framebuffer.second->props) {
+            drmModeFreeProperty(property.second.spec);
         }
         drmModeFreeFB(framebuffer.second->ptr);
         delete framebuffer.second;
@@ -81,6 +82,10 @@ void DrmUtil::freeResources() {
 
 bool DrmUtil::getResources() {
     bool result = true;
+
+    drmSetClientCap(deviceFd, DRM_CLIENT_CAP_ATOMIC, 1);
+    drmSetClientCap(deviceFd, DRM_CLIENT_CAP_UNIVERSAL_PLANES, 1);
+//    drmSetClientCap(deviceFd, DRM_CLIENT_CAP_WRITEBACK_CONNECTORS, 1);
 
     //enumerate resources
     drmModeResPtr resources = drmModeGetResources(deviceFd);
@@ -113,38 +118,48 @@ bool DrmUtil::getResources() {
 
     //get all properties
     for(auto & connector : connectors) {
-        auto properties = drmModeObjectGetProperties(deviceFd, connector.first, DRM_MODE_OBJECT_CRTC);
+        auto properties = drmModeObjectGetProperties(deviceFd, connector.first, DRM_MODE_OBJECT_CONNECTOR);
+        if(!properties) continue;
         for(int i = 0; i < properties->count_props; i++) {
             auto prop = drmModeGetProperty(deviceFd, properties->props[i]);
-            connector.second->properties.insert(std::pair<std::string, drmModePropertyPtr>(std::string(prop->name), prop));
+            connector.second->props.insert(std::pair<std::string, DrmProperty>(std::string(prop->name),
+                { .spec=prop, .value=properties->prop_values[i] }));
         }
     }
     for(auto & encoder : encoders) {
         auto properties = drmModeObjectGetProperties(deviceFd, encoder.first, DRM_MODE_OBJECT_ENCODER);
+        if(!properties) continue;
         for(int i = 0; i < properties->count_props; i++) {
             auto prop = drmModeGetProperty(deviceFd, properties->props[i]);
-            encoder.second->properties.insert(std::pair<std::string, drmModePropertyPtr>(std::string(prop->name), prop));
+            encoder.second->props.insert(std::pair<std::string, DrmProperty>(std::string(prop->name),
+                                                                               { .spec=prop, .value=properties->prop_values[i] }));
         }
     }
     for(auto & crtc : crtcs) {
         auto properties = drmModeObjectGetProperties(deviceFd, crtc.first, DRM_MODE_OBJECT_CRTC);
+        if(!properties) continue;
         for(int i = 0; i < properties->count_props; i++) {
             auto prop = drmModeGetProperty(deviceFd, properties->props[i]);
-            crtc.second->properties.insert(std::pair<std::string, drmModePropertyPtr>(std::string(prop->name), prop));
+            crtc.second->props.insert(std::pair<std::string, DrmProperty>(std::string(prop->name),
+                                                                             { .spec=prop, .value=properties->prop_values[i] }));
         }
     }
     for(auto & framebuffer : framebuffers) {
         auto properties = drmModeObjectGetProperties(deviceFd, framebuffer.first, DRM_MODE_OBJECT_FB);
+        if(!properties) continue;
         for(int i = 0; i < properties->count_props; i++) {
             auto prop = drmModeGetProperty(deviceFd, properties->props[i]);
-            framebuffer.second->properties.insert(std::pair<std::string, drmModePropertyPtr>(std::string(prop->name), prop));
+            framebuffer.second->props.insert(std::pair<std::string, DrmProperty>(std::string(prop->name),
+                                                                             { .spec=prop, .value=properties->prop_values[i] }));
         }
     }
     for(auto & plane : planes) {
         auto properties = drmModeObjectGetProperties(deviceFd, plane.first, DRM_MODE_OBJECT_PLANE);
+        if(!properties) continue;
         for(int i = 0; i < properties->count_props; i++) {
             auto prop = drmModeGetProperty(deviceFd, properties->props[i]);
-            plane.second->properties.insert(std::pair<std::string, drmModePropertyPtr>(std::string(prop->name), prop));
+            plane.second->props.insert(std::pair<std::string, DrmProperty>(std::string(prop->name),
+                                                                             { .spec=prop, .value=properties->prop_values[i] }));
         }
     }
 
@@ -155,7 +170,9 @@ error:
 
 bool DrmUtil::getPrimaryFb(uint32_t *fbId) {
     bool result = true;
-    uint32_t crtcId = -1;
+    uint32_t connectorId = -1;
+    uint64_t crtcId = -1;
+    uint64_t planeId = -1;
 
     if(!deviceFd) {
         result = false;
@@ -163,12 +180,47 @@ bool DrmUtil::getPrimaryFb(uint32_t *fbId) {
         goto error;
     }
 
-    //determine first active crtc
-    for(auto & crtc : crtcs) {
-        auto properties = crtc.second->properties;
-        auto propertyActive = properties.find("ACTIVE");
-        //TODO: inspect element
+    //determine crtc of first active connector
+    for(auto & connector : connectors) {
+        if(connector.second->ptr->connection == DRM_MODE_CONNECTED) {
+            auto properties = connector.second->props;
+            auto property = properties.find("CRTC_ID");
+            crtcId = property->second.value;
+            break;
+        }
     }
+
+    if(crtcId == -1) {
+        result = false;
+        fprintf(stderr, "cannot find connected crtc.");
+        goto error;
+    }
+
+    drmModeAtomicGetCursor()
+
+    //find primary plane of crtc
+    for(auto & plane : planes) {
+        if(plane.second->ptr->crtc_id) {
+            auto properties = plane.second->props;
+            auto property = properties.find("type");
+            if(property->second.value == 1) {
+                planeId = plane.first;
+            }
+//            if(property->enumValue().equals("primary")) {
+//                planeId = plane.first;
+//            }
+        }
+    }
+
+    if(crtcId == -1) {
+        result = false;
+        fprintf(stderr, "cannot find primary plane.");
+        goto error;
+    }
+
+    *fbId = planes.find(planeId)->second->ptr->fb_id;
+
+    std::cout << "Found primary framebuffer " << *fbId << std::endl;
 
     return result;
 error:

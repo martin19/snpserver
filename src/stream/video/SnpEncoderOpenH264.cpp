@@ -44,8 +44,8 @@ bool SnpEncoderOpenH264::openH264EncoderInit() {
     paramExt.iPicWidth = width;
     paramExt.iPicHeight = height;
     paramExt.iTargetBitrate = 20000000;
-    paramExt.iMinQp = 15;
-    paramExt.iMaxQp = 15;
+    paramExt.iMinQp = 25;
+    paramExt.iMaxQp = 25;
 
     res = WelsCreateSVCEncoder (&encoder);
     ASSERT(res == 0);
@@ -116,7 +116,6 @@ bool SnpEncoderOpenH264::openH264EncoderEncode(const uint8_t *framebuffer, uint3
                 --iNalIdx;
             } while (iNalIdx >= 0);
 
-            std::cout << "sending frame iLayerSize=" << iLayerSize << std::endl;
             outputPort->onData(pLayerBsInfo->pBsBuf, iLayerSize, true);
         }
     }
