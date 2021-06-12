@@ -476,6 +476,7 @@ void SnpSourceGL::captureFrame() {
 void SnpSourceGL::setEnabled(bool enabled) {
     SnpComponent::setEnabled(enabled);
     if(enabled) {
+        std::cout << "starting capturing thread" << std::endl;
         grabberThread = std::thread{[this] () {
             this->initGL();
             while(this->isEnabled()) {

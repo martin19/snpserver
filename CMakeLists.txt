@@ -23,6 +23,19 @@ if(OPENH264_FOUND)
             )
 endif(OPENH264_FOUND)
 
+find_package(VA)
+if(VA_FOUND)
+    add_definitions(-DHAVE_LIBVA)
+    include_directories(
+            ${VA_INCLUDE_DIR}
+            /usr/include/libdrm #todo move this
+    )
+    set(VA_SOURCES
+            src/stream/video/SnpEncoderVaH264.cpp
+            src/stream/video/h264/VaBitstream.cpp
+    )
+endif(VA_FOUND)
+
 find_package(MMALH264)
 if(MMALH264_FOUND)
     add_definitions(-DHAVE_LIBMMALH264)
@@ -57,6 +70,7 @@ add_executable(snpserver
     src/util/loguru.cpp
     src/util/TimeUtil.cpp
     src/util/DrmUtil.cpp
+    src/util/VideoUtil.cpp
     # stream
     src/stream/SnpComponent.cpp
     src/stream/SnpPort.cpp
@@ -71,8 +85,11 @@ add_executable(snpserver
     # network sink/source
     src/stream/network/SnpSourceNetwork.cpp
     src/stream/network/SnpSinkNetwork.cpp
+    # file sink/source
+    src/stream/file/SnpSinkFile.cpp
     ${MMALH264_SOURCES}
     ${OPENH264_SOURCES}
+    ${VA_SOURCES}
 
     #in flux
     src/stream/SnpPipe.cpp
@@ -83,6 +100,7 @@ target_link_libraries(snpserver
     ${PROTOBUF_LIBRARY}
     ${MMALH264_LIBRARIES}
     ${OPENH264_LIBRARIES}
+    ${VA_LIBRARIES}
     pthread
     libdrm
     dl

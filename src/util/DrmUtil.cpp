@@ -196,8 +196,6 @@ bool DrmUtil::getPrimaryFb(uint32_t *fbId) {
         goto error;
     }
 
-    drmModeAtomicGetCursor()
-
     //find primary plane of crtc
     for(auto & plane : planes) {
         if(plane.second->ptr->crtc_id) {
@@ -217,6 +215,14 @@ bool DrmUtil::getPrimaryFb(uint32_t *fbId) {
         fprintf(stderr, "cannot find primary plane.");
         goto error;
     }
+
+//TODO:
+//    std::iterator<std::pair<uint32_t, Plane*>> it = planes.find(planeId);
+//    if(it != planes.end()) {
+//        result = false;
+//        fprintf(stderr, "cannot find primary framebuffer.");
+//        goto error;
+//    }
 
     *fbId = planes.find(planeId)->second->ptr->fb_id;
 

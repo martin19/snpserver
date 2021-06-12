@@ -11,6 +11,8 @@
 #include <stream/video/SnpSourceGL.h>
 //#include <stream/video/SnpEncoderMmalH264.h>
 #include <stream/video/SnpEncoderOpenH264.h>
+#include <stream/video/SnpEncoderVaH264.h>
+#include <stream/file/SnpSinkFile.h>
 #include "SnpSocket.h"
 #include "util/loguru.h"
 
@@ -90,32 +92,45 @@ void SnpClient::onStreamsChange(const snappyv1::StreamsChange &msg) {
         sourceGLOptions.fps = 30;
         auto *sourceGL = new SnpSourceGL(sourceGLOptions);
         ///
+
+//MMAL
 //        SnpEncoderMmalH264Options encoderMmalH264Options = {};
 //        encoderMmalH264Options.qp = 20;
 //        encoderMmalH264Options.width = sourceGL->width;
 //        encoderMmalH264Options.height = sourceGL->height;
 //        encoderMmalH264Options.bpp = sourceGL->bytesPerPixel;
 //        auto *encoderMmalH264 = new SnpEncoderMmalH264(encoderMmalH264Options);
-        SnpEncoderOpenH264Options encoderOptions = {};
+//OPENH264
+//SnpEncoderOpenH264Options encoderOptions = {};
+//encoderOptions.width = sourceGL->width;
+//encoderOptions.height = sourceGL->height;
+//encoderOptions.bytesPerPixel = sourceGL->bytesPerPixel;
+//auto *encoder = new SnpEncoderOpenH264(encoderOptions);
+
+        //libva
+        SnpEncoderVaH264Options encoderOptions = {};
         encoderOptions.width = sourceGL->width;
         encoderOptions.height = sourceGL->height;
         encoderOptions.bytesPerPixel = sourceGL->bytesPerPixel;
-        auto *encoder = new SnpEncoderOpenH264(encoderOptions);
+        auto *encoder = new SnpEncoderVaH264(encoderOptions);
 
         ///
-        SnpSinkNetworkOptions sinkNetworkOptions = {};
-        sinkNetworkOptions.client = this;
-        sinkNetworkOptions.streamId = 0;
-        auto *sinkNetwork = new SnpSinkNetwork(sinkNetworkOptions);
+//        SnpSinkNetworkOptions sinkOptions = {};
+//        sinkOptions.client = this;
+//        sinkOptions.streamId = 0;
+//        auto *sink = new SnpSinkNetwork(sinkOptions);
+        SnpSinkFileOptions sinkOptions = {};
+        sinkOptions.fileName = "/tmp/stream.h264";
+        auto *sink = new SnpSinkFile(sinkOptions);
 
         SnpPort::connect(sourceGL->getOutputPort(0), encoder->getInputPort(0));
-        SnpPort::connect(encoder->getOutputPort(0), sinkNetwork->getInputPort(0));
+        SnpPort::connect(encoder->getOutputPort(0), sink->getInputPort(0));
 
         SnpPipeOptions videoPipeOptions = {};
         fixedVideoPipe = new SnpPipe(videoPipeOptions);
         fixedVideoPipe->addComponent(sourceGL);
         fixedVideoPipe->addComponent(encoder);
-        fixedVideoPipe->addComponent(sinkNetwork);
+        fixedVideoPipe->addComponent(sink);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Create a fixed mouse pipe (streamId=1)
