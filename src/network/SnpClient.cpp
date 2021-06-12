@@ -115,13 +115,13 @@ void SnpClient::onStreamsChange(const snappyv1::StreamsChange &msg) {
         auto *encoder = new SnpEncoderVaH264(encoderOptions);
 
         ///
-//        SnpSinkNetworkOptions sinkOptions = {};
-//        sinkOptions.client = this;
-//        sinkOptions.streamId = 0;
-//        auto *sink = new SnpSinkNetwork(sinkOptions);
-        SnpSinkFileOptions sinkOptions = {};
-        sinkOptions.fileName = "/tmp/stream.h264";
-        auto *sink = new SnpSinkFile(sinkOptions);
+        SnpSinkNetworkOptions sinkOptions = {};
+        sinkOptions.client = this;
+        sinkOptions.streamId = 0;
+        auto *sink = new SnpSinkNetwork(sinkOptions);
+//        SnpSinkFileOptions sinkOptions = {};
+//        sinkOptions.fileName = "/tmp/stream.h264";
+//        auto *sink = new SnpSinkFile(sinkOptions);
 
         SnpPort::connect(sourceGL->getOutputPort(0), encoder->getInputPort(0));
         SnpPort::connect(encoder->getOutputPort(0), sink->getInputPort(0));
