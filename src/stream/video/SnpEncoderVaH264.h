@@ -47,10 +47,10 @@ private:
     uint32_t idrPeriod;
     uint32_t frameWidthMbAligned;
     uint32_t frameHeightMbAligned;
+    uint32_t encodingFrameNum;
     uint32_t currentFrameNum;
     uint32_t currentFrameType;
     int numShortTerm;
-    uint32_t numRefFrames;
 
     VADisplay vaDisplay;
     VAProfile vaProfile;

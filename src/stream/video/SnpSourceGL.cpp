@@ -23,11 +23,13 @@
 //#include <GLES2/glext.h>
 
 SnpSourceGL::SnpSourceGL(const SnpSourceGLOptions &options) : SnpComponent(options) {
+    LOG_F(INFO, "Initializing SnpSourceGL...");
     addOutputPort(new SnpPort(PORT_TYPE_BOTH));
     device = options.device;
     framesCaptured = 0;
     initDrm();
     initMmap();
+    LOG_F(INFO, "Initialized.");
 }
 
 SnpSourceGL::~SnpSourceGL() {
@@ -486,9 +488,9 @@ void SnpSourceGL::setEnabled(bool enabled) {
                     setTimestampEndMs(TimeUtil::getTimeNowMs());
 //                    glReadPixels(0,0,1920,1080,GL_BGRA,GL_UNSIGNED_BYTE,buffer);
 //                    outputPort->onData(buffer, width*height*bytesPerPixel, true);
+//                    usleep(33333);
                     outputPort->onData(this->mmapFrameBuffer, width*height*bytesPerPixel, true);
-                    usleep(33333);
-
+                    usleep(16666);
             }
         }};
     } else {

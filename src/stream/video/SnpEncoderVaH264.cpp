@@ -24,12 +24,13 @@
 #define FRAME_IDR 7
 
 //TODO: what are these?
-static unsigned int MaxFrameNum = (2<<16);
-static unsigned int MaxPicOrderCntLsb = (2<<4);
+static unsigned int MaxFrameNum = (2<<4);
+static unsigned int MaxPicOrderCntLsb = (2<<16);
 static unsigned int Log2MaxFrameNum = 4;
 static unsigned int Log2MaxPicOrderCntLsb = 4;
 
 SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : SnpComponent(options) {
+    LOG_F(INFO, "Initializing SnpEncoderVaH264...");
     width = options.width;
     height = options.height;
     bpp = options.bytesPerPixel;
@@ -43,16 +44,17 @@ SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : Snp
     frameHeightMbAligned = (height + 15) & (~15);
     h264Profile = VAProfileH264ConstrainedBaseline;
     constraintSetFlag = 0;
-    frameBitrate = 10000000;
-    initialQp = 20;
-    minimalQp = 20;
-    idrPeriod = 100;
+    frameBitrate = 30000000;
+    initialQp = 26;
+    minimalQp = 26;
+    idrPeriod = 10000;
     configAttribNum = 0;
     currentFrameNum = 0;
     currentFrameType = FRAME_IDR;
+    encodingFrameNum = 0;
 
     numShortTerm = 0;
-    numRefFrames = 2;
+    LOG_F(INFO, "Initialized.");
 }
 
 SnpEncoderVaH264::~SnpEncoderVaH264() {
@@ -279,6 +281,8 @@ bool SnpEncoderVaH264::VaH264EncoderEncode(const uint8_t *framebuffer, uint32_t 
     VACodedBufferSegment *bufList;
     uint32_t codedSize = 0;
 
+//    std::cout << encodingFrameNum << std::endl;
+
     bitstream = new VaBitstream(h264Profile, seqParam, picParam, sliceParam, constraintSetFlag, frameBitrate);
 
     //upload yuv data to surface
@@ -306,7 +310,7 @@ bool SnpEncoderVaH264::VaH264EncoderEncode(const uint8_t *framebuffer, uint32_t 
     memset(&picParam, 0, sizeof(picParam));
     memset(&sliceParam, 0, sizeof(sliceParam));
 
-    if(currentFrameNum == 0) {
+    if(encodingFrameNum == 0) {
         currentFrameType = FRAME_IDR;
     } else {
         currentFrameType = FRAME_P;
@@ -314,7 +318,7 @@ bool SnpEncoderVaH264::VaH264EncoderEncode(const uint8_t *framebuffer, uint32_t 
 
     if (currentFrameType == FRAME_IDR) {
         numShortTerm = 0;
-        currentFrameNum = 0;
+//        currentFrameNum = 0;
 //        current_IDR_display = current_frame_display;
     }
 
@@ -354,6 +358,8 @@ bool SnpEncoderVaH264::VaH264EncoderEncode(const uint8_t *framebuffer, uint32_t 
 
     delete bitstream;
 
+    encodingFrameNum++;
+
     return result;
 error:
     return result;
@@ -362,17 +368,17 @@ error:
 void SnpEncoderVaH264::updateReferenceFrames() {
     int i;
 
-    currentCurrPic.flags = VA_PICTURE_H264_SHORT_TERM_REFERENCE;
-    numShortTerm++;
-    if (numShortTerm > numRefFrames)
-        numShortTerm = numRefFrames;
-    for (i=numShortTerm-1; i>0; i--)
-        referenceFrames[i] = referenceFrames[i-1];
-    referenceFrames[0] = currentCurrPic;
+//    currentCurrPic.flags = VA_PICTURE_H264_SHORT_TERM_REFERENCE;
+//    numShortTerm++;
+//    if (numShortTerm > numRefFrames)
+//        numShortTerm = numRefFrames;
+//    for (i=numShortTerm-1; i>0; i--)
+//        referenceFrames[i] = referenceFrames[i-1];
+//    referenceFrames[0] = currentCurrPic;
 
     if (currentFrameType != FRAME_B)
         currentFrameNum++;
-    if (currentFrameNum > MaxFrameNum)
+    if (currentFrameNum == MaxFrameNum)
         currentFrameNum = 0;
 }
 
@@ -403,8 +409,9 @@ bool SnpEncoderVaH264::renderSequence() {
     seqParam.seq_fields.bits.frame_mbs_only_flag = 1;
     seqParam.time_scale = 900;
     seqParam.num_units_in_tick = 15; /* Tc = num_units_in_tick / time_sacle */
+//    seqParam.seq_fields.bits.pic_order_cnt_type = 2;
     seqParam.seq_fields.bits.log2_max_pic_order_cnt_lsb_minus4 = Log2MaxPicOrderCntLsb - 4;
-    seqParam.seq_fields.bits.log2_max_frame_num_minus4 = Log2MaxFrameNum - 4;;
+    seqParam.seq_fields.bits.log2_max_frame_num_minus4 = Log2MaxFrameNum - 4;
     seqParam.seq_fields.bits.frame_mbs_only_flag = 1;
     seqParam.seq_fields.bits.chroma_format_idc = 1;
     seqParam.seq_fields.bits.direct_8x8_inference_flag = 1;
@@ -473,10 +480,10 @@ bool SnpEncoderVaH264::renderPicture() {
         picParam.ReferenceFrames[0].flags = VA_PICTURE_H264_SHORT_TERM_REFERENCE;
     }
 
-    picParam.pic_fields.bits.idr_pic_flag = currentFrameNum == 0; //currentFrameType == FRAME_IDR
+    picParam.pic_fields.bits.idr_pic_flag = currentFrameType == FRAME_IDR;
     picParam.pic_fields.bits.reference_pic_flag = 1;
     picParam.pic_fields.bits.entropy_coding_mode_flag = 0; //1 = cabac //TODO: cabac
-    picParam.pic_fields.bits.deblocking_filter_control_present_flag = 1; //TODO: filter
+    picParam.pic_fields.bits.deblocking_filter_control_present_flag = 0; //TODO: filter
     picParam.frame_num = currentFrameNum;
     picParam.coded_buf = codedBuf[0];
     picParam.last_picture = 0;
