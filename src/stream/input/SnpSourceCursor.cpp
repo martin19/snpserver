@@ -61,10 +61,18 @@ void SnpSourceCursor::runX11Loop() {
             streamDataCursor.set_height(x11Cursor->height);
             streamDataCursor.set_hotx(x11Cursor->xhot);
             streamDataCursor.set_hoty(x11Cursor->yhot);
-            auto *image = new std::string((uint8_t *)x11Cursor->pixels,
-                                                 ((uint8_t *)x11Cursor->pixels) +
-                                                 x11Cursor->width * x11Cursor->height * 4);
-            streamDataCursor.set_allocated_image(image);
+            int sizePixels = x11Cursor->width * x11Cursor->height;
+            unsigned long *argb = x11Cursor->pixels;
+            auto *rgba = new std::string();
+            rgba->resize(sizePixels * 4);
+            for(int i = 0; i < sizePixels; i++) {
+                (*rgba)[(i*4)]   = (((uint32_t)argb[i])) & 0xff;
+                (*rgba)[(i*4)+1] = (((uint32_t)argb[i]) >> 8) & 0xff;
+                (*rgba)[(i*4)+2] = (((uint32_t)argb[i]) >> 16) & 0xff;
+                (*rgba)[(i*4)+3] = (((uint32_t)argb[i]) >> 24) & 0xff;
+            }
+            XFree(x11Cursor);
+            streamDataCursor.set_allocated_image(rgba);
             std::string data = streamDataCursor.SerializeAsString();
             getOutputPort(0)->onData((const uint8_t*)data.c_str(), data.length(), true);
         }
