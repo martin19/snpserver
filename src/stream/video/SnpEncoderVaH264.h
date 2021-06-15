@@ -42,9 +42,14 @@ private:
 
     VAProfile h264Profile;
     int frameBitrate;
+
     uint32_t initialQp;
     uint32_t minimalQp;
-    uint32_t idrPeriod;
+
+    uint32_t idrFramePeriod;
+    uint32_t iFramePeriod;
+    uint32_t ipPeriod;
+
     uint32_t frameWidthMbAligned;
     uint32_t frameHeightMbAligned;
     uint32_t encodingFrameNum;

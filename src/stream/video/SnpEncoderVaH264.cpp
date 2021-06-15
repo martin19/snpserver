@@ -45,9 +45,13 @@ SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : Snp
     h264Profile = VAProfileH264ConstrainedBaseline;
     constraintSetFlag = 0;
     frameBitrate = 30000000;
-    initialQp = 26;
-    minimalQp = 26;
-    idrPeriod = 10000;
+    initialQp = 25;
+    minimalQp = 25;
+
+    iFramePeriod = 6;
+    idrFramePeriod = 0;
+    ipPeriod = 1;
+
     configAttribNum = 0;
     currentFrameNum = 0;
     currentFrameType = FRAME_IDR;
@@ -312,6 +316,8 @@ bool SnpEncoderVaH264::VaH264EncoderEncode(const uint8_t *framebuffer, uint32_t 
 
     if(encodingFrameNum == 0) {
         currentFrameType = FRAME_IDR;
+    } else if(iFramePeriod != 0 && (encodingFrameNum-1) % iFramePeriod == 0) {
+        currentFrameType = FRAME_I;
     } else {
         currentFrameType = FRAME_P;
     }
@@ -401,9 +407,9 @@ bool SnpEncoderVaH264::renderSequence() {
     seqParam.picture_height_in_mbs = frameHeightMbAligned / 16;
     seqParam.bits_per_second = frameBitrate;
 
-    seqParam.intra_period = idrPeriod;
-    seqParam.intra_idr_period = idrPeriod;
-    seqParam.ip_period = 1;
+    seqParam.intra_period = iFramePeriod;
+    seqParam.intra_idr_period = idrFramePeriod;
+    seqParam.ip_period = ipPeriod;
 
     seqParam.max_num_ref_frames = 1;
     seqParam.seq_fields.bits.frame_mbs_only_flag = 1;
@@ -511,7 +517,7 @@ bool SnpEncoderVaH264::renderSlice() {
     if(currentFrameType == FRAME_IDR) {
         //idr-frame
         sliceParam.idr_pic_id++;
-    } else if(currentFrameType == FRAME_P) {
+    } else if(currentFrameType == FRAME_P || currentFrameType == FRAME_I) {
         for(int i = 0; i < 32;i++) {
             sliceParam.RefPicList0[i].picture_id = VA_INVALID_SURFACE;
             sliceParam.RefPicList0[i].flags = VA_PICTURE_H264_INVALID;

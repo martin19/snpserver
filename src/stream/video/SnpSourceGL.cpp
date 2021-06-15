@@ -488,9 +488,9 @@ void SnpSourceGL::setEnabled(bool enabled) {
                     setTimestampEndMs(TimeUtil::getTimeNowMs());
 //                    glReadPixels(0,0,1920,1080,GL_BGRA,GL_UNSIGNED_BYTE,buffer);
 //                    outputPort->onData(buffer, width*height*bytesPerPixel, true);
-//                    usleep(33333);
+                    usleep(33333);
                     outputPort->onData(this->mmapFrameBuffer, width*height*bytesPerPixel, true);
-                    usleep(16666);
+//                    usleep(16666);
             }
         }};
     } else {
