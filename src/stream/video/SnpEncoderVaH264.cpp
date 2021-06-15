@@ -45,10 +45,10 @@ SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : Snp
     h264Profile = VAProfileH264ConstrainedBaseline;
     constraintSetFlag = 0;
     frameBitrate = 30000000;
-    initialQp = 25;
-    minimalQp = 25;
+    initialQp = 10;
+    minimalQp = 10;
 
-    iFramePeriod = 6;
+    iFramePeriod = 30;
     idrFramePeriod = 0;
     ipPeriod = 1;
 
@@ -422,7 +422,14 @@ bool SnpEncoderVaH264::renderSequence() {
     seqParam.seq_fields.bits.chroma_format_idc = 1;
     seqParam.seq_fields.bits.direct_8x8_inference_flag = 1;
 
-    //TODO: cropping omitted now
+    if (width != frameWidthMbAligned ||
+        height != frameHeightMbAligned) {
+        seqParam.frame_cropping_flag = 1;
+        seqParam.frame_crop_left_offset = 0;
+        seqParam.frame_crop_right_offset = frameWidthMbAligned - width;
+        seqParam.frame_crop_top_offset = 0;
+        seqParam.frame_crop_bottom_offset = frameHeightMbAligned - height;
+    }
 
     vaStatus = vaCreateBuffer(vaDisplay, contextId, VAEncSequenceParameterBufferType, sizeof(seqParam),
                               1, &seqParam, &seqParamBuf);
