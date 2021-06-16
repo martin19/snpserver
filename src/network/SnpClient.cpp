@@ -109,9 +109,13 @@ void SnpClient::onStreamsChange(const snappyv1::StreamsChange &msg) {
 
         //libva
         SnpEncoderVaH264Options encoderOptions = {};
-        encoderOptions.width = sourceGL->width;
-        encoderOptions.height = sourceGL->height;
-        encoderOptions.bytesPerPixel = sourceGL->bytesPerPixel;
+//TODO:
+//        encoderOptions.width = sourceGL->width;
+//        encoderOptions.height = sourceGL->height;
+//        encoderOptions.bytesPerPixel = sourceGL->bytesPerPixel;
+        encoderOptions.width = 1920;
+        encoderOptions.height = 1080;
+        encoderOptions.bytesPerPixel = 4;
         auto *encoder = new SnpEncoderVaH264(encoderOptions);
 
         ///

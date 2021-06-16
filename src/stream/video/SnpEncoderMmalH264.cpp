@@ -78,7 +78,7 @@ uint8_t *SnpEncoderMmalH264::mmalDmaBufAllocator(MMAL_PORT_T *port, uint32_t pay
         goto error;
     }
 
-    vcsm_handle = vcsm_import_dmabuf(inputPort->dmaBufFd, inputPort->device.c_str());
+    vcsm_handle = vcsm_import_dmabuf(inputPort->sourcePort->dmaBufFd, inputPort->sourcePort->device.c_str());
     if(!vcsm_handle) {
         fprintf(stderr, "Cannot import dmabuf vcsm_import_dmabuf(dmabuf=%d, device=%s)\n", inputPort->dmaBufFd, inputPort->device.c_str());
         goto error;

@@ -26,6 +26,7 @@ public:
     void init();
 
     SnpPort *targetPort;
+    SnpPort *sourcePort;
 
     static bool connect(SnpPort *sourcePort, SnpPort *targetPort);
 
@@ -50,8 +51,6 @@ public:
 
 private:
     std::function<void(const uint8_t *data, int len, bool complete)> onDataCb = nullptr;
-    bool initMmap();
-    bool destroyMmap();
     SnpComponent *owner;
 public:
     SnpComponent *getOwner() const;

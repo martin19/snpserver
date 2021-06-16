@@ -1,10 +1,12 @@
 #ifndef SNPSERVER_ASSERT_H
 #define SNPSERVER_ASSERT_H
 
+#include "loguru.h"
+
 #define ASSERT(cond)    \
 	if (!(cond)) {      \
         result = false; \
-		fprintf(stderr, "ERROR @ %s:%d: (%s) failed", __FILE__, __LINE__, #cond); \
+		LOG_F(ERROR, "ERROR (%s) failed", #cond); \
 		goto error; \
 	}
 

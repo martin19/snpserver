@@ -39,7 +39,6 @@ struct FB {
 class DrmUtil {
 public:
     explicit DrmUtil(int deviceFd);
-    explicit DrmUtil(std::string device);
     virtual ~DrmUtil();
     bool getResources();
     void freeResources();
@@ -51,9 +50,6 @@ private:
     std::map<uint32_t, Crtc*> crtcs;
     std::map<uint32_t, Plane*> planes;
     std::map<uint32_t, FB*> framebuffers;
-
-    bool openDevice(const std::string &device);
-    void closeDevice();
 };
 
 

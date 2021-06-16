@@ -30,7 +30,6 @@ private:
     bool openH264EncoderInit();
     bool openH264EncoderEncode(const uint8_t *framebuffer, uint32_t len);
     void openH264EncoderDestroy();
-    static void rgba2Yuv(uint8_t *destination, const uint8_t *rgb, int width, int height);
     ISVCEncoder *encoder;
     uint8_t *yuvBuffer;
 };

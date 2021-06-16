@@ -63,8 +63,6 @@ private:
     static bool destroyDumbBo(int deviceFd, dumb_bo* dumbBo);
     void onInputData(const uint8_t *data, int len, bool complete);
 
-    DrmUtil *drmUtil;
-
     std::string device;
     int deviceFd;
     FramebufferInfo *fbPrimary;
@@ -74,10 +72,12 @@ private:
     //memory mapping
     uint8_t *mmapFrameBuffer;
 
-    EGLDisplay eglDpy;
+    EGLDisplay eglDisplay;
     EGLContext eglCtx;
     GLuint captureProg;
     GLuint frameBuffer;
+    EGLImage imageCapture;
+    EGLImage imagePrimary;
 };
 
 

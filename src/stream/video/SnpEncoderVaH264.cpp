@@ -14,7 +14,7 @@
 #define CHECK_VASTATUS(va_status,func)                                  \
     if (va_status != VA_STATUS_SUCCESS) {                               \
         result = false;                                                 \
-        fprintf(stderr,"%s:%s (%d) failed with status %d,exit\n", __func__, func, __LINE__, va_status); \
+        LOG_F(ERROR,"%s failed with status %d,exit\n", __func__, va_status); \
         goto error;                                                        \
     }
 
@@ -89,8 +89,8 @@ bool SnpEncoderVaH264::initVa() {
 
     int majorVer, minorVer;
 
-    std::cout << "initVa" <<std::endl;
-    vaDisplay = vaGetDisplayDRM(getInputPort(0)->deviceFd);
+    std::cout << "initVa with drm device fd="<< getInputPort(0)->sourcePort->deviceFd <<std::endl;
+    vaDisplay = vaGetDisplayDRM(getInputPort(0)->sourcePort->deviceFd);
     vaStatus = vaInitialize(vaDisplay, &majorVer, &minorVer);
     CHECK_VASTATUS(vaStatus, "vaInitialize");
 
@@ -389,8 +389,18 @@ void SnpEncoderVaH264::updateReferenceFrames() {
 }
 
 void SnpEncoderVaH264::VaH264EncoderDestroy() {
-    //release_encode();
+
+    //release_encode
+    vaDestroySurfaces(vaDisplay, &srcSurface[0], SURFACE_NUM);
+    vaDestroySurfaces(vaDisplay, &refSurface[0], SURFACE_NUM);
+    for(int i = 0; i < SURFACE_NUM; i++) {
+        vaDestroyBuffer(vaDisplay, codedBuf[0]);
+    }
+    vaDestroyContext(vaDisplay, contextId);
+    vaDestroyConfig(vaDisplay, configId);
+
     //deinit_va();
+    vaTerminate(vaDisplay);
 }
 
 bool SnpEncoderVaH264::renderSequence() {
@@ -463,6 +473,8 @@ bool SnpEncoderVaH264::renderSequence() {
 
     //TODO: misc_priv_value omitted now.
 
+    vaDestroyBuffer(vaDisplay, seqParamBuf);
+
     return result;
 error:
     return result;
@@ -509,6 +521,9 @@ bool SnpEncoderVaH264::renderPicture() {
     vaStatus = vaRenderPicture(vaDisplay, contextId, &picParamBuf, 1);
     CHECK_VASTATUS(vaStatus, "vaRenderPicture");
 
+    vaStatus = vaDestroyBuffer(vaDisplay, picParamBuf);
+    CHECK_VASTATUS(vaStatus,"vaDestroyBuffer");
+
     return result;
 error:
     return result;
@@ -549,6 +564,9 @@ bool SnpEncoderVaH264::renderSlice() {
     vaStatus = vaRenderPicture(vaDisplay, contextId, &sliceParamBuf, 1);
     CHECK_VASTATUS(vaStatus, "vaRenderPicture");
 
+    vaStatus = vaDestroyBuffer(vaDisplay, sliceParamBuf);
+    CHECK_VASTATUS(vaStatus,"vaDestroyBuffer");
+
     return result;
 error:
     return result;
@@ -587,6 +605,13 @@ bool SnpEncoderVaH264::renderPackedSequence() {
     renderId[1] = packedseqDataBufid;
     vaStatus = vaRenderPicture(vaDisplay, contextId, renderId, 2);
     CHECK_VASTATUS(vaStatus, "vaRenderPicture");
+
+
+    vaStatus = vaDestroyBuffer(vaDisplay, packedseqParaBufid);
+    CHECK_VASTATUS(vaStatus, "vaDestroyBuffer");
+
+    vaStatus = vaDestroyBuffer(vaDisplay, packedseqDataBufid);
+    CHECK_VASTATUS(vaStatus, "vaDestroyBuffer");
 
     free(packedseqBuffer);
 
@@ -628,6 +653,12 @@ bool SnpEncoderVaH264::renderPackedPicture() {
     vaStatus = vaRenderPicture(vaDisplay, contextId, render_id, 2);
     CHECK_VASTATUS(vaStatus, "vaRenderPicture");
 
+    vaStatus = vaDestroyBuffer(vaDisplay, packedpicParaBufid);
+    CHECK_VASTATUS(vaStatus, "vaDestroyBuffer");
+
+    vaStatus = vaDestroyBuffer(vaDisplay, packedpicDataBufid);
+    CHECK_VASTATUS(vaStatus, "vaDestroyBuffer");
+
     free(packedpicBuffer);
 
     return result;
@@ -667,6 +698,12 @@ bool SnpEncoderVaH264::renderPackedSlice() {
     renderId[1] = packedsliceDataBufid;
     vaStatus = vaRenderPicture(vaDisplay, contextId, renderId, 2);
     CHECK_VASTATUS(vaStatus, "vaRenderPicture");
+
+    vaStatus = vaDestroyBuffer(vaDisplay, packedsliceParaBufid);
+    CHECK_VASTATUS(vaStatus, "vaDestroyBuffer");
+
+    vaStatus = vaDestroyBuffer(vaDisplay, packedsliceDataBufid);
+    CHECK_VASTATUS(vaStatus, "vaDestroyBuffer");
 
     free(packedsliceBuffer);
 

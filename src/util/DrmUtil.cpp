@@ -8,39 +8,24 @@ DrmUtil::DrmUtil(int deviceFd) {
     getResources();
 }
 
-DrmUtil::DrmUtil(std::string device) {
-    this->deviceFd = -1;
-    if(openDevice(device)) {
-        getResources();
-    }
-}
-
 DrmUtil::~DrmUtil() {
     freeResources();
-    if(deviceFd) {
-        close(deviceFd);
-    }
-    deviceFd = -1;
 }
 
-bool DrmUtil::openDevice(const std::string &device) {
-    bool result = true;
-
-    deviceFd = open(device.c_str(), O_RDWR);
-    if (deviceFd < 0) {
-        result = false;
-        fprintf(stderr, "Cannot open modesetting device %s\n", device.c_str());
-        goto error;
-    }
-
-    return result;
-error:
-    return result;
-}
-
-void DrmUtil::closeDevice() {
-    close(deviceFd);
-}
+//bool DrmUtil::openDevice(const std::string &device) {
+//    bool result = true;
+//
+//    deviceFd = open(device.c_str(), O_RDWR);
+//    if (deviceFd < 0) {
+//        result = false;
+//        fprintf(stderr, "Cannot open modesetting device %s\n", device.c_str());
+//        goto error;
+//    }
+//
+//    return result;
+//error:
+//    return result;
+//}
 
 void DrmUtil::freeResources() {
     for(auto & connector : connectors) {

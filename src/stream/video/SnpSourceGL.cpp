@@ -27,12 +27,15 @@ SnpSourceGL::SnpSourceGL(const SnpSourceGLOptions &options) : SnpComponent(optio
     addOutputPort(new SnpPort(PORT_TYPE_BOTH));
     device = options.device;
     framesCaptured = 0;
-    initDrm();
-    initMmap();
+    eglDisplay = nullptr;
+    eglCtx = nullptr;
+    imagePrimary = nullptr;
+    imageCapture = nullptr;
     LOG_F(INFO, "Initialized.");
 }
 
 SnpSourceGL::~SnpSourceGL() {
+    grabberThread.detach();
     destroyGL();
     destroyMmap();
     destroyDrm();
@@ -50,7 +53,7 @@ bool SnpSourceGL::createDumbBo(int deviceFd, uint32_t width, uint32_t height, ui
 
     if(drmIoctl(deviceFd, DRM_IOCTL_MODE_CREATE_DUMB, &arg) != 0) {
         result = false;
-        fprintf(stderr, "Cannot create dumb bo for capture fb\n");
+        LOG_F(ERROR, "Cannot create dumb bo for capture fb");
         goto error;
     }
 
@@ -73,7 +76,7 @@ bool SnpSourceGL::destroyDumbBo(int deviceFd, dumb_bo *dumbBo) {
 
     if(drmIoctl(deviceFd, DRM_IOCTL_MODE_DESTROY_DUMB, &arg) != 0) {
         result = false;
-        fprintf(stderr, "Cannot create dumb bo for capture fb\n");
+        LOG_F(ERROR, "Cannot create dumb bo for capture fb\n");
         goto error;
     }
 
@@ -114,7 +117,7 @@ SnpSourceGL::createCaptureFb(int deviceFd, uint32_t width, uint32_t height, uint
 
     if (ret < 0) {
         result = false;
-        fprintf(stderr,"failed to create capture framebuffer: %s\n", strerror(ret));
+        LOG_F(ERROR,"failed to create capture framebuffer: %s", strerror(ret));
         goto error;
     }
 
@@ -123,7 +126,7 @@ SnpSourceGL::createCaptureFb(int deviceFd, uint32_t width, uint32_t height, uint
 
     if (!fb->fb2Ptr) {
         result = false;
-        fprintf(stderr, "Cannot open framebuffer %#x", fb->fbId);
+        LOG_F(ERROR, "Cannot open framebuffer %#x", fb->fbId);
         goto error;
     }
 
@@ -177,25 +180,21 @@ bool SnpSourceGL::initDrm() {
     deviceFd = open(device.c_str(), O_RDWR);
     if (deviceFd < 0) {
         result = false;
-        fprintf(stderr, "Cannot open modesetting device %s\n", device.c_str());
-        goto error;
+        LOG_F(ERROR, "Cannot open modesetting device %s\n", device.c_str());
+        return result;
     }
 
     //get primary framebuffer
     fbPrimary = new FramebufferInfo();
     fbPrimary->deviceFd = deviceFd;
 
-    drmUtil = new DrmUtil(deviceFd);
-    drmUtil->getPrimaryFb(&fbPrimary->fbId);
-    //TODO: find primary framebuffer
-//    fbPrimary->fbId = 0xcf;
-//    fbPrimary->fbId = 0x44;
-//    fbPrimary->fbId = 0x45;
+    DrmUtil drmUtil(deviceFd);
+    drmUtil.getPrimaryFb(&fbPrimary->fbId);
 
     fbPrimary->fbPtr = drmModeGetFB(deviceFd, fbPrimary->fbId);
     if (!fbPrimary->fbPtr) {
         result = false;
-        fprintf(stderr, "Cannot open primary framebuffer %#x", fbPrimary->fbId);
+        LOG_F(ERROR, "Cannot open primary framebuffer %#x", fbPrimary->fbId);
         goto error;
     }
 
@@ -204,7 +203,7 @@ bool SnpSourceGL::initDrm() {
     //create the capture framebuffer
     if(!createCaptureFb(deviceFd, fbPrimary->fbPtr->width, fbPrimary->fbPtr->height, fbPrimary->fbPtr->bpp, &fbCapture)) {
         result = false;
-        fprintf(stderr, "Cannot create capture framebuffer.");
+        LOG_F(ERROR, "Cannot create capture framebuffer.");
         goto error;
     }
 
@@ -220,8 +219,6 @@ bool SnpSourceGL::initDrm() {
     getOutputPort(0)->device = device;
     getOutputPort(0)->deviceFd = fbCapture->deviceFd;
     getOutputPort(0)->dmaBufFd = fbCapture->dmaBufFd;
-//    getOutputPort(0)->deviceFd = fbPrimary->deviceFd;
-//    getOutputPort(0)->dmaBufFd = fbPrimary->dmaBufFd;
 
     this->width = fbCapture->fb2Ptr->width;
     this->height = fbCapture->fb2Ptr->height;
@@ -235,6 +232,8 @@ error:
 
 void SnpSourceGL::destroyDrm() {
     destroyCaptureFb(fbCapture);
+    delete fbPrimary;
+    delete fbCapture;
     close(deviceFd);
 }
 
@@ -245,7 +244,7 @@ bool SnpSourceGL::initMmap() {
     mmapFrameBuffer = (uint8_t*)mmap(nullptr, width * height * bytesPerPixel, PROT_READ, MAP_SHARED, fbCapture->dmaBufFd, 0);
     if (mmapFrameBuffer == MAP_FAILED) {
         result = false;
-        fprintf(stderr, "mmap failed: %s\n", strerror(errno));
+        LOG_F(ERROR, "mmap failed: %s", strerror(errno));
         goto error;
     }
 
@@ -292,27 +291,23 @@ static GLfloat g_vertex_buffer_data[] = {
 bool SnpSourceGL::initGL() {
     bool result = true;
     GLuint fragmentShader = -1;
-    EGLImage imageCapture = nullptr;
-    EGLImage imagePrimary = nullptr;
 
     eglBindAPI(EGL_OPENGL_API);
-    eglDpy = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-    if (eglDpy == EGL_NO_DISPLAY) {
-        fprintf(stderr, "Failed to get EGL display\n");
+    eglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+    if (eglDisplay == EGL_NO_DISPLAY) {
+        LOG_F(ERROR, "Failed to get EGL display\n");
         return false;
     }
 
     EGLint ver_min, ver_maj;
-    eglInitialize(eglDpy, &ver_maj, &ver_min);
+    eglInitialize(eglDisplay, &ver_maj, &ver_min);
     LOG_F(INFO, "EGL: version %d.%d", ver_maj, ver_min);
-    LOG_F(INFO, "EGL: EGL_VERSION: '%s'", eglQueryString(eglDpy, EGL_VERSION));
-    LOG_F(INFO, "EGL: EGL_VENDOR: '%s'", eglQueryString(eglDpy, EGL_VENDOR));
-    LOG_F(INFO, "EGL: EGL_CLIENT_APIS: '%s'", eglQueryString(eglDpy, EGL_CLIENT_APIS));
-    LOG_F(INFO, "EGL: EGL_EXTENSIONS: '%s'", eglQueryString(eglDpy, EGL_EXTENSIONS));
+    LOG_F(INFO, "EGL: EGL_VERSION: '%s'", eglQueryString(eglDisplay, EGL_VERSION));
+    LOG_F(INFO, "EGL: EGL_VENDOR: '%s'", eglQueryString(eglDisplay, EGL_VENDOR));
+    LOG_F(INFO, "EGL: EGL_CLIENT_APIS: '%s'", eglQueryString(eglDisplay, EGL_CLIENT_APIS));
+    LOG_F(INFO, "EGL: EGL_EXTENSIONS: '%s'", eglQueryString(eglDisplay, EGL_EXTENSIONS));
 
     //get procs for all required extensions
-    PFNEGLEXPORTDMABUFIMAGEQUERYMESAPROC eglExportDMABUFImageQueryMESA =
-        (PFNEGLEXPORTDMABUFIMAGEQUERYMESAPROC)eglGetProcAddress("eglExportDMABUFImageQueryMESA");
     PFNEGLEXPORTDMABUFIMAGEMESAPROC eglExportDMABUFImageMESA =
         (PFNEGLEXPORTDMABUFIMAGEMESAPROC)eglGetProcAddress("eglExportDMABUFImageMESA");
     PFNGLEGLIMAGETARGETTEXTURE2DOESPROC glEGLImageTargetTexture2DOES =
@@ -350,32 +345,28 @@ bool SnpSourceGL::initGL() {
     // Select an appropriate configuration
     EGLConfig eglConfig;
     EGLint num_config;
-    eglChooseConfig(eglDpy, configAttribs, &eglConfig, 1, &num_config);
-
-    // Create a surface
-    // EGLSurface eglSurf = eglCreatePbufferSurface(eglDpy, eglConfig, pbufferAttribs);
-    // ASSERT(EGL_NO_SURFACE != eglSurf);
+    eglChooseConfig(eglDisplay, configAttribs, &eglConfig, 1, &num_config);
 
     // Create a context and make it current
-    eglCtx = eglCreateContext(eglDpy, eglConfig, EGL_NO_CONTEXT, nullptr);
+    eglCtx = eglCreateContext(eglDisplay, eglConfig, EGL_NO_CONTEXT, nullptr);
     ASSERT(EGL_NO_CONTEXT != eglCtx);
 
-    ASSERT(eglMakeCurrent(eglDpy, EGL_NO_SURFACE, EGL_NO_SURFACE, eglCtx));
+    ASSERT(eglMakeCurrent(eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, eglCtx));
 
     // --> egl Setup complete, use context from now on.
 
-    imagePrimary = eglCreateImage(eglDpy,
-                                           EGL_NO_CONTEXT,
-                                           EGL_LINUX_DMA_BUF_EXT,
-                                           (EGLClientBuffer)nullptr,
-                                           attribute_list_primary);
+    imagePrimary = eglCreateImage(eglDisplay,
+                                  EGL_NO_CONTEXT,
+                                  EGL_LINUX_DMA_BUF_EXT,
+                                  (EGLClientBuffer)nullptr,
+                                  attribute_list_primary);
 
     //create capture image - in linear mode
-    imageCapture = eglCreateImage(eglDpy,
+    imageCapture = eglCreateImage(eglDisplay,
                                   nullptr,
-                                           EGL_LINUX_DMA_BUF_EXT,
-                                           (EGLClientBuffer)nullptr,
-                                           attribute_list_capture);
+                                  EGL_LINUX_DMA_BUF_EXT,
+                                  (EGLClientBuffer)nullptr,
+                                  attribute_list_capture);
 
     ASSERT(imagePrimary);
     ASSERT(imageCapture);
@@ -430,7 +421,7 @@ bool SnpSourceGL::initGL() {
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, tex[1], 0);
 
     if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
-        fprintf(stderr, "framebuffer incomplete! %d\n", result);
+        LOG_F(ERROR, "framebuffer incomplete! %d\n", result);
     }
 
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, frameBuffer);
@@ -456,32 +447,42 @@ error:
 }
 
 void SnpSourceGL::destroyGL() {
-    eglMakeCurrent(eglDpy, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-    eglDestroyContext(eglDpy, eglCtx);
-//    eglDestroySurface(eglDpy, eglSurf);
-    eglTerminate(eglDpy);
+    if(eglDisplay) {
+        eglMakeCurrent(eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+        if(imagePrimary) {
+            eglDestroyImage(eglDisplay, imagePrimary);
+            imagePrimary = nullptr;
+        }
+        if(imageCapture) {
+            eglDestroyImage(eglDisplay, imageCapture);
+            imageCapture = nullptr;
+        }
+        if(eglCtx) {
+            eglDestroyContext(eglDisplay, eglCtx);
+            eglCtx = nullptr;
+        }
+        eglTerminate(eglDisplay);
+    }
 }
 
-int frame = 0;
-
 void SnpSourceGL::captureFrame() {
-    //render loop: copy from texture1 to texture2
-//    glClearColor((this->framesCaptured*0.01)-std::floor(this->framesCaptured*0.01), 0, 1.0, 1.0);
-//    glClear(GL_COLOR_BUFFER_BIT);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glFinish();
     this->framesCaptured++;
-    frame++;
 }
 
-
 void SnpSourceGL::setEnabled(bool enabled) {
-    SnpComponent::setEnabled(enabled);
     if(enabled) {
-        std::cout << "starting capturing thread" << std::endl;
+        initDrm();
+        initMmap();
+
+        LOG_F(INFO, "starting capturing thread");
         grabberThread = std::thread{[this] () {
             this->initGL();
-            while(this->isEnabled()) {
+            //TODO: maybe initGL is required to be executed inside this thread.
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "EndlessLoop"
+            while(true) {
                     setTimestampStartMs(TimeUtil::getTimeNowMs());
                     SnpPort * outputPort = this->getOutputPort(0);
                     this->captureFrame();
@@ -493,8 +494,13 @@ void SnpSourceGL::setEnabled(bool enabled) {
                     usleep(33333);
 //                    usleep(16666);
             }
+#pragma clang diagnostic pop
         }};
     } else {
         grabberThread.detach();
+        destroyGL();
+        destroyMmap();
+        destroyDrm();
     }
+    SnpComponent::setEnabled(enabled);
 }
