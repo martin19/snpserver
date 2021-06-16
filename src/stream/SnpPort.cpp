@@ -5,18 +5,25 @@ SnpPort::SnpPort() {
     owner = nullptr;
     sourcePort = nullptr;
     targetPort = nullptr;
-    type = PORT_TYPE_COPY;
+    bufferType = PORT_TYPE_COPY;
+    streamType = PORT_STREAM_TYPE_GENERIC;
 }
 
-SnpPort::SnpPort(PortType type) {
+SnpPort::SnpPort(PortBufferType bufferType, PortStreamType streamType) {
     owner = nullptr;
     sourcePort = nullptr;
     targetPort = nullptr;
-    type = type;
+    this->bufferType = bufferType;
+    this->streamType = streamType;
+    switch(streamType) {
+        case PORT_STREAM_TYPE_GENERIC: format = new StreamFormat(); break;
+        case PORT_STREAM_TYPE_AUDIO: format = new StreamFormatAudio(); break;
+        case PORT_STREAM_TYPE_VIDEO: format = new StreamFormatVideo(); break;
+    }
 }
 
 SnpPort::~SnpPort() {
-//TODO
+    delete format;
 }
 
 void SnpPort::init() {
@@ -45,4 +52,8 @@ SnpComponent *SnpPort::getOwner() const {
 
 void SnpPort::setOwner(SnpComponent *owner) {
     SnpPort::owner = owner;
+}
+
+StreamFormat *SnpPort::getFormat() const {
+    return format;
 }

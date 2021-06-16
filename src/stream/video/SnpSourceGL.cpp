@@ -24,7 +24,7 @@
 
 SnpSourceGL::SnpSourceGL(const SnpSourceGLOptions &options) : SnpComponent(options) {
     LOG_F(INFO, "Initializing SnpSourceGL...");
-    addOutputPort(new SnpPort(PORT_TYPE_BOTH));
+    addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO));
     device = options.device;
     framesCaptured = 0;
     eglDisplay = nullptr;
@@ -176,6 +176,7 @@ error:
 
 bool SnpSourceGL::initDrm() {
     bool result = true;
+    StreamFormatVideo* format;
 
     deviceFd = open(device.c_str(), O_RDWR);
     if (deviceFd < 0) {
@@ -219,6 +220,11 @@ bool SnpSourceGL::initDrm() {
     getOutputPort(0)->device = device;
     getOutputPort(0)->deviceFd = fbCapture->deviceFd;
     getOutputPort(0)->dmaBufFd = fbCapture->dmaBufFd;
+
+    format = (StreamFormatVideo*)getOutputPort(0)->getFormat();
+    format->width = fbCapture->fb2Ptr->width;
+    format->height = fbCapture->fb2Ptr->height;
+    format->bytesPerPixel = 32 / 8;
 
     this->width = fbCapture->fb2Ptr->width;
     this->height = fbCapture->fb2Ptr->height;

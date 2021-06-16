@@ -75,7 +75,6 @@ add_executable(snpserver
     src/stream/SnpComponent.cpp
     src/stream/SnpPort.cpp
     # video stream
-    src/stream/video/SnpSourceModesetting.cpp
     src/stream/video/SnpSourceGL.cpp
     # input stream
     src/stream/input/SnpSinkMouse.cpp

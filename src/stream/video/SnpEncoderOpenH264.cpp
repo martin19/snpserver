@@ -4,13 +4,10 @@
 #include "SnpEncoderOpenH264.h"
 
 SnpEncoderOpenH264::SnpEncoderOpenH264(const SnpEncoderOpenH264Options &options) : SnpComponent(options) {
-    width = options.width;
-    height = options.height;
-    bpp = options.bytesPerPixel;
     encoder = nullptr;
     yuvBuffer = nullptr;
 
-    addInputPort(new SnpPort(PORT_TYPE_BOTH));
+    addInputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO));
     addOutputPort(new SnpPort());
 
     getInputPort(0)->setOnDataCb(std::bind(&SnpEncoderOpenH264::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
@@ -22,6 +19,13 @@ SnpEncoderOpenH264::~SnpEncoderOpenH264() {
 
 void SnpEncoderOpenH264::setEnabled(bool enabled) {
     if(enabled) {
+
+        auto *format = (StreamFormatVideo*)getInputPort(0)->sourcePort->getFormat();
+        width = format->width;
+        height = format->height;
+//        frameWidthMbAligned = (width + 15) & (~15);
+//        frameHeightMbAligned = (height + 15) & (~15);
+
         openH264EncoderInit();
     } else {
         openH264EncoderDestroy();

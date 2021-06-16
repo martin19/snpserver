@@ -31,17 +31,12 @@ static unsigned int Log2MaxPicOrderCntLsb = 4;
 
 SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : SnpComponent(options) {
     LOG_F(INFO, "Initializing SnpEncoderVaH264...");
-    width = options.width;
-    height = options.height;
-    bpp = options.bytesPerPixel;
 
-    addInputPort(new SnpPort(PORT_TYPE_BOTH));
+    addInputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO));
     addOutputPort(new SnpPort());
 
     getInputPort(0)->setOnDataCb(std::bind(&SnpEncoderVaH264::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 
-    frameWidthMbAligned = (width + 15) & (~15);
-    frameHeightMbAligned = (height + 15) & (~15);
     h264Profile = VAProfileH264ConstrainedBaseline;
     constraintSetFlag = 0;
     frameBitrate = 30000000;
@@ -67,6 +62,13 @@ SnpEncoderVaH264::~SnpEncoderVaH264() {
 
 void SnpEncoderVaH264::setEnabled(bool enabled) {
     if(enabled) {
+
+        auto *format = (StreamFormatVideo*)getInputPort(0)->sourcePort->getFormat();
+        width = format->width;
+        height = format->height;
+        frameWidthMbAligned = (width + 15) & (~15);
+        frameHeightMbAligned = (height + 15) & (~15);
+
         VaH264EncoderInit();
     } else {
         VaH264EncoderDestroy();

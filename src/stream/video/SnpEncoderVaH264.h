@@ -11,9 +11,6 @@
 #define MAX(a, b) ((a)>(b)?(a):(b))
 
 struct SnpEncoderVaH264Options : public SnpComponentOptions {
-    uint32_t width;
-    uint32_t height;
-    uint32_t bytesPerPixel;
     uint32_t qp;
 };
 

@@ -9,11 +9,7 @@
 #define CHECK_STATUS(status, msg) if (status != MMAL_SUCCESS) { fprintf(stderr, msg"\n"); goto error; }
 
 SnpEncoderMmalH264::SnpEncoderMmalH264(const SnpEncoderMmalH264Options &options) : SnpComponent(options) {
-    width = options.width;
-    height = options.height;
-    bpp = options.bpp;
-
-    addInputPort(new SnpPort(PORT_TYPE_BOTH));
+    addInputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO));
     addOutputPort(new SnpPort());
 
     getInputPort(0)->setOnDataCb(std::bind(&SnpEncoderMmalH264::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
@@ -31,6 +27,13 @@ void SnpEncoderMmalH264::onInputData(const uint8_t *data, int len, bool complete
 
 void SnpEncoderMmalH264::setEnabled(bool enabled) {
     if(enabled) {
+
+        auto *format = (StreamFormatVideo*)getInputPort(0)->sourcePort->getFormat();
+        width = format->width;
+        height = format->height;
+        frameWidthMbAligned = (width + 15) & (~15);
+        frameHeightMbAligned = (height + 15) & (~15);
+
         mmalEncoderInit();
     } else {
         mmalEncoderDestroy();

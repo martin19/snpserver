@@ -2,7 +2,6 @@
 #include <utility>
 #include <ctime>
 #include <stream/network/SnpSinkNetwork.h>
-#include <stream/video/SnpSourceModesetting.h>
 #include <stream/network/SnpSinkNetwork.h>
 #include <stream/network/SnpSourceNetwork.h>
 #include <stream/input/SnpSinkMouse.h>
@@ -96,26 +95,13 @@ void SnpClient::onStreamsChange(const snappyv1::StreamsChange &msg) {
 //MMAL
 //        SnpEncoderMmalH264Options encoderMmalH264Options = {};
 //        encoderMmalH264Options.qp = 20;
-//        encoderMmalH264Options.width = sourceGL->width;
-//        encoderMmalH264Options.height = sourceGL->height;
-//        encoderMmalH264Options.bpp = sourceGL->bytesPerPixel;
 //        auto *encoderMmalH264 = new SnpEncoderMmalH264(encoderMmalH264Options);
 //OPENH264
 //SnpEncoderOpenH264Options encoderOptions = {};
-//encoderOptions.width = sourceGL->width;
-//encoderOptions.height = sourceGL->height;
-//encoderOptions.bytesPerPixel = sourceGL->bytesPerPixel;
 //auto *encoder = new SnpEncoderOpenH264(encoderOptions);
 
         //libva
         SnpEncoderVaH264Options encoderOptions = {};
-//TODO:
-//        encoderOptions.width = sourceGL->width;
-//        encoderOptions.height = sourceGL->height;
-//        encoderOptions.bytesPerPixel = sourceGL->bytesPerPixel;
-        encoderOptions.width = 1920;
-        encoderOptions.height = 1080;
-        encoderOptions.bytesPerPixel = 4;
         auto *encoder = new SnpEncoderVaH264(encoderOptions);
 
         ///
