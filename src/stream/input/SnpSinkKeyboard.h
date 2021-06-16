@@ -10,6 +10,9 @@ class SnpSinkKeyboard : public SnpComponent {
 public:
     explicit SnpSinkKeyboard(const SnpSinkKeyboardOptions &options);
     ~SnpSinkKeyboard() override;
+
+    void setEnabled(bool enabled) override;
+
 private:
     void onInputData(const uint8_t *data, int len, bool complete);
     int fid;

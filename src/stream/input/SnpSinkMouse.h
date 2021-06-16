@@ -12,6 +12,9 @@ class SnpSinkMouse : public SnpComponent {
 public:
     explicit SnpSinkMouse(const SnpSinkMouseOptions &options);
     virtual ~SnpSinkMouse();
+
+    void setEnabled(bool enabled) override;
+
 private:
     void onInputData(const uint8_t *data, int len, bool complete);
     int fid;

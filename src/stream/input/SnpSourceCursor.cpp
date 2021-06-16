@@ -1,32 +1,45 @@
 #include <network/snappyv1.pb.h>
 #include "SnpSourceCursor.h"
+#include "util/loguru.h"
 
 SnpSourceCursor::SnpSourceCursor(const SnpSourceCursorOptions &options) : SnpComponent(options) {
     this->defaultDisplay = ":0.0";
     this->display = nullptr;
     this->lastCursorSerial = 0;
 
-    this->addOutputPort(new SnpPort());
-
-    this->initX11Client();
+    addOutputPort(new SnpPort());
 }
 
 SnpSourceCursor::~SnpSourceCursor() {
-    this->destroyX11Client();
+    destroyX11Client();
 }
+
+void SnpSourceCursor::setEnabled(bool enabled) {
+    if(enabled) {
+        initX11Client();
+        grabberThread = std::thread{[this] () {
+            runX11Loop();
+        }};
+    } else {
+        grabberThread.detach();
+        destroyX11Client();
+    }
+    SnpComponent::setEnabled(enabled);
+}
+
 
 bool SnpSourceCursor::initX11Client() {
     bool result = true;
 
     this->display = XOpenDisplay(defaultDisplay.c_str());
     if(display == nullptr) {
-        fprintf(stderr, "Cannot open display %s.\n", defaultDisplay.c_str());
+        LOG_F(ERROR, "Cannot open display %s.", defaultDisplay.c_str());
         result = false;
         goto error;
     }
 
     if (!XFixesQueryExtension(display, &xFixesEventBase, &xFixesErrorBase)) {
-        fprintf(stderr, "XFixesQueryExtension failed, not sending cursor changes\n");
+        LOG_F(ERROR, "XFixesQueryExtension failed, not sending cursor changes");
         result = false;
         goto error;
     }
@@ -35,20 +48,18 @@ bool SnpSourceCursor::initX11Client() {
 
     XFixesSelectCursorInput(display, rootWindow, XFixesDisplayCursorNotifyMask);
 
-
-
     return result;
 error:
     return result;
 }
 
 void SnpSourceCursor::destroyX11Client() {
-
+    XCloseDisplay(display);
 }
 
-void SnpSourceCursor::runX11Loop() {
+[[noreturn]] void SnpSourceCursor::runX11Loop() {
     XEvent ev;
-    while(this->isEnabled()) {
+    while(true) {
         XNextEvent(display, &ev);
         if(ev.type == xFixesEventBase + XFixesCursorNotify) {
             XFixesCursorImage *x11Cursor = XFixesGetCursorImage(display);
@@ -78,15 +89,3 @@ void SnpSourceCursor::runX11Loop() {
         }
     }
 }
-
-void SnpSourceCursor::setEnabled(bool enabled) {
-    SnpComponent::setEnabled(enabled);
-    if(enabled) {
-        grabberThread = std::thread{[this] () {
-            runX11Loop();
-        }};
-    } else {
-        grabberThread.detach();
-    }
-}
-

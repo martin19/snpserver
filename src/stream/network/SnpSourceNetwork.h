@@ -13,6 +13,9 @@ class SnpSourceNetwork : public SnpComponent {
 public:
     explicit SnpSourceNetwork(const SnpSourceNetworkOptions &options);
     ~SnpSourceNetwork() override;
+
+    void setEnabled(bool enabled) override;
+
 private:
     void onInputData(const uint8_t *data, int len, bool complete);
     uint32_t streamId;

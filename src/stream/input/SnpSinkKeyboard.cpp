@@ -4,6 +4,7 @@
 #include <cstdio>
 #include <unistd.h>
 #include <memory.h>
+#include "util/loguru.h"
 #include <network/snappyv1.pb.h>
 
 extern "C" unsigned short code_map_atset1_to_linux[57470];
@@ -11,11 +12,19 @@ extern "C" unsigned short code_map_atset1_to_linux[57470];
 SnpSinkKeyboard::SnpSinkKeyboard(const SnpSinkKeyboardOptions &options) : SnpComponent(options) {
     addInputPort(new SnpPort());
     getInputPort(0)->setOnDataCb(std::bind(&SnpSinkKeyboard::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-    initKeyboard();
 }
 
 SnpSinkKeyboard::~SnpSinkKeyboard() {
     destroyKeyboard();
+}
+
+void SnpSinkKeyboard::setEnabled(bool enabled) {
+    if(enabled) {
+        initKeyboard();
+    } else {
+        destroyKeyboard();
+    }
+    SnpComponent::setEnabled(enabled);
 }
 
 //TODO: eliminate duplicate
@@ -31,7 +40,7 @@ static void emit(int fd, int type, int code, int val) {
 
     size_t size = write(fd, &ie, sizeof(ie));
     if(size < 0) {
-        fprintf(stderr, "error: write\n");
+        LOG_F(ERROR, "error: write");
     }
 }
 
@@ -61,7 +70,7 @@ bool SnpSinkKeyboard::initKeyboard() {
 
     fid = open("/dev/uinput", O_WRONLY | O_NONBLOCK);
     if(fid == -1) {
-        fprintf(stderr, "Could not open /dev/uinput. Permissions might be insufficient.\n");
+        LOG_F(ERROR, "Could not open /dev/uinput. Permissions might be insufficient.");
         result = false;
         goto error;
     }
@@ -77,7 +86,7 @@ bool SnpSinkKeyboard::initKeyboard() {
     usetup.id.bustype = BUS_USB;
     usetup.id.vendor = 0x1234; /* sample vendor */
     usetup.id.product = 0x5678; /* sample product */
-    strcpy(usetup.name, "Example keyboard");
+    strcpy(usetup.name, "Snp keyboard");
 
     ioctl(fid, UI_DEV_SETUP, &usetup);
     ioctl(fid, UI_DEV_CREATE);

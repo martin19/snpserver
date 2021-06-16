@@ -487,12 +487,8 @@ void SnpSourceGL::setEnabled(bool enabled) {
                     SnpPort * outputPort = this->getOutputPort(0);
                     this->captureFrame();
                     setTimestampEndMs(TimeUtil::getTimeNowMs());
-//                    glReadPixels(0,0,1920,1080,GL_BGRA,GL_UNSIGNED_BYTE,buffer);
-//                    outputPort->onData(buffer, width*height*bytesPerPixel, true);
-
                     outputPort->onData(this->mmapFrameBuffer, width*height*bytesPerPixel, true);
-                    usleep(33333);
-//                    usleep(16666);
+//                    usleep(33333);
             }
 #pragma clang diagnostic pop
         }};

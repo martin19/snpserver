@@ -25,7 +25,8 @@ private:
 
     std::thread grabberThread;
     bool initX11Client();
-    void runX11Loop();
+
+    [[noreturn]] void runX11Loop();
     void destroyX11Client();
 };
 

@@ -13,6 +13,10 @@ SnpSourceNetwork::~SnpSourceNetwork() {
 
 }
 
+void SnpSourceNetwork::setEnabled(bool enabled) {
+    SnpComponent::setEnabled(enabled);
+}
+
 void SnpSourceNetwork::onInputData(const uint8_t *data, int len, bool complete) {
     getOutputPort(0)->onData(data, len, complete);
 }

@@ -12,6 +12,9 @@ class SnpSinkNetwork : public SnpComponent {
 public:
     explicit SnpSinkNetwork(const SnpSinkNetworkOptions &options);
     ~SnpSinkNetwork() override;
+
+    void setEnabled(bool enabled) override;
+
 private:
     void onInputData(const uint8_t *data, int len, bool complete);
     uint32_t streamId;
