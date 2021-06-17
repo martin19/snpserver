@@ -1,4 +1,5 @@
 #include "SnpComponent.h"
+#include "util/loguru.h"
 
 SnpPort* SnpComponent::getInputPort(int i) {
     return inputPorts.at(i);
@@ -25,6 +26,9 @@ SnpComponent::~SnpComponent() {
     for(auto & pPort : outputPorts) {
         delete pPort;
     }
+    for(auto &property : properties) {
+        delete property.second;
+    }
 }
 
 uint32_t SnpComponent::getTimestampStartMs() const {
@@ -49,4 +53,40 @@ SnpPipe *SnpComponent::getOwner() const {
 
 void SnpComponent::setOwner(SnpPipe *owner) {
     SnpComponent::owner = owner;
+}
+
+void SnpComponent::addProperty(SnpProperty *property) {
+    properties.insert(std::pair<std::string, SnpProperty*>(property->getName(), property));
+}
+
+SnpProperty *SnpComponent::getProperty(std::string name) {
+    auto entry = properties.find(name);
+    SnpProperty *property = entry->second;
+    return property;
+}
+
+std::map<std::string, SnpProperty *> &SnpComponent::getProperties() {
+    return properties;
+}
+
+bool SnpComponent::isRunning() const {
+    return running;
+}
+
+bool SnpComponent::isEnabled() const {
+    return enabled;
+}
+
+void SnpComponent::setEnabled(bool enabled)  {
+    this->enabled = enabled;
+}
+
+bool SnpComponent::start() {
+    if(this->isEnabled()) {
+        LOG_F(ERROR, "Component \"%s\" cannot be started because it has not been enabled.", componentName.c_str());
+        return false;
+    } else {
+        running = true;
+    }
+    return true;
 }

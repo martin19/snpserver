@@ -4,6 +4,7 @@
 #include "SnpEncoderOpenH264.h"
 
 SnpEncoderOpenH264::SnpEncoderOpenH264(const SnpEncoderOpenH264Options &options) : SnpComponent(options) {
+    componentName = "encoderOpenH264";
     encoder = nullptr;
     yuvBuffer = nullptr;
 
@@ -34,7 +35,7 @@ void SnpEncoderOpenH264::setEnabled(bool enabled) {
 }
 
 void SnpEncoderOpenH264::onInputData(const uint8_t *data, uint32_t len, bool complete) {
-    if(!isEnabled()) return;
+    if(!isRunning()) return;
     this->openH264EncoderEncode(data, len);
 }
 

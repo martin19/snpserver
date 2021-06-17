@@ -12,43 +12,50 @@ enum Platform {
     PLATFORM_ANDROID = 4;
 }
 
-enum SourceType {
-    SOURCE_TYPE_VIDEO = 0;
-    SOURCE_TYPE_AUDIO = 1;
-    SOURCE_TYPE_INPUT = 2;
+enum StreamMedium {
+    STREAM_MEDIUM_VIDEO = 0;
+    STREAM_MEDIUM_AUDIO = 1;
+    STREAM_MEDIUM_PERIPHERIAL = 2;
 }
 
-enum SourceSubType {
-    SOURCE_SUB_TYPE_X11 = 0;
-    SOURCE_SUB_TYPE_WAYLAND = 1;
-    SOURCE_SUB_TYPE_CAMERA = 2;
-    SOURCE_SUB_TYPE_KEYBOARD = 3;
-    SOURCE_SUB_TYPE_POINTER = 4;
-    SOURCE_SUB_TYPE_CURSOR = 5;
+enum StreamEndpoint {
+    STREAM_ENDPOINT_X11 = 0;
+    STREAM_ENDPOINT_WAYLAND = 1;
+    STREAM_ENDPOINT_CAMERA = 2;
+    STREAM_ENDPOINT_KEYBOARD = 3;
+    STREAM_ENDPOINT_POINTER = 4;
+    STREAM_ENDPOINT_CURSOR = 5;
 }
 
-enum EncoderType {
-    ENCODER_TYPE_H264_SOFTWARE = 0;
-    ENCODER_TYPE_H264_HARDWARE = 1;
-    ENCODER_TYPE_MP3_SOFTWARE = 2;
-    ENCODER_TYPE_MP3_HARDWARE = 3;
+enum StreamDirection {
+    STREAM_DIRECTION_INPUT = 0;
+    STREAM_DIRECTION_OUTPUT = 1;
+}
+
+enum StreamEncoding {
+    STREAM_ENCODING_H264_SOFTWARE = 0;
+    STREAM_ENCODING_H264_HARDWARE = 1;
+    STREAM_ENCODING_MP3_SOFTWARE = 2;
+    STREAM_ENCODING_MP3_HARDWARE = 3;
 }
 
 enum Command {
     COMMAND_INIT = 0;
     COMMAND_START = 1;
     COMMAND_STOP = 2;
-    COMMAND_DESTROY = 3;
+    COMMAND_SET_PARAMETER = 3;
+    COMMAND_DESTROY = 4;
+    COMMAND_ACK = 5;
 }
 
-enum ParameterType {
-    PARAMETER_TYPE_STRING = 0;
-    PARAMETER_TYPE_BOOL = 1;
-    PARAMETER_TYPE_UINT32 = 2;
-    PARAMETER_TYPE_DOUBLE = 3;
+enum PropertyType {
+    PROPERTY_TYPE_STRING = 0;
+    PROPERTY_TYPE_BOOL = 1;
+    PROPERTY_TYPE_UINT32 = 2;
+    PROPERTY_TYPE_DOUBLE = 3;
 }
 
-message Parameter {
+message Property {
 
     message ValueString {
         string value = 1;
@@ -70,7 +77,7 @@ message Parameter {
         optional double max = 3;
     }
 
-    ParameterType type = 1;
+    PropertyType type = 1;
     string key = 2;
     oneof value {
         ValueString value_string = 3;
@@ -80,35 +87,21 @@ message Parameter {
     }
 }
 
-//private
-message Source {
-    SourceType type = 1;
-    SourceSubType sub_type = 2;
-    repeated Parameter parameters = 3;
-}
+//TODO: negotiation
+//message ServerInfo {
+//    Platform platform = 1;
+//    repeated Source available_sources = 3;
+//    repeated Encoder available_encoders = 4;
+//}
 
-//private
-message Encoder {
-    EncoderType type = 1;
-    repeated Parameter parameters = 2;
-}
-
-message ServerInfo {
-    Platform platform = 1;
-    repeated Source available_sources = 3;
-    repeated Encoder available_encoders = 4;
-}
-
-message StreamsChange {
-
-    message StreamChange {
-        uint32 id = 1;
-        optional Source source = 2;
-        optional Encoder encoder = 3;
-        optional Command command = 4;
-    }
-
-    repeated StreamChange streams = 2;
+message StreamChange {
+    uint32 id = 1;
+    Command command = 2;
+    StreamMedium stream_medium = 3;
+    StreamDirection stream_direction = 4;
+    StreamEndpoint stream_endpoint = 5;
+    StreamEncoding stream_encoding = 6;
+    repeated Property property = 7;
 }
 
 //message FrameTiming {
@@ -127,17 +120,17 @@ message StreamData {
 }
 
 enum MessageType {
-    MESSAGE_TYPE_SERVER_INFO = 0;
-    MESSAGE_TYPE_STREAMS_CHANGE = 1;
-    MESSAGE_TYPE_STREAM_DATA = 2;
+    MESSAGE_TYPE_STREAM_CHANGE = 0;
+    MESSAGE_TYPE_STREAM_DATA = 1;
+//    MESSAGE_TYPE_SERVER_INFO = 0;
 }
 
 message Message {
     MessageType type = 1;
     oneof message {
-        ServerInfo server_info = 2;
-        StreamsChange stream_change = 3;
-        StreamData stream_data = 4;
+        StreamChange stream_change = 2;
+        StreamData stream_data = 3;
+        //        ServerInfo server_info = 2;
     }
 }
 

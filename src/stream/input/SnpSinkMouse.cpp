@@ -9,6 +9,7 @@
 #include "util/loguru.h"
 
 SnpSinkMouse::SnpSinkMouse(const SnpSinkMouseOptions &options) : SnpComponent(options) {
+    componentName = "sinkMouse";
     fid = -1;
     width = options.width;
     height = options.height;

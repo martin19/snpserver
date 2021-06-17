@@ -30,8 +30,7 @@ static unsigned int Log2MaxFrameNum = 4;
 static unsigned int Log2MaxPicOrderCntLsb = 4;
 
 SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : SnpComponent(options) {
-    LOG_F(INFO, "Initializing SnpEncoderVaH264...");
-
+    componentName = "encoderVaH264";
     addInputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO));
     addOutputPort(new SnpPort());
 
@@ -53,7 +52,6 @@ SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : Snp
     encodingFrameNum = 0;
 
     numShortTerm = 0;
-    LOG_F(INFO, "Initialized.");
 }
 
 SnpEncoderVaH264::~SnpEncoderVaH264() {
@@ -137,7 +135,7 @@ bool SnpEncoderVaH264::initVa() {
     //discover valid rate control modes (CQP required)
     if(attrib[VAConfigAttribRateControl].value != VA_ATTRIB_NOT_SUPPORTED) {
         int tmp = attrib[VAConfigAttribRateControl].value;
-        printf("Support rate control mode (0x%x):", tmp);
+        LOG_F(INFO,"Support rate control mode (0x%x):", tmp);
 
         if (tmp & VA_RC_NONE)
             printf("NONE ");

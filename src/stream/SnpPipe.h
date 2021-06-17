@@ -2,26 +2,29 @@
 #define SNPSERVER_SNPPIPE_H
 
 #include "SnpComponent.h"
+#include "SnpProperty.h"
 
-struct SnpPipeOptions {};
+struct SnpPipeOptions {
+    std::string name;
+};
 
 class SnpPipe {
 public:
     explicit SnpPipe(SnpPipeOptions &options);
-    void start();
+    bool start();
     void stop();
     bool addComponent(SnpComponent *component);
-private:
-    std::vector<SnpComponent*> components;
-public:
     const std::vector<SnpComponent *> &getComponents() const;
     uint32_t framesPassed;
-private:
-    bool enabled = false;
-public:
     bool isEnabled() const;
-
     void setEnabled(bool enabled);
+    std::vector<SnpProperty*>* getProperties();
+protected:
+    std::string componentName;
+private:
+    std::vector<SnpComponent*> components;
+    bool enabled;
+    bool running;
 };
 
 

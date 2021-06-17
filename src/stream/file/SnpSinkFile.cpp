@@ -5,6 +5,7 @@
 #define SNP_SINK_FILE_BUFFER_SIZE 500000
 
 SnpSinkFile::SnpSinkFile(const SnpSinkFileOptions &options) : SnpComponent(options) {
+    componentName = "sinkFile";
     fileName = options.fileName;
 
     addInputPort(new SnpPort());

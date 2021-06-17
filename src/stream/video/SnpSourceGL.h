@@ -5,10 +5,10 @@
 #include <thread>
 #include <EGL/egl.h>
 #include <GLES2/gl2.h>
-#include "stream/SnpComponent.h"
 #include <xf86drmMode.h>
 #include <xf86drm.h>
 #include <util/DrmUtil.h>
+#include "stream/SnpComponent.h"
 
 struct dumb_bo {
     uint32_t handle;
@@ -37,7 +37,9 @@ public:
 
     void setEnabled(bool enabled) override;
 
-    void captureFrame();
+    void start() override;
+
+    void stop() override;
 
     //TODO: how to pass these forward (in a generic way) to encoder?
     uint32_t width;
@@ -55,6 +57,8 @@ private:
 
     bool initGL();
     void destroyGL();
+
+    void captureFrame();
 
     static bool discoverPrimaryFb(int deviceFd, FramebufferInfo **framebuffer);
     static bool createCaptureFb(int deviceFd, uint32_t width, uint32_t height, uint32_t bpp, FramebufferInfo **framebuffer);

@@ -4,6 +4,7 @@
 #define SNP_SINK_NETWORK_BUFFER_SIZE 500000
 
 SnpSinkNetwork::SnpSinkNetwork(const SnpSinkNetworkOptions &options) : SnpComponent(options) {
+    componentName = "sinkNetwork";
     streamId = options.streamId;
     client = options.client;
 

@@ -71,9 +71,13 @@ add_executable(snpserver
     src/util/TimeUtil.cpp
     src/util/DrmUtil.cpp
     src/util/VideoUtil.cpp
+    src/util/PropertyUtil.cpp
     # stream
+    src/stream/SnpProperty.cpp
     src/stream/SnpComponent.cpp
     src/stream/SnpPort.cpp
+    src/stream/SnpPipe.cpp
+    src/stream/SnpPipeFactory.cpp
     # video stream
     src/stream/video/SnpSourceGL.cpp
     # input stream
@@ -89,9 +93,6 @@ add_executable(snpserver
     ${MMALH264_SOURCES}
     ${OPENH264_SOURCES}
     ${VA_SOURCES}
-
-    #in flux
-    src/stream/SnpPipe.cpp
 )
 
 target_link_libraries(snpserver

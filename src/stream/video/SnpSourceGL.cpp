@@ -23,8 +23,13 @@
 //#include <GLES2/glext.h>
 
 SnpSourceGL::SnpSourceGL(const SnpSourceGLOptions &options) : SnpComponent(options) {
-    LOG_F(INFO, "Initializing SnpSourceGL...");
+    componentName = "sourceGL";
     addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO));
+
+    addProperty(new SnpProperty("width", PROPERTY_TYPE_UINT32));
+    addProperty(new SnpProperty("height", PROPERTY_TYPE_UINT32));
+    addProperty(new SnpProperty("bytesPerPixel", PROPERTY_TYPE_UINT32));
+
     device = options.device;
     framesCaptured = 0;
     eglDisplay = nullptr;
@@ -230,6 +235,10 @@ bool SnpSourceGL::initDrm() {
     this->height = fbCapture->fb2Ptr->height;
     this->pitch = fbCapture->fb2Ptr->pitches[0];
     this->bytesPerPixel = 32 / 8; //TODO: get rid of this constant
+
+    getProperty("width")->setValue(fbCapture->fb2Ptr->width);
+    getProperty("height")->setValue(fbCapture->fb2Ptr->height);
+    getProperty("bytesPerPixel")->setValue((uint32_t)(32 / 8));
 
     return result;
 error:
@@ -481,28 +490,35 @@ void SnpSourceGL::setEnabled(bool enabled) {
     if(enabled) {
         initDrm();
         initMmap();
-
-        LOG_F(INFO, "starting capturing thread");
-        grabberThread = std::thread{[this] () {
-            this->initGL();
-            //TODO: maybe initGL is required to be executed inside this thread.
-#pragma clang diagnostic push
-#pragma ide diagnostic ignored "EndlessLoop"
-            while(true) {
-                    setTimestampStartMs(TimeUtil::getTimeNowMs());
-                    SnpPort * outputPort = this->getOutputPort(0);
-                    this->captureFrame();
-                    setTimestampEndMs(TimeUtil::getTimeNowMs());
-                    outputPort->onData(this->mmapFrameBuffer, width*height*bytesPerPixel, true);
-//                    usleep(33333);
-            }
-#pragma clang diagnostic pop
-        }};
     } else {
-        grabberThread.detach();
         destroyGL();
         destroyMmap();
         destroyDrm();
     }
     SnpComponent::setEnabled(enabled);
+}
+
+void SnpSourceGL::start() {
+    SnpComponent::start();
+    LOG_F(INFO, "starting capturing thread");
+    grabberThread = std::thread{[this] () {
+        this->initGL();
+        //TODO: maybe initGL is required to be executed inside this thread.
+#pragma clang diagnostic push
+#pragma ide diagnostic ignored "EndlessLoop"
+        while(this->isRunning()) {
+            setTimestampStartMs(TimeUtil::getTimeNowMs());
+            SnpPort * outputPort = this->getOutputPort(0);
+            this->captureFrame();
+            setTimestampEndMs(TimeUtil::getTimeNowMs());
+            outputPort->onData(this->mmapFrameBuffer, width*height*bytesPerPixel, true);
+//                    usleep(33333);
+        }
+#pragma clang diagnostic pop
+    }};
+}
+
+void SnpSourceGL::stop() {
+    SnpComponent::stop();
+    grabberThread.detach();
 }

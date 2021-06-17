@@ -23,20 +23,22 @@ public:
     void onMessage(uint8_t *data, int len);
     void send(snappyv1::Message *message);
     void sendStreamData(uint32_t streamId, uint8_t *data, int len);
+    void sendStreamChangeAck(uint32_t streamId, SnpPipe* pipe);
     void setStreamListener(uint32_t streamId, StreamListener streamListener);
 private:
     std::time_t connectionStartTs;
     struct lws *wsi = nullptr;
     SnpSocket *server = nullptr;
 
-    SnpPipe *fixedVideoPipe = nullptr;
-    SnpPipe *fixedMousePipe = nullptr;
-    SnpPipe *fixedKeyboardPipe = nullptr;
-    SnpPipe *fixedCursorPipe = nullptr;
-
+    std::map<uint32_t, SnpPipe*> pipes;
     std::map<uint32_t, StreamListener> streamListeners;
 
-    void onStreamsChange(const snappyv1::StreamsChange &msg);
+    void onStreamChange(const snappyv1::StreamChange &msg);
+    void onStreamChangeInit(const snappyv1::StreamChange &msg);
+    void onStreamChangeStart(const snappyv1::StreamChange &msg);
+    void onStreamChangeStop(const snappyv1::StreamChange &msg);
+    void onStreamChangeDestroy(const snappyv1::StreamChange &msg);
+
     void onStreamData(const snappyv1::StreamData &msg);
 };
 

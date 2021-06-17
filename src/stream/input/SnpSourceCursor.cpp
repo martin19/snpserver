@@ -3,6 +3,7 @@
 #include "util/loguru.h"
 
 SnpSourceCursor::SnpSourceCursor(const SnpSourceCursorOptions &options) : SnpComponent(options) {
+    componentName = "sourceCursor";
     this->defaultDisplay = ":0.0";
     this->display = nullptr;
     this->lastCursorSerial = 0;

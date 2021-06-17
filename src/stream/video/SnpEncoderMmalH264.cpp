@@ -9,6 +9,7 @@
 #define CHECK_STATUS(status, msg) if (status != MMAL_SUCCESS) { fprintf(stderr, msg"\n"); goto error; }
 
 SnpEncoderMmalH264::SnpEncoderMmalH264(const SnpEncoderMmalH264Options &options) : SnpComponent(options) {
+    name = "encoderMmalH264";
     addInputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO));
     addOutputPort(new SnpPort());
 
@@ -20,7 +21,7 @@ SnpEncoderMmalH264::~SnpEncoderMmalH264() {
 }
 
 void SnpEncoderMmalH264::onInputData(const uint8_t *data, int len, bool complete) {
-    if(!isEnabled()) return;
+    if(!isRunning()) return;
     setTimestampStartMs(TimeUtil::getTimeNowMs());
     mmalEncoderEncode();
 }
