@@ -2,8 +2,7 @@
 #include "SnpSourceCursor.h"
 #include "util/loguru.h"
 
-SnpSourceCursor::SnpSourceCursor(const SnpSourceCursorOptions &options) : SnpComponent(options) {
-    componentName = "sourceCursor";
+SnpSourceCursor::SnpSourceCursor(const SnpSourceCursorOptions &options) : SnpComponent(options, "sourceCursor") {
     this->defaultDisplay = ":0.0";
     this->display = nullptr;
     this->lastCursorSerial = 0;
@@ -15,7 +14,9 @@ SnpSourceCursor::~SnpSourceCursor() {
     destroyX11Client();
 }
 
+//TODO: move grabber thread in start/stop
 void SnpSourceCursor::setEnabled(bool enabled) {
+    SnpComponent::setEnabled(enabled);
     if(enabled) {
         initX11Client();
         grabberThread = std::thread{[this] () {
@@ -25,7 +26,6 @@ void SnpSourceCursor::setEnabled(bool enabled) {
         grabberThread.detach();
         destroyX11Client();
     }
-    SnpComponent::setEnabled(enabled);
 }
 
 

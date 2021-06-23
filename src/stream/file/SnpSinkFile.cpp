@@ -4,8 +4,7 @@
 
 #define SNP_SINK_FILE_BUFFER_SIZE 500000
 
-SnpSinkFile::SnpSinkFile(const SnpSinkFileOptions &options) : SnpComponent(options) {
-    componentName = "sinkFile";
+SnpSinkFile::SnpSinkFile(const SnpSinkFileOptions &options) : SnpComponent(options, "sinkFile") {
     fileName = options.fileName;
 
     addInputPort(new SnpPort());
@@ -20,12 +19,12 @@ SnpSinkFile::~SnpSinkFile() {
 }
 
 void SnpSinkFile::setEnabled(bool enabled) {
+    SnpComponent::setEnabled(enabled);
     if(enabled) {
         output = std::ofstream(fileName, std::ofstream::binary);
     } else {
         output.close();
     }
-    SnpComponent::setEnabled(enabled);
 }
 
 

@@ -22,7 +22,7 @@ private:
     struct lws_context_creation_info info;
     struct lws_context *context;
     std::map<lws*, SnpClient*> clients;
-    void sendServerInfo(lws* wsi);
+    void sendStreamInfo(lws* wsi);
     void onMessage(lws *wsi, uint8_t *message, int len);
     uint8_t sendBuffer[1024000];
     int sendBufferLen;

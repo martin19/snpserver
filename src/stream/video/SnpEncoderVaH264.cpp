@@ -29,8 +29,7 @@ static unsigned int MaxPicOrderCntLsb = (2<<16);
 static unsigned int Log2MaxFrameNum = 4;
 static unsigned int Log2MaxPicOrderCntLsb = 4;
 
-SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : SnpComponent(options) {
-    componentName = "encoderVaH264";
+SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : SnpComponent(options, "encoderVaH264") {
     addInputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO));
     addOutputPort(new SnpPort());
 
@@ -39,8 +38,8 @@ SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : Snp
     h264Profile = VAProfileH264ConstrainedBaseline;
     constraintSetFlag = 0;
     frameBitrate = 30000000;
-    initialQp = 10;
-    minimalQp = 10;
+    initialQp = 20;
+    minimalQp = 20;
 
     iFramePeriod = 30;
     idrFramePeriod = 0;
@@ -59,8 +58,8 @@ SnpEncoderVaH264::~SnpEncoderVaH264() {
 }
 
 void SnpEncoderVaH264::setEnabled(bool enabled) {
+    SnpComponent::setEnabled(enabled);
     if(enabled) {
-
         auto *format = (StreamFormatVideo*)getInputPort(0)->sourcePort->getFormat();
         width = format->width;
         height = format->height;
@@ -71,7 +70,6 @@ void SnpEncoderVaH264::setEnabled(bool enabled) {
     } else {
         VaH264EncoderDestroy();
     }
-    SnpComponent::setEnabled(enabled);
 }
 
 void SnpEncoderVaH264::onInputData(const uint8_t *data, uint32_t len, bool complete) {

@@ -8,8 +8,7 @@
 #include <network/snappyv1.pb.h>
 #include "util/loguru.h"
 
-SnpSinkMouse::SnpSinkMouse(const SnpSinkMouseOptions &options) : SnpComponent(options) {
-    componentName = "sinkMouse";
+SnpSinkMouse::SnpSinkMouse(const SnpSinkMouseOptions &options) : SnpComponent(options, "sinkMouse") {
     fid = -1;
     width = options.width;
     height = options.height;
@@ -24,12 +23,12 @@ SnpSinkMouse::~SnpSinkMouse() {
 }
 
 void SnpSinkMouse::setEnabled(bool enabled) {
+    SnpComponent::setEnabled(enabled);
     if(enabled) {
         initMouse();
     } else {
         destroyMouse();
     }
-    SnpComponent::setEnabled(enabled);
 }
 
 //TODO: eliminate duplicate

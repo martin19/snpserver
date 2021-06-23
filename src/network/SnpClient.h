@@ -23,7 +23,7 @@ public:
     void onMessage(uint8_t *data, int len);
     void send(snappyv1::Message *message);
     void sendStreamData(uint32_t streamId, uint8_t *data, int len);
-    void sendStreamChangeAck(uint32_t streamId, SnpPipe* pipe);
+    void sendStreamChangeInitOk(uint32_t streamId, SnpPipe* pipe);
     void setStreamListener(uint32_t streamId, StreamListener streamListener);
 private:
     std::time_t connectionStartTs;

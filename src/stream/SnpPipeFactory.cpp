@@ -93,9 +93,10 @@ SnpPipe *SnpPipeFactory::createVideoOutputPipe(uint32_t streamId, SnpClient *cli
             //libva
             SnpEncoderVaH264Options encoderOptions = {};
             encoder = new SnpEncoderVaH264(encoderOptions);
+        } else {
+            LOG_F(WARNING, "unknown encoding (%d) requested.", encoding);
+            return nullptr;
         }
-
-        if(encoder == nullptr) return nullptr;
 
         ///
         SnpSinkNetworkOptions sinkOptions = {};
@@ -111,6 +112,11 @@ SnpPipe *SnpPipeFactory::createVideoOutputPipe(uint32_t streamId, SnpClient *cli
         pipe->addComponent(sourceGL);
         pipe->addComponent(encoder);
         pipe->addComponent(sink);
+
+        pipe->setMedium(snappyv1::STREAM_MEDIUM_VIDEO);
+        pipe->setEndpoint(snappyv1::STREAM_ENDPOINT_X11);
+        pipe->setEncoding(snappyv1::STREAM_ENCODING_H264_HARDWARE);
+        pipe->setDirection(snappyv1::STREAM_DIRECTION_OUTPUT);
 
         return pipe;
     }
@@ -146,6 +152,10 @@ SnpPipe *SnpPipeFactory::createPeripherialInputPipe(uint32_t streamId, SnpClient
         pipe->addComponent(sourceNetwork);
         pipe->addComponent(snpSinkMouse);
 
+        pipe->setMedium(snappyv1::STREAM_MEDIUM_PERIPHERIAL);
+        pipe->setEndpoint(snappyv1::STREAM_ENDPOINT_POINTER);
+        pipe->setDirection(snappyv1::STREAM_DIRECTION_INPUT);
+
         return pipe;
     } else if(endpoint == snappyv1::STREAM_ENDPOINT_KEYBOARD) {
         LOG_F(INFO, "creating keyboard pipe.");
@@ -162,6 +172,10 @@ SnpPipe *SnpPipeFactory::createPeripherialInputPipe(uint32_t streamId, SnpClient
         pipe->addComponent(sourceNetwork);
         pipe->addComponent(sinkKeyboard);
 
+        pipe->setMedium(snappyv1::STREAM_MEDIUM_PERIPHERIAL);
+        pipe->setEndpoint(snappyv1::STREAM_ENDPOINT_KEYBOARD);
+        pipe->setDirection(snappyv1::STREAM_DIRECTION_INPUT);
+
         return pipe;
     } else if(endpoint == snappyv1::STREAM_ENDPOINT_CURSOR) {
         LOG_F(INFO, "creating cursor pipe.");
@@ -177,6 +191,10 @@ SnpPipe *SnpPipeFactory::createPeripherialInputPipe(uint32_t streamId, SnpClient
         auto pipe = new SnpPipe(cursorPipeOptions);
         pipe->addComponent(sourceCursor);
         pipe->addComponent(sinkNetwork);
+
+        pipe->setMedium(snappyv1::STREAM_MEDIUM_PERIPHERIAL);
+        pipe->setEndpoint(snappyv1::STREAM_ENDPOINT_CURSOR);
+        pipe->setDirection(snappyv1::STREAM_DIRECTION_OUTPUT);
 
         return pipe;
     }

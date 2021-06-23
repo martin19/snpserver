@@ -41,11 +41,11 @@ enum StreamEncoding {
 
 enum Command {
     COMMAND_INIT = 0;
-    COMMAND_START = 1;
-    COMMAND_STOP = 2;
-    COMMAND_SET_PARAMETER = 3;
-    COMMAND_DESTROY = 4;
-    COMMAND_ACK = 5;
+    COMMAND_INIT_OK = 1;
+    COMMAND_START = 2;
+    COMMAND_STOP = 3;
+    COMMAND_SET_PARAMETER = 4;
+    COMMAND_DESTROY = 5;
 }
 
 enum PropertyType {
@@ -87,12 +87,11 @@ message Property {
     }
 }
 
-//TODO: negotiation
-//message ServerInfo {
-//    Platform platform = 1;
-//    repeated Source available_sources = 3;
-//    repeated Encoder available_encoders = 4;
-//}
+message StreamInfo {
+    Platform platform = 1;
+    repeated StreamEndpoint stream_endpoints = 2;
+    repeated StreamEncoding stream_encodings = 3;
+}
 
 message StreamChange {
     uint32 id = 1;
@@ -122,7 +121,7 @@ message StreamData {
 enum MessageType {
     MESSAGE_TYPE_STREAM_CHANGE = 0;
     MESSAGE_TYPE_STREAM_DATA = 1;
-//    MESSAGE_TYPE_SERVER_INFO = 0;
+    MESSAGE_TYPE_STREAM_INFO = 2;
 }
 
 message Message {
@@ -130,7 +129,7 @@ message Message {
     oneof message {
         StreamChange stream_change = 2;
         StreamData stream_data = 3;
-        //        ServerInfo server_info = 2;
+        StreamInfo stream_info = 4;
     }
 }
 

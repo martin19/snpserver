@@ -3,8 +3,7 @@
 
 #define SNP_SINK_NETWORK_BUFFER_SIZE 500000
 
-SnpSinkNetwork::SnpSinkNetwork(const SnpSinkNetworkOptions &options) : SnpComponent(options) {
-    componentName = "sinkNetwork";
+SnpSinkNetwork::SnpSinkNetwork(const SnpSinkNetworkOptions &options) : SnpComponent(options, "sinkNetwork") {
     streamId = options.streamId;
     client = options.client;
 
@@ -18,13 +17,13 @@ SnpSinkNetwork::~SnpSinkNetwork() {
 }
 
 void SnpSinkNetwork::setEnabled(bool enabled) {
+    SnpComponent::setEnabled(enabled);
     if(enabled) {
         buffer.reserve(SNP_SINK_NETWORK_BUFFER_SIZE);
         buffer.clear();
     } else {
         buffer.clear();
     }
-    SnpComponent::setEnabled(enabled);
 }
 
 void SnpSinkNetwork::onInputData(const uint8_t * inputBuffer, int inputLen, bool complete) {

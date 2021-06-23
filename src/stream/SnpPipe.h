@@ -3,6 +3,7 @@
 
 #include "SnpComponent.h"
 #include "SnpProperty.h"
+#include "network/snappyv1.pb.h"
 
 struct SnpPipeOptions {
     std::string name;
@@ -19,12 +20,27 @@ public:
     bool isEnabled() const;
     void setEnabled(bool enabled);
     std::vector<SnpProperty*>* getProperties();
+
+    snappyv1::StreamMedium getMedium() const;
+    void setMedium(snappyv1::StreamMedium medium);
+    snappyv1::StreamEndpoint getEndpoint() const;
+    void setEndpoint(snappyv1::StreamEndpoint endpoint);
+    snappyv1::StreamEncoding getEncoding() const;
+    void setEncoding(snappyv1::StreamEncoding encoding);
+    snappyv1::StreamDirection getDirection() const;
+    void setDirection(snappyv1::StreamDirection direction);
+
 protected:
     std::string componentName;
 private:
     std::vector<SnpComponent*> components;
     bool enabled;
     bool running;
+
+    snappyv1::StreamMedium medium;
+    snappyv1::StreamEndpoint endpoint;
+    snappyv1::StreamEncoding encoding;
+    snappyv1::StreamDirection direction;
 };
 
 

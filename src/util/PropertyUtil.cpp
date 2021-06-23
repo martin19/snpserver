@@ -1,7 +1,3 @@
-//
-// Created by marti on 17/06/2021.
-//
-
 #include <stream/SnpProperty.h>
 #include "PropertyUtil.h"
 #include "network/snappyv1.pb.h"

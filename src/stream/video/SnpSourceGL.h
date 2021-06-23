@@ -37,7 +37,7 @@ public:
 
     void setEnabled(bool enabled) override;
 
-    void start() override;
+    bool start() override;
 
     void stop() override;
 

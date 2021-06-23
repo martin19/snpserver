@@ -47,7 +47,7 @@ struct TableStruct_snappyv1_2eproto {
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::AuxiliaryParseTableField aux[]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
-  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[11]
+  static const ::PROTOBUF_NAMESPACE_ID::internal::ParseTable schema[12]
     PROTOBUF_SECTION_VARIABLE(protodesc_cold);
   static const ::PROTOBUF_NAMESPACE_ID::internal::FieldMetadata field_metadata[];
   static const ::PROTOBUF_NAMESPACE_ID::internal::SerializationTable serialization_table[];
@@ -88,6 +88,9 @@ extern StreamDataKeyboardDefaultTypeInternal _StreamDataKeyboard_default_instanc
 class StreamDataPointer;
 struct StreamDataPointerDefaultTypeInternal;
 extern StreamDataPointerDefaultTypeInternal _StreamDataPointer_default_instance_;
+class StreamInfo;
+struct StreamInfoDefaultTypeInternal;
+extern StreamInfoDefaultTypeInternal _StreamInfo_default_instance_;
 }  // namespace snappyv1
 PROTOBUF_NAMESPACE_OPEN
 template<> ::snappyv1::Message* Arena::CreateMaybeMessage<::snappyv1::Message>(Arena*);
@@ -101,6 +104,7 @@ template<> ::snappyv1::StreamData* Arena::CreateMaybeMessage<::snappyv1::StreamD
 template<> ::snappyv1::StreamDataCursor* Arena::CreateMaybeMessage<::snappyv1::StreamDataCursor>(Arena*);
 template<> ::snappyv1::StreamDataKeyboard* Arena::CreateMaybeMessage<::snappyv1::StreamDataKeyboard>(Arena*);
 template<> ::snappyv1::StreamDataPointer* Arena::CreateMaybeMessage<::snappyv1::StreamDataPointer>(Arena*);
+template<> ::snappyv1::StreamInfo* Arena::CreateMaybeMessage<::snappyv1::StreamInfo>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace snappyv1 {
 
@@ -241,17 +245,17 @@ inline bool StreamEncoding_Parse(
 }
 enum Command : int {
   COMMAND_INIT = 0,
-  COMMAND_START = 1,
-  COMMAND_STOP = 2,
-  COMMAND_SET_PARAMETER = 3,
-  COMMAND_DESTROY = 4,
-  COMMAND_ACK = 5,
+  COMMAND_INIT_OK = 1,
+  COMMAND_START = 2,
+  COMMAND_STOP = 3,
+  COMMAND_SET_PARAMETER = 4,
+  COMMAND_DESTROY = 5,
   Command_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
   Command_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
 bool Command_IsValid(int value);
 constexpr Command Command_MIN = COMMAND_INIT;
-constexpr Command Command_MAX = COMMAND_ACK;
+constexpr Command Command_MAX = COMMAND_DESTROY;
 constexpr int Command_ARRAYSIZE = Command_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Command_descriptor();
@@ -298,12 +302,13 @@ inline bool PropertyType_Parse(
 enum MessageType : int {
   MESSAGE_TYPE_STREAM_CHANGE = 0,
   MESSAGE_TYPE_STREAM_DATA = 1,
+  MESSAGE_TYPE_STREAM_INFO = 2,
   MessageType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
   MessageType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
 bool MessageType_IsValid(int value);
 constexpr MessageType MessageType_MIN = MESSAGE_TYPE_STREAM_CHANGE;
-constexpr MessageType MessageType_MAX = MESSAGE_TYPE_STREAM_DATA;
+constexpr MessageType MessageType_MAX = MESSAGE_TYPE_STREAM_INFO;
 constexpr int MessageType_ARRAYSIZE = MessageType_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* MessageType_descriptor();
@@ -1173,6 +1178,178 @@ class Property final :
 };
 // -------------------------------------------------------------------
 
+class StreamInfo final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:snappyv1.StreamInfo) */ {
+ public:
+  inline StreamInfo() : StreamInfo(nullptr) {}
+  ~StreamInfo() override;
+  explicit constexpr StreamInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  StreamInfo(const StreamInfo& from);
+  StreamInfo(StreamInfo&& from) noexcept
+    : StreamInfo() {
+    *this = ::std::move(from);
+  }
+
+  inline StreamInfo& operator=(const StreamInfo& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline StreamInfo& operator=(StreamInfo&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const StreamInfo& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const StreamInfo* internal_default_instance() {
+    return reinterpret_cast<const StreamInfo*>(
+               &_StreamInfo_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    5;
+
+  friend void swap(StreamInfo& a, StreamInfo& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(StreamInfo* other) {
+    if (other == this) return;
+    if (GetOwningArena() == other->GetOwningArena()) {
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(StreamInfo* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  inline StreamInfo* New() const final {
+    return new StreamInfo();
+  }
+
+  StreamInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena) const final {
+    return CreateMaybeMessage<StreamInfo>(arena);
+  }
+  void CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) final;
+  void CopyFrom(const StreamInfo& from);
+  void MergeFrom(const StreamInfo& from);
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  ::PROTOBUF_NAMESPACE_ID::uint8* _InternalSerialize(
+      ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _cached_size_.Get(); }
+
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(StreamInfo* other);
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "snappyv1.StreamInfo";
+  }
+  protected:
+  explicit StreamInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  private:
+  static void ArenaDtor(void* object);
+  inline void RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena* arena);
+  public:
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kStreamEndpointsFieldNumber = 2,
+    kStreamEncodingsFieldNumber = 3,
+    kPlatformFieldNumber = 1,
+  };
+  // repeated .snappyv1.StreamEndpoint stream_endpoints = 2;
+  int stream_endpoints_size() const;
+  private:
+  int _internal_stream_endpoints_size() const;
+  public:
+  void clear_stream_endpoints();
+  private:
+  ::snappyv1::StreamEndpoint _internal_stream_endpoints(int index) const;
+  void _internal_add_stream_endpoints(::snappyv1::StreamEndpoint value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* _internal_mutable_stream_endpoints();
+  public:
+  ::snappyv1::StreamEndpoint stream_endpoints(int index) const;
+  void set_stream_endpoints(int index, ::snappyv1::StreamEndpoint value);
+  void add_stream_endpoints(::snappyv1::StreamEndpoint value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>& stream_endpoints() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* mutable_stream_endpoints();
+
+  // repeated .snappyv1.StreamEncoding stream_encodings = 3;
+  int stream_encodings_size() const;
+  private:
+  int _internal_stream_encodings_size() const;
+  public:
+  void clear_stream_encodings();
+  private:
+  ::snappyv1::StreamEncoding _internal_stream_encodings(int index) const;
+  void _internal_add_stream_encodings(::snappyv1::StreamEncoding value);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* _internal_mutable_stream_encodings();
+  public:
+  ::snappyv1::StreamEncoding stream_encodings(int index) const;
+  void set_stream_encodings(int index, ::snappyv1::StreamEncoding value);
+  void add_stream_encodings(::snappyv1::StreamEncoding value);
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>& stream_encodings() const;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* mutable_stream_encodings();
+
+  // .snappyv1.Platform platform = 1;
+  void clear_platform();
+  ::snappyv1::Platform platform() const;
+  void set_platform(::snappyv1::Platform value);
+  private:
+  ::snappyv1::Platform _internal_platform() const;
+  void _internal_set_platform(::snappyv1::Platform value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:snappyv1.StreamInfo)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int> stream_endpoints_;
+  mutable std::atomic<int> _stream_endpoints_cached_byte_size_;
+  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int> stream_encodings_;
+  mutable std::atomic<int> _stream_encodings_cached_byte_size_;
+  int platform_;
+  mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  friend struct ::TableStruct_snappyv1_2eproto;
+};
+// -------------------------------------------------------------------
+
 class StreamChange final :
     public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:snappyv1.StreamChange) */ {
  public:
@@ -1217,7 +1394,7 @@ class StreamChange final :
                &_StreamChange_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    5;
+    6;
 
   friend void swap(StreamChange& a, StreamChange& b) {
     a.Swap(&b);
@@ -1424,7 +1601,7 @@ class StreamData final :
                &_StreamData_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    7;
 
   friend void swap(StreamData& a, StreamData& b) {
     a.Swap(&b);
@@ -1570,6 +1747,7 @@ class Message final :
   enum MessageCase {
     kStreamChange = 2,
     kStreamData = 3,
+    kStreamInfo = 4,
     MESSAGE_NOT_SET = 0,
   };
 
@@ -1578,7 +1756,7 @@ class Message final :
                &_Message_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    8;
 
   friend void swap(Message& a, Message& b) {
     a.Swap(&b);
@@ -1645,6 +1823,7 @@ class Message final :
     kTypeFieldNumber = 1,
     kStreamChangeFieldNumber = 2,
     kStreamDataFieldNumber = 3,
+    kStreamInfoFieldNumber = 4,
   };
   // .snappyv1.MessageType type = 1;
   void clear_type();
@@ -1691,6 +1870,24 @@ class Message final :
       ::snappyv1::StreamData* stream_data);
   ::snappyv1::StreamData* unsafe_arena_release_stream_data();
 
+  // .snappyv1.StreamInfo stream_info = 4;
+  bool has_stream_info() const;
+  private:
+  bool _internal_has_stream_info() const;
+  public:
+  void clear_stream_info();
+  const ::snappyv1::StreamInfo& stream_info() const;
+  PROTOBUF_FUTURE_MUST_USE_RESULT ::snappyv1::StreamInfo* release_stream_info();
+  ::snappyv1::StreamInfo* mutable_stream_info();
+  void set_allocated_stream_info(::snappyv1::StreamInfo* stream_info);
+  private:
+  const ::snappyv1::StreamInfo& _internal_stream_info() const;
+  ::snappyv1::StreamInfo* _internal_mutable_stream_info();
+  public:
+  void unsafe_arena_set_allocated_stream_info(
+      ::snappyv1::StreamInfo* stream_info);
+  ::snappyv1::StreamInfo* unsafe_arena_release_stream_info();
+
   void clear_message();
   MessageCase message_case() const;
   // @@protoc_insertion_point(class_scope:snappyv1.Message)
@@ -1698,6 +1895,7 @@ class Message final :
   class _Internal;
   void set_has_stream_change();
   void set_has_stream_data();
+  void set_has_stream_info();
 
   inline bool has_message() const;
   inline void clear_has_message();
@@ -1711,6 +1909,7 @@ class Message final :
       ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized _constinit_;
     ::snappyv1::StreamChange* stream_change_;
     ::snappyv1::StreamData* stream_data_;
+    ::snappyv1::StreamInfo* stream_info_;
   } message_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   ::PROTOBUF_NAMESPACE_ID::uint32 _oneof_case_[1];
@@ -1763,7 +1962,7 @@ class StreamDataPointer final :
                &_StreamDataPointer_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    9;
 
   friend void swap(StreamDataPointer& a, StreamDataPointer& b) {
     a.Swap(&b);
@@ -1922,7 +2121,7 @@ class StreamDataKeyboard final :
                &_StreamDataKeyboard_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    10;
 
   friend void swap(StreamDataKeyboard& a, StreamDataKeyboard& b) {
     a.Swap(&b);
@@ -2076,7 +2275,7 @@ class StreamDataCursor final :
                &_StreamDataCursor_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    10;
+    11;
 
   friend void swap(StreamDataCursor& a, StreamDataCursor& b) {
     a.Swap(&b);
@@ -2823,6 +3022,116 @@ inline Property::ValueCase Property::value_case() const {
 }
 // -------------------------------------------------------------------
 
+// StreamInfo
+
+// .snappyv1.Platform platform = 1;
+inline void StreamInfo::clear_platform() {
+  platform_ = 0;
+}
+inline ::snappyv1::Platform StreamInfo::_internal_platform() const {
+  return static_cast< ::snappyv1::Platform >(platform_);
+}
+inline ::snappyv1::Platform StreamInfo::platform() const {
+  // @@protoc_insertion_point(field_get:snappyv1.StreamInfo.platform)
+  return _internal_platform();
+}
+inline void StreamInfo::_internal_set_platform(::snappyv1::Platform value) {
+  
+  platform_ = value;
+}
+inline void StreamInfo::set_platform(::snappyv1::Platform value) {
+  _internal_set_platform(value);
+  // @@protoc_insertion_point(field_set:snappyv1.StreamInfo.platform)
+}
+
+// repeated .snappyv1.StreamEndpoint stream_endpoints = 2;
+inline int StreamInfo::_internal_stream_endpoints_size() const {
+  return stream_endpoints_.size();
+}
+inline int StreamInfo::stream_endpoints_size() const {
+  return _internal_stream_endpoints_size();
+}
+inline void StreamInfo::clear_stream_endpoints() {
+  stream_endpoints_.Clear();
+}
+inline ::snappyv1::StreamEndpoint StreamInfo::_internal_stream_endpoints(int index) const {
+  return static_cast< ::snappyv1::StreamEndpoint >(stream_endpoints_.Get(index));
+}
+inline ::snappyv1::StreamEndpoint StreamInfo::stream_endpoints(int index) const {
+  // @@protoc_insertion_point(field_get:snappyv1.StreamInfo.stream_endpoints)
+  return _internal_stream_endpoints(index);
+}
+inline void StreamInfo::set_stream_endpoints(int index, ::snappyv1::StreamEndpoint value) {
+  stream_endpoints_.Set(index, value);
+  // @@protoc_insertion_point(field_set:snappyv1.StreamInfo.stream_endpoints)
+}
+inline void StreamInfo::_internal_add_stream_endpoints(::snappyv1::StreamEndpoint value) {
+  stream_endpoints_.Add(value);
+}
+inline void StreamInfo::add_stream_endpoints(::snappyv1::StreamEndpoint value) {
+  // @@protoc_insertion_point(field_add:snappyv1.StreamInfo.stream_endpoints)
+  _internal_add_stream_endpoints(value);
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>&
+StreamInfo::stream_endpoints() const {
+  // @@protoc_insertion_point(field_list:snappyv1.StreamInfo.stream_endpoints)
+  return stream_endpoints_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>*
+StreamInfo::_internal_mutable_stream_endpoints() {
+  return &stream_endpoints_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>*
+StreamInfo::mutable_stream_endpoints() {
+  // @@protoc_insertion_point(field_mutable_list:snappyv1.StreamInfo.stream_endpoints)
+  return _internal_mutable_stream_endpoints();
+}
+
+// repeated .snappyv1.StreamEncoding stream_encodings = 3;
+inline int StreamInfo::_internal_stream_encodings_size() const {
+  return stream_encodings_.size();
+}
+inline int StreamInfo::stream_encodings_size() const {
+  return _internal_stream_encodings_size();
+}
+inline void StreamInfo::clear_stream_encodings() {
+  stream_encodings_.Clear();
+}
+inline ::snappyv1::StreamEncoding StreamInfo::_internal_stream_encodings(int index) const {
+  return static_cast< ::snappyv1::StreamEncoding >(stream_encodings_.Get(index));
+}
+inline ::snappyv1::StreamEncoding StreamInfo::stream_encodings(int index) const {
+  // @@protoc_insertion_point(field_get:snappyv1.StreamInfo.stream_encodings)
+  return _internal_stream_encodings(index);
+}
+inline void StreamInfo::set_stream_encodings(int index, ::snappyv1::StreamEncoding value) {
+  stream_encodings_.Set(index, value);
+  // @@protoc_insertion_point(field_set:snappyv1.StreamInfo.stream_encodings)
+}
+inline void StreamInfo::_internal_add_stream_encodings(::snappyv1::StreamEncoding value) {
+  stream_encodings_.Add(value);
+}
+inline void StreamInfo::add_stream_encodings(::snappyv1::StreamEncoding value) {
+  // @@protoc_insertion_point(field_add:snappyv1.StreamInfo.stream_encodings)
+  _internal_add_stream_encodings(value);
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>&
+StreamInfo::stream_encodings() const {
+  // @@protoc_insertion_point(field_list:snappyv1.StreamInfo.stream_encodings)
+  return stream_encodings_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>*
+StreamInfo::_internal_mutable_stream_encodings() {
+  return &stream_encodings_;
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>*
+StreamInfo::mutable_stream_encodings() {
+  // @@protoc_insertion_point(field_mutable_list:snappyv1.StreamInfo.stream_encodings)
+  return _internal_mutable_stream_encodings();
+}
+
+// -------------------------------------------------------------------
+
 // StreamChange
 
 // uint32 id = 1;
@@ -3223,6 +3532,79 @@ inline ::snappyv1::StreamData* Message::mutable_stream_data() {
   return _internal_mutable_stream_data();
 }
 
+// .snappyv1.StreamInfo stream_info = 4;
+inline bool Message::_internal_has_stream_info() const {
+  return message_case() == kStreamInfo;
+}
+inline bool Message::has_stream_info() const {
+  return _internal_has_stream_info();
+}
+inline void Message::set_has_stream_info() {
+  _oneof_case_[0] = kStreamInfo;
+}
+inline void Message::clear_stream_info() {
+  if (_internal_has_stream_info()) {
+    if (GetArenaForAllocation() == nullptr) {
+      delete message_.stream_info_;
+    }
+    clear_has_message();
+  }
+}
+inline ::snappyv1::StreamInfo* Message::release_stream_info() {
+  // @@protoc_insertion_point(field_release:snappyv1.Message.stream_info)
+  if (_internal_has_stream_info()) {
+    clear_has_message();
+      ::snappyv1::StreamInfo* temp = message_.stream_info_;
+    if (GetArenaForAllocation() != nullptr) {
+      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+    }
+    message_.stream_info_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::snappyv1::StreamInfo& Message::_internal_stream_info() const {
+  return _internal_has_stream_info()
+      ? *message_.stream_info_
+      : reinterpret_cast< ::snappyv1::StreamInfo&>(::snappyv1::_StreamInfo_default_instance_);
+}
+inline const ::snappyv1::StreamInfo& Message::stream_info() const {
+  // @@protoc_insertion_point(field_get:snappyv1.Message.stream_info)
+  return _internal_stream_info();
+}
+inline ::snappyv1::StreamInfo* Message::unsafe_arena_release_stream_info() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:snappyv1.Message.stream_info)
+  if (_internal_has_stream_info()) {
+    clear_has_message();
+    ::snappyv1::StreamInfo* temp = message_.stream_info_;
+    message_.stream_info_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void Message::unsafe_arena_set_allocated_stream_info(::snappyv1::StreamInfo* stream_info) {
+  clear_message();
+  if (stream_info) {
+    set_has_stream_info();
+    message_.stream_info_ = stream_info;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:snappyv1.Message.stream_info)
+}
+inline ::snappyv1::StreamInfo* Message::_internal_mutable_stream_info() {
+  if (!_internal_has_stream_info()) {
+    clear_message();
+    set_has_stream_info();
+    message_.stream_info_ = CreateMaybeMessage< ::snappyv1::StreamInfo >(GetArenaForAllocation());
+  }
+  return message_.stream_info_;
+}
+inline ::snappyv1::StreamInfo* Message::mutable_stream_info() {
+  // @@protoc_insertion_point(field_mutable:snappyv1.Message.stream_info)
+  return _internal_mutable_stream_info();
+}
+
 inline bool Message::has_message() const {
   return message_case() != MESSAGE_NOT_SET;
 }
@@ -3500,6 +3882,8 @@ inline void StreamDataCursor::set_allocated_image(std::string* image) {
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

@@ -72,7 +72,7 @@ void SnpClient::onStreamChangeInit(const snappyv1::StreamChange &msg) {
     if(pipe) {
         pipe->setEnabled(true);
         pipes.insert(std::pair<uint32_t, SnpPipe*>(streamId, pipe));
-        sendStreamChangeAck(streamId, pipe);
+        sendStreamChangeInitOk(streamId, pipe);
     }
     /*else {
         sendStreamChangeFail()
@@ -105,14 +105,18 @@ void SnpClient::onStreamChangeDestroy(const snappyv1::StreamChange &msg) {
     }
 }
 
-void SnpClient::sendStreamChangeAck(uint32_t streamId, SnpPipe *pipe) {
+void SnpClient::sendStreamChangeInitOk(uint32_t streamId, SnpPipe *pipe) {
    using namespace snappyv1;
    auto *msg1 = new Message();
    msg1->set_type(snappyv1::MESSAGE_TYPE_STREAM_CHANGE);
    auto *streamChange = new StreamChange();
    msg1->set_allocated_stream_change(streamChange);
    streamChange->set_id(streamId);
-   streamChange->set_command(COMMAND_ACK);
+   streamChange->set_command(COMMAND_INIT_OK);
+   streamChange->set_stream_medium(pipe->getMedium());
+   streamChange->set_stream_direction(pipe->getDirection());
+   streamChange->set_stream_encoding(pipe->getEncoding());
+   streamChange->set_stream_endpoint(pipe->getEndpoint());
 
    //append stream properties.
    auto properties = pipe->getProperties();

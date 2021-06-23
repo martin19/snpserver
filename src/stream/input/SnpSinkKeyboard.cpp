@@ -9,8 +9,7 @@
 
 extern "C" unsigned short code_map_atset1_to_linux[57470];
 
-SnpSinkKeyboard::SnpSinkKeyboard(const SnpSinkKeyboardOptions &options) : SnpComponent(options) {
-    componentName = "sinkKeyboard";
+SnpSinkKeyboard::SnpSinkKeyboard(const SnpSinkKeyboardOptions &options) : SnpComponent(options, "sinkKeyboard") {
     addInputPort(new SnpPort());
     getInputPort(0)->setOnDataCb(std::bind(&SnpSinkKeyboard::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
@@ -20,12 +19,12 @@ SnpSinkKeyboard::~SnpSinkKeyboard() {
 }
 
 void SnpSinkKeyboard::setEnabled(bool enabled) {
+    SnpComponent::setEnabled(enabled);
     if(enabled) {
         initKeyboard();
     } else {
         destroyKeyboard();
     }
-    SnpComponent::setEnabled(enabled);
 }
 
 //TODO: eliminate duplicate

@@ -1,7 +1,6 @@
 #include "SnpSourceNetwork.h"
 
-SnpSourceNetwork::SnpSourceNetwork(const SnpSourceNetworkOptions &options) : SnpComponent(options) {
-    componentName = "sourceNetwork";
+SnpSourceNetwork::SnpSourceNetwork(const SnpSourceNetworkOptions &options) : SnpComponent(options, "sourceNetwork") {
     this->client = options.client;
     this->streamId = options.streamId;
 

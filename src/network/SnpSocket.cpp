@@ -2,6 +2,7 @@
 
 #include "libwebsockets.h"
 #include "snappyv1.pb.h"
+#include "util/loguru.h"
 
 static struct lws_protocols protocols[] = {
     { "http", SnpSocket::callback_http, 0 },
@@ -49,29 +50,29 @@ int SnpSocket::callback_http(struct lws *wsi,
 
     switch(reason) {
         case LWS_CALLBACK_PROTOCOL_INIT: {
-            printf("LWS_CALLBACK_PROTOCOL_INIT\n");
+            LOG_F(INFO,"LWS_CALLBACK_PROTOCOL_INIT");
         } break;
         case LWS_CALLBACK_WSI_CREATE: {
-            printf("LWS_CALLBACK_WSI_CREATE\n");
+            LOG_F(INFO,"LWS_CALLBACK_WSI_CREATE");
         } break;
         case LWS_CALLBACK_HTTP_CONFIRM_UPGRADE: {
-            printf("LWS_CALLBACK_HTTP_CONFIRM_UPGRADE\n");
+            LOG_F(INFO,"LWS_CALLBACK_HTTP_CONFIRM_UPGRADE");
         } break;
         case LWS_CALLBACK_HTTP_BIND_PROTOCOL: {
-            printf("LWS_CALLBACK_HTTP_BIND_PROTOCOL\n");
+            LOG_F(INFO,"LWS_CALLBACK_HTTP_BIND_PROTOCOL");
         } break;
         case LWS_CALLBACK_EVENT_WAIT_CANCELLED: {
 //            printf("LWS_CALLBACK_EVENT_WAIT_CANCELLED\n");
         } break;
         case LWS_CALLBACK_ADD_HEADERS: {
-            printf("LWS_CALLBACK_ADD_HEADERS\n");
+            LOG_F(INFO,"LWS_CALLBACK_ADD_HEADERS");
         } break;
         case LWS_CALLBACK_ESTABLISHED: {
-            printf("LWS_CALLBACK_ESTABLISHED\n");
+            LOG_F(INFO,"LWS_CALLBACK_ESTABLISHED\n");
             if(self != nullptr) {
                 auto *client = new SnpClient(self, wsi);
                 self->clients.insert(std::pair(wsi, client));
-                self->sendServerInfo(wsi);
+                self->sendStreamInfo(wsi);
             }
         } break;
         case LWS_CALLBACK_RECEIVE: {
@@ -93,36 +94,36 @@ int SnpSocket::callback_http(struct lws *wsi,
             if(first && final && binary) {
                 self->onMessage(wsi, (uint8_t*)in, len);
             } else {
-                lwsl_err("Did not receive a full binary message, packet is fragemented - cannot handle fragmented packets yet.");
+                LOG_F(ERROR,"Did not receive a full binary message, packet is fragemented - cannot handle fragmented packets yet.");
             }
         } break;
         case LWS_CALLBACK_CLOSED: {
             //TODO: remove client pointer and clean up.
-            printf("LWS_CALLBACK_CLOSED\n");
+            LOG_F(INFO,"LWS_CALLBACK_CLOSED");
         } break;
         case LWS_CALLBACK_FILTER_PROTOCOL_CONNECTION: {
-            printf("LWS_CALLBACK_FILTER_PROTOCOL_CONNECTION\n");
+            LOG_F(INFO,"LWS_CALLBACK_FILTER_PROTOCOL_CONNECTION");
         } break;
         case LWS_CALLBACK_WSI_DESTROY: {
-            printf("LWS_CALLBACK_WSI_DESTROY\n");
+            LOG_F(INFO,"LWS_CALLBACK_WSI_DESTROY");
         } break;
         case LWS_CALLBACK_SERVER_NEW_CLIENT_INSTANTIATED: {
-            printf("LWS_CALLBACK_SERVER_NEW_CLIENT_INSTANTIATED\n");
+            LOG_F(INFO,"LWS_CALLBACK_SERVER_NEW_CLIENT_INSTANTIATED");
         } break;
         case LWS_CALLBACK_CLOSED_HTTP: {
-            printf("LWS_CALLBACK_CLOSED_HTTP\n");
+            LOG_F(INFO,"LWS_CALLBACK_CLOSED_HTTP");
         } break;
         case LWS_CALLBACK_FILTER_NETWORK_CONNECTION: {
-            printf("LWS_CALLBACK_FILTER_NETWORK_CONNECTION\n");
+            LOG_F(INFO,"LWS_CALLBACK_FILTER_NETWORK_CONNECTION");
         } break;
         case LWS_CALLBACK_WS_PEER_INITIATED_CLOSE: {
-            printf("LWS_CALLBACK_WS_PEER_INITIATED_CLOSE\n");
+            LOG_F(INFO,"LWS_CALLBACK_WS_PEER_INITIATED_CLOSE");
         } break;
         case LWS_CALLBACK_CONNECTING: {
-            printf("LWS_CALLBACK_CONNECTING\n");
+            LOG_F(INFO,"LWS_CALLBACK_CONNECTING");
         } break;
         case LWS_CALLBACK_PROTOCOL_DESTROY: {
-            printf("LWS_CALLBACK_PROTOCOL_DESTROY\n");
+            LOG_F(INFO,"LWS_CALLBACK_PROTOCOL_DESTROY");
         } break;
         case LWS_CALLBACK_SERVER_WRITEABLE: {
 //            printf("LWS_CALLBACK_SERVER_WRITEABLE\n");
@@ -144,13 +145,13 @@ int SnpSocket::callback_http(struct lws *wsi,
             }
         } break;
         case LWS_CALLBACK_CLIENT_WRITEABLE: {
-            printf("LWS_CALLBACK_CLIENT_WRITEABLE\n");
+            LOG_F(INFO,"LWS_CALLBACK_CLIENT_WRITEABLE");
         } break;
         case LWS_CALLBACK_HTTP: {
-            printf("LWS_CALLBACK_HTTP\n");
+            LOG_F(INFO,"LWS_CALLBACK_HTTP");
         } break;
         default: {
-            printf("unhandled callback %d\n", reason);
+            LOG_F(INFO,"unhandled callback %d", reason);
         }
     }
     return 0;
@@ -161,69 +162,27 @@ void SnpSocket::sendMessage(snappyv1::Message *msg, struct lws *wsi) {
     lws_callback_on_writable(wsi);
 }
 
-void SnpSocket::sendServerInfo(lws* wsi) {
-    printf("sendServerInfo\n");
+void SnpSocket::sendStreamInfo(lws* wsi) {
+    LOG_F(INFO,"sendStreamInfo\n");
 
-//    using namespace snappyv1;
-//    auto serverInfo = new ServerInfo();
-//    serverInfo->set_platform(PLATFORM_RASPBERRY);
-//
-//    //add one source
-//    Source *source = serverInfo->add_available_sources();
-//    source->set_type(SOURCE_TYPE_VIDEO);
-//    source->set_sub_type(SOURCE_SUB_TYPE_X11);
-//
-//    //parameter width
-//    {
-//        Parameter *p = source->add_parameters();
-//        p->set_type(PARAMETER_TYPE_UINT32);
-//        p->set_key("width");
-//        auto *value = new Parameter_ValueUint32();
-//        value->set_value(1920);
-//        p->set_allocated_value_uint32(value);
-//    }
-//
-//    //parameter height
-//    {
-//        Parameter *p = source->add_parameters();
-//        p->set_type(PARAMETER_TYPE_UINT32);
-//        p->set_key("height");
-//        auto *value = new Parameter_ValueUint32();
-//        value->set_value(1080);
-//        p->set_allocated_value_uint32(value);
-//    }
-//
-//    Encoder *encoder = serverInfo->add_available_encoders();
-//    encoder->set_type(ENCODER_TYPE_H264_HARDWARE);
-//
-//    //parameter qp
-//    {
-//        Parameter *p = encoder->add_parameters();
-//        p->set_type(PARAMETER_TYPE_UINT32);
-//        p->set_key("qp");
-//        auto *value = new Parameter_ValueUint32();
-//        value->set_value(42);
-//        value->set_min(10);
-//        value->set_max(50);
-//        p->set_allocated_value_uint32(value);
-//    }
-//
-//    //parameter string
-//    {
-//        Parameter *p = encoder->add_parameters();
-//        p->set_type(PARAMETER_TYPE_STRING);
-//        p->set_key("fookey");
-//        auto *value = new Parameter_ValueString();
-//        value->set_value("barvalue");
-//        p->set_allocated_value_string(value);
-//    }
-//
-//    //wrap server info message in envelope
-//    auto *msgEnvelope = new Message();
-//    msgEnvelope->set_type(MESSAGE_TYPE_SERVER_INFO);
-//    msgEnvelope->set_allocated_server_info(serverInfo);
-//
-//    sendMessage(msgEnvelope, wsi);
+    using namespace snappyv1;
+    auto pStreamInfo = new StreamInfo();
+    pStreamInfo->set_platform(PLATFORM_RASPBERRY);
+
+    pStreamInfo->add_stream_endpoints(STREAM_ENDPOINT_POINTER);
+    pStreamInfo->add_stream_endpoints(STREAM_ENDPOINT_KEYBOARD);
+    pStreamInfo->add_stream_endpoints(STREAM_ENDPOINT_X11);
+    pStreamInfo->add_stream_endpoints(STREAM_ENDPOINT_CURSOR);
+
+    pStreamInfo->add_stream_encodings(STREAM_ENCODING_H264_HARDWARE);
+    pStreamInfo->add_stream_encodings(STREAM_ENCODING_H264_SOFTWARE);
+
+    //wrap server info message in envelope
+    auto *msgEnvelope = new Message();
+    msgEnvelope->set_type(MESSAGE_TYPE_STREAM_INFO);
+    msgEnvelope->set_allocated_stream_info(pStreamInfo);
+
+    sendMessage(msgEnvelope, wsi);
 }
 
 void SnpSocket::onMessage(lws *wsi, uint8_t* buffer, int len) {

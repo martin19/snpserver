@@ -3,8 +3,7 @@
 #include "util/assert.h"
 #include "SnpEncoderOpenH264.h"
 
-SnpEncoderOpenH264::SnpEncoderOpenH264(const SnpEncoderOpenH264Options &options) : SnpComponent(options) {
-    componentName = "encoderOpenH264";
+SnpEncoderOpenH264::SnpEncoderOpenH264(const SnpEncoderOpenH264Options &options) : SnpComponent(options, "encoderOpenH264") {
     encoder = nullptr;
     yuvBuffer = nullptr;
 
@@ -19,8 +18,8 @@ SnpEncoderOpenH264::~SnpEncoderOpenH264() {
 }
 
 void SnpEncoderOpenH264::setEnabled(bool enabled) {
+    SnpComponent::setEnabled(enabled);
     if(enabled) {
-
         auto *format = (StreamFormatVideo*)getInputPort(0)->sourcePort->getFormat();
         width = format->width;
         height = format->height;
@@ -31,7 +30,6 @@ void SnpEncoderOpenH264::setEnabled(bool enabled) {
     } else {
         openH264EncoderDestroy();
     }
-    SnpComponent::setEnabled(enabled);
 }
 
 void SnpEncoderOpenH264::onInputData(const uint8_t *data, uint32_t len, bool complete) {

@@ -5,8 +5,8 @@
 #include <string>
 #include <map>
 #include "SnpPort.h"
-#include "SnpPipe.h"
 #include "SnpProperty.h"
+#include "util/loguru.h"
 
 class SnpPipe;
 
@@ -16,8 +16,9 @@ struct SnpComponentOptions {
 
 class SnpComponent {
 public:
-    explicit SnpComponent(const SnpComponentOptions &options) {
-        this->componentName = options.name;
+    explicit SnpComponent(const SnpComponentOptions &options, std::string name) {
+        LOG_F(INFO, "Initializing component %s", name.c_str());
+        this->componentName = name;
         enabled = false;
         running = false;
     };
@@ -27,9 +28,7 @@ public:
     bool isEnabled() const;
     bool isRunning() const;
     virtual bool start();
-    virtual void stop() {
-        running = false;
-    }
+    virtual void stop();
 
     SnpPort *getInputPort(int i);
     SnpPort *getOutputPort(int i);

@@ -22,8 +22,8 @@
 #include <unistd.h>
 //#include <GLES2/glext.h>
 
-SnpSourceGL::SnpSourceGL(const SnpSourceGLOptions &options) : SnpComponent(options) {
-    componentName = "sourceGL";
+SnpSourceGL::SnpSourceGL(const SnpSourceGLOptions &options) : SnpComponent(options, "sourceGL") {
+
     addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO));
 
     addProperty(new SnpProperty("width", PROPERTY_TYPE_UINT32));
@@ -36,7 +36,6 @@ SnpSourceGL::SnpSourceGL(const SnpSourceGLOptions &options) : SnpComponent(optio
     eglCtx = nullptr;
     imagePrimary = nullptr;
     imageCapture = nullptr;
-    LOG_F(INFO, "Initialized.");
 }
 
 SnpSourceGL::~SnpSourceGL() {
@@ -487,6 +486,7 @@ void SnpSourceGL::captureFrame() {
 }
 
 void SnpSourceGL::setEnabled(bool enabled) {
+    SnpComponent::setEnabled(enabled);
     if(enabled) {
         initDrm();
         initMmap();
@@ -495,10 +495,9 @@ void SnpSourceGL::setEnabled(bool enabled) {
         destroyMmap();
         destroyDrm();
     }
-    SnpComponent::setEnabled(enabled);
 }
 
-void SnpSourceGL::start() {
+bool SnpSourceGL::start() {
     SnpComponent::start();
     LOG_F(INFO, "starting capturing thread");
     grabberThread = std::thread{[this] () {
@@ -512,10 +511,11 @@ void SnpSourceGL::start() {
             this->captureFrame();
             setTimestampEndMs(TimeUtil::getTimeNowMs());
             outputPort->onData(this->mmapFrameBuffer, width*height*bytesPerPixel, true);
-//                    usleep(33333);
+            usleep(33333);
         }
 #pragma clang diagnostic pop
     }};
+    return true;
 }
 
 void SnpSourceGL::stop() {
