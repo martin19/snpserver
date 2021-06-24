@@ -10,6 +10,8 @@ https://github.com/martin19/snpclient.
 
 Do not expect anything to work yet.
 
+[![video of session on raspberry pi](docs/tux.png)](https://youtu.be/zPWT9sXT9mE)
+
 ### Supported platforms
 
 As of now the following components are implemented:
