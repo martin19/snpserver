@@ -48,8 +48,8 @@ bool SnpEncoderOpenH264::openH264EncoderInit() {
     paramExt.iPicWidth = width;
     paramExt.iPicHeight = height;
     paramExt.iTargetBitrate = 20000000;
-    paramExt.iMinQp = 25;
-    paramExt.iMaxQp = 25;
+    paramExt.iMinQp = 10;
+    paramExt.iMaxQp = 10;
 
     res = WelsCreateSVCEncoder (&encoder);
     ASSERT(res == 0);

@@ -9,6 +9,7 @@
 #include <stream/input/SnpSinkMouse.h>
 #include <stream/input/SnpSinkKeyboard.h>
 #include <stream/input/SnpSourceCursor.h>
+#include <stream/video/SnpSourceX11.h>
 
 SnpPipe *SnpPipeFactory::createPipe(uint32_t streamId, SnpClient *client, snappyv1::StreamMedium medium, snappyv1::StreamDirection direction,
                                     snappyv1::StreamEndpoint endpoint, snappyv1::StreamEncoding encoding) {
@@ -68,59 +69,65 @@ SnpPipe *SnpPipeFactory::createVideoInputPipe(uint32_t streamId, SnpClient *clie
 
 SnpPipe *SnpPipeFactory::createVideoOutputPipe(uint32_t streamId, SnpClient *client, snappyv1::StreamEndpoint endpoint,
                                                snappyv1::StreamEncoding encoding) {
+    SnpComponent *source = nullptr;
     SnpComponent *encoder = nullptr;
+    LOG_F(INFO, "creating video pipe.");
 
-    if(endpoint == snappyv1::STREAM_ENDPOINT_X11) {
-
-          LOG_F(INFO, "creating video pipe.");
-            SnpSourceGLOptions sourceGLOptions;
-            sourceGLOptions.device = "/dev/dri/card0";
-            sourceGLOptions.fps = 30;
-            auto *sourceGL = new SnpSourceGL(sourceGLOptions);
-            ///
+    if(endpoint == snappyv1::STREAM_ENDPOINT_DRM) {
+        SnpSourceGLOptions sourceOptions;
+        sourceOptions.device = "/dev/dri/card0";
+        sourceOptions.fps = 30;
+        source = new SnpSourceGL(sourceOptions);
+        ///
+    } else if(endpoint == snappyv1::STREAM_ENDPOINT_X11) {
+        SnpSourceX11Options sourceOptions;
+        sourceOptions.display = ":0.0";
+        source = new SnpSourceX11(sourceOptions);
+    } else {
+        LOG_F(WARNING, "unknown endpoint (%d) requested.", endpoint);
+        return nullptr;
+    }
 
 //TODO: raspberry MMAL
 //        SnpEncoderMmalH264Options encoderMmalH264Options = {};
 //        encoderMmalH264Options.qp = 20;
 //        auto *encoderMmalH264 = new SnpEncoderMmalH264(encoderMmalH264Options);
 
-
-        if(encoding == snappyv1::STREAM_ENCODING_H264_SOFTWARE) {
-            //OPENH264
-            SnpEncoderOpenH264Options encoderOptions = {};
-            encoder = new SnpEncoderOpenH264(encoderOptions);
-        } else if(encoding == snappyv1::STREAM_ENCODING_H264_HARDWARE) {
-            //libva
-            SnpEncoderVaH264Options encoderOptions = {};
-            encoder = new SnpEncoderVaH264(encoderOptions);
-        } else {
-            LOG_F(WARNING, "unknown encoding (%d) requested.", encoding);
-            return nullptr;
-        }
-
-        ///
-        SnpSinkNetworkOptions sinkOptions = {};
-        sinkOptions.client = client;
-        sinkOptions.streamId = streamId;
-        auto *sink = new SnpSinkNetwork(sinkOptions);
-
-        SnpPort::connect(sourceGL->getOutputPort(0), encoder->getInputPort(0));
-        SnpPort::connect(encoder->getOutputPort(0), sink->getInputPort(0));
-
-        SnpPipeOptions videoPipeOptions = {};
-        auto pipe = new SnpPipe(videoPipeOptions);
-        pipe->addComponent(sourceGL);
-        pipe->addComponent(encoder);
-        pipe->addComponent(sink);
-
-        pipe->setMedium(snappyv1::STREAM_MEDIUM_VIDEO);
-        pipe->setEndpoint(snappyv1::STREAM_ENDPOINT_X11);
-        pipe->setEncoding(snappyv1::STREAM_ENCODING_H264_HARDWARE);
-        pipe->setDirection(snappyv1::STREAM_DIRECTION_OUTPUT);
-
-        return pipe;
+    if(encoding == snappyv1::STREAM_ENCODING_H264_SOFTWARE) {
+        //OPENH264
+        SnpEncoderOpenH264Options encoderOptions = {};
+        encoder = new SnpEncoderOpenH264(encoderOptions);
+    } else if(encoding == snappyv1::STREAM_ENCODING_H264_HARDWARE) {
+        //libva
+        SnpEncoderVaH264Options encoderOptions = {};
+        encoder = new SnpEncoderVaH264(encoderOptions);
+    } else {
+        LOG_F(WARNING, "unknown encoding (%d) requested.", encoding);
+        return nullptr;
     }
-    return nullptr;
+
+    ///
+    SnpSinkNetworkOptions sinkOptions = {};
+    sinkOptions.client = client;
+    sinkOptions.streamId = streamId;
+    auto *sink = new SnpSinkNetwork(sinkOptions);
+
+    SnpPort::connect(source->getOutputPort(0), encoder->getInputPort(0));
+    SnpPort::connect(encoder->getOutputPort(0), sink->getInputPort(0));
+
+    SnpPipeOptions videoPipeOptions = {};
+    auto pipe = new SnpPipe(videoPipeOptions);
+    pipe->addComponent(source);
+    pipe->addComponent(encoder);
+    pipe->addComponent(sink);
+
+    //TODO: set actual values!!
+    pipe->setMedium(snappyv1::STREAM_MEDIUM_VIDEO);
+    pipe->setEndpoint(snappyv1::STREAM_ENDPOINT_X11);
+    pipe->setEncoding(snappyv1::STREAM_ENCODING_H264_HARDWARE);
+    pipe->setDirection(snappyv1::STREAM_DIRECTION_OUTPUT);
+
+    return pipe;
 }
 
 SnpPipe *SnpPipeFactory::createAudioInputPipe(uint32_t streamId, SnpClient *client, snappyv1::StreamEndpoint endpoint,

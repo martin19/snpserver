@@ -7,6 +7,7 @@
 #include "va/va.h"
 #include "va/va_enc_h264.h"
 #include "va/va_drm.h"
+#include "va/va_x11.h"
 #include "h264/VaBitstream.h"
 
 // https://www.vcodex.com/h264avc-picture-management/
@@ -38,10 +39,10 @@ SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : Snp
     h264Profile = VAProfileH264ConstrainedBaseline;
     constraintSetFlag = 0;
     frameBitrate = 30000000;
-    initialQp = 20;
-    minimalQp = 20;
+    initialQp = 30;
+    minimalQp = 30;
 
-    iFramePeriod = 30;
+    iFramePeriod = 60;
     idrFramePeriod = 0;
     ipPeriod = 1;
 
@@ -88,7 +89,8 @@ bool SnpEncoderVaH264::initVa() {
     int majorVer, minorVer;
 
     std::cout << "initVa with drm device fd="<< getInputPort(0)->sourcePort->deviceFd <<std::endl;
-    vaDisplay = vaGetDisplayDRM(getInputPort(0)->sourcePort->deviceFd);
+//    vaDisplay = vaGetDisplayDRM(getInputPort(0)->sourcePort->deviceFd);
+    vaDisplay = vaGetDisplay(XOpenDisplay(":0.0"));
     vaStatus = vaInitialize(vaDisplay, &majorVer, &minorVer);
     CHECK_VASTATUS(vaStatus, "vaInitialize");
 
@@ -296,7 +298,7 @@ bool SnpEncoderVaH264::VaH264EncoderEncode(const uint8_t *framebuffer, uint32_t 
     vaStatus = vaMapBuffer(vaDisplay, surfaceImage.buf, &surfacePtr);
     CHECK_VASTATUS(vaStatus, "vaMapBuffer");
 
-    VideoUtil::rgba2NV1((uint8_t*)surfacePtr, framebuffer, frameWidthMbAligned, frameHeightMbAligned);
+    VideoUtil::rgba2NV1((uint8_t*)surfacePtr, framebuffer, width, height, frameWidthMbAligned, frameHeightMbAligned);
 
     vaStatus = vaUnmapBuffer(vaDisplay, surfaceImage.buf);
     CHECK_VASTATUS(vaStatus, "vaUnmapBuffer");

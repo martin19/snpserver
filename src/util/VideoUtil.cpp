@@ -1,18 +1,18 @@
 #include "VideoUtil.h"
 
-void VideoUtil::rgba2NV1(uint8_t *destination, const uint8_t *rgb, int width, int height) {
-    int image_size = width * height;
+void VideoUtil::rgba2NV1(uint8_t *destination, const uint8_t *rgb, uint32_t srcWidth, uint32_t srcHeight, uint32_t dstWidth, uint32_t dstHeight) {
+    int image_size = dstWidth * dstHeight;
     int upos = image_size;
     int vpos = image_size + 1;
     int i = 0;
     int line;
     int x;
 
-    for( line = 0; line < height; ++line )
+    for( line = 0; line < srcHeight; ++line )
     {
         if( !(line % 2) )
         {
-            for( x = 0; x < width; x += 2 )
+            for( x = 0; x < srcWidth; x += 2 )
             {
                 uint8_t r = rgb[4 * i];
                 uint8_t g = rgb[4 * i + 1];
@@ -34,7 +34,7 @@ void VideoUtil::rgba2NV1(uint8_t *destination, const uint8_t *rgb, int width, in
         }
         else
         {
-            for( x = 0; x < width; x += 1 )
+            for( x = 0; x < srcWidth; x += 1 )
             {
                 uint8_t r = rgb[4 * i];
                 uint8_t g = rgb[4 * i + 1];

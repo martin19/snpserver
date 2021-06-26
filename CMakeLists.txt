@@ -80,6 +80,7 @@ add_executable(snpserver
     src/stream/SnpPipeFactory.cpp
     # video stream
     src/stream/video/SnpSourceGL.cpp
+    src/stream/video/SnpSourceX11.cpp
     # input stream
     src/stream/input/SnpSinkMouse.cpp
     src/stream/input/keymap_atset1_linux.c

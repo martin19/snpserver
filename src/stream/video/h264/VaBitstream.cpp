@@ -423,7 +423,7 @@ int VaBitstream::build_packed_slice_buffer(unsigned char **header_buffer) {
     } else if (IS_P_SLICE(sliceParam.slice_type)) {
         nal_header(&bs, NAL_REF_IDC_MEDIUM, NAL_NON_IDR);
     } else {
-        assert(IS_B_SLICE(slice_param.slice_type));
+        assert(IS_B_SLICE(sliceParam.slice_type));
         nal_header(&bs, is_ref ? NAL_REF_IDC_LOW : NAL_REF_IDC_NONE, NAL_NON_IDR);
     }
 

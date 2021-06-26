@@ -11,9 +11,11 @@ else (VA_INCLUDE_DIR AND VA_LIBRARIES)
     find_path(VA_INCLUDE_DIR va/va.h REQUIRED)
     find_library(VA_LIBRARY NAMES va REQUIRED)
     find_library(VA_DRM_LIBRARY NAMES va-drm REQUIRED)
+    find_library(VA_X11_LIBRARY NAMES va-x11 REQUIRED)
 
     set(VA_LIBRARIES ${VA_LIBRARY}
-                        ${VA_DRM_LIBRARY}
+                     ${VA_DRM_LIBRARY}
+                     ${VA_X11_LIBRARY}
     )
 
     if (VA_INCLUDE_DIR AND VA_LIBRARIES)

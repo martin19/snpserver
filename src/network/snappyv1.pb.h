@@ -163,17 +163,18 @@ inline bool StreamMedium_Parse(
     StreamMedium_descriptor(), name, value);
 }
 enum StreamEndpoint : int {
-  STREAM_ENDPOINT_X11 = 0,
-  STREAM_ENDPOINT_WAYLAND = 1,
-  STREAM_ENDPOINT_CAMERA = 2,
-  STREAM_ENDPOINT_KEYBOARD = 3,
-  STREAM_ENDPOINT_POINTER = 4,
-  STREAM_ENDPOINT_CURSOR = 5,
+  STREAM_ENDPOINT_DRM = 0,
+  STREAM_ENDPOINT_X11 = 1,
+  STREAM_ENDPOINT_WAYLAND = 2,
+  STREAM_ENDPOINT_CAMERA = 3,
+  STREAM_ENDPOINT_KEYBOARD = 4,
+  STREAM_ENDPOINT_POINTER = 5,
+  STREAM_ENDPOINT_CURSOR = 6,
   StreamEndpoint_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::min(),
   StreamEndpoint_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::PROTOBUF_NAMESPACE_ID::int32>::max()
 };
 bool StreamEndpoint_IsValid(int value);
-constexpr StreamEndpoint StreamEndpoint_MIN = STREAM_ENDPOINT_X11;
+constexpr StreamEndpoint StreamEndpoint_MIN = STREAM_ENDPOINT_DRM;
 constexpr StreamEndpoint StreamEndpoint_MAX = STREAM_ENDPOINT_CURSOR;
 constexpr int StreamEndpoint_ARRAYSIZE = StreamEndpoint_MAX + 1;
 
