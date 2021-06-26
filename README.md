@@ -22,7 +22,8 @@ As of now the following components are implemented:
 * Raspberry Pi MMAL hardware encoder
 * libva hardware encoder  
 * openh264 software encoder 
-* 
+* x11 grabber
+* drm grabber
 
 
 # drm-gl screen capture method
