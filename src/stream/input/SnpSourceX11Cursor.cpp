@@ -1,8 +1,8 @@
 #include <network/snappyv1.pb.h>
-#include "SnpSourceCursor.h"
+#include "SnpSourceX11Cursor.h"
 #include "util/loguru.h"
 
-SnpSourceCursor::SnpSourceCursor(const SnpSourceCursorOptions &options) : SnpComponent(options, "sourceCursor") {
+SnpSourceX11Cursor::SnpSourceX11Cursor(const SnpSourceCursorOptions &options) : SnpComponent(options, "sourceCursor") {
     this->defaultDisplay = ":0.0";
     this->display = nullptr;
     this->lastCursorSerial = 0;
@@ -10,12 +10,12 @@ SnpSourceCursor::SnpSourceCursor(const SnpSourceCursorOptions &options) : SnpCom
     addOutputPort(new SnpPort());
 }
 
-SnpSourceCursor::~SnpSourceCursor() {
+SnpSourceX11Cursor::~SnpSourceX11Cursor() {
     destroyX11Client();
 }
 
 //TODO: move grabber thread in start/stop
-void SnpSourceCursor::setEnabled(bool enabled) {
+void SnpSourceX11Cursor::setEnabled(bool enabled) {
     SnpComponent::setEnabled(enabled);
     if(enabled) {
         initX11Client();
@@ -29,7 +29,7 @@ void SnpSourceCursor::setEnabled(bool enabled) {
 }
 
 
-bool SnpSourceCursor::initX11Client() {
+bool SnpSourceX11Cursor::initX11Client() {
     bool result = true;
 
     this->display = XOpenDisplay(defaultDisplay.c_str());
@@ -54,11 +54,11 @@ error:
     return result;
 }
 
-void SnpSourceCursor::destroyX11Client() {
+void SnpSourceX11Cursor::destroyX11Client() {
     XCloseDisplay(display);
 }
 
-[[noreturn]] void SnpSourceCursor::runX11Loop() {
+[[noreturn]] void SnpSourceX11Cursor::runX11Loop() {
     XEvent ev;
     while(true) {
         XNextEvent(display, &ev);

@@ -1,12 +1,12 @@
 #ifndef SNPSERVER_SNPSOURCENETWORK_H
 #define SNPSERVER_SNPSOURCENETWORK_H
 
-#include <network/SnpClient.h>
+//#include <network/SnpClientWebsocket.h>
 #include "../SnpComponent.h"
 
 struct SnpSourceNetworkOptions : public SnpComponentOptions {
     uint32_t streamId;
-    SnpClient *client;
+    //TODO: SnpClientWebsocket *client;
 };
 
 class SnpSourceNetwork : public SnpComponent {
@@ -19,7 +19,7 @@ public:
 private:
     void onInputData(const uint8_t *data, int len, bool complete);
     uint32_t streamId;
-    SnpClient *client;
+    //SnpClientWebsocket *client;
     std::vector<uint8_t> buffer;
 };
 

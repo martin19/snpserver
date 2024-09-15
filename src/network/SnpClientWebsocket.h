@@ -10,16 +10,16 @@
 
 typedef std::function<void(const uint8_t *data, int len, bool complete)> StreamListener;
 
-class SnpSocket;
+class SnpWebsocket;
 
-class SnpClient {
+class SnpClientWebsocket {
 public:
     time_t getConnectionStartTs() const;
-    SnpClient(SnpSocket *server, struct lws *wsi);
+    SnpClientWebsocket(SnpWebsocket *server, struct lws *wsi);
 
-    virtual ~SnpClient();
+    virtual ~SnpClientWebsocket();
 
-    bool operator< (const SnpClient &right) const;
+    bool operator< (const SnpClientWebsocket &right) const;
     void onMessage(uint8_t *data, int len);
     void send(snappyv1::Message *message);
     void sendStreamData(uint32_t streamId, uint8_t *data, int len);
@@ -28,7 +28,7 @@ public:
 private:
     std::time_t connectionStartTs;
     struct lws *wsi = nullptr;
-    SnpSocket *server = nullptr;
+    SnpWebsocket *server = nullptr;
 
     std::map<uint32_t, SnpPipe*> pipes;
     std::map<uint32_t, StreamListener> streamListeners;

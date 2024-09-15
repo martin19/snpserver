@@ -3,7 +3,7 @@
 SnpServer is modular multi-platform screen sharing server written in C++ with similar 
 features like VNC. Major focus is put on screen capture performance using state of the 
 art hardware accelerated compression algorithms built into modern cpu/gpu/socs. The 
-also experimental client component (SnpClient) is available at 
+also experimental client component (SnpClientWebsocket) is available at 
 https://github.com/martin19/snpclient.
 
 !!! This project is in research and development and no releases have been scheduled. !!!

@@ -1,17 +1,25 @@
 #include "util/loguru.h"
 #include "SnpPipeFactory.h"
+#include "SnpPipe.h"
 
-#include <stream/video/SnpSourceGL.h>
-#include <stream/video/SnpEncoderVaH264.h>
+#ifdef HAVE_LIBGL
+    #include <stream/video/SnpSourceGL.h>
+#endif //HAVE_LIBGL
+#ifdef HAVE_LIBVA
+    #include <stream/video/SnpEncoderVaH264.h>
+#endif //HAVE_LIBVA
+#ifdef HAVE_LIBX11
+    #include <stream/video/SnpSourceX11.h>
+    #include <stream/input/SnpSinkX11Mouse.h>
+    #include <stream/input/SnpSinkX11Keyboard.h>
+    #include <stream/input/SnpSourceX11Cursor.h>
+#endif //HAVE_LIBX11
 #include <stream/network/SnpSinkNetwork.h>
 #include <stream/video/SnpEncoderOpenH264.h>
 #include <stream/network/SnpSourceNetwork.h>
-#include <stream/input/SnpSinkMouse.h>
-#include <stream/input/SnpSinkKeyboard.h>
-#include <stream/input/SnpSourceCursor.h>
-#include <stream/video/SnpSourceX11.h>
 
-SnpPipe *SnpPipeFactory::createPipe(uint32_t streamId, SnpClient *client, snappyv1::StreamMedium medium, snappyv1::StreamDirection direction,
+
+SnpPipe *SnpPipeFactory::createPipe(uint32_t streamId, SnpClientWebsocket *client, snappyv1::StreamMedium medium, snappyv1::StreamDirection direction,
                                     snappyv1::StreamEndpoint endpoint, snappyv1::StreamEncoding encoding) {
 
     switch(medium) {
@@ -26,7 +34,7 @@ SnpPipe *SnpPipeFactory::createPipe(uint32_t streamId, SnpClient *client, snappy
     return nullptr;
 }
 
-SnpPipe *SnpPipeFactory::createVideoPipe(uint32_t streamId, SnpClient *client, snappyv1::StreamDirection direction,
+SnpPipe *SnpPipeFactory::createVideoPipe(uint32_t streamId, SnpClientWebsocket *client, snappyv1::StreamDirection direction,
                                          snappyv1::StreamEndpoint endpoint, snappyv1::StreamEncoding encoding) {
     switch(direction) {
         case snappyv1::STREAM_DIRECTION_INPUT:
@@ -38,7 +46,7 @@ SnpPipe *SnpPipeFactory::createVideoPipe(uint32_t streamId, SnpClient *client, s
     return nullptr;
 }
 
-SnpPipe *SnpPipeFactory::createAudioPipe(uint32_t streamId, SnpClient *client, snappyv1::StreamDirection direction,
+SnpPipe *SnpPipeFactory::createAudioPipe(uint32_t streamId, SnpClientWebsocket *client, snappyv1::StreamDirection direction,
                                          snappyv1::StreamEndpoint endpoint, snappyv1::StreamEncoding encoding) {
     switch(direction) {
         case snappyv1::STREAM_DIRECTION_INPUT:
@@ -50,7 +58,7 @@ SnpPipe *SnpPipeFactory::createAudioPipe(uint32_t streamId, SnpClient *client, s
     return nullptr;
 }
 
-SnpPipe *SnpPipeFactory::createPeripherialPipe(uint32_t streamId, SnpClient *client, snappyv1::StreamDirection direction,
+SnpPipe *SnpPipeFactory::createPeripherialPipe(uint32_t streamId, SnpClientWebsocket *client, snappyv1::StreamDirection direction,
                                                snappyv1::StreamEndpoint endpoint, snappyv1::StreamEncoding encoding) {
     switch(direction) {
         case snappyv1::STREAM_DIRECTION_INPUT:
@@ -62,27 +70,36 @@ SnpPipe *SnpPipeFactory::createPeripherialPipe(uint32_t streamId, SnpClient *cli
     return nullptr;
 }
 
-SnpPipe *SnpPipeFactory::createVideoInputPipe(uint32_t streamId, SnpClient *client, snappyv1::StreamEndpoint endpoint,
+SnpPipe *SnpPipeFactory::createVideoInputPipe(uint32_t streamId, SnpClientWebsocket *client, snappyv1::StreamEndpoint endpoint,
                                               snappyv1::StreamEncoding encoding) {
     return nullptr;
 }
 
-SnpPipe *SnpPipeFactory::createVideoOutputPipe(uint32_t streamId, SnpClient *client, snappyv1::StreamEndpoint endpoint,
+SnpPipe *SnpPipeFactory::createVideoOutputPipe(uint32_t streamId, SnpClientWebsocket *client, snappyv1::StreamEndpoint endpoint,
                                                snappyv1::StreamEncoding encoding) {
     SnpComponent *source = nullptr;
     SnpComponent *encoder = nullptr;
     LOG_F(INFO, "creating video pipe.");
 
     if(endpoint == snappyv1::STREAM_ENDPOINT_DRM) {
+#ifdef HAVE_LIBDRM
         SnpSourceGLOptions sourceOptions;
         sourceOptions.device = "/dev/dri/card0";
         sourceOptions.fps = 30;
         source = new SnpSourceGL(sourceOptions);
-        ///
+#else
+        source = nullptr;
+        LOG_F(WARNING, "x11 endpoint (%d) unavailable.", endpoint);
+#endif
     } else if(endpoint == snappyv1::STREAM_ENDPOINT_X11) {
+#ifdef HAVE_LIBDRM
         SnpSourceX11Options sourceOptions;
         sourceOptions.display = ":0.0";
         source = new SnpSourceX11(sourceOptions);
+#else
+        source = nullptr;
+        LOG_F(WARNING, "x11 endpoint (%d) unavailable.", endpoint);
+#endif
     } else {
         LOG_F(WARNING, "unknown endpoint (%d) requested.", endpoint);
         return nullptr;
@@ -98,9 +115,12 @@ SnpPipe *SnpPipeFactory::createVideoOutputPipe(uint32_t streamId, SnpClient *cli
         SnpEncoderOpenH264Options encoderOptions = {};
         encoder = new SnpEncoderOpenH264(encoderOptions);
     } else if(encoding == snappyv1::STREAM_ENCODING_H264_HARDWARE) {
-        //libva
+#ifdef HAVE_LIBVA
         SnpEncoderVaH264Options encoderOptions = {};
         encoder = new SnpEncoderVaH264(encoderOptions);
+#else
+        LOG_F(WARNING, "va encoder (%d) not available.", encoding);
+#endif //HAVE_LIBVA
     } else {
         LOG_F(WARNING, "unknown encoding (%d) requested.", encoding);
         return nullptr;
@@ -108,7 +128,7 @@ SnpPipe *SnpPipeFactory::createVideoOutputPipe(uint32_t streamId, SnpClient *cli
 
     ///
     SnpSinkNetworkOptions sinkOptions = {};
-    sinkOptions.client = client;
+    //TODO websocket: sinkOptions.client = client;
     sinkOptions.streamId = streamId;
     auto *sink = new SnpSinkNetwork(sinkOptions);
 
@@ -130,28 +150,29 @@ SnpPipe *SnpPipeFactory::createVideoOutputPipe(uint32_t streamId, SnpClient *cli
     return pipe;
 }
 
-SnpPipe *SnpPipeFactory::createAudioInputPipe(uint32_t streamId, SnpClient *client, snappyv1::StreamEndpoint endpoint,
+SnpPipe *SnpPipeFactory::createAudioInputPipe(uint32_t streamId, SnpClientWebsocket *client, snappyv1::StreamEndpoint endpoint,
                                               snappyv1::StreamEncoding encoding) {
     return nullptr;
 }
 
-SnpPipe *SnpPipeFactory::createAudioOutputPipe(uint32_t streamId, SnpClient *client, snappyv1::StreamEndpoint endpoint,
+SnpPipe *SnpPipeFactory::createAudioOutputPipe(uint32_t streamId, SnpClientWebsocket *client, snappyv1::StreamEndpoint endpoint,
                                                snappyv1::StreamEncoding encoding) {
     return nullptr;
 }
 
-SnpPipe *SnpPipeFactory::createPeripherialInputPipe(uint32_t streamId, SnpClient *client, snappyv1::StreamEndpoint endpoint,
+SnpPipe *SnpPipeFactory::createPeripherialInputPipe(uint32_t streamId, SnpClientWebsocket *client, snappyv1::StreamEndpoint endpoint,
                                                     snappyv1::StreamEncoding encoding) {
     if(endpoint == snappyv1::STREAM_ENDPOINT_POINTER) {
+#ifdef HAVE_LIBX11
         LOG_F(INFO, "creating mouse pipe.");
         SnpSourceNetworkOptions sourceNetworkOptions = {};
         sourceNetworkOptions.client = client;
         sourceNetworkOptions.streamId = streamId;
         auto *sourceNetwork = new SnpSourceNetwork(sourceNetworkOptions);
-        SnpSinkMouseOptions sinkMouseOptions = {};
+        SnpSinkX11MouseOptions sinkMouseOptions = {};
         sinkMouseOptions.width = 1920;
         sinkMouseOptions.height = 1080;
-        auto *snpSinkMouse = new SnpSinkMouse(sinkMouseOptions);
+        auto *snpSinkMouse = new SnpSinkX11Mouse(sinkMouseOptions);
         SnpPort::connect(sourceNetwork->getOutputPort(0), snpSinkMouse->getInputPort(0));
 
         SnpPipeOptions mousePipeOptions = {};
@@ -164,14 +185,18 @@ SnpPipe *SnpPipeFactory::createPeripherialInputPipe(uint32_t streamId, SnpClient
         pipe->setDirection(snappyv1::STREAM_DIRECTION_INPUT);
 
         return pipe;
+#else
+        LOG_F(WARNING, "X11 pointer is unavailable.");
+#endif //HAVE_LIBX11
     } else if(endpoint == snappyv1::STREAM_ENDPOINT_KEYBOARD) {
+#ifdef HAVE_LIBX11
         LOG_F(INFO, "creating keyboard pipe.");
         SnpSourceNetworkOptions sourceNetworkOptions = {};
         sourceNetworkOptions.client = client;
         sourceNetworkOptions.streamId = streamId;
         auto *sourceNetwork = new SnpSourceNetwork(sourceNetworkOptions);
-        SnpSinkKeyboardOptions sinkKeyboardOptions = {};
-        auto *sinkKeyboard = new SnpSinkKeyboard(sinkKeyboardOptions);
+        SnpSinkX11KeyboardOptions sinkKeyboardOptions = {};
+        auto *sinkKeyboard = new SnpSinkX11Keyboard(sinkKeyboardOptions);
         SnpPort::connect(sourceNetwork->getOutputPort(0), sinkKeyboard->getInputPort(0));
 
         SnpPipeOptions mousePipeOptions = {};
@@ -184,10 +209,14 @@ SnpPipe *SnpPipeFactory::createPeripherialInputPipe(uint32_t streamId, SnpClient
         pipe->setDirection(snappyv1::STREAM_DIRECTION_INPUT);
 
         return pipe;
+#else
+        LOG_F(WARNING, "X11 keyboard is unavailable.");
+#endif //HAVE_LIBX11
     } else if(endpoint == snappyv1::STREAM_ENDPOINT_CURSOR) {
+#ifdef HAVE_LIBX11
         LOG_F(INFO, "creating cursor pipe.");
         SnpSourceCursorOptions sourceCursorOptions = {};
-        auto *sourceCursor = new SnpSourceCursor(sourceCursorOptions);
+        auto *sourceCursor = new SnpSourceX11Cursor(sourceCursorOptions);
         SnpSinkNetworkOptions sinkNetworkOptions = {};
         sinkNetworkOptions.client = client;
         sinkNetworkOptions.streamId = streamId;
@@ -204,12 +233,15 @@ SnpPipe *SnpPipeFactory::createPeripherialInputPipe(uint32_t streamId, SnpClient
         pipe->setDirection(snappyv1::STREAM_DIRECTION_OUTPUT);
 
         return pipe;
+#else
+        LOG_F(WARNING, "X11 cursor is unavailable.");
+#endif //HAVE_LIBX11
     }
 
     return nullptr;
 }
 
-SnpPipe *SnpPipeFactory::createPeripherialOutputPipe(uint32_t streamId, SnpClient *client, snappyv1::StreamEndpoint endpoint,
+SnpPipe *SnpPipeFactory::createPeripherialOutputPipe(uint32_t streamId, SnpClientWebsocket *client, snappyv1::StreamEndpoint endpoint,
                                                      snappyv1::StreamEncoding encoding) {
     return nullptr;
 }

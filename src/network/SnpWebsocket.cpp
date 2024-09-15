@@ -1,15 +1,15 @@
-#include "SnpSocket.h"
+#include "SnpWebsocket.h"
 
 #include "libwebsockets.h"
 #include "snappyv1.pb.h"
 #include "util/loguru.h"
 
 static struct lws_protocols protocols[] = {
-    { "http", SnpSocket::callback_http, 0 },
-    { NULL, NULL, 0, 0 } /* terminator */
+    { "http", SnpWebsocket::callback_http, 0 },
+    { NULL, NULL,                          0, 0 } /* terminator */
 };
 
-SnpSocket::SnpSocket() {
+SnpWebsocket::SnpWebsocket() {
     memset(&info, 0, sizeof info);
     info.port = 9002;
     info.protocols = protocols;
@@ -19,25 +19,25 @@ SnpSocket::SnpSocket() {
     sendBufferLen = 0;
 }
 
-SnpSocket::~SnpSocket() {
+SnpWebsocket::~SnpWebsocket() {
     lws_context_destroy(context);
 }
 
-void SnpSocket::run() {
+void SnpWebsocket::run() {
     int n = 0;
     while (n >= 0 /* && !interrupted*/)
         n = lws_service(context, 0);
 }
 
 
-int SnpSocket::callback_http(struct lws *wsi,
-                         lws_callback_reasons reason,
-                         void *user, void *in, size_t len) {
+int SnpWebsocket::callback_http(struct lws *wsi,
+                                lws_callback_reasons reason,
+                                void *user, void *in, size_t len) {
 
-    SnpSocket* self = nullptr;
+    SnpWebsocket* self = nullptr;
     if(wsi != nullptr) {
         lws_context *context = lws_get_context(wsi);
-        self = reinterpret_cast<SnpSocket*>(lws_context_user(context));
+        self = reinterpret_cast<SnpWebsocket*>(lws_context_user(context));
     }
 
 //    struct per_session_data__minimal_server_echo *pss =
@@ -157,12 +157,12 @@ int SnpSocket::callback_http(struct lws *wsi,
     return 0;
 }
 
-void SnpSocket::sendMessage(snappyv1::Message *msg, struct lws *wsi) {
+void SnpWebsocket::sendMessage(snappyv1::Message *msg, struct lws *wsi) {
     outputQueue.push(msg);
     lws_callback_on_writable(wsi);
 }
 
-void SnpSocket::sendStreamInfo(lws* wsi) {
+void SnpWebsocket::sendStreamInfo(lws* wsi) {
     LOG_F(INFO,"sendStreamInfo\n");
 
     using namespace snappyv1;
@@ -185,7 +185,7 @@ void SnpSocket::sendStreamInfo(lws* wsi) {
     sendMessage(msgEnvelope, wsi);
 }
 
-void SnpSocket::onMessage(lws *wsi, uint8_t* buffer, int len) {
+void SnpWebsocket::onMessage(lws *wsi, uint8_t* buffer, int len) {
     SnpClient *client = clients.at(wsi);
     client->onMessage(buffer, len);
 }

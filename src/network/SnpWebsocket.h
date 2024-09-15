@@ -1,16 +1,18 @@
 #ifndef SNAPPYVNC_SERVER_H
 #define SNAPPYVNC_SERVER_H
 
+#ifdef HAVE_LIBWEBSOCKETS
+
 #include "libwebsockets.h"
 #include <functional>
 #include <set>
 #include <queue>
-#include "SnpClient.h"
+#include "SnpClientWebsocket.h"
 
-class SnpSocket {
+class SnpWebsocket {
 public:
-    SnpSocket();
-    ~SnpSocket();
+    SnpWebsocket();
+    ~SnpWebsocket();
 
     void run();
     static int callback_http(struct lws *wsi,
@@ -21,7 +23,7 @@ public:
 private:
     struct lws_context_creation_info info;
     struct lws_context *context;
-    std::map<lws*, SnpClient*> clients;
+    std::map<lws*, SnpClientWebsocket*> clients;
     void sendStreamInfo(lws* wsi);
     void onMessage(lws *wsi, uint8_t *message, int len);
     uint8_t sendBuffer[1024000];
@@ -29,5 +31,7 @@ private:
 
     std::queue<snappyv1::Message*> outputQueue;
 };
+
+#endif //HAVE_LIBWEBSOCKETS
 
 #endif //SNAPPYVNC_SERVER_H

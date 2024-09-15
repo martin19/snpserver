@@ -1,5 +1,5 @@
-#ifndef SNPSERVER_SNPSOURCECURSOR_H
-#define SNPSERVER_SNPSOURCECURSOR_H
+#ifndef SNPSERVER_SNPSOURCEX11CURSOR_H
+#define SNPSERVER_SNPSOURCEX11CURSOR_H
 
 #include <stream/SnpComponent.h>
 #include <thread>
@@ -9,10 +9,10 @@
 struct SnpSourceCursorOptions : public SnpComponentOptions {
 };
 
-class SnpSourceCursor : public SnpComponent {
+class SnpSourceX11Cursor : public SnpComponent {
 public:
-    explicit SnpSourceCursor(const SnpSourceCursorOptions &options);
-    ~SnpSourceCursor() override;
+    explicit SnpSourceX11Cursor(const SnpSourceCursorOptions &options);
+    ~SnpSourceX11Cursor() override;
     void setEnabled(bool enabled) override;
 private:
 
@@ -31,4 +31,4 @@ private:
 };
 
 
-#endif //SNPSERVER_SNPSOURCECURSOR_H
+#endif //SNPSERVER_SNPSOURCEX11CURSOR_H

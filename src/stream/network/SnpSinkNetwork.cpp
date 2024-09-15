@@ -5,7 +5,7 @@
 
 SnpSinkNetwork::SnpSinkNetwork(const SnpSinkNetworkOptions &options) : SnpComponent(options, "sinkNetwork") {
     streamId = options.streamId;
-    client = options.client;
+    //TODO: websocket client = options.client;
 
     addInputPort(new SnpPort());
 
@@ -30,9 +30,9 @@ void SnpSinkNetwork::onInputData(const uint8_t * inputBuffer, int inputLen, bool
     buffer.insert(buffer.end(), inputBuffer, inputBuffer + inputLen);
     if(complete) {
         setTimestampStartMs(TimeUtil::getTimeNowMs());
-        this->client->sendStreamData(streamId, buffer.data(), buffer.size());
+        //TODO: websocket this->client->sendStreamData(streamId, buffer.data(), buffer.size());
         setTimestampEndMs(TimeUtil::getTimeNowMs());
         buffer.clear();
-        this->getOwner()->framesPassed++;
+        //TODO: websocket this->getOwner()->framesPassed++;
     }
 }

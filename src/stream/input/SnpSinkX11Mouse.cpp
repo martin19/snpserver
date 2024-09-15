@@ -1,4 +1,4 @@
-#include "SnpSinkMouse.h"
+#include "SnpSinkX11Mouse.h"
 #include <linux/uinput.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -8,21 +8,21 @@
 #include <network/snappyv1.pb.h>
 #include "util/loguru.h"
 
-SnpSinkMouse::SnpSinkMouse(const SnpSinkMouseOptions &options) : SnpComponent(options, "sinkMouse") {
+SnpSinkX11Mouse::SnpSinkX11Mouse(const SnpSinkX11MouseOptions &options) : SnpComponent(options, "sinkMouse") {
     fid = -1;
     width = options.width;
     height = options.height;
     previousButtonMask = 0;
 
     addInputPort(new SnpPort());
-    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkMouse::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkX11Mouse::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
-SnpSinkMouse::~SnpSinkMouse() {
+SnpSinkX11Mouse::~SnpSinkX11Mouse() {
     destroyMouse();
 }
 
-void SnpSinkMouse::setEnabled(bool enabled) {
+void SnpSinkX11Mouse::setEnabled(bool enabled) {
     SnpComponent::setEnabled(enabled);
     if(enabled) {
         initMouse();
@@ -48,7 +48,7 @@ static void emit(int fd, int type, int code, int val) {
     }
 }
 
-void SnpSinkMouse::onInputData(const uint8_t *data, int len, bool complete) {
+void SnpSinkX11Mouse::onInputData(const uint8_t *data, int len, bool complete) {
     //TODO: only complete messages are accepted, verify and clean up interface.
     snappyv1::StreamDataPointer streamDataPointer = snappyv1::StreamDataPointer();
     streamDataPointer.ParseFromArray(data, len);
@@ -70,7 +70,7 @@ void SnpSinkMouse::onInputData(const uint8_t *data, int len, bool complete) {
     }
 }
 
-bool SnpSinkMouse::initMouse() {
+bool SnpSinkX11Mouse::initMouse() {
     fid = -1;
     bool result = true;
     struct uinput_setup usetup = {0};
@@ -132,14 +132,14 @@ error:
     return result;
 }
 
-void SnpSinkMouse::setMousePosition(int x, int y) {
+void SnpSinkX11Mouse::setMousePosition(int x, int y) {
 //    std::cout << "setmouseposition " << x << "//" << y << std::endl;
     emit(fid, EV_ABS, ABS_X, x);
     emit(fid, EV_ABS, ABS_Y, y);
     emit(fid, EV_SYN, SYN_REPORT, 0);
 }
 
-void SnpSinkMouse::setButton(int32_t button, int down) {
+void SnpSinkX11Mouse::setButton(int32_t button, int down) {
     if(button & 1) {
         emit(fid, EV_KEY, BTN_LEFT, down);
     } else if(button & 2) {
@@ -155,7 +155,7 @@ void SnpSinkMouse::setButton(int32_t button, int down) {
     emit(fid, EV_SYN, SYN_REPORT, 0);
 }
 
-void SnpSinkMouse::destroyMouse() {
+void SnpSinkX11Mouse::destroyMouse() {
 //    sleep(1);
     ioctl(fid, UI_DEV_DESTROY);
     close(fid);

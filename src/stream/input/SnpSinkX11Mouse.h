@@ -1,17 +1,17 @@
-#ifndef SNPSERVER_SNPSINKMOUSE_H
-#define SNPSERVER_SNPSINKMOUSE_H
+#ifndef SNPSERVER_SNPSINKX11MOUSE_H
+#define SNPSERVER_SNPSINKX11MOUSE_H
 
 #include <stream/SnpComponent.h>
 
-struct SnpSinkMouseOptions : public SnpComponentOptions {
+struct SnpSinkX11MouseOptions : public SnpComponentOptions {
     int width;
     int height;
 };
 
-class SnpSinkMouse : public SnpComponent {
+class SnpSinkX11Mouse : public SnpComponent {
 public:
-    explicit SnpSinkMouse(const SnpSinkMouseOptions &options);
-    virtual ~SnpSinkMouse();
+    explicit SnpSinkX11Mouse(const SnpSinkX11MouseOptions &options);
+    virtual ~SnpSinkX11Mouse();
 
     void setEnabled(bool enabled) override;
 
@@ -27,5 +27,4 @@ private:
     void destroyMouse();
 };
 
-
-#endif //SNPSERVER_SNPSINKMOUSE_H
+#endif //SNPSERVER_SNPSINKX11MOUSE_H

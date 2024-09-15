@@ -5,6 +5,14 @@
 #include <string>
 #include "codec_api.h"
 
+typedef int (*WelsCreateSVCEncoderFunc)(ISVCEncoder** ppEncoder);
+typedef void (*WelsDestroySVCEncoderFunc)(ISVCEncoder* pEncoder);
+
+struct OpenH264Api {
+    WelsCreateSVCEncoderFunc welsCreateSVCEncoderFunc;
+    WelsDestroySVCEncoderFunc  welsDestroySVCEncoderFunc;
+};
+
 struct SnpEncoderOpenH264Options : public SnpComponentOptions {
     uint32_t width;
     uint32_t height;
@@ -20,10 +28,11 @@ public:
     void setEnabled(bool enabled) override;
 
 private:
+    OpenH264Api openH264Api;
+
     uint32_t width;
     uint32_t height;
     uint32_t bpp;
-
 
     void onInputData(const uint8_t *data, uint32_t len, bool complete);
 

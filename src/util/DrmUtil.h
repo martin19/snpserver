@@ -1,6 +1,8 @@
 #ifndef SNPSERVER_DRMUTIL_H
 #define SNPSERVER_DRMUTIL_H
 
+#ifdef HAVE_LIBDRM
+
 #include <xf86drmMode.h>
 #include <xf86drm.h>
 #include <string>
@@ -52,5 +54,6 @@ private:
     std::map<uint32_t, FB*> framebuffers;
 };
 
+#endif // HAVE_LIBDRM
 
 #endif //SNPSERVER_DRMUTIL_H

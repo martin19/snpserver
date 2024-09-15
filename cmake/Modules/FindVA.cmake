@@ -8,10 +8,10 @@ if (VA_INCLUDE_DIR AND VA_LIBRARIES)
     SET(VA_FOUND TRUE)
 else (VA_INCLUDE_DIR AND VA_LIBRARIES)
 
-    find_path(VA_INCLUDE_DIR va/va.h REQUIRED)
-    find_library(VA_LIBRARY NAMES va REQUIRED)
-    find_library(VA_DRM_LIBRARY NAMES va-drm REQUIRED)
-    find_library(VA_X11_LIBRARY NAMES va-x11 REQUIRED)
+    find_path(VA_INCLUDE_DIR va/va.h)
+    find_library(VA_LIBRARY NAMES va)
+    find_library(VA_DRM_LIBRARY NAMES va-drm)
+    find_library(VA_X11_LIBRARY NAMES va-x11)
 
     set(VA_LIBRARIES ${VA_LIBRARY}
                      ${VA_DRM_LIBRARY}

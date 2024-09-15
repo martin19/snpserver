@@ -2,8 +2,21 @@
 #include <util/VideoUtil.h>
 #include "util/assert.h"
 #include "SnpEncoderOpenH264.h"
+#ifdef _WIN32
+#include "windows.h"
+#include "libloaderapi.h"
+#endif
 
 SnpEncoderOpenH264::SnpEncoderOpenH264(const SnpEncoderOpenH264Options &options) : SnpComponent(options, "encoderOpenH264") {
+#ifdef _WIN32
+    HMODULE hDLL = LoadLibraryA("openh264.dll");
+    openH264Api.welsCreateSVCEncoderFunc = (WelsCreateSVCEncoderFunc)GetProcAddress(hDLL, "WelsCreateSVCEncoder");
+    openH264Api.welsDestroySVCEncoderFunc = (WelsDestroySVCEncoderFunc) GetProcAddress(hDLL, "WelsDestroySVCEncoder");
+#else
+    openH264Api.welsCreateSvcEncoderFunc = WelsCreateSVCEncoder;
+    openH264Api.welsDestroySvcEncoderFunc = WelsDestroySVGEncoder;
+#endif //_WIN32
+
     encoder = nullptr;
     yuvBuffer = nullptr;
 
@@ -51,7 +64,7 @@ bool SnpEncoderOpenH264::openH264EncoderInit() {
     paramExt.iMinQp = 10;
     paramExt.iMaxQp = 10;
 
-    res = WelsCreateSVCEncoder (&encoder);
+    res = openH264Api.welsCreateSVCEncoderFunc (&encoder);
     ASSERT(res == 0);
     ASSERT(encoder != nullptr);
 
@@ -68,7 +81,7 @@ error:
 void SnpEncoderOpenH264::openH264EncoderDestroy() {
     if(encoder) {
         encoder->Uninitialize();
-        WelsDestroySVCEncoder(encoder);
+        openH264Api.welsDestroySVCEncoderFunc(encoder);
     }
 
     free(yuvBuffer);

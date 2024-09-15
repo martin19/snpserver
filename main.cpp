@@ -1,5 +1,5 @@
 #include <iostream>
-#include <network/SnpSocket.h>
+#include <network/SnpWebsocket.h>
 #include "util/loguru.h"
 
 //int main(int argc, char *argv[]) {
@@ -13,8 +13,8 @@
 //}
 
 int main() {
-    SnpSocket s;
-    s.run();
+    //TODO websocket: SnpWebsocket s;
+    //s.run();
 
     //    s.run();
 //    while(1) {

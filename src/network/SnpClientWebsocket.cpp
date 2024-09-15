@@ -1,16 +1,16 @@
-#include "SnpClient.h"
+#include "SnpClientWebsocket.h"
 #include <utility>
 #include <ctime>
 #include <stream/SnpPipeFactory.h>
 #include <util/PropertyUtil.h>
-#include "SnpSocket.h"
+#include "SnpWebsocket.h"
 #include "util/loguru.h"
 
-SnpClient::SnpClient(SnpSocket *server, struct lws *wsi) : server(server), wsi(wsi) {
+SnpClientWebsocket::SnpClientWebsocket(SnpWebsocket *server, struct lws *wsi) : server(server), wsi(wsi) {
     connectionStartTs = std::time(nullptr);
 }
 
-SnpClient::~SnpClient() {
+SnpClientWebsocket::~SnpClientWebsocket() {
     for (auto & it : pipes) {
         auto pipe = it.second;
         pipe->stop();
@@ -22,7 +22,7 @@ SnpClient::~SnpClient() {
     }
 }
 
-void SnpClient::onMessage(uint8_t *data, int len) {
+void SnpClientWebsocket::onMessage(uint8_t *data, int len) {
     //decode message
     snappyv1::Message message = snappyv1::Message();
     message.ParseFromArray(data, len);
@@ -38,15 +38,15 @@ void SnpClient::onMessage(uint8_t *data, int len) {
     }
 }
 
-bool SnpClient::operator<(const SnpClient &right) const {
+bool SnpClientWebsocket::operator<(const SnpClientWebsocket &right) const {
     return connectionStartTs < right.connectionStartTs;
 }
 
-time_t SnpClient::getConnectionStartTs() const {
+time_t SnpClientWebsocket::getConnectionStartTs() const {
     return connectionStartTs;
 }
 
-void SnpClient::onStreamChange(const snappyv1::StreamChange &msg) {
+void SnpClientWebsocket::onStreamChange(const snappyv1::StreamChange &msg) {
     using namespace snappyv1;
     switch(msg.command()) {
         case COMMAND_INIT: {
@@ -64,7 +64,7 @@ void SnpClient::onStreamChange(const snappyv1::StreamChange &msg) {
     }
 }
 
-void SnpClient::onStreamChangeInit(const snappyv1::StreamChange &msg) {
+void SnpClientWebsocket::onStreamChangeInit(const snappyv1::StreamChange &msg) {
     //find pipe for stream in pipe registry and initialize it. when initialized, send ready.
     auto pipe = SnpPipeFactory::createPipe(msg.id(), this, msg.stream_medium(), msg.stream_direction(),
                                            msg.stream_endpoint(), msg.stream_encoding());
@@ -79,7 +79,7 @@ void SnpClient::onStreamChangeInit(const snappyv1::StreamChange &msg) {
     }*/
 }
 
-void SnpClient::onStreamChangeStart(const snappyv1::StreamChange &msg) {
+void SnpClientWebsocket::onStreamChangeStart(const snappyv1::StreamChange &msg) {
     auto it = pipes.find(msg.id());
     auto pipe = it->second;
     if(pipe) {
@@ -87,7 +87,7 @@ void SnpClient::onStreamChangeStart(const snappyv1::StreamChange &msg) {
     }
 }
 
-void SnpClient::onStreamChangeStop(const snappyv1::StreamChange &msg) {
+void SnpClientWebsocket::onStreamChangeStop(const snappyv1::StreamChange &msg) {
     auto it = pipes.find(msg.id());
     auto pipe = it->second;
     if(pipe) {
@@ -95,7 +95,7 @@ void SnpClient::onStreamChangeStop(const snappyv1::StreamChange &msg) {
     }
 }
 
-void SnpClient::onStreamChangeDestroy(const snappyv1::StreamChange &msg) {
+void SnpClientWebsocket::onStreamChangeDestroy(const snappyv1::StreamChange &msg) {
     auto it = pipes.find(msg.id());
     auto pipe = it->second;
     if(pipe) {
@@ -105,7 +105,7 @@ void SnpClient::onStreamChangeDestroy(const snappyv1::StreamChange &msg) {
     }
 }
 
-void SnpClient::sendStreamChangeInitOk(uint32_t streamId, SnpPipe *pipe) {
+void SnpClientWebsocket::sendStreamChangeInitOk(uint32_t streamId, SnpPipe *pipe) {
    using namespace snappyv1;
    auto *msg1 = new Message();
    msg1->set_type(snappyv1::MESSAGE_TYPE_STREAM_CHANGE);
@@ -128,11 +128,11 @@ void SnpClient::sendStreamChangeInitOk(uint32_t streamId, SnpPipe *pipe) {
    this->server->sendMessage(msg1, wsi);
 }
 
-void SnpClient::setStreamListener(uint32_t streamId, StreamListener streamListener) {
+void SnpClientWebsocket::setStreamListener(uint32_t streamId, StreamListener streamListener) {
    streamListeners.insert(std::pair(streamId, streamListener));
 }
 
-void SnpClient::onStreamData(const snappyv1::StreamData &msg) {
+void SnpClientWebsocket::onStreamData(const snappyv1::StreamData &msg) {
    uint32_t streamId = msg.stream_id();
    auto entry = streamListeners.find(streamId);
    StreamListener listener = entry->second;
@@ -143,7 +143,7 @@ void SnpClient::onStreamData(const snappyv1::StreamData &msg) {
    }
 }
 
-void SnpClient::sendStreamData(uint32_t streamId, uint8_t *data, int len) {
+void SnpClientWebsocket::sendStreamData(uint32_t streamId, uint8_t *data, int len) {
    using namespace snappyv1;
    auto *streamData = new StreamData();
    streamData->set_payload(data, len);

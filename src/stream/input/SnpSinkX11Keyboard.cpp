@@ -1,4 +1,4 @@
-#include "SnpSinkKeyboard.h"
+#include "SnpSinkX11Keyboard.h"
 #include <linux/uinput.h>
 #include <fcntl.h>
 #include <cstdio>
@@ -9,16 +9,16 @@
 
 extern "C" unsigned short code_map_atset1_to_linux[57470];
 
-SnpSinkKeyboard::SnpSinkKeyboard(const SnpSinkKeyboardOptions &options) : SnpComponent(options, "sinkKeyboard") {
+SnpSinkX11Keyboard::SnpSinkX11Keyboard(const SnpSinkX11KeyboardOptions &options) : SnpComponent(options, "sinkKeyboard") {
     addInputPort(new SnpPort());
-    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkKeyboard::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkX11Keyboard::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
-SnpSinkKeyboard::~SnpSinkKeyboard() {
+SnpSinkX11Keyboard::~SnpSinkX11Keyboard() {
     destroyKeyboard();
 }
 
-void SnpSinkKeyboard::setEnabled(bool enabled) {
+void SnpSinkX11Keyboard::setEnabled(bool enabled) {
     SnpComponent::setEnabled(enabled);
     if(enabled) {
         initKeyboard();
@@ -44,7 +44,7 @@ static void emit(int fd, int type, int code, int val) {
     }
 }
 
-void SnpSinkKeyboard::onInputData(const uint8_t *data, int len, bool complete) {
+void SnpSinkX11Keyboard::onInputData(const uint8_t *data, int len, bool complete) {
     snappyv1::StreamDataKeyboard streamDataKeyboard = snappyv1::StreamDataKeyboard();
     streamDataKeyboard.ParseFromArray(data, len);
 
@@ -63,7 +63,7 @@ void SnpSinkKeyboard::onInputData(const uint8_t *data, int len, bool complete) {
     }
 }
 
-bool SnpSinkKeyboard::initKeyboard() {
+bool SnpSinkX11Keyboard::initKeyboard() {
     bool result = true;
     struct uinput_setup usetup = {0};
     struct uinput_abs_setup absSetup = {0};
@@ -103,17 +103,17 @@ error:
     return result;
 }
 
-void SnpSinkKeyboard::keyDown(int key) {
+void SnpSinkX11Keyboard::keyDown(int key) {
     emit(fid, EV_KEY, key, 1);
     emit(fid, EV_SYN, SYN_REPORT, 0);
 }
 
-void SnpSinkKeyboard::keyUp(int key) {
+void SnpSinkX11Keyboard::keyUp(int key) {
     emit(fid, EV_KEY, key, 0);
     emit(fid, EV_SYN, SYN_REPORT, 0);
 }
 
-void SnpSinkKeyboard::destroyKeyboard() {
+void SnpSinkX11Keyboard::destroyKeyboard() {
     ioctl(fid, UI_DEV_DESTROY);
     close(fid);
 }

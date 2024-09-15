@@ -1,12 +1,12 @@
 #include "SnpSourceNetwork.h"
 
 SnpSourceNetwork::SnpSourceNetwork(const SnpSourceNetworkOptions &options) : SnpComponent(options, "sourceNetwork") {
-    this->client = options.client;
+    //TODO websocket: this->client = options.client;
     this->streamId = options.streamId;
 
     addOutputPort(new SnpPort());
 
-    client->setStreamListener(streamId, std::bind(&SnpSourceNetwork::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    //TODO websocket: client->setStreamListener(streamId, std::bind(&SnpSourceNetwork::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
 SnpSourceNetwork::~SnpSourceNetwork() {
