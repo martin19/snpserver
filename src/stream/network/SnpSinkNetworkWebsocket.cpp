@@ -1,22 +1,22 @@
 #include <util/TimeUtil.h>
-#include "SnpSinkNetwork.h"
+#include "SnpSinkNetworkWebsocket.h"
 
 #define SNP_SINK_NETWORK_BUFFER_SIZE 500000
 
-SnpSinkNetwork::SnpSinkNetwork(const SnpSinkNetworkOptions &options) : SnpComponent(options, "sinkNetwork") {
+SnpSinkNetworkWebsocket::SnpSinkNetworkWebsocket(const SnpSinkNetworkOptions &options) : SnpComponent(options, "sinkNetwork") {
     streamId = options.streamId;
     //TODO: websocket client = options.client;
 
     addInputPort(new SnpPort());
 
-    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkNetwork::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkNetworkWebsocket::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
-SnpSinkNetwork::~SnpSinkNetwork() {
+SnpSinkNetworkWebsocket::~SnpSinkNetworkWebsocket() {
     buffer.clear();
 }
 
-void SnpSinkNetwork::setEnabled(bool enabled) {
+void SnpSinkNetworkWebsocket::setEnabled(bool enabled) {
     SnpComponent::setEnabled(enabled);
     if(enabled) {
         buffer.reserve(SNP_SINK_NETWORK_BUFFER_SIZE);
@@ -26,7 +26,7 @@ void SnpSinkNetwork::setEnabled(bool enabled) {
     }
 }
 
-void SnpSinkNetwork::onInputData(const uint8_t * inputBuffer, int inputLen, bool complete) {
+void SnpSinkNetworkWebsocket::onInputData(const uint8_t * inputBuffer, int inputLen, bool complete) {
     buffer.insert(buffer.end(), inputBuffer, inputBuffer + inputLen);
     if(complete) {
         setTimestampStartMs(TimeUtil::getTimeNowMs());

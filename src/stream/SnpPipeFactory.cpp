@@ -14,7 +14,10 @@
     #include <stream/input/SnpSinkX11Keyboard.h>
     #include <stream/input/SnpSourceX11Cursor.h>
 #endif //HAVE_LIBX11
-#include <stream/network/SnpSinkNetwork.h>
+#ifdef HAVE_LIBWEBSOCKETS
+#include <stream/network/SnpSinkNetworkWebsocket.h>
+#endif //HAVE_LIBWEBSOCKETS
+#include <stream/network/SnpSinkNetworkTcp.h>
 #include <stream/video/SnpEncoderOpenH264.h>
 #include <stream/network/SnpSourceNetwork.h>
 
@@ -126,11 +129,21 @@ SnpPipe *SnpPipeFactory::createVideoOutputPipe(uint32_t streamId, SnpClientWebso
         return nullptr;
     }
 
-    ///
-    SnpSinkNetworkOptions sinkOptions = {};
-    //TODO websocket: sinkOptions.client = client;
+    SnpSinkNetworkTcpOptions sinkOptions = {};
     sinkOptions.streamId = streamId;
-    auto *sink = new SnpSinkNetwork(sinkOptions);
+    sinkOptions.port = 9000;
+    sinkOptions.host = "127.0.0.1";
+    if(source == nullptr) {
+        LOG_F(ERROR, "cannot instantiate requested source component for pipe.");
+        return nullptr;
+    }
+
+    if(encoder == nullptr) {
+        LOG_F(ERROR, "cannot instantiate requested encoder component for pipe.");
+        return nullptr;
+    }
+
+    auto *sink = new SnpSinkNetworkTcp(sinkOptions);
 
     SnpPort::connect(source->getOutputPort(0), encoder->getInputPort(0));
     SnpPort::connect(encoder->getOutputPort(0), sink->getInputPort(0));

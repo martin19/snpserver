@@ -98,13 +98,14 @@ if(LIBGL_FOUND)
     set(GL_SOURCES
         src/util/DrmUtil.cpp
         src/stream/video/SnpSourceGL.cpp
-    )
+            src/stream/network/SnpSinkNetworkTcp.cpp src/stream/network/SnpSinkNetworkTcp.h src/stream/network/sockets.h)
 endif(LIBGL_FOUND)
 
 if(LIBWEBSOCKETS_FOUND)
     set(WEBSOCKETS_SOURCES
         src/network/SnpClientWebsocket.cpp
         src/network/SnpWebsocket.cpp
+        src/stream/network/SnpSinkNetworkWebsocket.cpp
     )
 endif(LIBWEBSOCKETS_FOUND)
 
@@ -126,7 +127,7 @@ add_executable(snpserver
     src/stream/input/keymap_atset1_linux.c
     # network sink/source
     src/stream/network/SnpSourceNetwork.cpp
-    src/stream/network/SnpSinkNetwork.cpp
+    src/stream/network/SnpSinkNetworkTcp.cpp
     # file sink/source
     src/stream/file/SnpSinkFile.cpp
     ${X11_SOURCES}
@@ -160,6 +161,10 @@ endif(X11_FOUND)
 if(OPENGL_FOUND)
     target_link_libraries(snpserver EGL GLESv2)
 endif(OPENGL_FOUND)
+
+if(WIN32)
+   target_link_libraries(snpserver wsock32 ws2_32)
+endif(WIN32)
 
 target_link_libraries(snpserver
     ${PROTOBUF_LIBRARY}

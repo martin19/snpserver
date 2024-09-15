@@ -1,7 +1,7 @@
-#ifndef SNPSERVER_SNPSINKNETWORK_H
-#define SNPSERVER_SNPSINKNETWORK_H
+#ifndef SNPSERVER_SNPSINKNETWORKWEBSOCKET_H
+#define SNPSERVER_SNPSINKNETWORKWEBSOCKET_H
 
-//#include <network/SnpClientWebsocket.h>
+#include <network/SnpClientWebsocket.h>
 #include <stream/SnpComponent.h>
 
 struct SnpSinkNetworkOptions : public SnpComponentOptions {
@@ -9,10 +9,10 @@ struct SnpSinkNetworkOptions : public SnpComponentOptions {
     //SnpClientWebsocket *client;
 };
 
-class SnpSinkNetwork : public SnpComponent {
+class SnpSinkNetworkWebsocket : public SnpComponent {
 public:
-    explicit SnpSinkNetwork(const SnpSinkNetworkOptions &options);
-    ~SnpSinkNetwork() override;
+    explicit SnpSinkNetworkWebsocket(const SnpSinkNetworkOptions &options);
+    ~SnpSinkNetworkWebsocket() override;
 
     void setEnabled(bool enabled) override;
 
@@ -23,4 +23,4 @@ private:
     std::vector<uint8_t> buffer;
 };
 
-#endif //SNPSERVER_SNPSINKNETWORK_H
+#endif //SNPSERVER_SNPSINKNETWORKWEBSOCKET_H
