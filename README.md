@@ -25,8 +25,50 @@ As of now the following components are implemented:
 * x11 grabber
 * drm grabber
 
+## Build instructions 
 
-# drm-gl screen capture method
+### Build on Ubuntu 22.04
+
+#### Install dependencies
+
+```shell
+sudo apt install protobuf-compiler
+sudo apt install libwebsockets-dev
+sudo apt install libva-dev
+sudo apt install libdrm-dev
+sudo apt install libxcomposite-dev
+
+curl -L http://ciscobinary.openh264.org/libopenh264-2.1.1-linux64.6.so.bz2 | bzip2 -dk | sudo tee /usr/local/lib/libopenh264-2.1.1-linux64.so.6 > /dev/null
+sudo chmod 755 /usr/local/lib/libopenh264-2.1.1-linux64.so.6
+```
+
+#### Common pitfalls
+
+Check whether X11 or wayland is running:
+
+```
+ps aux | grep [w]ayland
+ps aux | grep [X]
+```
+
+#### run
+
+Enable X11 access for all local users:
+```
+export DISPLAY=:1.0
+xhost +local: 
+```
+
+#### Generate protobuf headers
+
+```
+protoc --proto_path=proto --cpp_out=src/network proto/snappyv1.proto --experimental_allow_proto3_optional
+```
+
+## Background on screen capturing methods
+
+
+### drm-gl screen capture method
 
 The `SnpSourceGL` module implements a screen capture method which uses `libdrm` and `egl`.
 There are some online resources for programming `libdrm` from
@@ -36,7 +78,7 @@ from a kernel perspective.
 To understand the capture method, one needs to understand a little bit of `drm`, `egl`
 and some `dma-buf`. I'll explain the interesting parts in the sections below.
 
-## Accessing a framebuffer with DRM/KMS
+### Accessing a framebuffer with DRM/KMS
 
 DRM/KMS (direct rendering manager, kernel mode setting) is an abstraction for
 hardware resources of different vendors which provides an api through `ioctl` calls.

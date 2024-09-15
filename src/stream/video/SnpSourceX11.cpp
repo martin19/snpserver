@@ -2,6 +2,7 @@
 #include "SnpSourceX11.h"
 #include <xcb/xproto.h>
 #include <iostream>
+#include <X11/Xutil.h>
 
 SnpSourceX11::SnpSourceX11(const SnpSourceX11Options &options) : SnpComponent(options, "sourceX11") {
     addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO));
@@ -56,7 +57,8 @@ bool SnpSourceX11::initX11() {
     int snum;
     StreamFormatVideo *format;
 
-    this->X11Display = XOpenDisplay(defaultDisplay.c_str());
+    //this->X11Display = XOpenDisplay(defaultDisplay.c_str());
+    this->X11Display = XOpenDisplay(":1.0");
     if(X11Display == nullptr) {
         LOG_F(ERROR, "Cannot open display %s.", defaultDisplay.c_str());
         result = false;

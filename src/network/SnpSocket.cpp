@@ -119,9 +119,9 @@ int SnpSocket::callback_http(struct lws *wsi,
         case LWS_CALLBACK_WS_PEER_INITIATED_CLOSE: {
             LOG_F(INFO,"LWS_CALLBACK_WS_PEER_INITIATED_CLOSE");
         } break;
-        case LWS_CALLBACK_CONNECTING: {
-            LOG_F(INFO,"LWS_CALLBACK_CONNECTING");
-        } break;
+        //case LWS_CALLBACK_CONNECTING: {
+        //    LOG_F(INFO,"LWS_CALLBACK_CONNECTING");
+        //} break;
         case LWS_CALLBACK_PROTOCOL_DESTROY: {
             LOG_F(INFO,"LWS_CALLBACK_PROTOCOL_DESTROY");
         } break;

@@ -44,7 +44,7 @@ bool SnpEncoderOpenH264::openH264EncoderInit() {
     SEncParamExt paramExt = {};
     paramExt.bEnableFrameSkip = true;
     paramExt.iNumRefFrame = 1;
-    paramExt.fMaxFrameRate = 60.0;
+    paramExt.fMaxFrameRate = 15.0;
     paramExt.iPicWidth = width;
     paramExt.iPicHeight = height;
     paramExt.iTargetBitrate = 20000000;

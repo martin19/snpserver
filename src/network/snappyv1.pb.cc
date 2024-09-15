@@ -14,188 +14,247 @@
 #include <google/protobuf/wire_format.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
-
-PROTOBUF_PRAGMA_INIT_SEG
+extern PROTOBUF_INTERNAL_EXPORT_snappyv1_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<4> scc_info_Property_snappyv1_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_snappyv1_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Property_ValueBool_snappyv1_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_snappyv1_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Property_ValueDouble_snappyv1_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_snappyv1_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Property_ValueString_snappyv1_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_snappyv1_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Property_ValueUint32_snappyv1_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_snappyv1_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_StreamChange_snappyv1_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_snappyv1_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_StreamData_snappyv1_2eproto;
+extern PROTOBUF_INTERNAL_EXPORT_snappyv1_2eproto ::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_StreamInfo_snappyv1_2eproto;
 namespace snappyv1 {
-constexpr Property_ValueString::Property_ValueString(
-  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : value_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string){}
-struct Property_ValueStringDefaultTypeInternal {
-  constexpr Property_ValueStringDefaultTypeInternal()
-    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
-  ~Property_ValueStringDefaultTypeInternal() {}
-  union {
-    Property_ValueString _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT Property_ValueStringDefaultTypeInternal _Property_ValueString_default_instance_;
-constexpr Property_ValueBool::Property_ValueBool(
-  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : value_(false){}
-struct Property_ValueBoolDefaultTypeInternal {
-  constexpr Property_ValueBoolDefaultTypeInternal()
-    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
-  ~Property_ValueBoolDefaultTypeInternal() {}
-  union {
-    Property_ValueBool _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT Property_ValueBoolDefaultTypeInternal _Property_ValueBool_default_instance_;
-constexpr Property_ValueUint32::Property_ValueUint32(
-  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : value_(0u)
-  , min_(0u)
-  , max_(0u){}
-struct Property_ValueUint32DefaultTypeInternal {
-  constexpr Property_ValueUint32DefaultTypeInternal()
-    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
-  ~Property_ValueUint32DefaultTypeInternal() {}
-  union {
-    Property_ValueUint32 _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT Property_ValueUint32DefaultTypeInternal _Property_ValueUint32_default_instance_;
-constexpr Property_ValueDouble::Property_ValueDouble(
-  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : value_(0)
-  , min_(0)
-  , max_(0){}
-struct Property_ValueDoubleDefaultTypeInternal {
-  constexpr Property_ValueDoubleDefaultTypeInternal()
-    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
-  ~Property_ValueDoubleDefaultTypeInternal() {}
-  union {
-    Property_ValueDouble _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT Property_ValueDoubleDefaultTypeInternal _Property_ValueDouble_default_instance_;
-constexpr Property::Property(
-  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : key_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
-  , type_(0)
-
-  , _oneof_case_{}{}
-struct PropertyDefaultTypeInternal {
-  constexpr PropertyDefaultTypeInternal()
-    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
-  ~PropertyDefaultTypeInternal() {}
-  union {
-    Property _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PropertyDefaultTypeInternal _Property_default_instance_;
-constexpr StreamInfo::StreamInfo(
-  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : stream_endpoints_()
-  , _stream_endpoints_cached_byte_size_()
-  , stream_encodings_()
-  , _stream_encodings_cached_byte_size_()
-  , platform_(0)
-{}
-struct StreamInfoDefaultTypeInternal {
-  constexpr StreamInfoDefaultTypeInternal()
-    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
-  ~StreamInfoDefaultTypeInternal() {}
-  union {
-    StreamInfo _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT StreamInfoDefaultTypeInternal _StreamInfo_default_instance_;
-constexpr StreamChange::StreamChange(
-  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : property_()
-  , id_(0u)
-  , command_(0)
-
-  , stream_medium_(0)
-
-  , stream_direction_(0)
-
-  , stream_endpoint_(0)
-
-  , stream_encoding_(0)
-{}
-struct StreamChangeDefaultTypeInternal {
-  constexpr StreamChangeDefaultTypeInternal()
-    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
-  ~StreamChangeDefaultTypeInternal() {}
-  union {
-    StreamChange _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT StreamChangeDefaultTypeInternal _StreamChange_default_instance_;
-constexpr StreamData::StreamData(
-  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : payload_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
-  , stream_id_(0u){}
-struct StreamDataDefaultTypeInternal {
-  constexpr StreamDataDefaultTypeInternal()
-    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
-  ~StreamDataDefaultTypeInternal() {}
-  union {
-    StreamData _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT StreamDataDefaultTypeInternal _StreamData_default_instance_;
-constexpr Message::Message(
-  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : type_(0)
-
-  , _oneof_case_{}{}
-struct MessageDefaultTypeInternal {
-  constexpr MessageDefaultTypeInternal()
-    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
-  ~MessageDefaultTypeInternal() {}
-  union {
-    Message _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT MessageDefaultTypeInternal _Message_default_instance_;
-constexpr StreamDataPointer::StreamDataPointer(
-  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : absx_(0u)
-  , absy_(0u)
-  , mask_(0){}
-struct StreamDataPointerDefaultTypeInternal {
-  constexpr StreamDataPointerDefaultTypeInternal()
-    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
-  ~StreamDataPointerDefaultTypeInternal() {}
-  union {
-    StreamDataPointer _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT StreamDataPointerDefaultTypeInternal _StreamDataPointer_default_instance_;
-constexpr StreamDataKeyboard::StreamDataKeyboard(
-  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : keysym_(0u)
-  , keycode_(0u)
-  , down_(false){}
-struct StreamDataKeyboardDefaultTypeInternal {
-  constexpr StreamDataKeyboardDefaultTypeInternal()
-    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
-  ~StreamDataKeyboardDefaultTypeInternal() {}
-  union {
-    StreamDataKeyboard _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT StreamDataKeyboardDefaultTypeInternal _StreamDataKeyboard_default_instance_;
-constexpr StreamDataCursor::StreamDataCursor(
-  ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : image_(&::PROTOBUF_NAMESPACE_ID::internal::fixed_address_empty_string)
-  , width_(0u)
-  , height_(0u)
-  , hotx_(0u)
-  , hoty_(0u){}
-struct StreamDataCursorDefaultTypeInternal {
-  constexpr StreamDataCursorDefaultTypeInternal()
-    : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
-  ~StreamDataCursorDefaultTypeInternal() {}
-  union {
-    StreamDataCursor _instance;
-  };
-};
-PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT StreamDataCursorDefaultTypeInternal _StreamDataCursor_default_instance_;
+class Property_ValueStringDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Property_ValueString> _instance;
+} _Property_ValueString_default_instance_;
+class Property_ValueBoolDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Property_ValueBool> _instance;
+} _Property_ValueBool_default_instance_;
+class Property_ValueUint32DefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Property_ValueUint32> _instance;
+} _Property_ValueUint32_default_instance_;
+class Property_ValueDoubleDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Property_ValueDouble> _instance;
+} _Property_ValueDouble_default_instance_;
+class PropertyDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Property> _instance;
+  const ::snappyv1::Property_ValueString* value_string_;
+  const ::snappyv1::Property_ValueBool* value_bool_;
+  const ::snappyv1::Property_ValueUint32* value_uint32_;
+  const ::snappyv1::Property_ValueDouble* value_double_;
+} _Property_default_instance_;
+class StreamInfoDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<StreamInfo> _instance;
+} _StreamInfo_default_instance_;
+class StreamChangeDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<StreamChange> _instance;
+} _StreamChange_default_instance_;
+class StreamDataDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<StreamData> _instance;
+} _StreamData_default_instance_;
+class MessageDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<Message> _instance;
+  const ::snappyv1::StreamChange* stream_change_;
+  const ::snappyv1::StreamData* stream_data_;
+  const ::snappyv1::StreamInfo* stream_info_;
+} _Message_default_instance_;
+class StreamDataPointerDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<StreamDataPointer> _instance;
+} _StreamDataPointer_default_instance_;
+class StreamDataKeyboardDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<StreamDataKeyboard> _instance;
+} _StreamDataKeyboard_default_instance_;
+class StreamDataCursorDefaultTypeInternal {
+ public:
+  ::PROTOBUF_NAMESPACE_ID::internal::ExplicitlyConstructed<StreamDataCursor> _instance;
+} _StreamDataCursor_default_instance_;
 }  // namespace snappyv1
+static void InitDefaultsscc_info_Message_snappyv1_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::snappyv1::_Message_default_instance_;
+    new (ptr) ::snappyv1::Message();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::snappyv1::Message::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<3> scc_info_Message_snappyv1_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 3, 0, InitDefaultsscc_info_Message_snappyv1_2eproto}, {
+      &scc_info_StreamChange_snappyv1_2eproto.base,
+      &scc_info_StreamData_snappyv1_2eproto.base,
+      &scc_info_StreamInfo_snappyv1_2eproto.base,}};
+
+static void InitDefaultsscc_info_Property_snappyv1_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::snappyv1::_Property_default_instance_;
+    new (ptr) ::snappyv1::Property();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::snappyv1::Property::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<4> scc_info_Property_snappyv1_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 4, 0, InitDefaultsscc_info_Property_snappyv1_2eproto}, {
+      &scc_info_Property_ValueString_snappyv1_2eproto.base,
+      &scc_info_Property_ValueBool_snappyv1_2eproto.base,
+      &scc_info_Property_ValueUint32_snappyv1_2eproto.base,
+      &scc_info_Property_ValueDouble_snappyv1_2eproto.base,}};
+
+static void InitDefaultsscc_info_Property_ValueBool_snappyv1_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::snappyv1::_Property_ValueBool_default_instance_;
+    new (ptr) ::snappyv1::Property_ValueBool();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::snappyv1::Property_ValueBool::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Property_ValueBool_snappyv1_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_Property_ValueBool_snappyv1_2eproto}, {}};
+
+static void InitDefaultsscc_info_Property_ValueDouble_snappyv1_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::snappyv1::_Property_ValueDouble_default_instance_;
+    new (ptr) ::snappyv1::Property_ValueDouble();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::snappyv1::Property_ValueDouble::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Property_ValueDouble_snappyv1_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_Property_ValueDouble_snappyv1_2eproto}, {}};
+
+static void InitDefaultsscc_info_Property_ValueString_snappyv1_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::snappyv1::_Property_ValueString_default_instance_;
+    new (ptr) ::snappyv1::Property_ValueString();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::snappyv1::Property_ValueString::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Property_ValueString_snappyv1_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_Property_ValueString_snappyv1_2eproto}, {}};
+
+static void InitDefaultsscc_info_Property_ValueUint32_snappyv1_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::snappyv1::_Property_ValueUint32_default_instance_;
+    new (ptr) ::snappyv1::Property_ValueUint32();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::snappyv1::Property_ValueUint32::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_Property_ValueUint32_snappyv1_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_Property_ValueUint32_snappyv1_2eproto}, {}};
+
+static void InitDefaultsscc_info_StreamChange_snappyv1_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::snappyv1::_StreamChange_default_instance_;
+    new (ptr) ::snappyv1::StreamChange();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::snappyv1::StreamChange::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<1> scc_info_StreamChange_snappyv1_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 1, 0, InitDefaultsscc_info_StreamChange_snappyv1_2eproto}, {
+      &scc_info_Property_snappyv1_2eproto.base,}};
+
+static void InitDefaultsscc_info_StreamData_snappyv1_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::snappyv1::_StreamData_default_instance_;
+    new (ptr) ::snappyv1::StreamData();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::snappyv1::StreamData::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_StreamData_snappyv1_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_StreamData_snappyv1_2eproto}, {}};
+
+static void InitDefaultsscc_info_StreamDataCursor_snappyv1_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::snappyv1::_StreamDataCursor_default_instance_;
+    new (ptr) ::snappyv1::StreamDataCursor();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::snappyv1::StreamDataCursor::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_StreamDataCursor_snappyv1_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_StreamDataCursor_snappyv1_2eproto}, {}};
+
+static void InitDefaultsscc_info_StreamDataKeyboard_snappyv1_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::snappyv1::_StreamDataKeyboard_default_instance_;
+    new (ptr) ::snappyv1::StreamDataKeyboard();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::snappyv1::StreamDataKeyboard::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_StreamDataKeyboard_snappyv1_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_StreamDataKeyboard_snappyv1_2eproto}, {}};
+
+static void InitDefaultsscc_info_StreamDataPointer_snappyv1_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::snappyv1::_StreamDataPointer_default_instance_;
+    new (ptr) ::snappyv1::StreamDataPointer();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::snappyv1::StreamDataPointer::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_StreamDataPointer_snappyv1_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_StreamDataPointer_snappyv1_2eproto}, {}};
+
+static void InitDefaultsscc_info_StreamInfo_snappyv1_2eproto() {
+  GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+  {
+    void* ptr = &::snappyv1::_StreamInfo_default_instance_;
+    new (ptr) ::snappyv1::StreamInfo();
+    ::PROTOBUF_NAMESPACE_ID::internal::OnShutdownDestroyMessage(ptr);
+  }
+  ::snappyv1::StreamInfo::InitAsDefaultInstance();
+}
+
+::PROTOBUF_NAMESPACE_ID::internal::SCCInfo<0> scc_info_StreamInfo_snappyv1_2eproto =
+    {{ATOMIC_VAR_INIT(::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase::kUninitialized), 0, 0, InitDefaultsscc_info_StreamInfo_snappyv1_2eproto}, {}};
+
 static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_snappyv1_2eproto[12];
 static const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* file_level_enum_descriptors_snappyv1_2eproto[8];
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_snappyv1_2eproto = nullptr;
@@ -242,10 +301,10 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_snappyv1_2eproto::offsets[] PR
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::snappyv1::Property, type_),
   PROTOBUF_FIELD_OFFSET(::snappyv1::Property, key_),
-  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
-  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
-  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
-  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
+  offsetof(::snappyv1::PropertyDefaultTypeInternal, value_string_),
+  offsetof(::snappyv1::PropertyDefaultTypeInternal, value_bool_),
+  offsetof(::snappyv1::PropertyDefaultTypeInternal, value_uint32_),
+  offsetof(::snappyv1::PropertyDefaultTypeInternal, value_double_),
   PROTOBUF_FIELD_OFFSET(::snappyv1::Property, value_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::snappyv1::StreamInfo, _internal_metadata_),
@@ -280,9 +339,9 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_snappyv1_2eproto::offsets[] PR
   PROTOBUF_FIELD_OFFSET(::snappyv1::Message, _oneof_case_[0]),
   ~0u,  // no _weak_field_map_
   PROTOBUF_FIELD_OFFSET(::snappyv1::Message, type_),
-  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
-  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
-  ::PROTOBUF_NAMESPACE_ID::internal::kInvalidFieldOffsetTag,
+  offsetof(::snappyv1::MessageDefaultTypeInternal, stream_change_),
+  offsetof(::snappyv1::MessageDefaultTypeInternal, stream_data_),
+  offsetof(::snappyv1::MessageDefaultTypeInternal, stream_info_),
   PROTOBUF_FIELD_OFFSET(::snappyv1::Message, message_),
   PROTOBUF_FIELD_OFFSET(::snappyv1::StreamDataPointer, _has_bits_),
   PROTOBUF_FIELD_OFFSET(::snappyv1::StreamDataPointer, _internal_metadata_),
@@ -410,19 +469,32 @@ const char descriptor_table_protodef_snappyv1_2eproto[] PROTOBUF_SECTION_VARIABL
   "DATA\020\001\022\034\n\030MESSAGE_TYPE_STREAM_INFO\020\002b\006pr"
   "oto3"
   ;
+static const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable*const descriptor_table_snappyv1_2eproto_deps[1] = {
+};
+static ::PROTOBUF_NAMESPACE_ID::internal::SCCInfoBase*const descriptor_table_snappyv1_2eproto_sccs[12] = {
+  &scc_info_Message_snappyv1_2eproto.base,
+  &scc_info_Property_snappyv1_2eproto.base,
+  &scc_info_Property_ValueBool_snappyv1_2eproto.base,
+  &scc_info_Property_ValueDouble_snappyv1_2eproto.base,
+  &scc_info_Property_ValueString_snappyv1_2eproto.base,
+  &scc_info_Property_ValueUint32_snappyv1_2eproto.base,
+  &scc_info_StreamChange_snappyv1_2eproto.base,
+  &scc_info_StreamData_snappyv1_2eproto.base,
+  &scc_info_StreamDataCursor_snappyv1_2eproto.base,
+  &scc_info_StreamDataKeyboard_snappyv1_2eproto.base,
+  &scc_info_StreamDataPointer_snappyv1_2eproto.base,
+  &scc_info_StreamInfo_snappyv1_2eproto.base,
+};
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_snappyv1_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_snappyv1_2eproto = {
-  false, false, 2524, descriptor_table_protodef_snappyv1_2eproto, "snappyv1.proto", 
-  &descriptor_table_snappyv1_2eproto_once, nullptr, 0, 12,
+  false, false, descriptor_table_protodef_snappyv1_2eproto, "snappyv1.proto", 2524,
+  &descriptor_table_snappyv1_2eproto_once, descriptor_table_snappyv1_2eproto_sccs, descriptor_table_snappyv1_2eproto_deps, 12, 0,
   schemas, file_default_instances, TableStruct_snappyv1_2eproto::offsets,
-  file_level_metadata_snappyv1_2eproto, file_level_enum_descriptors_snappyv1_2eproto, file_level_service_descriptors_snappyv1_2eproto,
+  file_level_metadata_snappyv1_2eproto, 12, file_level_enum_descriptors_snappyv1_2eproto, file_level_service_descriptors_snappyv1_2eproto,
 };
-PROTOBUF_ATTRIBUTE_WEAK const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable* descriptor_table_snappyv1_2eproto_getter() {
-  return &descriptor_table_snappyv1_2eproto;
-}
 
 // Force running AddDescriptors() at dynamic initialization time.
-PROTOBUF_ATTRIBUTE_INIT_PRIORITY static ::PROTOBUF_NAMESPACE_ID::internal::AddDescriptorsRunner dynamic_init_dummy_snappyv1_2eproto(&descriptor_table_snappyv1_2eproto);
+static bool dynamic_init_dummy_snappyv1_2eproto = (static_cast<void>(::PROTOBUF_NAMESPACE_ID::internal::AddDescriptors(&descriptor_table_snappyv1_2eproto)), true);
 namespace snappyv1 {
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Platform_descriptor() {
   ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(&descriptor_table_snappyv1_2eproto);
@@ -557,6 +629,8 @@ bool MessageType_IsValid(int value) {
 
 // ===================================================================
 
+void Property_ValueString::InitAsDefaultInstance() {
+}
 class Property_ValueString::_Internal {
  public:
 };
@@ -572,14 +646,15 @@ Property_ValueString::Property_ValueString(const Property_ValueString& from)
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   value_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_value().empty()) {
-    value_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_value(), 
-      GetArenaForAllocation());
+    value_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_value(),
+      GetArena());
   }
   // @@protoc_insertion_point(copy_constructor:snappyv1.Property.ValueString)
 }
 
 void Property_ValueString::SharedCtor() {
-value_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_Property_ValueString_snappyv1_2eproto.base);
+  value_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
 Property_ValueString::~Property_ValueString() {
@@ -589,7 +664,7 @@ Property_ValueString::~Property_ValueString() {
 }
 
 void Property_ValueString::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  GOOGLE_DCHECK(GetArena() == nullptr);
   value_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
@@ -602,6 +677,11 @@ void Property_ValueString::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 void Property_ValueString::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
+const Property_ValueString& Property_ValueString::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_Property_ValueString_snappyv1_2eproto.base);
+  return *internal_default_instance();
+}
+
 
 void Property_ValueString::Clear() {
 // @@protoc_insertion_point(message_clear_start:snappyv1.Property.ValueString)
@@ -609,15 +689,17 @@ void Property_ValueString::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  value_.ClearToEmpty();
+  value_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
 const char* Property_ValueString::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
     switch (tag >> 3) {
       // string value = 1;
       case 1:
@@ -630,8 +712,7 @@ const char* Property_ValueString::_InternalParse(const char* ptr, ::PROTOBUF_NAM
         continue;
       default: {
       handle_unusual:
-        if ((tag == 0) || ((tag & 7) == 4)) {
-          CHK_(ptr);
+        if ((tag & 7) == 4 || tag == 0) {
           ctx->SetLastTag(tag);
           goto success;
         }
@@ -658,7 +739,7 @@ failure:
   (void) cached_has_bits;
 
   // string value = 1;
-  if (!this->value().empty()) {
+  if (this->value().size() > 0) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_value().data(), static_cast<int>(this->_internal_value().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
@@ -684,7 +765,7 @@ size_t Property_ValueString::ByteSizeLong() const {
   (void) cached_has_bits;
 
   // string value = 1;
-  if (!this->value().empty()) {
+  if (this->value().size() > 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_value());
@@ -721,7 +802,7 @@ void Property_ValueString::MergeFrom(const Property_ValueString& from) {
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (!from.value().empty()) {
+  if (from.value().size() > 0) {
     _internal_set_value(from._internal_value());
   }
 }
@@ -746,22 +827,19 @@ bool Property_ValueString::IsInitialized() const {
 
 void Property_ValueString::InternalSwap(Property_ValueString* other) {
   using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
-      &value_, GetArenaForAllocation(),
-      &other->value_, other->GetArenaForAllocation()
-  );
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  value_.Swap(&other->value_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Property_ValueString::GetMetadata() const {
-  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
-      &descriptor_table_snappyv1_2eproto_getter, &descriptor_table_snappyv1_2eproto_once,
-      file_level_metadata_snappyv1_2eproto[0]);
+  return GetMetadataStatic();
 }
+
 
 // ===================================================================
 
+void Property_ValueBool::InitAsDefaultInstance() {
+}
 class Property_ValueBool::_Internal {
  public:
 };
@@ -780,7 +858,7 @@ Property_ValueBool::Property_ValueBool(const Property_ValueBool& from)
 }
 
 void Property_ValueBool::SharedCtor() {
-value_ = false;
+  value_ = false;
 }
 
 Property_ValueBool::~Property_ValueBool() {
@@ -790,7 +868,7 @@ Property_ValueBool::~Property_ValueBool() {
 }
 
 void Property_ValueBool::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  GOOGLE_DCHECK(GetArena() == nullptr);
 }
 
 void Property_ValueBool::ArenaDtor(void* object) {
@@ -802,6 +880,11 @@ void Property_ValueBool::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 void Property_ValueBool::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
+const Property_ValueBool& Property_ValueBool::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_Property_ValueBool_snappyv1_2eproto.base);
+  return *internal_default_instance();
+}
+
 
 void Property_ValueBool::Clear() {
 // @@protoc_insertion_point(message_clear_start:snappyv1.Property.ValueBool)
@@ -815,9 +898,11 @@ void Property_ValueBool::Clear() {
 
 const char* Property_ValueBool::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
     switch (tag >> 3) {
       // bool value = 1;
       case 1:
@@ -828,8 +913,7 @@ const char* Property_ValueBool::_InternalParse(const char* ptr, ::PROTOBUF_NAMES
         continue;
       default: {
       handle_unusual:
-        if ((tag == 0) || ((tag & 7) == 4)) {
-          CHK_(ptr);
+        if ((tag & 7) == 4 || tag == 0) {
           ctx->SetLastTag(tag);
           goto success;
         }
@@ -938,18 +1022,19 @@ bool Property_ValueBool::IsInitialized() const {
 
 void Property_ValueBool::InternalSwap(Property_ValueBool* other) {
   using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   swap(value_, other->value_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Property_ValueBool::GetMetadata() const {
-  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
-      &descriptor_table_snappyv1_2eproto_getter, &descriptor_table_snappyv1_2eproto_once,
-      file_level_metadata_snappyv1_2eproto[1]);
+  return GetMetadataStatic();
 }
+
 
 // ===================================================================
 
+void Property_ValueUint32::InitAsDefaultInstance() {
+}
 class Property_ValueUint32::_Internal {
  public:
   using HasBits = decltype(std::declval<Property_ValueUint32>()._has_bits_);
@@ -978,10 +1063,9 @@ Property_ValueUint32::Property_ValueUint32(const Property_ValueUint32& from)
 }
 
 void Property_ValueUint32::SharedCtor() {
-::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-    reinterpret_cast<char*>(&value_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&max_) -
-    reinterpret_cast<char*>(&value_)) + sizeof(max_));
+  ::memset(&value_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&max_) -
+      reinterpret_cast<char*>(&value_)) + sizeof(max_));
 }
 
 Property_ValueUint32::~Property_ValueUint32() {
@@ -991,7 +1075,7 @@ Property_ValueUint32::~Property_ValueUint32() {
 }
 
 void Property_ValueUint32::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  GOOGLE_DCHECK(GetArena() == nullptr);
 }
 
 void Property_ValueUint32::ArenaDtor(void* object) {
@@ -1003,6 +1087,11 @@ void Property_ValueUint32::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 void Property_ValueUint32::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
+const Property_ValueUint32& Property_ValueUint32::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_Property_ValueUint32_snappyv1_2eproto.base);
+  return *internal_default_instance();
+}
+
 
 void Property_ValueUint32::Clear() {
 // @@protoc_insertion_point(message_clear_start:snappyv1.Property.ValueUint32)
@@ -1024,9 +1113,11 @@ void Property_ValueUint32::Clear() {
 const char* Property_ValueUint32::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   _Internal::HasBits has_bits{};
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
     switch (tag >> 3) {
       // uint32 value = 1;
       case 1:
@@ -1035,7 +1126,7 @@ const char* Property_ValueUint32::_InternalParse(const char* ptr, ::PROTOBUF_NAM
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // optional uint32 min = 2;
+      // uint32 min = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
           _Internal::set_has_min(&has_bits);
@@ -1043,7 +1134,7 @@ const char* Property_ValueUint32::_InternalParse(const char* ptr, ::PROTOBUF_NAM
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // optional uint32 max = 3;
+      // uint32 max = 3;
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
           _Internal::set_has_max(&has_bits);
@@ -1053,8 +1144,7 @@ const char* Property_ValueUint32::_InternalParse(const char* ptr, ::PROTOBUF_NAM
         continue;
       default: {
       handle_unusual:
-        if ((tag == 0) || ((tag & 7) == 4)) {
-          CHK_(ptr);
+        if ((tag & 7) == 4 || tag == 0) {
           ctx->SetLastTag(tag);
           goto success;
         }
@@ -1087,13 +1177,13 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(1, this->_internal_value(), target);
   }
 
-  // optional uint32 min = 2;
+  // uint32 min = 2;
   if (_internal_has_min()) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(2, this->_internal_min(), target);
   }
 
-  // optional uint32 max = 3;
+  // uint32 max = 3;
   if (_internal_has_max()) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(3, this->_internal_max(), target);
@@ -1124,14 +1214,14 @@ size_t Property_ValueUint32::ByteSizeLong() const {
 
   cached_has_bits = _has_bits_[0];
   if (cached_has_bits & 0x00000003u) {
-    // optional uint32 min = 2;
+    // uint32 min = 2;
     if (cached_has_bits & 0x00000001u) {
       total_size += 1 +
         ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
           this->_internal_min());
     }
 
-    // optional uint32 max = 3;
+    // uint32 max = 3;
     if (cached_has_bits & 0x00000002u) {
       total_size += 1 +
         ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt32Size(
@@ -1205,7 +1295,7 @@ bool Property_ValueUint32::IsInitialized() const {
 
 void Property_ValueUint32::InternalSwap(Property_ValueUint32* other) {
   using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   swap(_has_bits_[0], other->_has_bits_[0]);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(Property_ValueUint32, max_)
@@ -1216,13 +1306,14 @@ void Property_ValueUint32::InternalSwap(Property_ValueUint32* other) {
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Property_ValueUint32::GetMetadata() const {
-  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
-      &descriptor_table_snappyv1_2eproto_getter, &descriptor_table_snappyv1_2eproto_once,
-      file_level_metadata_snappyv1_2eproto[2]);
+  return GetMetadataStatic();
 }
+
 
 // ===================================================================
 
+void Property_ValueDouble::InitAsDefaultInstance() {
+}
 class Property_ValueDouble::_Internal {
  public:
   using HasBits = decltype(std::declval<Property_ValueDouble>()._has_bits_);
@@ -1251,10 +1342,9 @@ Property_ValueDouble::Property_ValueDouble(const Property_ValueDouble& from)
 }
 
 void Property_ValueDouble::SharedCtor() {
-::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-    reinterpret_cast<char*>(&value_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&max_) -
-    reinterpret_cast<char*>(&value_)) + sizeof(max_));
+  ::memset(&value_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&max_) -
+      reinterpret_cast<char*>(&value_)) + sizeof(max_));
 }
 
 Property_ValueDouble::~Property_ValueDouble() {
@@ -1264,7 +1354,7 @@ Property_ValueDouble::~Property_ValueDouble() {
 }
 
 void Property_ValueDouble::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  GOOGLE_DCHECK(GetArena() == nullptr);
 }
 
 void Property_ValueDouble::ArenaDtor(void* object) {
@@ -1276,6 +1366,11 @@ void Property_ValueDouble::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 void Property_ValueDouble::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
+const Property_ValueDouble& Property_ValueDouble::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_Property_ValueDouble_snappyv1_2eproto.base);
+  return *internal_default_instance();
+}
+
 
 void Property_ValueDouble::Clear() {
 // @@protoc_insertion_point(message_clear_start:snappyv1.Property.ValueDouble)
@@ -1297,9 +1392,11 @@ void Property_ValueDouble::Clear() {
 const char* Property_ValueDouble::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   _Internal::HasBits has_bits{};
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
     switch (tag >> 3) {
       // double value = 1;
       case 1:
@@ -1308,7 +1405,7 @@ const char* Property_ValueDouble::_InternalParse(const char* ptr, ::PROTOBUF_NAM
           ptr += sizeof(double);
         } else goto handle_unusual;
         continue;
-      // optional double min = 2;
+      // double min = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 17)) {
           _Internal::set_has_min(&has_bits);
@@ -1316,7 +1413,7 @@ const char* Property_ValueDouble::_InternalParse(const char* ptr, ::PROTOBUF_NAM
           ptr += sizeof(double);
         } else goto handle_unusual;
         continue;
-      // optional double max = 3;
+      // double max = 3;
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 25)) {
           _Internal::set_has_max(&has_bits);
@@ -1326,8 +1423,7 @@ const char* Property_ValueDouble::_InternalParse(const char* ptr, ::PROTOBUF_NAM
         continue;
       default: {
       handle_unusual:
-        if ((tag == 0) || ((tag & 7) == 4)) {
-          CHK_(ptr);
+        if ((tag & 7) == 4 || tag == 0) {
           ctx->SetLastTag(tag);
           goto success;
         }
@@ -1360,13 +1456,13 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(1, this->_internal_value(), target);
   }
 
-  // optional double min = 2;
+  // double min = 2;
   if (_internal_has_min()) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(2, this->_internal_min(), target);
   }
 
-  // optional double max = 3;
+  // double max = 3;
   if (_internal_has_max()) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteDoubleToArray(3, this->_internal_max(), target);
@@ -1395,12 +1491,12 @@ size_t Property_ValueDouble::ByteSizeLong() const {
 
   cached_has_bits = _has_bits_[0];
   if (cached_has_bits & 0x00000003u) {
-    // optional double min = 2;
+    // double min = 2;
     if (cached_has_bits & 0x00000001u) {
       total_size += 1 + 8;
     }
 
-    // optional double max = 3;
+    // double max = 3;
     if (cached_has_bits & 0x00000002u) {
       total_size += 1 + 8;
     }
@@ -1472,7 +1568,7 @@ bool Property_ValueDouble::IsInitialized() const {
 
 void Property_ValueDouble::InternalSwap(Property_ValueDouble* other) {
   using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   swap(_has_bits_[0], other->_has_bits_[0]);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(Property_ValueDouble, max_)
@@ -1483,13 +1579,22 @@ void Property_ValueDouble::InternalSwap(Property_ValueDouble* other) {
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Property_ValueDouble::GetMetadata() const {
-  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
-      &descriptor_table_snappyv1_2eproto_getter, &descriptor_table_snappyv1_2eproto_once,
-      file_level_metadata_snappyv1_2eproto[3]);
+  return GetMetadataStatic();
 }
+
 
 // ===================================================================
 
+void Property::InitAsDefaultInstance() {
+  ::snappyv1::_Property_default_instance_.value_string_ = const_cast< ::snappyv1::Property_ValueString*>(
+      ::snappyv1::Property_ValueString::internal_default_instance());
+  ::snappyv1::_Property_default_instance_.value_bool_ = const_cast< ::snappyv1::Property_ValueBool*>(
+      ::snappyv1::Property_ValueBool::internal_default_instance());
+  ::snappyv1::_Property_default_instance_.value_uint32_ = const_cast< ::snappyv1::Property_ValueUint32*>(
+      ::snappyv1::Property_ValueUint32::internal_default_instance());
+  ::snappyv1::_Property_default_instance_.value_double_ = const_cast< ::snappyv1::Property_ValueDouble*>(
+      ::snappyv1::Property_ValueDouble::internal_default_instance());
+}
 class Property::_Internal {
  public:
   static const ::snappyv1::Property_ValueString& value_string(const Property* msg);
@@ -1515,11 +1620,11 @@ Property::_Internal::value_double(const Property* msg) {
   return *msg->value_.value_double_;
 }
 void Property::set_allocated_value_string(::snappyv1::Property_ValueString* value_string) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
   clear_value();
   if (value_string) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::snappyv1::Property_ValueString>::GetOwningArena(value_string);
+      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(value_string);
     if (message_arena != submessage_arena) {
       value_string = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, value_string, submessage_arena);
@@ -1530,11 +1635,11 @@ void Property::set_allocated_value_string(::snappyv1::Property_ValueString* valu
   // @@protoc_insertion_point(field_set_allocated:snappyv1.Property.value_string)
 }
 void Property::set_allocated_value_bool(::snappyv1::Property_ValueBool* value_bool) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
   clear_value();
   if (value_bool) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::snappyv1::Property_ValueBool>::GetOwningArena(value_bool);
+      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(value_bool);
     if (message_arena != submessage_arena) {
       value_bool = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, value_bool, submessage_arena);
@@ -1545,11 +1650,11 @@ void Property::set_allocated_value_bool(::snappyv1::Property_ValueBool* value_bo
   // @@protoc_insertion_point(field_set_allocated:snappyv1.Property.value_bool)
 }
 void Property::set_allocated_value_uint32(::snappyv1::Property_ValueUint32* value_uint32) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
   clear_value();
   if (value_uint32) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::snappyv1::Property_ValueUint32>::GetOwningArena(value_uint32);
+      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(value_uint32);
     if (message_arena != submessage_arena) {
       value_uint32 = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, value_uint32, submessage_arena);
@@ -1560,11 +1665,11 @@ void Property::set_allocated_value_uint32(::snappyv1::Property_ValueUint32* valu
   // @@protoc_insertion_point(field_set_allocated:snappyv1.Property.value_uint32)
 }
 void Property::set_allocated_value_double(::snappyv1::Property_ValueDouble* value_double) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
   clear_value();
   if (value_double) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::snappyv1::Property_ValueDouble>::GetOwningArena(value_double);
+      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(value_double);
     if (message_arena != submessage_arena) {
       value_double = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, value_double, submessage_arena);
@@ -1585,8 +1690,8 @@ Property::Property(const Property& from)
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   key_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_key().empty()) {
-    key_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_key(), 
-      GetArenaForAllocation());
+    key_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_key(),
+      GetArena());
   }
   type_ = from.type_;
   clear_has_value();
@@ -1615,9 +1720,10 @@ Property::Property(const Property& from)
 }
 
 void Property::SharedCtor() {
-key_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-type_ = 0;
-clear_has_value();
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_Property_snappyv1_2eproto.base);
+  key_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  type_ = 0;
+  clear_has_value();
 }
 
 Property::~Property() {
@@ -1627,7 +1733,7 @@ Property::~Property() {
 }
 
 void Property::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  GOOGLE_DCHECK(GetArena() == nullptr);
   key_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (has_value()) {
     clear_value();
@@ -1643,30 +1749,35 @@ void Property::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 void Property::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
+const Property& Property::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_Property_snappyv1_2eproto.base);
+  return *internal_default_instance();
+}
+
 
 void Property::clear_value() {
 // @@protoc_insertion_point(one_of_clear_start:snappyv1.Property)
   switch (value_case()) {
     case kValueString: {
-      if (GetArenaForAllocation() == nullptr) {
+      if (GetArena() == nullptr) {
         delete value_.value_string_;
       }
       break;
     }
     case kValueBool: {
-      if (GetArenaForAllocation() == nullptr) {
+      if (GetArena() == nullptr) {
         delete value_.value_bool_;
       }
       break;
     }
     case kValueUint32: {
-      if (GetArenaForAllocation() == nullptr) {
+      if (GetArena() == nullptr) {
         delete value_.value_uint32_;
       }
       break;
     }
     case kValueDouble: {
-      if (GetArenaForAllocation() == nullptr) {
+      if (GetArena() == nullptr) {
         delete value_.value_double_;
       }
       break;
@@ -1685,7 +1796,7 @@ void Property::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  key_.ClearToEmpty();
+  key_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   type_ = 0;
   clear_value();
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
@@ -1693,9 +1804,11 @@ void Property::Clear() {
 
 const char* Property::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
     switch (tag >> 3) {
       // .snappyv1.PropertyType type = 1;
       case 1:
@@ -1744,8 +1857,7 @@ const char* Property::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::i
         continue;
       default: {
       handle_unusual:
-        if ((tag == 0) || ((tag & 7) == 4)) {
-          CHK_(ptr);
+        if ((tag & 7) == 4 || tag == 0) {
           ctx->SetLastTag(tag);
           goto success;
         }
@@ -1779,7 +1891,7 @@ failure:
   }
 
   // string key = 2;
-  if (!this->key().empty()) {
+  if (this->key().size() > 0) {
     ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::VerifyUtf8String(
       this->_internal_key().data(), static_cast<int>(this->_internal_key().length()),
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::SERIALIZE,
@@ -1837,7 +1949,7 @@ size_t Property::ByteSizeLong() const {
   (void) cached_has_bits;
 
   // string key = 2;
-  if (!this->key().empty()) {
+  if (this->key().size() > 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::StringSize(
         this->_internal_key());
@@ -1913,7 +2025,7 @@ void Property::MergeFrom(const Property& from) {
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (!from.key().empty()) {
+  if (from.key().size() > 0) {
     _internal_set_key(from._internal_key());
   }
   if (from.type() != 0) {
@@ -1962,25 +2074,22 @@ bool Property::IsInitialized() const {
 
 void Property::InternalSwap(Property* other) {
   using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
-      &key_, GetArenaForAllocation(),
-      &other->key_, other->GetArenaForAllocation()
-  );
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  key_.Swap(&other->key_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   swap(type_, other->type_);
   swap(value_, other->value_);
   swap(_oneof_case_[0], other->_oneof_case_[0]);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Property::GetMetadata() const {
-  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
-      &descriptor_table_snappyv1_2eproto_getter, &descriptor_table_snappyv1_2eproto_once,
-      file_level_metadata_snappyv1_2eproto[4]);
+  return GetMetadataStatic();
 }
+
 
 // ===================================================================
 
+void StreamInfo::InitAsDefaultInstance() {
+}
 class StreamInfo::_Internal {
  public:
 };
@@ -2003,7 +2112,7 @@ StreamInfo::StreamInfo(const StreamInfo& from)
 }
 
 void StreamInfo::SharedCtor() {
-platform_ = 0;
+  platform_ = 0;
 }
 
 StreamInfo::~StreamInfo() {
@@ -2013,7 +2122,7 @@ StreamInfo::~StreamInfo() {
 }
 
 void StreamInfo::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  GOOGLE_DCHECK(GetArena() == nullptr);
 }
 
 void StreamInfo::ArenaDtor(void* object) {
@@ -2025,6 +2134,11 @@ void StreamInfo::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 void StreamInfo::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
+const StreamInfo& StreamInfo::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_StreamInfo_snappyv1_2eproto.base);
+  return *internal_default_instance();
+}
+
 
 void StreamInfo::Clear() {
 // @@protoc_insertion_point(message_clear_start:snappyv1.StreamInfo)
@@ -2040,9 +2154,11 @@ void StreamInfo::Clear() {
 
 const char* StreamInfo::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
     switch (tag >> 3) {
       // .snappyv1.Platform platform = 1;
       case 1:
@@ -2076,8 +2192,7 @@ const char* StreamInfo::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID:
         continue;
       default: {
       handle_unusual:
-        if ((tag == 0) || ((tag & 7) == 4)) {
-          CHK_(ptr);
+        if ((tag & 7) == 4 || tag == 0) {
           ctx->SetLastTag(tag);
           goto success;
         }
@@ -2244,20 +2359,21 @@ bool StreamInfo::IsInitialized() const {
 
 void StreamInfo::InternalSwap(StreamInfo* other) {
   using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   stream_endpoints_.InternalSwap(&other->stream_endpoints_);
   stream_encodings_.InternalSwap(&other->stream_encodings_);
   swap(platform_, other->platform_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata StreamInfo::GetMetadata() const {
-  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
-      &descriptor_table_snappyv1_2eproto_getter, &descriptor_table_snappyv1_2eproto_once,
-      file_level_metadata_snappyv1_2eproto[5]);
+  return GetMetadataStatic();
 }
+
 
 // ===================================================================
 
+void StreamChange::InitAsDefaultInstance() {
+}
 class StreamChange::_Internal {
  public:
 };
@@ -2280,10 +2396,10 @@ StreamChange::StreamChange(const StreamChange& from)
 }
 
 void StreamChange::SharedCtor() {
-::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-    reinterpret_cast<char*>(&id_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&stream_encoding_) -
-    reinterpret_cast<char*>(&id_)) + sizeof(stream_encoding_));
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_StreamChange_snappyv1_2eproto.base);
+  ::memset(&id_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&stream_encoding_) -
+      reinterpret_cast<char*>(&id_)) + sizeof(stream_encoding_));
 }
 
 StreamChange::~StreamChange() {
@@ -2293,7 +2409,7 @@ StreamChange::~StreamChange() {
 }
 
 void StreamChange::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  GOOGLE_DCHECK(GetArena() == nullptr);
 }
 
 void StreamChange::ArenaDtor(void* object) {
@@ -2305,6 +2421,11 @@ void StreamChange::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 void StreamChange::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
+const StreamChange& StreamChange::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_StreamChange_snappyv1_2eproto.base);
+  return *internal_default_instance();
+}
+
 
 void StreamChange::Clear() {
 // @@protoc_insertion_point(message_clear_start:snappyv1.StreamChange)
@@ -2321,9 +2442,11 @@ void StreamChange::Clear() {
 
 const char* StreamChange::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
     switch (tag >> 3) {
       // uint32 id = 1;
       case 1:
@@ -2386,8 +2509,7 @@ const char* StreamChange::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_I
         continue;
       default: {
       handle_unusual:
-        if ((tag == 0) || ((tag & 7) == 4)) {
-          CHK_(ptr);
+        if ((tag & 7) == 4 || tag == 0) {
           ctx->SetLastTag(tag);
           goto success;
         }
@@ -2594,7 +2716,7 @@ bool StreamChange::IsInitialized() const {
 
 void StreamChange::InternalSwap(StreamChange* other) {
   using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   property_.InternalSwap(&other->property_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(StreamChange, stream_encoding_)
@@ -2605,13 +2727,14 @@ void StreamChange::InternalSwap(StreamChange* other) {
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata StreamChange::GetMetadata() const {
-  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
-      &descriptor_table_snappyv1_2eproto_getter, &descriptor_table_snappyv1_2eproto_once,
-      file_level_metadata_snappyv1_2eproto[6]);
+  return GetMetadataStatic();
 }
+
 
 // ===================================================================
 
+void StreamData::InitAsDefaultInstance() {
+}
 class StreamData::_Internal {
  public:
 };
@@ -2627,16 +2750,17 @@ StreamData::StreamData(const StreamData& from)
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   payload_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_payload().empty()) {
-    payload_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_payload(), 
-      GetArenaForAllocation());
+    payload_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_payload(),
+      GetArena());
   }
   stream_id_ = from.stream_id_;
   // @@protoc_insertion_point(copy_constructor:snappyv1.StreamData)
 }
 
 void StreamData::SharedCtor() {
-payload_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-stream_id_ = 0u;
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_StreamData_snappyv1_2eproto.base);
+  payload_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  stream_id_ = 0u;
 }
 
 StreamData::~StreamData() {
@@ -2646,7 +2770,7 @@ StreamData::~StreamData() {
 }
 
 void StreamData::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  GOOGLE_DCHECK(GetArena() == nullptr);
   payload_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
@@ -2659,6 +2783,11 @@ void StreamData::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 void StreamData::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
+const StreamData& StreamData::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_StreamData_snappyv1_2eproto.base);
+  return *internal_default_instance();
+}
+
 
 void StreamData::Clear() {
 // @@protoc_insertion_point(message_clear_start:snappyv1.StreamData)
@@ -2666,16 +2795,18 @@ void StreamData::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  payload_.ClearToEmpty();
+  payload_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   stream_id_ = 0u;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
 const char* StreamData::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
     switch (tag >> 3) {
       // uint32 stream_id = 1;
       case 1:
@@ -2694,8 +2825,7 @@ const char* StreamData::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID:
         continue;
       default: {
       handle_unusual:
-        if ((tag == 0) || ((tag & 7) == 4)) {
-          CHK_(ptr);
+        if ((tag & 7) == 4 || tag == 0) {
           ctx->SetLastTag(tag);
           goto success;
         }
@@ -2728,7 +2858,7 @@ failure:
   }
 
   // bytes payload = 2;
-  if (!this->payload().empty()) {
+  if (this->payload().size() > 0) {
     target = stream->WriteBytesMaybeAliased(
         2, this->_internal_payload(), target);
   }
@@ -2750,7 +2880,7 @@ size_t StreamData::ByteSizeLong() const {
   (void) cached_has_bits;
 
   // bytes payload = 2;
-  if (!this->payload().empty()) {
+  if (this->payload().size() > 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
         this->_internal_payload());
@@ -2794,7 +2924,7 @@ void StreamData::MergeFrom(const StreamData& from) {
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (!from.payload().empty()) {
+  if (from.payload().size() > 0) {
     _internal_set_payload(from._internal_payload());
   }
   if (from.stream_id() != 0) {
@@ -2822,23 +2952,26 @@ bool StreamData::IsInitialized() const {
 
 void StreamData::InternalSwap(StreamData* other) {
   using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
-      &payload_, GetArenaForAllocation(),
-      &other->payload_, other->GetArenaForAllocation()
-  );
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  payload_.Swap(&other->payload_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   swap(stream_id_, other->stream_id_);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata StreamData::GetMetadata() const {
-  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
-      &descriptor_table_snappyv1_2eproto_getter, &descriptor_table_snappyv1_2eproto_once,
-      file_level_metadata_snappyv1_2eproto[7]);
+  return GetMetadataStatic();
 }
+
 
 // ===================================================================
 
+void Message::InitAsDefaultInstance() {
+  ::snappyv1::_Message_default_instance_.stream_change_ = const_cast< ::snappyv1::StreamChange*>(
+      ::snappyv1::StreamChange::internal_default_instance());
+  ::snappyv1::_Message_default_instance_.stream_data_ = const_cast< ::snappyv1::StreamData*>(
+      ::snappyv1::StreamData::internal_default_instance());
+  ::snappyv1::_Message_default_instance_.stream_info_ = const_cast< ::snappyv1::StreamInfo*>(
+      ::snappyv1::StreamInfo::internal_default_instance());
+}
 class Message::_Internal {
  public:
   static const ::snappyv1::StreamChange& stream_change(const Message* msg);
@@ -2859,11 +2992,11 @@ Message::_Internal::stream_info(const Message* msg) {
   return *msg->message_.stream_info_;
 }
 void Message::set_allocated_stream_change(::snappyv1::StreamChange* stream_change) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
   clear_message();
   if (stream_change) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::snappyv1::StreamChange>::GetOwningArena(stream_change);
+      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(stream_change);
     if (message_arena != submessage_arena) {
       stream_change = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, stream_change, submessage_arena);
@@ -2874,11 +3007,11 @@ void Message::set_allocated_stream_change(::snappyv1::StreamChange* stream_chang
   // @@protoc_insertion_point(field_set_allocated:snappyv1.Message.stream_change)
 }
 void Message::set_allocated_stream_data(::snappyv1::StreamData* stream_data) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
   clear_message();
   if (stream_data) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::snappyv1::StreamData>::GetOwningArena(stream_data);
+      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(stream_data);
     if (message_arena != submessage_arena) {
       stream_data = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, stream_data, submessage_arena);
@@ -2889,11 +3022,11 @@ void Message::set_allocated_stream_data(::snappyv1::StreamData* stream_data) {
   // @@protoc_insertion_point(field_set_allocated:snappyv1.Message.stream_data)
 }
 void Message::set_allocated_stream_info(::snappyv1::StreamInfo* stream_info) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
+  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArena();
   clear_message();
   if (stream_info) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-      ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper<::snappyv1::StreamInfo>::GetOwningArena(stream_info);
+      ::PROTOBUF_NAMESPACE_ID::Arena::GetArena(stream_info);
     if (message_arena != submessage_arena) {
       stream_info = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
           message_arena, stream_info, submessage_arena);
@@ -2935,8 +3068,9 @@ Message::Message(const Message& from)
 }
 
 void Message::SharedCtor() {
-type_ = 0;
-clear_has_message();
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_Message_snappyv1_2eproto.base);
+  type_ = 0;
+  clear_has_message();
 }
 
 Message::~Message() {
@@ -2946,7 +3080,7 @@ Message::~Message() {
 }
 
 void Message::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  GOOGLE_DCHECK(GetArena() == nullptr);
   if (has_message()) {
     clear_message();
   }
@@ -2961,24 +3095,29 @@ void Message::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 void Message::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
+const Message& Message::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_Message_snappyv1_2eproto.base);
+  return *internal_default_instance();
+}
+
 
 void Message::clear_message() {
 // @@protoc_insertion_point(one_of_clear_start:snappyv1.Message)
   switch (message_case()) {
     case kStreamChange: {
-      if (GetArenaForAllocation() == nullptr) {
+      if (GetArena() == nullptr) {
         delete message_.stream_change_;
       }
       break;
     }
     case kStreamData: {
-      if (GetArenaForAllocation() == nullptr) {
+      if (GetArena() == nullptr) {
         delete message_.stream_data_;
       }
       break;
     }
     case kStreamInfo: {
-      if (GetArenaForAllocation() == nullptr) {
+      if (GetArena() == nullptr) {
         delete message_.stream_info_;
       }
       break;
@@ -3004,9 +3143,11 @@ void Message::Clear() {
 
 const char* Message::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
     switch (tag >> 3) {
       // .snappyv1.MessageType type = 1;
       case 1:
@@ -3039,8 +3180,7 @@ const char* Message::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::in
         continue;
       default: {
       handle_unusual:
-        if ((tag == 0) || ((tag & 7) == 4)) {
-          CHK_(ptr);
+        if ((tag & 7) == 4 || tag == 0) {
           ctx->SetLastTag(tag);
           goto success;
         }
@@ -3218,20 +3358,21 @@ bool Message::IsInitialized() const {
 
 void Message::InternalSwap(Message* other) {
   using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   swap(type_, other->type_);
   swap(message_, other->message_);
   swap(_oneof_case_[0], other->_oneof_case_[0]);
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Message::GetMetadata() const {
-  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
-      &descriptor_table_snappyv1_2eproto_getter, &descriptor_table_snappyv1_2eproto_once,
-      file_level_metadata_snappyv1_2eproto[8]);
+  return GetMetadataStatic();
 }
+
 
 // ===================================================================
 
+void StreamDataPointer::InitAsDefaultInstance() {
+}
 class StreamDataPointer::_Internal {
  public:
   using HasBits = decltype(std::declval<StreamDataPointer>()._has_bits_);
@@ -3257,10 +3398,9 @@ StreamDataPointer::StreamDataPointer(const StreamDataPointer& from)
 }
 
 void StreamDataPointer::SharedCtor() {
-::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-    reinterpret_cast<char*>(&absx_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&mask_) -
-    reinterpret_cast<char*>(&absx_)) + sizeof(mask_));
+  ::memset(&absx_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&mask_) -
+      reinterpret_cast<char*>(&absx_)) + sizeof(mask_));
 }
 
 StreamDataPointer::~StreamDataPointer() {
@@ -3270,7 +3410,7 @@ StreamDataPointer::~StreamDataPointer() {
 }
 
 void StreamDataPointer::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  GOOGLE_DCHECK(GetArena() == nullptr);
 }
 
 void StreamDataPointer::ArenaDtor(void* object) {
@@ -3282,6 +3422,11 @@ void StreamDataPointer::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 void StreamDataPointer::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
+const StreamDataPointer& StreamDataPointer::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_StreamDataPointer_snappyv1_2eproto.base);
+  return *internal_default_instance();
+}
+
 
 void StreamDataPointer::Clear() {
 // @@protoc_insertion_point(message_clear_start:snappyv1.StreamDataPointer)
@@ -3300,9 +3445,11 @@ void StreamDataPointer::Clear() {
 const char* StreamDataPointer::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   _Internal::HasBits has_bits{};
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
     switch (tag >> 3) {
       // uint32 absx = 1;
       case 1:
@@ -3318,7 +3465,7 @@ const char* StreamDataPointer::_InternalParse(const char* ptr, ::PROTOBUF_NAMESP
           CHK_(ptr);
         } else goto handle_unusual;
         continue;
-      // optional int32 mask = 3;
+      // int32 mask = 3;
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
           _Internal::set_has_mask(&has_bits);
@@ -3328,8 +3475,7 @@ const char* StreamDataPointer::_InternalParse(const char* ptr, ::PROTOBUF_NAMESP
         continue;
       default: {
       handle_unusual:
-        if ((tag == 0) || ((tag & 7) == 4)) {
-          CHK_(ptr);
+        if ((tag & 7) == 4 || tag == 0) {
           ctx->SetLastTag(tag);
           goto success;
         }
@@ -3368,7 +3514,7 @@ failure:
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt32ToArray(2, this->_internal_absy(), target);
   }
 
-  // optional int32 mask = 3;
+  // int32 mask = 3;
   if (_internal_has_mask()) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteInt32ToArray(3, this->_internal_mask(), target);
@@ -3404,7 +3550,7 @@ size_t StreamDataPointer::ByteSizeLong() const {
         this->_internal_absy());
   }
 
-  // optional int32 mask = 3;
+  // int32 mask = 3;
   cached_has_bits = _has_bits_[0];
   if (cached_has_bits & 0x00000001u) {
     total_size += 1 +
@@ -3474,7 +3620,7 @@ bool StreamDataPointer::IsInitialized() const {
 
 void StreamDataPointer::InternalSwap(StreamDataPointer* other) {
   using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   swap(_has_bits_[0], other->_has_bits_[0]);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(StreamDataPointer, mask_)
@@ -3485,13 +3631,14 @@ void StreamDataPointer::InternalSwap(StreamDataPointer* other) {
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata StreamDataPointer::GetMetadata() const {
-  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
-      &descriptor_table_snappyv1_2eproto_getter, &descriptor_table_snappyv1_2eproto_once,
-      file_level_metadata_snappyv1_2eproto[9]);
+  return GetMetadataStatic();
 }
+
 
 // ===================================================================
 
+void StreamDataKeyboard::InitAsDefaultInstance() {
+}
 class StreamDataKeyboard::_Internal {
  public:
 };
@@ -3512,10 +3659,9 @@ StreamDataKeyboard::StreamDataKeyboard(const StreamDataKeyboard& from)
 }
 
 void StreamDataKeyboard::SharedCtor() {
-::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-    reinterpret_cast<char*>(&keysym_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&down_) -
-    reinterpret_cast<char*>(&keysym_)) + sizeof(down_));
+  ::memset(&keysym_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&down_) -
+      reinterpret_cast<char*>(&keysym_)) + sizeof(down_));
 }
 
 StreamDataKeyboard::~StreamDataKeyboard() {
@@ -3525,7 +3671,7 @@ StreamDataKeyboard::~StreamDataKeyboard() {
 }
 
 void StreamDataKeyboard::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  GOOGLE_DCHECK(GetArena() == nullptr);
 }
 
 void StreamDataKeyboard::ArenaDtor(void* object) {
@@ -3537,6 +3683,11 @@ void StreamDataKeyboard::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 void StreamDataKeyboard::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
+const StreamDataKeyboard& StreamDataKeyboard::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_StreamDataKeyboard_snappyv1_2eproto.base);
+  return *internal_default_instance();
+}
+
 
 void StreamDataKeyboard::Clear() {
 // @@protoc_insertion_point(message_clear_start:snappyv1.StreamDataKeyboard)
@@ -3552,9 +3703,11 @@ void StreamDataKeyboard::Clear() {
 
 const char* StreamDataKeyboard::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
     switch (tag >> 3) {
       // uint32 keysym = 1;
       case 1:
@@ -3579,8 +3732,7 @@ const char* StreamDataKeyboard::_InternalParse(const char* ptr, ::PROTOBUF_NAMES
         continue;
       default: {
       handle_unusual:
-        if ((tag == 0) || ((tag & 7) == 4)) {
-          CHK_(ptr);
+        if ((tag & 7) == 4 || tag == 0) {
           ctx->SetLastTag(tag);
           goto success;
         }
@@ -3721,7 +3873,7 @@ bool StreamDataKeyboard::IsInitialized() const {
 
 void StreamDataKeyboard::InternalSwap(StreamDataKeyboard* other) {
   using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(StreamDataKeyboard, down_)
       + sizeof(StreamDataKeyboard::down_)
@@ -3731,13 +3883,14 @@ void StreamDataKeyboard::InternalSwap(StreamDataKeyboard* other) {
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata StreamDataKeyboard::GetMetadata() const {
-  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
-      &descriptor_table_snappyv1_2eproto_getter, &descriptor_table_snappyv1_2eproto_once,
-      file_level_metadata_snappyv1_2eproto[10]);
+  return GetMetadataStatic();
 }
+
 
 // ===================================================================
 
+void StreamDataCursor::InitAsDefaultInstance() {
+}
 class StreamDataCursor::_Internal {
  public:
 };
@@ -3753,8 +3906,8 @@ StreamDataCursor::StreamDataCursor(const StreamDataCursor& from)
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   image_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
   if (!from._internal_image().empty()) {
-    image_.Set(::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::EmptyDefault{}, from._internal_image(), 
-      GetArenaForAllocation());
+    image_.Set(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), from._internal_image(),
+      GetArena());
   }
   ::memcpy(&width_, &from.width_,
     static_cast<size_t>(reinterpret_cast<char*>(&hoty_) -
@@ -3763,11 +3916,11 @@ StreamDataCursor::StreamDataCursor(const StreamDataCursor& from)
 }
 
 void StreamDataCursor::SharedCtor() {
-image_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
-::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
-    reinterpret_cast<char*>(&width_) - reinterpret_cast<char*>(this)),
-    0, static_cast<size_t>(reinterpret_cast<char*>(&hoty_) -
-    reinterpret_cast<char*>(&width_)) + sizeof(hoty_));
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&scc_info_StreamDataCursor_snappyv1_2eproto.base);
+  image_.UnsafeSetDefault(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
+  ::memset(&width_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&hoty_) -
+      reinterpret_cast<char*>(&width_)) + sizeof(hoty_));
 }
 
 StreamDataCursor::~StreamDataCursor() {
@@ -3777,7 +3930,7 @@ StreamDataCursor::~StreamDataCursor() {
 }
 
 void StreamDataCursor::SharedDtor() {
-  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
+  GOOGLE_DCHECK(GetArena() == nullptr);
   image_.DestroyNoArena(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited());
 }
 
@@ -3790,6 +3943,11 @@ void StreamDataCursor::RegisterArenaDtor(::PROTOBUF_NAMESPACE_ID::Arena*) {
 void StreamDataCursor::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
+const StreamDataCursor& StreamDataCursor::default_instance() {
+  ::PROTOBUF_NAMESPACE_ID::internal::InitSCC(&::scc_info_StreamDataCursor_snappyv1_2eproto.base);
+  return *internal_default_instance();
+}
+
 
 void StreamDataCursor::Clear() {
 // @@protoc_insertion_point(message_clear_start:snappyv1.StreamDataCursor)
@@ -3797,7 +3955,7 @@ void StreamDataCursor::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  image_.ClearToEmpty();
+  image_.ClearToEmpty(&::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   ::memset(&width_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&hoty_) -
       reinterpret_cast<char*>(&width_)) + sizeof(hoty_));
@@ -3806,9 +3964,11 @@ void StreamDataCursor::Clear() {
 
 const char* StreamDataCursor::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
+  ::PROTOBUF_NAMESPACE_ID::Arena* arena = GetArena(); (void)arena;
   while (!ctx->Done(&ptr)) {
     ::PROTOBUF_NAMESPACE_ID::uint32 tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
+    CHK_(ptr);
     switch (tag >> 3) {
       // uint32 width = 1;
       case 1:
@@ -3848,8 +4008,7 @@ const char* StreamDataCursor::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPA
         continue;
       default: {
       handle_unusual:
-        if ((tag == 0) || ((tag & 7) == 4)) {
-          CHK_(ptr);
+        if ((tag & 7) == 4 || tag == 0) {
           ctx->SetLastTag(tag);
           goto success;
         }
@@ -3900,7 +4059,7 @@ failure:
   }
 
   // bytes image = 5;
-  if (!this->image().empty()) {
+  if (this->image().size() > 0) {
     target = stream->WriteBytesMaybeAliased(
         5, this->_internal_image(), target);
   }
@@ -3922,7 +4081,7 @@ size_t StreamDataCursor::ByteSizeLong() const {
   (void) cached_has_bits;
 
   // bytes image = 5;
-  if (!this->image().empty()) {
+  if (this->image().size() > 0) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::BytesSize(
         this->_internal_image());
@@ -3987,7 +4146,7 @@ void StreamDataCursor::MergeFrom(const StreamDataCursor& from) {
   ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (!from.image().empty()) {
+  if (from.image().size() > 0) {
     _internal_set_image(from._internal_image());
   }
   if (from.width() != 0) {
@@ -4024,12 +4183,8 @@ bool StreamDataCursor::IsInitialized() const {
 
 void StreamDataCursor::InternalSwap(StreamDataCursor* other) {
   using std::swap;
-  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr::InternalSwap(
-      &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(),
-      &image_, GetArenaForAllocation(),
-      &other->image_, other->GetArenaForAllocation()
-  );
+  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  image_.Swap(&other->image_, &::PROTOBUF_NAMESPACE_ID::internal::GetEmptyStringAlreadyInited(), GetArena());
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(StreamDataCursor, hoty_)
       + sizeof(StreamDataCursor::hoty_)
@@ -4039,10 +4194,9 @@ void StreamDataCursor::InternalSwap(StreamDataCursor* other) {
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata StreamDataCursor::GetMetadata() const {
-  return ::PROTOBUF_NAMESPACE_ID::internal::AssignDescriptors(
-      &descriptor_table_snappyv1_2eproto_getter, &descriptor_table_snappyv1_2eproto_once,
-      file_level_metadata_snappyv1_2eproto[11]);
+  return GetMetadataStatic();
 }
+
 
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace snappyv1

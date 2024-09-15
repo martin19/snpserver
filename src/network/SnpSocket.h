@@ -31,10 +31,3 @@ private:
 };
 
 #endif //SNAPPYVNC_SERVER_H
-
-
-//    void send(websocketpp::connection_hdl hdl, std::string &message);
-//private:
-////    std::map<websocketpp::connection_hdl, SnpClient, std::owner_less<websocketpp::connection_hdl>> clients;
-//public:
-//    std::map<websocketpp::connection_hdl, SnpClient, std::owner_less<websocketpp::connection_hdl>> &getClients();
