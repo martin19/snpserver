@@ -98,7 +98,7 @@ if(LIBGL_FOUND)
     set(GL_SOURCES
         src/util/DrmUtil.cpp
         src/stream/video/SnpSourceGL.cpp
-            src/stream/network/SnpSinkNetworkTcp.cpp src/stream/network/SnpSinkNetworkTcp.h src/stream/network/sockets.h)
+            src/stream/network/SnpSinkNetworkTcp.cpp src/stream/network/SnpSinkNetworkTcp.h src/stream/network/sockets.h src/stream/video/SnpSourceDummy.cpp src/stream/video/SnpSourceDummy.h)
 endif(LIBGL_FOUND)
 
 if(LIBWEBSOCKETS_FOUND)
@@ -123,6 +123,7 @@ add_executable(snpserver
     src/stream/SnpPipe.cpp
     src/stream/SnpPipeFactory.cpp
     # video stream
+    src/stream/video/SnpSourceDummy.cpp
     # input stream
     src/stream/input/keymap_atset1_linux.c
     # network sink/source
