@@ -1,6 +1,7 @@
 #include "util/loguru.h"
 #include "SnpPipeFactory.h"
 #include "SnpPipe.h"
+#include "stream/video/SnpSourceDummy.h"
 
 #ifdef HAVE_LIBGL
     #include <stream/video/SnpSourceGL.h>
@@ -103,7 +104,14 @@ SnpPipe *SnpPipeFactory::createVideoOutputPipe(uint32_t streamId, SnpClientWebso
         source = nullptr;
         LOG_F(WARNING, "x11 endpoint (%d) unavailable.", endpoint);
 #endif
-    } else {
+    } else if(endpoint == snappyv1::STREAM_ENDPOINT_VIDEO_DUMMY) {
+        SnpSourceDummyOptions sourceOptions;
+        sourceOptions.width = 1920;
+        sourceOptions.height = 1080;
+        sourceOptions.fps = 30.0;
+        source = new SnpSourceDummy(sourceOptions);
+    }
+    else {
         LOG_F(WARNING, "unknown endpoint (%d) requested.", endpoint);
         return nullptr;
     }
@@ -156,8 +164,8 @@ SnpPipe *SnpPipeFactory::createVideoOutputPipe(uint32_t streamId, SnpClientWebso
 
     //TODO: set actual values!!
     pipe->setMedium(snappyv1::STREAM_MEDIUM_VIDEO);
-    pipe->setEndpoint(snappyv1::STREAM_ENDPOINT_X11);
-    pipe->setEncoding(snappyv1::STREAM_ENCODING_H264_HARDWARE);
+    pipe->setEndpoint(snappyv1::STREAM_ENDPOINT_VIDEO_DUMMY);
+    pipe->setEncoding(snappyv1::STREAM_ENCODING_H264_SOFTWARE);
     pipe->setDirection(snappyv1::STREAM_DIRECTION_OUTPUT);
 
     return pipe;
