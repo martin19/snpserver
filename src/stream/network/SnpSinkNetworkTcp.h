@@ -31,7 +31,7 @@ private:
 
     SOCKET listenSocket;
     SOCKET clientSocket;
-    std::thread *listenThread;
+    std::thread listenThread;
 
     bool clientConnected;
     std::mutex mutex;

@@ -35,7 +35,12 @@ void SnpSinkNetworkTcp::onInputData(const uint8_t * inputBuffer, int inputLen, b
     buffer.insert(buffer.end(), inputBuffer, inputBuffer + inputLen);
     if(complete) {
         setTimestampStartMs(TimeUtil::getTimeNowMs());
-        send(clientSocket, (const char *)(buffer.data()), (int)buffer.size(), 0);
+        int result = send(clientSocket, (const char *)(buffer.data()), (int)buffer.size(), 0);
+        if(result == SOCKET_ERROR) {
+            LOG_F(ERROR, "failed to write to socket (error=%s)", strerror(errno));
+            clientConnected = false;
+            return;
+        }
         setTimestampEndMs(TimeUtil::getTimeNowMs());
         buffer.clear();
         //TODO: websocket this->getOwner()->framesPassed++;
@@ -70,7 +75,7 @@ void SnpSinkNetworkTcp::createSocket() {
     }
     LOG_F(INFO, "socket listening for incoming connections...");
 
-    listenThread = new std::thread(&SnpSinkNetworkTcp::listenForConnections, this);
+    listenThread = std::thread(&SnpSinkNetworkTcp::listenForConnections, this);
 }
 
 [[noreturn]] void SnpSinkNetworkTcp::listenForConnections() {
@@ -99,7 +104,6 @@ void SnpSinkNetworkTcp::createSocket() {
 
 void SnpSinkNetworkTcp::destroySocket() const {
     closesocket(listenSocket);
-    if(listenThread != nullptr) delete listenThread;
     sock_cleanup();
     //TODO: how to stop listen thread and clean it up?
 }
