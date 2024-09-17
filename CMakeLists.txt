@@ -34,8 +34,9 @@ if(OPENH264_FOUND)
             /usr/include/libdrm #todo move this
     )
     set(OPENH264_SOURCES
-            src/stream/video/SnpEncoderOpenH264.cpp
-            )
+        src/stream/video/SnpDecoderOpenH264.cpp
+        src/stream/video/SnpEncoderOpenH264.cpp
+    )
 endif(OPENH264_FOUND)
 
 find_package(VA)
@@ -106,7 +107,7 @@ if(LIBGL_FOUND)
     set(GL_SOURCES
         src/util/DrmUtil.cpp
         src/stream/video/SnpSourceGL.cpp
-            src/stream/network/SnpSinkNetworkTcp.cpp src/stream/network/SnpSinkNetworkTcp.h src/stream/network/sockets.h src/stream/video/SnpSourceDummy.cpp src/stream/video/SnpSourceDummy.h src/snpclient.cpp)
+            src/stream/network/SnpSinkNetworkTcp.cpp src/stream/network/SnpSinkNetworkTcp.h src/stream/network/sockets.h src/stream/video/SnpSourceDummy.cpp src/stream/video/SnpSourceDummy.h src/snpclient.cpp src/stream/video/SnpDecoderOpenH264.cpp src/stream/video/SnpDecoderOpenH264.h)
 endif(LIBGL_FOUND)
 
 if(LIBWEBSOCKETS_FOUND)
@@ -193,8 +194,10 @@ target_link_libraries(snpserver
 add_executable(snpclient
     src/snpclient.cpp
     src/gui/SnpCanvas.cpp
+    ${OPENH264_SOURCES}
 )
 target_link_libraries(snpclient
+    ${OPENH264_LIBRARIES}
     Qt::Core
     Qt::Gui
     Qt::Widgets

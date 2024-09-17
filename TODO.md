@@ -22,12 +22,14 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
   * 🟦 TODO: think about porttype (both, copy, mmap) - the idea is good, is the implementation 
   
 * 🟦 TODO: implement snpclient    
-    * 🟦 TODO: review architecture of snpclient-web and bring the good parts to snpclient-native 🚀
-      * 🟦 TODO: snpclient: implement raw architecture
-      * 🟦 TODO: snpclient: integrate openh264 decoder 
-      * 🟦 TODO: maybe some code/ideas can be shared between snpclient and snpserver 
-    * 🟦 TODO: fix temporarily deactivated websocket sink (marked usages with "TODO: websocket")
-    * 🟦 TODO: implement simple option for configuration (ui/file/mock)  
+  * 
+  * 🟦 TODO: snpclient: integrate openh264 decoder 
+  * 
+  * 🟦 TODO: review architecture of snpclient-web and bring the good parts to snpclient-native 🚀
+    * 🟦 TODO: snpclient: implement raw architecture 
+    * 🟦 TODO: maybe some code/ideas can be shared between snpclient and snpserver 
+  * 🟦 TODO: fix temporarily deactivated websocket sink (marked usages with "TODO: websocket")
+  * 🟦 TODO: implement simple option for configuration (ui/file/mock)  
 
 ### ✨ MS2:
 
