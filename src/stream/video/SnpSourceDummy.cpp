@@ -9,7 +9,11 @@
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
 SnpSourceDummy::SnpSourceDummy(const SnpSourceDummyOptions &options) : SnpComponent(options, "sourceDummy") {
-    addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO));
+    auto port = new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO);
+    auto format = (StreamFormatVideo*)port->getFormat();
+    format->width = 1920;
+    format->height = 1080;
+    addOutputPort(port);
 
     addProperty(new SnpProperty("fps", PROPERTY_TYPE_DOUBLE));
     addProperty(new SnpProperty("width", PROPERTY_TYPE_UINT32));
@@ -20,7 +24,7 @@ SnpSourceDummy::SnpSourceDummy(const SnpSourceDummyOptions &options) : SnpCompon
     getProperty("height")->setValue(options.height);
 
     framesRendered = 0;
-    frameBuffer = (uint8_t*)calloc(options.width*options.height*3, 1);
+    frameBuffer = (uint8_t*)calloc(options.width*options.height*4, 1);
 }
 
 SnpSourceDummy::~SnpSourceDummy() {
@@ -45,7 +49,6 @@ void SnpSourceDummy::setEnabled(bool enabled) {
 void SnpSourceDummy::renderFrame() {
     uint32_t width = getProperty("width")->getValueUint32();
     uint32_t height = getProperty("height")->getValueUint32();
-    uint32_t bpp = getProperty("bytesPerPixel")->getValueUint32();
     double fps = getProperty("fps")->getValueDouble();
 
     int8_t dx = 1;
@@ -64,6 +67,7 @@ void SnpSourceDummy::renderFrame() {
                 *dst = floor(sin(((M_PI/180)*1/(30.0)*y*framesRendered))*255.0); dst++;
                 *dst = floor(sin(((M_PI/180)*1/(40.0)*y*framesRendered))*255.0); dst++;
                 *dst = floor(sin(((M_PI/180)*1/(50.0)*y*framesRendered))*255.0); dst++;
+                *dst = 255; dst++;
             }
         }
 
@@ -73,7 +77,7 @@ void SnpSourceDummy::renderFrame() {
         uint32_t yend = 0;
         for(int y = ystart; y < yend; y++) {
             for(int x = xstart; x < xend; x++) {
-                dst = &frameBuffer[(y*width + x)*bpp];
+                dst = &frameBuffer[(y*width + x)*4];
                 *dst = 255; dst++;
                 *dst = 255; dst++;
                 *dst = 255; dst++;

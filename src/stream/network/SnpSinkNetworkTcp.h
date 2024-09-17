@@ -18,6 +18,8 @@ public:
     explicit SnpSinkNetworkTcp(const SnpSinkNetworkTcpOptions &options);
     ~SnpSinkNetworkTcp() override;
 
+    bool start() override;
+    void stop() override;
     void setEnabled(bool enabled) override;
 
 private:

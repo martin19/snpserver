@@ -13,6 +13,13 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
       * ✅ DONE: extend protocol to support SnpSourceDummy 
   * ✅ DONE: build protobuf from source via cmake.
   * 🟦 TODO: there is a cmake target to invoke protoc
+  * 🟦 TODO: implement sample main function for snpserver
+  * 
+  * 🟦 TODO: what was streamId meant to do? -> define it
+  * 🟦 TODO: there is setEnabled, start and stop - do we need both
+    * 🟦 TODO: probably start/stop pipe components in reverse data flow direction
+  * 🟦 TODO: verify component "compatibility" at runtime
+  * 🟦 TODO: think about porttype (both, copy, mmap) - the idea is good, is the implementation 
   
 * 🟦 TODO: implement snpclient    
     * 🟦 TODO: review architecture of snpclient-web and bring the good parts to snpclient-native 🚀

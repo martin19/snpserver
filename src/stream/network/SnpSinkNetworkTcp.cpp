@@ -27,6 +27,17 @@ void SnpSinkNetworkTcp::setEnabled(bool enabled) {
     }
 }
 
+bool SnpSinkNetworkTcp::start() {
+    SnpComponent::start();
+    createSocket();
+    return true;
+}
+
+void SnpSinkNetworkTcp::stop() {
+    SnpComponent::stop();
+    destroySocket();
+}
+
 void SnpSinkNetworkTcp::onInputData(const uint8_t * inputBuffer, int inputLen, bool complete) {
     if(!clientConnected) {
         return;

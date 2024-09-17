@@ -130,13 +130,13 @@ inline bool Platform_Parse(
 enum StreamMedium : int {
   STREAM_MEDIUM_VIDEO = 0,
   STREAM_MEDIUM_AUDIO = 1,
-  STREAM_MEDIUM_PERIPHERIAL = 2,
+  STREAM_MEDIUM_PERIPHERAL = 2,
   StreamMedium_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   StreamMedium_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool StreamMedium_IsValid(int value);
 constexpr StreamMedium StreamMedium_MIN = STREAM_MEDIUM_VIDEO;
-constexpr StreamMedium StreamMedium_MAX = STREAM_MEDIUM_PERIPHERIAL;
+constexpr StreamMedium StreamMedium_MAX = STREAM_MEDIUM_PERIPHERAL;
 constexpr int StreamMedium_ARRAYSIZE = StreamMedium_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* StreamMedium_descriptor();

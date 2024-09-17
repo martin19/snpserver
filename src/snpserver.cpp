@@ -1,6 +1,9 @@
 #include <iostream>
 #include <network/SnpWebsocket.h>
 #include "util/loguru.h"
+#include "stream/SnpPipeFactory.h"
+#include "stream/network/SnpSinkNetworkTcp.h"
+#include "stream/SnpPipe.h"
 
 //int main(int argc, char *argv[]) {
 //    loguru::init(argc, argv);
@@ -13,10 +16,29 @@
 //}
 
 int main() {
-    //TODO websocket: SnpWebsocket s;
-    //s.run();
+    SnpSinkNetworkTcpOptions sinkOptions = {};
+    sinkOptions.streamId = 0;
+    sinkOptions.port = 9000;
+    sinkOptions.host = "127.0.0.1";
+    auto *sink = new SnpSinkNetworkTcp(sinkOptions);
 
-    //    s.run();
+    SnpPipe *videoPipe = SnpPipeFactory::createPipe(0, nullptr, sink,
+                                                    snappyv1::STREAM_MEDIUM_VIDEO,
+                                                    snappyv1::STREAM_DIRECTION_OUTPUT,
+                                                    snappyv1::STREAM_ENDPOINT_VIDEO_DUMMY,
+                                                    snappyv1::STREAM_ENCODING_H264_SOFTWARE);
+    videoPipe->setEnabled(true);
+    videoPipe->start();
+    while(TRUE) {
+        Sleep(100);
+    }
+
+    return 0;
+}
+
+//s.run();
+
+//    s.run();
 //    while(1) {
 //        for(auto& it : s.getClients()) {
 //            std::string s = std::string("Hello Client");
@@ -36,6 +58,3 @@ int main() {
 //
 //    std::cout << "base options:" << std::endl;
 //    videoCapture->VideoCapture::printOptions();
-
-    return 0;
-}

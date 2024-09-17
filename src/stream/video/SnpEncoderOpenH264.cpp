@@ -9,7 +9,11 @@
 
 SnpEncoderOpenH264::SnpEncoderOpenH264(const SnpEncoderOpenH264Options &options) : SnpComponent(options, "encoderOpenH264") {
 #ifdef _WIN32
-    HMODULE hDLL = LoadLibraryA("openh264.dll");
+    HMODULE hDLL = LoadLibraryA("openh264-2.1.1-win64.dll");
+    if(hDLL == nullptr) {
+        LOG_F(ERROR, "could not load openh264-2.1.1-win64.dll.");
+        exit(-1);
+    }
     openH264Api.welsCreateSVCEncoderFunc = (WelsCreateSVCEncoderFunc)GetProcAddress(hDLL, "WelsCreateSVCEncoder");
     openH264Api.welsDestroySVCEncoderFunc = (WelsDestroySVCEncoderFunc) GetProcAddress(hDLL, "WelsDestroySVCEncoder");
 #else
