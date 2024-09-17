@@ -32,15 +32,26 @@ As of now the following components are implemented:
 #### Install dependencies
 
 ```shell
-sudo apt install protobuf-compiler
 sudo apt install libwebsockets-dev
 sudo apt install libva-dev
 sudo apt install libdrm-dev
 sudo apt install libxcomposite-dev
 
+# download libopenh264 and copy to source folder
 curl -L http://ciscobinary.openh264.org/libopenh264-2.1.1-linux64.6.so.bz2 | bzip2 -dk | sudo tee /usr/local/lib/libopenh264-2.1.1-linux64.so.6 > /dev/null
 sudo chmod 755 /usr/local/lib/libopenh264-2.1.1-linux64.so.6
+
+# download protobuf and copy to source folder
+curl -o ./extern/protobuf-3.21.12/protobuf-27.3.tar.gz https://github.com/protocolbuffers/protobuf/releases/download/v21.12/protobuf-21.12.tar.gz
+cd ./extern/protobuf-3.21.12
+tar -xvzf protobuf-21.12.tar.gz
 ```
+
+### Build on Windows 7/10/11
+TODO
+
+#### Install dependencies
+TODO
 
 #### Common pitfalls
 

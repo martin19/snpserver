@@ -4,13 +4,8 @@ project(snpserver)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/")
 
-#include(FindProtobuf)
-#find_package(Protobuf)
-#include_directories(${PROTOBUF_INCLUDE_DIR})
-
-set(PROTOBUF_LIBRARY
-    "C:\\lib\\protobuf-3.21.12\\cmake-build-release\\libprotobuf.a"
-)
+set(protobuf_BUILD_TESTS OFF)
+add_subdirectory("extern/protobuf-3.21.12")
 
 find_package(LibWebSockets)
 if(LIBWEBSOCKETS_FOUND)
@@ -59,7 +54,7 @@ endif(MMALH264_FOUND)
 include_directories(
     src
     extern/openh264/include
-    extern/protobuf-3.21.12
+    extern/protobuf-3.21.12/src
     extern/abseil-cpp
     LIBWEBSOCKETS_INCLUDE_DIR
 )
@@ -171,5 +166,6 @@ target_link_libraries(snpserver
     ${PROTOBUF_LIBRARY}
     ${OPENH264_LIBRARIES}
     pthread
+    libprotobuf
     #dl
 )
