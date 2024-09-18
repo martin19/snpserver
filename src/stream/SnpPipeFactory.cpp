@@ -20,7 +20,7 @@
 #endif //HAVE_LIBWEBSOCKETS
 #include <stream/network/SnpSinkNetworkTcp.h>
 #include <stream/video/SnpEncoderOpenH264.h>
-#include <stream/network/SnpSourceNetwork.h>
+#include <stream/network/SnpSourceNetworkTcp.h>
 
 
 SnpPipe *SnpPipeFactory::createPipe(uint32_t streamId,

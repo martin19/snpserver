@@ -139,7 +139,7 @@ add_executable(snpserver
     # input stream
     src/stream/input/keymap_atset1_linux.c
     # network sink/source
-    src/stream/network/SnpSourceNetwork.cpp
+        src/stream/network/SnpSourceNetworkTcp.cpp
     src/stream/network/SnpSinkNetworkTcp.cpp
     # file sink/source
     src/stream/file/SnpSinkFile.cpp

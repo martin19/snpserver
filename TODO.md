@@ -12,9 +12,8 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
     * ✅ DONE: implement class video/SnpSourceDummy  
       * ✅ DONE: extend protocol to support SnpSourceDummy 
   * ✅ DONE: build protobuf from source via cmake.
-  * 🟦 TODO: there is a cmake target to invoke protoc
-  * 🟦 TODO: implement sample main function for snpserver
-  * 
+  * ✅ DONE: implement sample main function for snpserver
+  * 🟦 TODO: there is a cmake target to invoke protoc 
   * 🟦 TODO: what was streamId meant to do? -> define it
   * 🟦 TODO: there is setEnabled, start and stop - do we need both
     * 🟦 TODO: probably start/stop pipe components in reverse data flow direction
@@ -24,7 +23,10 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
 * 🟦 TODO: implement snpclient    
   * 
   * 🟦 TODO: snpclient: integrate openh264 decoder 
-    * 🟦 TODO: implement yuv2rgba
+    * ✅ DONE: implement yuv2rgba (simple)
+    * 🟦 TODO: implement proper buffering of NALUs
+  * ✅ DONE: implement SnpSourceNetworkTcp
+  * 🟦 TODO: implement snappy protobuf protocol handler - where?
   * 
   * 🟦 TODO: review architecture of snpclient-web and bring the good parts to snpclient-native 🚀
     * 🟦 TODO: snpclient: implement raw architecture 
