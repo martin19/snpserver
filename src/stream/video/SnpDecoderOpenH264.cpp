@@ -3,6 +3,8 @@
 #ifdef _WIN32
 #include "windows.h"
 #include "libloaderapi.h"
+#include "util/VideoUtil.h"
+
 #endif
 
 
@@ -23,7 +25,7 @@ SnpDecoderOpenH264::SnpDecoderOpenH264(const SnpDecoderOpenH264Options &options)
 
     decoder = nullptr;
     yuvBuffer = nullptr;
-    rgbaBuffer = nullptr;
+    rgbBuffer = nullptr;
 
     addInputPort(new SnpPort());
     addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO));
@@ -66,8 +68,11 @@ bool SnpDecoderOpenH264::openH264DecoderInit() {
     res = decoder->Initialize(&sDecodingParam);
     ASSERT(res == 0);
 
-    yuvBuffer = (uint8_t*)calloc(1, width*height*3);
-    rgbaBuffer = (uint8_t*)calloc(1, width*height*bpp);
+    yuvBuffer = (uint8_t*)calloc((width*height/4) * 6,1);
+//    yuvBuffer[0] = (uint8_t*)calloc(width*height,1);
+//    yuvBuffer[1] = (uint8_t*)calloc(width*height/4,1);
+//    yuvBuffer[2] = (uint8_t*)calloc(width*height/4,1);
+    rgbBuffer = (uint8_t*)calloc(width * height * bpp, 1);
 
     return result;
 error:
@@ -83,12 +88,9 @@ bool SnpDecoderOpenH264::openH264DecoderDecode(const uint8_t *srcBuffer, int src
     decoder->DecodeFrame2(srcBuffer, srcLen, &yuvBuffer, &sBufferInfo);
     if(sBufferInfo.iBufferStatus != 1) return false;
 
-    //yuvBuffer[0] contains y component
-    //yuvBuffer[1] contains u component
-    //yuvBuffer[2] contains v component
-    //TODO: convert it and write result to rgbBuffer
+    VideoUtil::yuv420ToRgb(rgbBuffer, yuvBuffer, width, height);
 
-    outputPort->onData(rgbaBuffer, width*height*bpp, true);
+    outputPort->onData(rgbBuffer, width * height * bpp, true);
 
     return result;
 error:
@@ -102,5 +104,5 @@ void SnpDecoderOpenH264::openH264DecoderDestroy() {
     }
 
     free(yuvBuffer);
-    free(rgbaBuffer);
+    free(rgbBuffer);
 }

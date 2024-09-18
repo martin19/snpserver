@@ -41,7 +41,7 @@ private:
     void openH264DecoderDestroy();
     ISVCDecoder *decoder;
     uint8_t *yuvBuffer;
-    uint8_t *rgbaBuffer;
+    uint8_t *rgbBuffer;
 };
 
 

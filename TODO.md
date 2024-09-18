@@ -24,6 +24,7 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
 * 🟦 TODO: implement snpclient    
   * 
   * 🟦 TODO: snpclient: integrate openh264 decoder 
+    * 🟦 TODO: implement yuv2rgba
   * 
   * 🟦 TODO: review architecture of snpclient-web and bring the good parts to snpclient-native 🚀
     * 🟦 TODO: snpclient: implement raw architecture 
