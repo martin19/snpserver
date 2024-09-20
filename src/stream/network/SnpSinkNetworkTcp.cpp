@@ -1,6 +1,7 @@
 #include "SnpSinkNetworkTcp.h"
 #include "sockets.h"
 #include "util/loguru.h"
+#include "network/snappyv1.pb.h"
 
 #define SNP_SINK_NETWORK_BUFFER_SIZE 500000
 
@@ -46,16 +47,27 @@ void SnpSinkNetworkTcp::onInputData(const uint8_t * inputBuffer, int inputLen, b
     buffer.insert(buffer.end(), inputBuffer, inputBuffer + inputLen);
     if(complete) {
         setTimestampStartMs(TimeUtil::getTimeNowMs());
-        int result = send(clientSocket, (const char *)(buffer.data()), (int)buffer.size(), 0);
-        if(result == SOCKET_ERROR) {
-            LOG_F(ERROR, "failed to write to socket (error=%s)", strerror(errno));
-            clientConnected = false;
-            return;
-        }
+        sendMessage();
         setTimestampEndMs(TimeUtil::getTimeNowMs());
         buffer.clear();
-        //TODO: websocket this->getOwner()->framesPassed++;
     }
+}
+
+bool SnpSinkNetworkTcp::sendMessage() {
+    snappyv1::Message message;
+    snappyv1::StreamData streamData;
+    streamData.set_stream_id(1);
+    streamData.set_payload((const char *)(buffer.data()), buffer.size());
+    message.set_type(snappyv1::MESSAGE_TYPE_STREAM_DATA);
+    message.set_allocated_stream_data(&streamData);
+    std::basic_string<char> messageString = message.SerializeAsString();
+    int result = send(clientSocket, messageString.c_str(), (int)messageString.size(), 0);
+    if(result == SOCKET_ERROR) {
+        LOG_F(ERROR, "failed to write to socket (error=%s)", strerror(errno));
+        clientConnected = false;
+        return false;
+    }
+    return true;
 }
 
 void SnpSinkNetworkTcp::createSocket() {

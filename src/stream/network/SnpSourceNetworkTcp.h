@@ -26,6 +26,7 @@ private:
     void destroySocket() const;
 
     [[noreturn]] void connectToServer();
+    bool dispatch();
 
     uint32_t streamId;
 

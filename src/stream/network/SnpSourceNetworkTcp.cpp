@@ -1,5 +1,6 @@
 #include <mutex>
 #include "SnpSourceNetworkTcp.h"
+#include "network/snappyv1.pb.h"
 
 #define SNP_SOURCE_RECV_BUFFER_SIZE 500000
 #define SNP_SOURCE_NETWORK_BUFFER_SIZE 500000
@@ -83,10 +84,33 @@ void SnpSourceNetworkTcp::createSocket() {
                 continue;
             }
             buffer.insert(buffer.end(), recvBuffer, recvBuffer + bytes_received);
-            outputPort->onData(buffer.data(), buffer.size(), true);
-            buffer.clear();
+            result = dispatch();
+            if(result) {
+                buffer.clear();
+            }
         }
     }
+}
+
+bool SnpSourceNetworkTcp::dispatch() {
+    SnpPort *outputPort = getOutputPort(0);
+    snappyv1::Message message;
+    snappyv1::StreamData streamData;
+    bool result = message.ParseFromArray(buffer.data(), (int)buffer.size());
+    if(!result) return false;
+    switch(message.type()) {
+        case snappyv1::MESSAGE_TYPE_STREAM_CHANGE:
+            LOG_F(WARNING, "MESSAGE_TYPE_STREAM_CHANGE not implemented, skipping.");
+            return true;
+        case snappyv1::MESSAGE_TYPE_STREAM_DATA:
+            outputPort->onData((const uint8_t*)streamData.payload().c_str(), streamData.payload().size(),
+                               true);
+            return true;
+        case snappyv1::MESSAGE_TYPE_STREAM_INFO:
+            LOG_F(WARNING, "MESSAGE_TYPE_STREAM_INFO not implemented, skipping.");
+            return true;
+    }
+    return true;
 }
 
 void SnpSourceNetworkTcp::destroySocket() const {
