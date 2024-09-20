@@ -19,8 +19,10 @@
 #include <stream/network/SnpSinkNetworkWebsocket.h>
 #endif //HAVE_LIBWEBSOCKETS
 #include <stream/network/SnpSinkNetworkTcp.h>
-#include <stream/video/SnpEncoderOpenH264.h>
 #include <stream/network/SnpSourceNetworkTcp.h>
+#include <stream/video/SnpEncoderOpenH264.h>
+#include <stream/video/SnpDecoderOpenH264.h>
+
 
 
 SnpPipe *SnpPipeFactory::createPipe(uint32_t streamId,
@@ -94,7 +96,39 @@ SnpPipe *SnpPipeFactory::createVideoInputPipe(uint32_t streamId,
                                               SnpComponent *source,
                                               snappyv1::StreamEndpoint endpoint,
                                               snappyv1::StreamEncoding encoding) {
-    return nullptr;
+
+    SnpComponent *decoder = nullptr;
+    SnpComponent *sink = nullptr;
+
+    if(endpoint == snappyv1::STREAM_ENDPOINT_DISPLAY) {
+        //TODO: create a display component
+    } else {
+        LOG_F(WARNING, "endpoint (%d) unavailable.", endpoint);
+    }
+
+    if(encoding == snappyv1::STREAM_ENCODING_H264_OPENH264) {
+        SnpDecoderOpenH264Options decoderOptions = {};
+        decoder = new SnpDecoderOpenH264(decoderOptions);
+    } else {
+        LOG_F(WARNING, "encoding (%d) unavailable.", encoding);
+    }
+
+    SnpPort::connect(source->getOutputPort(0), decoder->getInputPort(0));
+    SnpPort::connect(decoder->getOutputPort(0), sink->getInputPort(0));
+
+    SnpPipeOptions videoPipeOptions = {};
+    auto pipe = new SnpPipe(videoPipeOptions);
+    pipe->addComponent(source);
+    pipe->addComponent(decoder);
+    if(sink != nullptr) pipe->addComponent(sink);
+
+    //TODO: set actual values!!
+    pipe->setMedium(snappyv1::STREAM_MEDIUM_VIDEO);
+    pipe->setEndpoint(snappyv1::STREAM_ENDPOINT_DISPLAY);
+    pipe->setEncoding(snappyv1::STREAM_ENCODING_H264_OPENH264);
+    pipe->setDirection(snappyv1::STREAM_DIRECTION_OUTPUT);
+
+    return pipe;
 }
 
 SnpPipe *SnpPipeFactory::createVideoOutputPipe(uint32_t streamId,
@@ -141,7 +175,7 @@ SnpPipe *SnpPipeFactory::createVideoOutputPipe(uint32_t streamId,
 //        encoderMmalH264Options.qp = 20;
 //        auto *encoderMmalH264 = new SnpEncoderMmalH264(encoderMmalH264Options);
 
-    if(encoding == snappyv1::STREAM_ENCODING_H264_SOFTWARE) {
+    if(encoding == snappyv1::STREAM_ENCODING_H264_OPENH264) {
         //OPENH264
         SnpEncoderOpenH264Options encoderOptions = {};
         encoder = new SnpEncoderOpenH264(encoderOptions);
@@ -174,7 +208,7 @@ SnpPipe *SnpPipeFactory::createVideoOutputPipe(uint32_t streamId,
     //TODO: set actual values!!
     pipe->setMedium(snappyv1::STREAM_MEDIUM_VIDEO);
     pipe->setEndpoint(snappyv1::STREAM_ENDPOINT_VIDEO_DUMMY);
-    pipe->setEncoding(snappyv1::STREAM_ENCODING_H264_SOFTWARE);
+    pipe->setEncoding(snappyv1::STREAM_ENCODING_H264_OPENH264);
     pipe->setDirection(snappyv1::STREAM_DIRECTION_OUTPUT);
 
     return pipe;

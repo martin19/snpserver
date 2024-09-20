@@ -26,7 +26,7 @@ int main() {
                                                     snappyv1::STREAM_MEDIUM_VIDEO,
                                                     snappyv1::STREAM_DIRECTION_OUTPUT,
                                                     snappyv1::STREAM_ENDPOINT_VIDEO_DUMMY,
-                                                    snappyv1::STREAM_ENCODING_H264_SOFTWARE);
+                                                    snappyv1::STREAM_ENCODING_H264_OPENH264);
     videoPipe->setEnabled(true);
     videoPipe->start();
     while(TRUE) {

@@ -3,6 +3,31 @@
 #include <QMainWindow>
 #include "gui/SnpCanvas.h"
 
+#include <iostream>
+#include <network/SnpWebsocket.h>
+#include "util/loguru.h"
+#include "stream/SnpPipeFactory.h"
+#include "stream/network/SnpSourceNetworkTcp.h"
+#include "stream/SnpPipe.h"
+
+int runClient() {
+    SnpSourceNetworkTcpOptions sourceOptions = {};
+    sourceOptions.streamId = 0;
+    sourceOptions.port = 9000;
+    sourceOptions.host = "127.0.0.1";
+    auto *sink = new SnpSourceNetworkTcp(sourceOptions);
+    SnpPipe *videoPipe = SnpPipeFactory::createPipe(0, nullptr, sink,
+                                                    snappyv1::STREAM_MEDIUM_VIDEO,
+                                                    snappyv1::STREAM_DIRECTION_INPUT,
+                                                    snappyv1::STREAM_ENDPOINT_VIDEO_DUMMY,
+                                                    snappyv1::STREAM_ENCODING_H264_OPENH264);
+    videoPipe->setEnabled(true);
+    videoPipe->start();
+    while(TRUE) {
+        Sleep(100);
+    }
+}
+
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     QMainWindow window;
@@ -11,5 +36,6 @@ int main(int argc, char *argv[]) {
     window.setCentralWidget(canvas);
     window.resize(800, 600);
     window.show();
+    runClient();
     return app.exec();
 }

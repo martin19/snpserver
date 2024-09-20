@@ -4,7 +4,7 @@
 
 GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps dummy video streams)
 
-* 🟦 TODO: implement snpserver
+* ✅ DONE: implement snpserver
   * ✅ DONE: make snpserver compile, link and run on windows
   * ✅ DONE: make openh264 dll load on windows environment  
     * ✅ DONE: implement class SnpSinkNetworkTCP
@@ -13,14 +13,7 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
       * ✅ DONE: extend protocol to support SnpSourceDummy 
   * ✅ DONE: build protobuf from source via cmake.
   * ✅ DONE: implement sample main function for snpserver
-   
-  * 🟦 TODO: there is a cmake target to invoke protoc 
-   
-  * 🟦 TODO: what was streamId meant to do? -> define it
-  * 🟦 TODO: there is setEnabled, start and stop - do we need both
-    * 🟦 TODO: probably start/stop pipe components in reverse data flow direction
-  * 🟦 TODO: verify component "compatibility" at runtime
-  * 🟦 TODO: think about porttype (both, copy, mmap) - the idea is good, is the implementation 
+  * ✅ DONE: there is a cmake target to invoke protoc (didn't work, created custom command)
   
 * 🟦 TODO: implement snpclient
   * ✅ DONE: maybe some code/ideas can be shared between snpclient and snpserver
@@ -32,7 +25,14 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
   * ✅ DONE: implement SnpSourceNetworkTcp
   * ✅ TODO: implement initial snappy protobuf protocol handler 
        --> implemented this directly in Tcp components, think about if this is the right place
-   
+  * 🟦 TODO: implement SnpSinkDisplay
+
+### ✨ MS1.1:
+* 🟦 TODO: what was streamId meant to do? -> define it
+  * 🟦 TODO: there is setEnabled, start and stop - do we need both
+    * 🟦 TODO: probably start/stop pipe components in reverse data flow direction
+  * 🟦 TODO: verify component "compatibility" at runtime
+  * 🟦 TODO: think about porttype (both, copy, mmap) - the idea is good, is the implementation
   * 🟦 TODO: mermaid diagram for pipe structure
   * 🟦 TODO: fix temporarily deactivated websocket sink (marked usages with "TODO: websocket")
   * 🟦 TODO: implement simple option for configuration (ui/file/mock)  

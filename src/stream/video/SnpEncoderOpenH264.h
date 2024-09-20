@@ -4,14 +4,8 @@
 #include <stream/SnpComponent.h>
 #include <string>
 #include "codec_api.h"
+#include "stream/video/h264/OpenH264Api.h"
 
-typedef int (*WelsCreateSVCEncoderFunc)(ISVCEncoder** ppEncoder);
-typedef void (*WelsDestroySVCEncoderFunc)(ISVCEncoder* pEncoder);
-
-struct OpenH264Api {
-    WelsCreateSVCEncoderFunc welsCreateSVCEncoderFunc;
-    WelsDestroySVCEncoderFunc  welsDestroySVCEncoderFunc;
-};
 
 struct SnpEncoderOpenH264Options : public SnpComponentOptions {
     uint32_t width;

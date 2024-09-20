@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.16)
 project(snpserver)
+
+set(PROTO_TARGET_NAME protobuf_sources)
 set(SERVER_TARGET_NAME snpserver)
 set(CLIENT_TARGET_NAME snpclient)
+
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/")
@@ -80,7 +83,7 @@ if(UNIX)
     set(LIBDRM_FOUND TRUE)
     set(LIBX11_FOUND TRUE)
     set(LIBGL_FOUND TRUE)
-    add_library(libdrm SHARED IMPORTED)
+    add_library(libdrm SHARED IMPORTED src/stream/video/h264/OpenH264Api.h)
     #raspberry
     #set_target_properties(libdrm PROPERTIES IMPORTED_LOCATION /usr/local/lib/arm-linux-gnueabihf/libdrm.so.2)
     #set_target_properties(libdrm PROPERTIES VERSION 2 SOVERSION 2.4)
@@ -117,6 +120,19 @@ if(LIBWEBSOCKETS_FOUND)
         src/stream/network/SnpSinkNetworkWebsocket.cpp
     )
 endif(LIBWEBSOCKETS_FOUND)
+
+###############################################################################
+# compile protobuf
+###############################################################################
+add_custom_command(
+        OUTPUT snappy-protobuf-sources
+        COMMAND
+            "${CMAKE_CURRENT_SOURCE_DIR}/extern/protobuf-3.21.12/cmake-build-release/protoc.exe"
+            "--proto_path=${CMAKE_CURRENT_SOURCE_DIR}/proto"
+            "--cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/src/network"
+            "${CMAKE_CURRENT_SOURCE_DIR}/proto/snappyv1.proto"
+)
+add_custom_target(${PROTO_TARGET_NAME} DEPENDS snappy-protobuf-sources)
 
 ###############################################################################
 # client app
@@ -176,13 +192,13 @@ if(OPENGL_FOUND)
 endif(OPENGL_FOUND)
 
 if(WIN32)
-   target_link_libraries(snpserver wsock32 ws2_32)
+   set(SOCKET_LIBRARIES wsock32 ws2_32)
 endif(WIN32)
 
 # server app
 target_link_libraries(snpserver
-    ${PROTOBUF_LIBRARY}
     ${OPENH264_LIBRARIES}
+    ${SOCKET_LIBRARIES}
     pthread
     libprotobuf
     #dl
@@ -193,14 +209,44 @@ target_link_libraries(snpserver
 ###############################################################################
 add_executable(snpclient
     src/snpclient.cpp
+    # gui
     src/gui/SnpCanvas.cpp
+    # general
+    src/network/snappyv1.pb.cc
+    src/util/loguru.cpp
+    src/util/TimeUtil.cpp
+    src/util/VideoUtil.cpp
+    src/util/PropertyUtil.cpp
+    # stream
+    src/stream/SnpProperty.cpp
+    src/stream/SnpComponent.cpp
+    src/stream/SnpPort.cpp
+    src/stream/SnpPipe.cpp
+    src/stream/SnpPipeFactory.cpp
+    # video stream
+    src/stream/video/SnpSourceDummy.cpp
+    # input stream
+    src/stream/input/keymap_atset1_linux.c
+    # network sink/source
+    src/stream/network/SnpSourceNetworkTcp.cpp
+    src/stream/network/SnpSinkNetworkTcp.cpp
+    # file sink/source
+    src/stream/file/SnpSinkFile.cpp
+    ${X11_SOURCES}
+    ${DRM_SOURCES}
+    ${GL_SOURCES}
+    ${MMALH264_SOURCES}
     ${OPENH264_SOURCES}
+    ${VA_SOURCES}
 )
 target_link_libraries(snpclient
-    ${OPENH264_LIBRARIES}
     Qt::Core
     Qt::Gui
     Qt::Widgets
+    ${OPENH264_LIBRARIES}
+    ${SOCKET_LIBRARIES}
+    pthread
+    libprotobuf
 )
 
 if (WIN32)

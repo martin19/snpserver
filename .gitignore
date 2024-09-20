@@ -1,2 +1,5 @@
 .idea
 extern/protobuf-3.21.12/**
+cmake-build-debug/**
+cmake-build-debug-mlbox/**
+cmake-build-debug-windows/**
