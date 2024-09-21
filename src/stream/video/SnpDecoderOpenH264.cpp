@@ -4,6 +4,7 @@
 #include "windows.h"
 #include "libloaderapi.h"
 #include "util/VideoUtil.h"
+#include "util/loguru.h"
 
 #endif
 
@@ -40,9 +41,11 @@ SnpDecoderOpenH264::~SnpDecoderOpenH264() {
 void SnpDecoderOpenH264::setEnabled(bool enabled) {
     SnpComponent::setEnabled(enabled);
     if(enabled) {
-        auto *format = (StreamFormatVideo*)getInputPort(0)->targetPort->getFormat();
-        width = format->width;
-        height = format->height;
+        //auto *format = (StreamFormatVideo*)getOutputPort(0)->sourcePort->getFormat();
+//        width = format->width;
+//        height = format->height;
+        width = 1920;
+        height = 1080;
         openH264DecoderInit();
     } else {
         openH264DecoderDestroy();
@@ -84,6 +87,7 @@ bool SnpDecoderOpenH264::openH264DecoderDecode(const uint8_t *srcBuffer, int src
     int res;
     SnpPort *outputPort = this->getOutputPort(0);
 
+    LOG_F(INFO, "received data len=%d", srcLen);
     SBufferInfo sBufferInfo;
     decoder->DecodeFrame2(srcBuffer, srcLen, &yuvBuffer, &sBufferInfo);
     if(sBufferInfo.iBufferStatus != 1) return false;

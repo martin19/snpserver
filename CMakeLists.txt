@@ -72,7 +72,6 @@ include_directories(
     src
     extern/openh264/include
     extern/protobuf-3.21.12/src
-    extern/abseil-cpp
     LIBWEBSOCKETS_INCLUDE_DIR
 )
 
@@ -152,10 +151,11 @@ add_executable(snpserver
     src/stream/SnpPipeFactory.cpp
     # video stream
     src/stream/video/SnpSourceDummy.cpp
+    src/stream/output/SnpSinkDisplay.cpp
     # input stream
     src/stream/input/keymap_atset1_linux.c
     # network sink/source
-        src/stream/network/SnpSourceNetworkTcp.cpp
+    src/stream/network/SnpSourceNetworkTcp.cpp
     src/stream/network/SnpSinkNetworkTcp.cpp
     # file sink/source
     src/stream/file/SnpSinkFile.cpp

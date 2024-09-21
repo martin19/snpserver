@@ -13,8 +13,6 @@ private:
     QImage *qImage;
 public:
     QImage *getQImage() const;
-
-    void setQImage(QImage *qImage);
 };
 
 

@@ -9,6 +9,7 @@ SnpSourceNetworkTcp::SnpSourceNetworkTcp(const SnpSourceNetworkTcpOptions &optio
     streamId = options.streamId;
     host = options.host;
     port = options.port;
+    connected = false;
 
     addOutputPort(new SnpPort());
 }
@@ -95,7 +96,6 @@ void SnpSourceNetworkTcp::createSocket() {
 bool SnpSourceNetworkTcp::dispatch() {
     SnpPort *outputPort = getOutputPort(0);
     snappyv1::Message message;
-    snappyv1::StreamData streamData;
     bool result = message.ParseFromArray(buffer.data(), (int)buffer.size());
     if(!result) return false;
     switch(message.type()) {
@@ -103,7 +103,8 @@ bool SnpSourceNetworkTcp::dispatch() {
             LOG_F(WARNING, "MESSAGE_TYPE_STREAM_CHANGE not implemented, skipping.");
             return true;
         case snappyv1::MESSAGE_TYPE_STREAM_DATA:
-            outputPort->onData((const uint8_t*)streamData.payload().c_str(), streamData.payload().size(),
+            outputPort->onData((const uint8_t*)message.stream_data().payload().c_str(),
+                               message.stream_data().payload().size(),
                                true);
             return true;
         case snappyv1::MESSAGE_TYPE_STREAM_INFO:

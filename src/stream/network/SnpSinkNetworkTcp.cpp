@@ -9,6 +9,7 @@ SnpSinkNetworkTcp::SnpSinkNetworkTcp(const SnpSinkNetworkTcpOptions &options) : 
     streamId = options.streamId;
     host = options.host;
     port = options.port;
+    clientConnected = false;
 
     addInputPort(new SnpPort());
     getInputPort(0)->setOnDataCb(std::bind(&SnpSinkNetworkTcp::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
@@ -55,13 +56,16 @@ void SnpSinkNetworkTcp::onInputData(const uint8_t * inputBuffer, int inputLen, b
 
 bool SnpSinkNetworkTcp::sendMessage() {
     snappyv1::Message message;
-    snappyv1::StreamData streamData;
-    streamData.set_stream_id(1);
-    streamData.set_payload((const char *)(buffer.data()), buffer.size());
+    snappyv1::StreamData *streamData = new snappyv1::StreamData();
+
+    streamData->set_stream_id(1);
+    std::basic_string<char> payloadString((const char *)(buffer.data()), buffer.size());
+    streamData->set_payload(payloadString);
     message.set_type(snappyv1::MESSAGE_TYPE_STREAM_DATA);
-    message.set_allocated_stream_data(&streamData);
+    message.set_allocated_stream_data(streamData);
     std::basic_string<char> messageString = message.SerializeAsString();
     int result = send(clientSocket, messageString.c_str(), (int)messageString.size(), 0);
+    LOG_F(INFO, "sent data len=%d", buffer.size());
     if(result == SOCKET_ERROR) {
         LOG_F(ERROR, "failed to write to socket (error=%s)", strerror(errno));
         clientConnected = false;

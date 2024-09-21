@@ -12,17 +12,18 @@
 #include "stream/output/SnpSinkDisplay.h"
 
 SnpPipe *videoPipe = nullptr;
+SnpCanvas *canvas = nullptr;
 
 int runClient() {
     SnpSourceNetworkTcpOptions sourceOptions = {};
     sourceOptions.streamId = 0;
     sourceOptions.port = 9000;
     sourceOptions.host = "127.0.0.1";
-    auto *sink = new SnpSourceNetworkTcp(sourceOptions);
-    videoPipe = SnpPipeFactory::createPipe(0, nullptr, sink,
+    auto *source = new SnpSourceNetworkTcp(sourceOptions);
+    videoPipe = SnpPipeFactory::createPipe(0, source, nullptr,
                                                     snappyv1::STREAM_MEDIUM_VIDEO,
                                                     snappyv1::STREAM_DIRECTION_INPUT,
-                                                    snappyv1::STREAM_ENDPOINT_VIDEO_DUMMY,
+                                                    snappyv1::STREAM_ENDPOINT_DISPLAY,
                                                     snappyv1::STREAM_ENCODING_H264_OPENH264);
     videoPipe->setEnabled(true);
     videoPipe->start();
@@ -35,7 +36,7 @@ int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
     QMainWindow window;
     window.setWindowTitle("SnpClient");
-    auto *canvas = new SnpCanvas;
+    canvas = new SnpCanvas;
     window.setCentralWidget(canvas);
     window.resize(800, 600);
     window.show();
@@ -43,9 +44,10 @@ int main(int argc, char *argv[]) {
 
     //paint on every frame
     auto* sinkDisplay = dynamic_cast<SnpSinkDisplay *>(videoPipe->getComponents().back());
-    canvas->setQImage(sinkDisplay->getQImage());
-    sinkDisplay->setOnFrameCb([canvas]() {
-       canvas->update();
+    sinkDisplay->getInputPort(0)->setOnDataCb([](auto && data, auto && len, auto && PH3) {
+        QImage* qImage = canvas->getQImage();
+        memcpy(qImage->bits(), data, len);
+        canvas->update();
     });
 
     return app.exec();

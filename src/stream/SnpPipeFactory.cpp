@@ -3,7 +3,6 @@
 #include "SnpPipe.h"
 #include "stream/video/SnpSourceDummy.h"
 #include "stream/output/SnpSinkDisplay.h"
-
 #ifdef HAVE_LIBGL
     #include <stream/video/SnpSourceGL.h>
 #endif //HAVE_LIBGL
@@ -106,9 +105,9 @@ SnpPipe *SnpPipeFactory::createVideoInputPipe(uint32_t streamId,
         sinkDisplayOptions.streamId = 1;
         sinkDisplayOptions.width = 1920;
         sinkDisplayOptions.height = 1080;
-        sink = new SnpSinkDisplay(sinkDisplayOptions);
+        sink = (SnpComponent*)new SnpSinkDisplay(sinkDisplayOptions);
     } else {
-        LOG_F(WARNING, "endpoint (%d) unavailable.", endpoint);
+        LOG_F(WARNING, "display endpoint (%d) unavailable.", endpoint);
     }
 
     if(encoding == snappyv1::STREAM_ENCODING_H264_OPENH264) {
