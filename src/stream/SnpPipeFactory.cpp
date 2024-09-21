@@ -2,6 +2,7 @@
 #include "SnpPipeFactory.h"
 #include "SnpPipe.h"
 #include "stream/video/SnpSourceDummy.h"
+#include "stream/output/SnpSinkDisplay.h"
 
 #ifdef HAVE_LIBGL
     #include <stream/video/SnpSourceGL.h>
@@ -101,7 +102,11 @@ SnpPipe *SnpPipeFactory::createVideoInputPipe(uint32_t streamId,
     SnpComponent *sink = nullptr;
 
     if(endpoint == snappyv1::STREAM_ENDPOINT_DISPLAY) {
-        //TODO: create a display component
+        SnpSinkDisplayOptions sinkDisplayOptions = {};
+        sinkDisplayOptions.streamId = 1;
+        sinkDisplayOptions.width = 1920;
+        sinkDisplayOptions.height = 1080;
+        sink = new SnpSinkDisplay(sinkDisplayOptions);
     } else {
         LOG_F(WARNING, "endpoint (%d) unavailable.", endpoint);
     }

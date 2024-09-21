@@ -9,6 +9,12 @@ public:
     SnpCanvas(QWidget *parent = nullptr);
 protected:
     void paintEvent(QPaintEvent *event) override;
+private:
+    QImage *qImage;
+public:
+    QImage *getQImage() const;
+
+    void setQImage(QImage *qImage);
 };
 
 

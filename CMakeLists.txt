@@ -83,7 +83,7 @@ if(UNIX)
     set(LIBDRM_FOUND TRUE)
     set(LIBX11_FOUND TRUE)
     set(LIBGL_FOUND TRUE)
-    add_library(libdrm SHARED IMPORTED src/stream/video/h264/OpenH264Api.h)
+    add_library(libdrm SHARED IMPORTED src/stream/video/h264/OpenH264Api.h src/stream/output/SnpSinkDisplay.cpp src/stream/output/SnpSinkDisplay.h)
     #raspberry
     #set_target_properties(libdrm PROPERTIES IMPORTED_LOCATION /usr/local/lib/arm-linux-gnueabihf/libdrm.so.2)
     #set_target_properties(libdrm PROPERTIES VERSION 2 SOVERSION 2.4)
@@ -225,6 +225,7 @@ add_executable(snpclient
     src/stream/SnpPipeFactory.cpp
     # video stream
     src/stream/video/SnpSourceDummy.cpp
+    src/stream/output/SnpSinkDisplay.cpp
     # input stream
     src/stream/input/keymap_atset1_linux.c
     # network sink/source

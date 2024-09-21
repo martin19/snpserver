@@ -16,11 +16,21 @@ void SnpCanvas::paintEvent(QPaintEvent *event) {
     // Set background color
     painter.fillRect(rect(), Qt::white);
 
-    // Draw a rectangle with red outline
-    painter.setPen(Qt::red);
-    painter.drawRect(50, 50, 200, 150);
+//    // Draw a rectangle with red outline
+//    painter.setPen(Qt::red);
+//    painter.drawRect(50, 50, 200, 150);
+//
+//    // Fill a smaller rectangle with blue
+//    painter.setBrush(Qt::blue);
+//    painter.drawRect(100, 100, 100, 50);
 
-    // Fill a smaller rectangle with blue
-    painter.setBrush(Qt::blue);
-    painter.drawRect(100, 100, 100, 50);
+    painter.drawImage(rect(), *qImage);
+}
+
+QImage *SnpCanvas::getQImage() const {
+    return qImage;
+}
+
+void SnpCanvas::setQImage(QImage *qImage) {
+    SnpCanvas::qImage = qImage;
 }
