@@ -25,7 +25,9 @@ SnpDecoderOpenH264::SnpDecoderOpenH264(const SnpDecoderOpenH264Options &options)
 #endif //_WIN32
 
     decoder = nullptr;
-    yuvBuffer = nullptr;
+    yuvBuffer[0] = nullptr;
+    yuvBuffer[1] = nullptr;
+    yuvBuffer[2] = nullptr;
     rgbBuffer = nullptr;
 
     addInputPort(new SnpPort());
@@ -46,6 +48,7 @@ void SnpDecoderOpenH264::setEnabled(bool enabled) {
 //        height = format->height;
         width = 1920;
         height = 1080;
+        bpp = 4;
         openH264DecoderInit();
     } else {
         openH264DecoderDestroy();
@@ -66,15 +69,14 @@ bool SnpDecoderOpenH264::openH264DecoderInit() {
     ASSERT(decoder != nullptr);
 
     sDecodingParam.sVideoProperty.eVideoBsType = VIDEO_BITSTREAM_SVC;
-    sDecodingParam.bParseOnly = true;
+    sDecodingParam.bParseOnly = false;
 
     res = decoder->Initialize(&sDecodingParam);
     ASSERT(res == 0);
 
-    yuvBuffer = (uint8_t*)calloc((width*height/4) * 6,1);
-//    yuvBuffer[0] = (uint8_t*)calloc(width*height,1);
-//    yuvBuffer[1] = (uint8_t*)calloc(width*height/4,1);
-//    yuvBuffer[2] = (uint8_t*)calloc(width*height/4,1);
+    yuvBuffer[0] = (uint8_t*)calloc(width*height,1);
+    yuvBuffer[1] = (uint8_t*)calloc(width*height/4,1);
+    yuvBuffer[2] = (uint8_t*)calloc(width*height/4,1);
     rgbBuffer = (uint8_t*)calloc(width * height * bpp, 1);
 
     return result;
@@ -89,10 +91,16 @@ bool SnpDecoderOpenH264::openH264DecoderDecode(const uint8_t *srcBuffer, int src
 
     LOG_F(INFO, "received data len=%d", srcLen);
     SBufferInfo sBufferInfo;
-    decoder->DecodeFrame2(srcBuffer, srcLen, &yuvBuffer, &sBufferInfo);
-    if(sBufferInfo.iBufferStatus != 1) return false;
+    decoder->DecodeFrame2(srcBuffer, srcLen, yuvBuffer, &sBufferInfo);
+    if(sBufferInfo.iBufferStatus != 1) {
+        LOG_F(WARNING, "DecodeFrame2 failed.");
+        return false;
+    }
+    LOG_F(INFO, "DecodeFrame2 success.");
 
-    VideoUtil::yuv420ToRgb(rgbBuffer, yuvBuffer, width, height);
+    VideoUtil::yuv420ToRgba(rgbBuffer, yuvBuffer, width, height,
+                            sBufferInfo.UsrData.sSystemBuffer.iStride[0],
+                            sBufferInfo.UsrData.sSystemBuffer.iStride[1]);
 
     outputPort->onData(rgbBuffer, width * height * bpp, true);
 
@@ -107,6 +115,8 @@ void SnpDecoderOpenH264::openH264DecoderDestroy() {
         openH264Api.welsDestroyDecoderFunc(decoder);
     }
 
-    free(yuvBuffer);
+    free(yuvBuffer[0]);
+    free(yuvBuffer[1]);
+    free(yuvBuffer[2]);
     free(rgbBuffer);
 }

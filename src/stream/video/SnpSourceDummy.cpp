@@ -47,60 +47,88 @@ void SnpSourceDummy::setEnabled(bool enabled) {
 }
 
 void SnpSourceDummy::renderFrame() {
-    uint32_t width = getProperty("width")->getValueUint32();
-    uint32_t height = getProperty("height")->getValueUint32();
+    width = getProperty("width")->getValueUint32();
+    height = getProperty("height")->getValueUint32();
     double fps = getProperty("fps")->getValueDouble();
 
-    int8_t dx = 1;
-    int8_t dy = 1;
-    uint32_t boxWidth2 = 50;
-    uint32_t boxHeight2 = 50;
-    uint32_t boxPosX = MIN(MAX(floor(rand()*width), width-boxWidth2), boxWidth2);
-    uint32_t boxPosY = MIN(MAX(floor(rand()*height), height-boxHeight2), boxHeight2);
+    initBoxes(200, 200);
 
     while(this->isRunning()) {
         SnpPort * outputPort = this->getOutputPort(0);
 
+        //render background
         uint8_t *dst = frameBuffer;
         for(int y = 0; y < height; y++) {
+            int col = floor(sin(((M_PI/180)*1/(100.0)*y*framesRendered))*255.0);
             for(int x = 0; x < width; x++) {
-                *dst = floor(sin(((M_PI/180)*1/(30.0)*y*framesRendered))*255.0); dst++;
-                *dst = floor(sin(((M_PI/180)*1/(40.0)*y*framesRendered))*255.0); dst++;
-                *dst = floor(sin(((M_PI/180)*1/(50.0)*y*framesRendered))*255.0); dst++;
+                *dst = col; dst++;
+                *dst = col; dst++;
+                *dst = col; dst++;
                 *dst = 255; dst++;
             }
         }
 
-        uint32_t xstart = 0;
-        uint32_t ystart = 0;
-        uint32_t xend = 0;
-        uint32_t yend = 0;
-        for(int y = ystart; y < yend; y++) {
-            for(int x = xstart; x < xend; x++) {
-                dst = &frameBuffer[(y*width + x)*4];
-                *dst = 255; dst++;
-                *dst = 255; dst++;
-                *dst = 255; dst++;
-            }
-        }
+        renderBoxes();
 
-        if(boxPosX >= width - boxWidth2) {
-            dx = -1;
-        }
-        if(boxPosX <= boxWidth2) {
-            dx = +1;
-        }
-        if(boxPosY >= height - boxHeight2) {
-            dy = -1;
-        }
-        if(boxPosY <= boxHeight2) {
-            dy = +1;
-        }
-        boxPosX += dx;
-        boxPosY += dy;
-
-        outputPort->onData(frameBuffer, width*height*3, true);
+        outputPort->onData(frameBuffer, width*height*4, true);
         framesRendered++;
-        Sleep(1/fps*1000);
+        Sleep((1/fps)*1000);
+    }
+}
+
+int boxPosX[3];
+int boxPosY[3];
+int boxDx[3];
+int boxDy[3];
+
+void SnpSourceDummy::initBoxes(int boxWidth, int boxHeight) {
+    for(int i = 0; i < 3; i++) {
+        box[i].dx = 1;
+        box[i].dy = 1;
+        float r1 = (float)rand()/(float)RAND_MAX;
+        float r2 = (float)rand()/(float)RAND_MAX;
+        box[i].x = MAX(MIN(floor(r1*width), width-boxWidth/2), boxWidth/2);
+        box[i].y = MAX(MIN(floor(r2*height), height-boxHeight/2), boxHeight/2);
+        box[i].width = boxWidth;
+        box[i].height = boxHeight;
+        box[i].r = ((i==0) ? 255 : 128);
+        box[i].g = ((i==1) ? 255 : 128);
+        box[i].b = ((i==2) ? 255 : 128);
+    }
+}
+
+void SnpSourceDummy::renderBoxes() {
+    uint8_t *dst = frameBuffer;
+    for(int i = 0; i < 3; i++) {
+        int w2 = box[i].width/2;
+        int h2 = box[i].height/2;
+        uint32_t xstart = box[i].x - w2;
+        uint32_t ystart = box[i].y - h2;
+        uint32_t xend = box[i].x + w2;
+        uint32_t yend = box[i].y + h2;
+        for(uint32_t y = ystart; y < yend; y++) {
+            for(uint32_t x = xstart; x < xend; x++) {
+                dst = &frameBuffer[(y*width+x)*4];
+                *dst = box[i].r; dst++;
+                *dst = box[i].g; dst++;
+                *dst = box[i].b; dst++;
+                *dst = 255; dst++;
+            }
+        }
+
+        if(box[i].x >= width - w2) {
+            box[i].dx = -1;
+        }
+        if(box[i].x <= w2) {
+            box[i].dx = +1;
+        }
+        if(box[i].y >= height - h2) {
+            box[i].dy = -1;
+        }
+        if(box[i].y <= h2) {
+            box[i].dy = +1;
+        }
+        box[i].x += box[i].dx;
+        box[i].y += box[i].dy;
     }
 }

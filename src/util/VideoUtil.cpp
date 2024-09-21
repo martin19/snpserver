@@ -86,13 +86,10 @@ void VideoUtil::rgba2Yuv(uint8_t *destination, const uint8_t *rgb, int width, in
     }
 }
 
-void VideoUtil::yuv420ToRgb(uint8_t *rgb, const uint8_t *yuv, int width, int height) {
-    int image_size = width * height;
+void VideoUtil::yuv420ToRgba(uint8_t *rgb, unsigned char **yuv, int width, int height, int strideY, int strideC) {
     int ypos = 0;
     int cofs = 0;
 
-    int upos = image_size;
-    int vpos = upos + upos / 4;
     int i = 0;
     int y;
     int x;
@@ -100,16 +97,17 @@ void VideoUtil::yuv420ToRgb(uint8_t *rgb, const uint8_t *yuv, int width, int hei
     for(y = 0; y < height; y++ ) {
         for (x = 0; x < width; x++) {
 
-            ypos = (y * width + x);
-            cofs = ((y >> 1) * width + (x >> 1));
+            ypos = (y * strideY + x);
+            cofs = ((y >> 1) * strideC + (x >> 1));
 
-            uint8_t C = yuv[ypos] - 16;
-            uint8_t D = yuv[upos + cofs] - 128;
-            uint8_t E = yuv[vpos + cofs] - 128;
+            int C = yuv[0][ypos] - 16;
+            int D = yuv[1][cofs] - 128;
+            int E = yuv[2][cofs] - 128;
 
             rgb[i++] = std::clamp(( 298 * C           + 409 * E + 128) >> 8, 0, 255);
             rgb[i++] = std::clamp(( 298 * C - 100 * D - 208 * E + 128) >> 8, 0, 255);
             rgb[i++] = std::clamp(( 298 * C + 516 * D           + 128) >> 8, 0, 255);
+            rgb[i++] = 255;
         }
     }
 }

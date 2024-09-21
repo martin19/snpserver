@@ -33,7 +33,7 @@ private:
     bool openH264DecoderDecode(const uint8_t *srcBuffer, int srcLen);
     void openH264DecoderDestroy();
     ISVCDecoder *decoder;
-    uint8_t *yuvBuffer;
+    uint8_t *yuvBuffer[3];
     uint8_t *rgbBuffer;
 };
 

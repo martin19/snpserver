@@ -5,7 +5,7 @@ SnpSinkDisplay::SnpSinkDisplay(const SnpSinkDisplayOptions &options) : SnpCompon
     width = options.width;
     height = options.height;
 
-    addInputPort(new SnpPort());
+    addInputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO));
 }
 
 SnpSinkDisplay::~SnpSinkDisplay() {

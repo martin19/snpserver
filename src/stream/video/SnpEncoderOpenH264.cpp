@@ -60,12 +60,13 @@ bool SnpEncoderOpenH264::openH264EncoderInit() {
 
     SEncParamExt paramExt = {};
     paramExt.bEnableFrameSkip = true;
+    paramExt.uiIntraPeriod = 60;
     paramExt.iNumRefFrame = 1;
-    paramExt.fMaxFrameRate = 15.0;
+    paramExt.fMaxFrameRate = 60.0;
     paramExt.iPicWidth = width;
     paramExt.iPicHeight = height;
     paramExt.iTargetBitrate = 20000000;
-    paramExt.iMinQp = 10;
+    paramExt.iMinQp = 5;
     paramExt.iMaxQp = 10;
 
     res = openH264Api.welsCreateSVCEncoderFunc (&encoder);
@@ -75,7 +76,7 @@ bool SnpEncoderOpenH264::openH264EncoderInit() {
     res = encoder->InitializeExt(&paramExt);
     ASSERT(res == 0);
 
-    yuvBuffer = (uint8_t*)calloc(1, width*height*bpp);
+    yuvBuffer = (uint8_t*)calloc(1, width*height*3/2);
 
     return result;
 error:

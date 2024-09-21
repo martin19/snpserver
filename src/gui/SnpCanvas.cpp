@@ -6,7 +6,7 @@
 
 SnpCanvas::SnpCanvas(QWidget *parent) : QWidget(parent) {
     setMinimumSize(400, 300);
-    qImage = new QImage(1920, 1080, QImage::Format_RGB888);
+    qImage = new QImage(1920, 1080, QImage::Format_RGBA8888);
 }
 
 void SnpCanvas::paintEvent(QPaintEvent *event) {
