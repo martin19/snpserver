@@ -1,8 +1,5 @@
-//
-// Created by marti on 15/09/2024.
-//
-
 #include "SnpCanvas.h"
+#include "util/TimeUtil.h"
 
 SnpCanvas::SnpCanvas(QWidget *parent) : QWidget(parent) {
     setMinimumSize(400, 300);
@@ -11,21 +8,26 @@ SnpCanvas::SnpCanvas(QWidget *parent) : QWidget(parent) {
 
 void SnpCanvas::paintEvent(QPaintEvent *event) {
     Q_UNUSED(event);
-
     QPainter painter(this);
-
-    // Set background color
     painter.fillRect(rect(), Qt::white);
-
-//    // Draw a rectangle with red outline
-//    painter.setPen(Qt::red);
-//    painter.drawRect(50, 50, 200, 150);
-//
-//    // Fill a smaller rectangle with blue
-//    painter.setBrush(Qt::blue);
-//    painter.drawRect(100, 100, 100, 50);
-
     painter.drawImage(rect(), *qImage);
+    paintStatistics();
+}
+
+void SnpCanvas::paintStatistics() {
+    QPainter painter(this);
+    uint32_t tsNow = TimeUtil::getTimeNowMs();
+    uint32_t frameMs = tsNow - tsLastUpdate;
+    double fps = 1000.0 / frameMs;
+    painter.setPen(Qt::green);
+    QString fpsStr;
+    QTextStream fpsStream(&fpsStr);
+    fpsStream.setRealNumberNotation(QTextStream::FixedNotation);
+    fpsStream.setRealNumberPrecision(2);
+    fpsStream << "fps: " << fps;
+    painter.fillRect(rect().right() - 100, rect().top(), 100, 100, Qt::black);
+    painter.drawText(rect().right() - 100, rect().top() + 30, fpsStr);
+    tsLastUpdate = tsNow;
 }
 
 QImage *SnpCanvas::getQImage() const {

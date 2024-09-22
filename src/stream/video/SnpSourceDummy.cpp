@@ -4,6 +4,7 @@
 #ifdef _WIN32
 #include "windows.h"
 #endif
+#include "util/TimeUtil.h"
 
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
@@ -54,12 +55,13 @@ void SnpSourceDummy::renderFrame() {
     initBoxes(200, 200);
 
     while(this->isRunning()) {
+        uint32_t tsBeforePaint = TimeUtil::getTimeNowMs();
         SnpPort * outputPort = this->getOutputPort(0);
 
         //render background
         uint8_t *dst = frameBuffer;
         for(int y = 0; y < height; y++) {
-            int col = floor(sin(((M_PI/180)*1/(100.0)*y*framesRendered))*255.0);
+            int col = 255; //fmod(floor((sin(((M_PI/180)*(1/(100.0))*y))*255.0)+(float)framesRendered), 255.0);
             for(int x = 0; x < width; x++) {
                 *dst = col; dst++;
                 *dst = col; dst++;
@@ -72,7 +74,10 @@ void SnpSourceDummy::renderFrame() {
 
         outputPort->onData(frameBuffer, width*height*4, true);
         framesRendered++;
-        Sleep((1/fps)*1000);
+
+        uint32_t tsAfterPaint = TimeUtil::getTimeNowMs();
+        int sleepDurationMs = (int)((1000.0/(double)fps) - (double)(tsAfterPaint-tsBeforePaint));
+        if(sleepDurationMs > 0) Sleep(sleepDurationMs);
     }
 }
 

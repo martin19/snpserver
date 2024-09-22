@@ -15,7 +15,7 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
   * ✅ DONE: implement sample main function for snpserver
   * ✅ DONE: there is a cmake target to invoke protoc (didn't work, created custom command)
   
-* 🟦 TODO: implement snpclient
+* ✅ DONE: implement snpclient
   * ✅ DONE: maybe some code/ideas can be shared between snpclient and snpserver
     --> share code in same cmake project.
   * ✅ DONE: review architecture of snpclient-web and bring the good parts to snpclient-native 🚀
@@ -23,12 +23,14 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
     * ✅ DONE: implement yuv2rgba (simple)
     * ✅ DONE: implement buffering of NALUs -> nalus should not be split/combined on protobuf layer
   * ✅ DONE: implement SnpSourceNetworkTcp
-  * ✅ TODO: implement initial snappy protobuf protocol handler 
+  * ✅ DONE: implement initial snappy protobuf protocol handler 
        --> implemented this directly in Tcp components, think about if this is the right place
-  * 🟦 TODO: implement SnpSinkDisplay
+  * ✅ DONE: implement SnpSinkDisplay
 
 ### ✨ MS1.1:
-* 🟦 TODO: what was streamId meant to do? -> define it
+  * ✅ DONE: implement fps counter in SnpCanvas
+
+  * 🟦 TODO: what was streamId meant to do? -> define it
   * 🟦 TODO: there is setEnabled, start and stop - do we need both
     * 🟦 TODO: probably start/stop pipe components in reverse data flow direction
   * 🟦 TODO: verify component "compatibility" at runtime

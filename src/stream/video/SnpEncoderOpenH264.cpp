@@ -65,9 +65,10 @@ bool SnpEncoderOpenH264::openH264EncoderInit() {
     paramExt.fMaxFrameRate = 60.0;
     paramExt.iPicWidth = width;
     paramExt.iPicHeight = height;
-    paramExt.iTargetBitrate = 20000000;
+    paramExt.iTargetBitrate = 10000000;
     paramExt.iMinQp = 5;
     paramExt.iMaxQp = 10;
+    paramExt.iUsageType = SCREEN_CONTENT_REAL_TIME;
 
     res = openH264Api.welsCreateSVCEncoderFunc (&encoder);
     ASSERT(res == 0);

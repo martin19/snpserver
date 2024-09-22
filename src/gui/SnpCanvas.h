@@ -7,12 +7,14 @@
 class SnpCanvas : public QWidget {
 public:
     SnpCanvas(QWidget *parent = nullptr);
+    QImage *getQImage() const;
 protected:
     void paintEvent(QPaintEvent *event) override;
 private:
+    void paintStatistics();
+
     QImage *qImage;
-public:
-    QImage *getQImage() const;
+    uint32_t tsLastUpdate;
 };
 
 
