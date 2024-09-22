@@ -30,11 +30,14 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
 ### ✨ MS1.1: refine components and pipes architecture (29.09.2024)
   * ✅ DONE: implement fps counter in SnpCanvas
   * ✅ DONE: mermaid diagram for pipe structure 
-  * 🟦 TODO: there is setEnabled, start and stop - do we need both, probably delete enabled flag
-             and move all code to start, stop 
+  * ✅ DONE: there is setEnabled, start and stop - do we need both, probably delete enabled flag
+             and move all code to start, stop
+  * 
+  * 🟦 TODO: propagate properties (width, height) through pipe -> define it 
+  * 
   * 🟦 TODO: probably start/stop pipe components in reverse data flow direction
   * 🟦 TODO: what was streamId meant to do? -> define it
-  * 🟦 TODO: propagate properties (width, height) through pipe -> define it
+  
   * 🟦 TODO: compile and make run release mode with optimizations 
 
   * 🟦 TODO: verify component "compatibility" at runtime

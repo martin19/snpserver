@@ -98,6 +98,53 @@ graph TD;
     DecoderAudio-->SinkAudio;    
 ```
 
+### Protocol description
+
+#### Services announcement
+```mermaid
+sequenceDiagram    
+    participant snpclient
+    participant snpserver    
+    snpserver->>snpclient: StreamInfo 
+    Note right of snpclient: platforms <br> endpoints <br> encodings                     
+```
+
+#### Start a stream
+```mermaid
+sequenceDiagram    
+    participant snpclient
+    participant snpserver
+    snpclient->>snpserver: StreamChange    
+    Note right of snpclient: command: start <br> streamId <br> direction <br> endpoint <br> encoding <br> property_1 .. propertyN
+    snpserver->>snpclient: StreamChange  
+    Note right of snpclient: command: start if success <br> stop if failed  
+```
+
+#### Stop a stream
+```mermaid
+sequenceDiagram    
+    participant snpclient
+    participant snpserver
+    snpclient->>snpserver: StreamChange    
+    Note right of snpclient: command: stop <br> streamId
+```
+
+#### Streaming data
+```mermaid
+sequenceDiagram    
+    participant snpclient
+    participant snpserver
+    snpclient->>snpserver: StreamData
+    Note right of snpclient: streamId <br> streamData
+    snpclient->>snpserver: ...
+    snpclient->>snpserver: StreamData
+    
+    snpserver->>snpclient: StreamData
+    Note right of snpclient: streamId <br> streamData
+    snpserver->>snpclient: ...
+    snpserver->>snpclient: StreamData
+```
+
 ### drm-gl screen capture method
 
 The `SnpSourceGL` module implements a screen capture method which uses `libdrm` and `egl`.
