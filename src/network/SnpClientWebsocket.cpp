@@ -14,7 +14,6 @@ SnpClientWebsocket::~SnpClientWebsocket() {
     for (auto & it : pipes) {
         auto pipe = it.second;
         pipe->stop();
-        pipe->setEnabled(false);
         for(auto & pComponent : pipe->getComponents()) {
             delete pComponent;
         }
@@ -70,7 +69,6 @@ void SnpClientWebsocket::onStreamChangeInit(const snappyv1::StreamChange &msg) {
                                            msg.stream_endpoint(), msg.stream_encoding());
     uint32_t streamId = msg.id();
     if(pipe) {
-        pipe->setEnabled(true);
         pipes.insert(std::pair<uint32_t, SnpPipe*>(streamId, pipe));
         sendStreamChangeInitOk(streamId, pipe);
     }
@@ -100,7 +98,6 @@ void SnpClientWebsocket::onStreamChangeDestroy(const snappyv1::StreamChange &msg
     auto pipe = it->second;
     if(pipe) {
         pipe->stop();
-        pipe->setEnabled(false);
         pipes.erase(it);
     }
 }

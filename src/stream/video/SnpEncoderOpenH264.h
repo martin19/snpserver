@@ -19,7 +19,8 @@ public:
     explicit SnpEncoderOpenH264(const SnpEncoderOpenH264Options &options);
     ~SnpEncoderOpenH264() override;
 
-    void setEnabled(bool enabled) override;
+    bool start() override;
+    void stop() override;
 
 private:
     OpenH264Api openH264Api;

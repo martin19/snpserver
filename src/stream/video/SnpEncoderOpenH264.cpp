@@ -34,19 +34,21 @@ SnpEncoderOpenH264::~SnpEncoderOpenH264() {
     openH264EncoderDestroy();
 }
 
-void SnpEncoderOpenH264::setEnabled(bool enabled) {
-    SnpComponent::setEnabled(enabled);
-    if(enabled) {
-        auto *format = (StreamFormatVideo*)getInputPort(0)->sourcePort->getFormat();
-        width = format->width;
-        height = format->height;
+bool SnpEncoderOpenH264::start() {
+    SnpComponent::start();
+    auto *format = (StreamFormatVideo*)getInputPort(0)->sourcePort->getFormat();
+    width = format->width;
+    height = format->height;
 //        frameWidthMbAligned = (width + 15) & (~15);
 //        frameHeightMbAligned = (height + 15) & (~15);
 
-        openH264EncoderInit();
-    } else {
-        openH264EncoderDestroy();
-    }
+    openH264EncoderInit();
+    return true;
+}
+
+void SnpEncoderOpenH264::stop() {
+    SnpComponent::stop();
+    openH264EncoderDestroy();
 }
 
 void SnpEncoderOpenH264::onInputData(const uint8_t *data, uint32_t len, bool complete) {

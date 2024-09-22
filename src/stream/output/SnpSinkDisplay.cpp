@@ -19,7 +19,3 @@ bool SnpSinkDisplay::start() {
 void SnpSinkDisplay::stop() {
     SnpComponent::stop();
 }
-
-void SnpSinkDisplay::setEnabled(bool enabled) {
-    SnpComponent::setEnabled(enabled);
-}

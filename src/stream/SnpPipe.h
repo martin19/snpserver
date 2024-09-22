@@ -17,8 +17,6 @@ public:
     bool addComponent(SnpComponent *component);
     const std::vector<SnpComponent *> &getComponents() const;
     uint32_t framesPassed;
-    bool isEnabled() const;
-    void setEnabled(bool enabled);
     std::vector<SnpProperty*>* getProperties();
 
     snappyv1::StreamMedium getMedium() const;
@@ -34,7 +32,6 @@ protected:
     std::string componentName;
 private:
     std::vector<SnpComponent*> components;
-    bool enabled;
     bool running;
 
     snappyv1::StreamMedium medium;

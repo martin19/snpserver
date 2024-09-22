@@ -19,7 +19,6 @@ public:
 
     bool start() override;
     void stop() override;
-    void setEnabled(bool enabled) override;
 
 private:
     void createSocket();

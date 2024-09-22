@@ -4,30 +4,17 @@
 
 SnpPipe::SnpPipe(SnpPipeOptions &options) {
     componentName = options.name;
-    enabled = false;
     running = false;
     framesPassed = 0;
 }
 
-void SnpPipe::setEnabled(bool enabled) {
-    for(auto & pComponent : components) {
-        pComponent->setEnabled(enabled);
-    }
-    this->enabled = true;
-}
-
 bool SnpPipe::start() {
-    if(!this->isEnabled()) {
-        LOG_F(ERROR, "pipe \"%s\" cannot be started, it must be enabled first.", componentName.c_str());
-        return false;
-    } else {
-        LOG_F(INFO, "starting pipe \"%s\"", componentName.c_str());
-    }
+    LOG_F(INFO, "starting pipe \"%s\"", componentName.c_str());
     for(auto & pComponent : components) {
         pComponent->start();
     }
     this->running = true;
-    return false;
+    return true;
 }
 
 void SnpPipe::stop() {
@@ -45,10 +32,6 @@ bool SnpPipe::addComponent(SnpComponent *component) {
 
 const std::vector<SnpComponent *> &SnpPipe::getComponents() const {
     return components;
-}
-
-bool SnpPipe::isEnabled() const {
-    return enabled;
 }
 
 std::vector<SnpProperty*>* SnpPipe::getProperties() {

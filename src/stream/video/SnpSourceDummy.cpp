@@ -43,10 +43,6 @@ void SnpSourceDummy::stop() {
     SnpComponent::stop();
 }
 
-void SnpSourceDummy::setEnabled(bool enabled) {
-    SnpComponent::setEnabled(enabled);
-}
-
 void SnpSourceDummy::renderFrame() {
     width = getProperty("width")->getValueUint32();
     height = getProperty("height")->getValueUint32();

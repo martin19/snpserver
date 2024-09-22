@@ -58,23 +58,25 @@ SnpEncoderVaH264::~SnpEncoderVaH264() {
     //TODO:
 }
 
-void SnpEncoderVaH264::setEnabled(bool enabled) {
-    SnpComponent::setEnabled(enabled);
-    if(enabled) {
-        auto *format = (StreamFormatVideo*)getInputPort(0)->sourcePort->getFormat();
-        width = format->width;
-        height = format->height;
-        frameWidthMbAligned = (width + 15) & (~15);
-        frameHeightMbAligned = (height + 15) & (~15);
+bool SnpEncoderVaH264::start() {
+    SnpComponent::start();
+    auto *format = (StreamFormatVideo*)getInputPort(0)->sourcePort->getFormat();
+    width = format->width;
+    height = format->height;
+    frameWidthMbAligned = (width + 15) & (~15);
+    frameHeightMbAligned = (height + 15) & (~15);
 
-        VaH264EncoderInit();
-    } else {
-        VaH264EncoderDestroy();
-    }
+    VaH264EncoderInit();
+    return true;
+}
+
+void SnpEncoderVaH264::stop() {
+    SnpComponent::stop();
+    VaH264EncoderDestroy();
 }
 
 void SnpEncoderVaH264::onInputData(const uint8_t *data, uint32_t len, bool complete) {
-    if(!isEnabled()) return;
+    if(!isRunning()) return;
     this->VaH264EncoderEncode(data, len);
 }
 

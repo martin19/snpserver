@@ -18,21 +18,22 @@ SnpSinkFile::~SnpSinkFile() {
     //TODO:
 }
 
-void SnpSinkFile::setEnabled(bool enabled) {
-    SnpComponent::setEnabled(enabled);
-    if(enabled) {
-        output = std::ofstream(fileName, std::ofstream::binary);
-    } else {
-        output.close();
-    }
-}
-
-
 void SnpSinkFile::onInputData(const uint8_t * inputBuffer, int inputLen, bool complete) {
     buffer.insert(buffer.end(), inputBuffer, inputBuffer + inputLen);
     if(complete) {
         output.write((char*)buffer.data(), buffer.size());
         buffer.clear();
     }
+}
+
+bool SnpSinkFile::start() {
+    SnpComponent::start();
+    output = std::ofstream(fileName, std::ofstream::binary);
+    return true;
+}
+
+void SnpSinkFile::stop() {
+    SnpComponent::stop();
+    output.close();
 }
 

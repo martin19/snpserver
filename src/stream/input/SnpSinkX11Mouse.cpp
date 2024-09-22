@@ -22,13 +22,15 @@ SnpSinkX11Mouse::~SnpSinkX11Mouse() {
     destroyMouse();
 }
 
-void SnpSinkX11Mouse::setEnabled(bool enabled) {
-    SnpComponent::setEnabled(enabled);
-    if(enabled) {
-        initMouse();
-    } else {
-        destroyMouse();
-    }
+bool SnpSinkX11Mouse::start() {
+    SnpComponent::start();
+    initMouse();
+    return true;
+}
+
+void SnpSinkX11Mouse::stop() {
+    SnpComponent::stop();
+    destroyMouse();
 }
 
 //TODO: eliminate duplicate

@@ -14,20 +14,20 @@ SnpSourceX11Cursor::~SnpSourceX11Cursor() {
     destroyX11Client();
 }
 
-//TODO: move grabber thread in start/stop
-void SnpSourceX11Cursor::setEnabled(bool enabled) {
-    SnpComponent::setEnabled(enabled);
-    if(enabled) {
-        initX11Client();
-        grabberThread = std::thread{[this] () {
-            runX11Loop();
-        }};
-    } else {
-        grabberThread.detach();
-        destroyX11Client();
-    }
+bool SnpSourceX11Cursor::start() {
+    SnpComponent::start();
+    initX11Client();
+    grabberThread = std::thread{[this] () {
+        runX11Loop();
+    }};
+    return true;
 }
 
+void SnpSourceX11Cursor::stop() {
+    SnpComponent::stop();
+    grabberThread.detach();
+    destroyX11Client();
+}
 
 bool SnpSourceX11Cursor::initX11Client() {
     bool result = true;

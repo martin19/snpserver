@@ -18,13 +18,15 @@ SnpSinkX11Keyboard::~SnpSinkX11Keyboard() {
     destroyKeyboard();
 }
 
-void SnpSinkX11Keyboard::setEnabled(bool enabled) {
-    SnpComponent::setEnabled(enabled);
-    if(enabled) {
-        initKeyboard();
-    } else {
-        destroyKeyboard();
-    }
+bool SnpSinkX11Keyboard::start() {
+    SnpComponent::start();
+    initKeyboard();
+    return true;
+}
+
+void SnpSinkX11Keyboard::stop() {
+    SnpComponent::stop();
+    destroyKeyboard();
 }
 
 //TODO: eliminate duplicate

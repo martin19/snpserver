@@ -76,8 +76,27 @@ xhost +local:
 protoc --proto_path=proto --cpp_out=src/network proto/snappyv1.proto --experimental_allow_proto3_optional
 ```
 
-## Background on screen capturing methods
+## Background information
 
+### Application architecture
+
+#### Sample encoder chain (on server):
+```mermaid
+graph TD;
+SourceVideoDummy-->EncoderOpenH264;
+SourceAudioDummy-->EncoderAudio;
+EncoderOpenH264-->SinkNetworkTcp;
+EncoderAudio-->SinkNetworkTcp;
+```
+
+#### Sample decoder chain (on client):
+```mermaid
+graph TD;
+    SourceNetworkTcp-->DecoderOpenH264;
+    SourceNetworkTcp-->DecoderAudio;
+    DecoderOpenH264-->SinkDisplay;
+    DecoderAudio-->SinkAudio;    
+```
 
 ### drm-gl screen capture method
 

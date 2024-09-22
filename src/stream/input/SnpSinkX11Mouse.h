@@ -13,7 +13,8 @@ public:
     explicit SnpSinkX11Mouse(const SnpSinkX11MouseOptions &options);
     virtual ~SnpSinkX11Mouse();
 
-    void setEnabled(bool enabled) override;
+    bool start() override;
+    void stop() override;
 
 private:
     void onInputData(const uint8_t *data, int len, bool complete);

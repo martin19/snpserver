@@ -16,7 +16,6 @@ public:
 
     bool start() override;
     void stop() override;
-    void setEnabled(bool enabled) override;
     void setOnFrameCb(std::function<void()> cb) {
         onFrameCb = cb;
     }

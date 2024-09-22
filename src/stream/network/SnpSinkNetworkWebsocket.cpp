@@ -16,14 +16,16 @@ SnpSinkNetworkWebsocket::~SnpSinkNetworkWebsocket() {
     buffer.clear();
 }
 
-void SnpSinkNetworkWebsocket::setEnabled(bool enabled) {
-    SnpComponent::setEnabled(enabled);
-    if(enabled) {
-        buffer.reserve(SNP_SINK_NETWORK_BUFFER_SIZE);
-        buffer.clear();
-    } else {
-        buffer.clear();
-    }
+bool SnpSinkNetworkWebsocket::start() {
+    SnpComponent::start();
+    buffer.reserve(SNP_SINK_NETWORK_BUFFER_SIZE);
+    buffer.clear();
+    return true;
+}
+
+void SnpSinkNetworkWebsocket::stop() {
+    SnpComponent::stop();
+    buffer.clear();
 }
 
 void SnpSinkNetworkWebsocket::onInputData(const uint8_t * inputBuffer, int inputLen, bool complete) {

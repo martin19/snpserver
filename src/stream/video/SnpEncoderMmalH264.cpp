@@ -25,19 +25,21 @@ void SnpEncoderMmalH264::onInputData(const uint8_t *data, int len, bool complete
     mmalEncoderEncode();
 }
 
-void SnpEncoderMmalH264::setEnabled(bool enabled) {
-    SnpComponent::setEnabled(enabled);
-    if(enabled) {
-        auto *format = (StreamFormatVideo*)getInputPort(0)->sourcePort->getFormat();
-        width = format->width;
-        height = format->height;
-        frameWidthMbAligned = (width + 15) & (~15);
-        frameHeightMbAligned = (height + 15) & (~15);
+bool SnpEncoderMmalH264::start() {
+    SnpComponent::start();
+    auto *format = (StreamFormatVideo*)getInputPort(0)->sourcePort->getFormat();
+    width = format->width;
+    height = format->height;
+    frameWidthMbAligned = (width + 15) & (~15);
+    frameHeightMbAligned = (height + 15) & (~15);
 
-        mmalEncoderInit();
-    } else {
-        mmalEncoderDestroy();
-    }
+    mmalEncoderInit();
+    return true;
+}
+
+void SnpEncoderMmalH264::stop() {
+    SnpComponent::stop();
+    mmalEncoderDestroy();
 }
 
 void SnpEncoderMmalH264::mmalControlCallback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *buffer) {

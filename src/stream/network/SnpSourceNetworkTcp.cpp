@@ -18,24 +18,17 @@ SnpSourceNetworkTcp::~SnpSourceNetworkTcp() {
     buffer.clear();
 }
 
-void SnpSourceNetworkTcp::setEnabled(bool enabled) {
-    SnpComponent::setEnabled(enabled);
-    if(enabled) {
-        buffer.reserve(SNP_SOURCE_NETWORK_BUFFER_SIZE);
-        buffer.clear();
-    } else {
-        buffer.clear();
-    }
-}
-
 bool SnpSourceNetworkTcp::start() {
     SnpComponent::start();
+    buffer.reserve(SNP_SOURCE_NETWORK_BUFFER_SIZE);
+    buffer.clear();
     createSocket();
     return true;
 }
 
 void SnpSourceNetworkTcp::stop() {
     SnpComponent::stop();
+    buffer.clear();
     destroySocket();
 }
 

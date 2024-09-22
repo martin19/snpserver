@@ -13,7 +13,8 @@ class SnpSourceX11Cursor : public SnpComponent {
 public:
     explicit SnpSourceX11Cursor(const SnpSourceCursorOptions &options);
     ~SnpSourceX11Cursor() override;
-    void setEnabled(bool enabled) override;
+    bool start() override;
+    void stop() override;
 private:
 
     //x11 client state

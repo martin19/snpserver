@@ -485,20 +485,10 @@ void SnpSourceGL::captureFrame() {
     this->framesCaptured++;
 }
 
-void SnpSourceGL::setEnabled(bool enabled) {
-    SnpComponent::setEnabled(enabled);
-    if(enabled) {
-        initDrm();
-        initMmap();
-    } else {
-        destroyGL();
-        destroyMmap();
-        destroyDrm();
-    }
-}
-
 bool SnpSourceGL::start() {
     SnpComponent::start();
+    initDrm();
+    initMmap();
     LOG_F(INFO, "starting capturing thread");
     grabberThread = std::thread{[this] () {
         this->initGL();
@@ -520,5 +510,8 @@ bool SnpSourceGL::start() {
 
 void SnpSourceGL::stop() {
     SnpComponent::stop();
+    destroyGL();
+    destroyMmap();
+    destroyDrm();
     grabberThread.detach();
 }

@@ -1,7 +1,3 @@
-//
-// Created by marti on 25/06/2021.
-//
-
 #ifndef SNPSERVER_SNPSOURCEX11_H
 #define SNPSERVER_SNPSOURCEX11_H
 
@@ -22,10 +18,7 @@ public:
     explicit SnpSourceX11(const SnpSourceX11Options &options);
     ~SnpSourceX11() override;
 
-    void setEnabled(bool enabled) override;
-
     bool start() override;
-
     void stop() override;
 
     uint32_t width;

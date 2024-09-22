@@ -40,19 +40,18 @@ SnpDecoderOpenH264::~SnpDecoderOpenH264() {
     openH264DecoderDestroy();
 }
 
-void SnpDecoderOpenH264::setEnabled(bool enabled) {
-    SnpComponent::setEnabled(enabled);
-    if(enabled) {
-        //auto *format = (StreamFormatVideo*)getOutputPort(0)->sourcePort->getFormat();
-//        width = format->width;
-//        height = format->height;
-        width = 1920;
-        height = 1080;
-        bpp = 4;
-        openH264DecoderInit();
-    } else {
-        openH264DecoderDestroy();
-    }
+bool SnpDecoderOpenH264::start() {
+    SnpComponent::start();
+    width = 1920;
+    height = 1080;
+    bpp = 4;
+    openH264DecoderInit();
+    return true;
+}
+
+void SnpDecoderOpenH264::stop() {
+    SnpComponent::stop();
+    openH264DecoderDestroy();
 }
 
 void SnpDecoderOpenH264::onInputData(const uint8_t *data, uint32_t len, bool complete) {

@@ -73,27 +73,9 @@ bool SnpComponent::isRunning() const {
     return running;
 }
 
-bool SnpComponent::isEnabled() const {
-    return enabled;
-}
-
-void SnpComponent::setEnabled(bool enabled)  {
-    if(enabled) {
-        LOG_F(INFO, "enabling component \"%s\"", componentName.c_str());
-    } else {
-        LOG_F(INFO, "disabling component \"%s\"", componentName.c_str());
-    }
-    this->enabled = enabled;
-}
-
 bool SnpComponent::start() {
     LOG_F(INFO, "starting component \"%s\"", componentName.c_str());
-    if(!this->isEnabled()) {
-        LOG_F(ERROR, "Component \"%s\" cannot be started because it has not been enabled.", componentName.c_str());
-        return false;
-    } else {
-        running = true;
-    }
+    running = true;
     return true;
 }
 

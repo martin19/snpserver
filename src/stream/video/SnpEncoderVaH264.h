@@ -19,7 +19,8 @@ public:
     explicit SnpEncoderVaH264(const SnpEncoderVaH264Options &options);
     ~SnpEncoderVaH264() override;
 
-    void setEnabled(bool enabled) override;
+    bool start() override;
+    void stop() override;
 
 private:
     uint32_t width;

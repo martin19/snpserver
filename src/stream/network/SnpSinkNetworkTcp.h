@@ -20,7 +20,6 @@ public:
 
     bool start() override;
     void stop() override;
-    void setEnabled(bool enabled) override;
 
 private:
     void onInputData(const uint8_t *data, int len, bool complete);

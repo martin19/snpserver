@@ -35,10 +35,7 @@ public:
     explicit SnpSourceGL(const SnpSourceGLOptions &options);
     ~SnpSourceGL() override;
 
-    void setEnabled(bool enabled) override;
-
     bool start() override;
-
     void stop() override;
 
     //TODO: how to pass these forward (in a generic way) to encoder?

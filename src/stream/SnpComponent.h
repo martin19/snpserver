@@ -24,8 +24,6 @@ public:
     };
     virtual ~SnpComponent();
 
-    virtual void setEnabled(bool enabled);
-    bool isEnabled() const;
     bool isRunning() const;
     virtual bool start();
     virtual void stop();

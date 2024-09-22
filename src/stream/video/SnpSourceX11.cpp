@@ -20,17 +20,9 @@ SnpSourceX11::~SnpSourceX11() {
     destroyX11();
 }
 
-void SnpSourceX11::setEnabled(bool enabled) {
-    SnpComponent::setEnabled(enabled);
-    if(enabled) {
-        initX11();
-    } else {
-        destroyX11();
-    }
-}
-
 bool SnpSourceX11::start() {
     SnpComponent::start();
+    initX11();
     LOG_F(INFO, "starting capturing thread");
     grabberThread = std::thread{[this] () {
 #pragma clang diagnostic push
@@ -49,6 +41,7 @@ bool SnpSourceX11::start() {
 
 void SnpSourceX11::stop() {
     SnpComponent::stop();
+    destroyX11();
     grabberThread.detach();
 }
 

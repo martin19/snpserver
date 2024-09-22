@@ -31,7 +31,6 @@ class SnpSourceDummy : public SnpComponent {
 public:
     explicit SnpSourceDummy(const SnpSourceDummyOptions &options);
     ~SnpSourceDummy() override;
-    void setEnabled(bool enabled) override;
     bool start() override;
     void stop() override;
 private:

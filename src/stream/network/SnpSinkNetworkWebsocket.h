@@ -14,7 +14,8 @@ public:
     explicit SnpSinkNetworkWebsocket(const SnpSinkNetworkOptions &options);
     ~SnpSinkNetworkWebsocket() override;
 
-    void setEnabled(bool enabled) override;
+    bool start() override;
+    void stop() override;
 
 private:
     void onInputData(const uint8_t *data, int len, bool complete);

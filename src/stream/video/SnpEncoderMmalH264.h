@@ -26,7 +26,8 @@ public:
     explicit SnpEncoderMmalH264(const SnpEncoderMmalH264Options &options);
     ~SnpEncoderMmalH264() override;
 
-    void setEnabled(bool enabled) override;
+    bool start() override;
+    void stop() override;
 
 private:
     uint32_t width;

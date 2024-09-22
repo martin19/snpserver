@@ -27,7 +27,6 @@ int runClient() {
                                            snappyv1::STREAM_DIRECTION_INPUT,
                                            snappyv1::STREAM_ENDPOINT_DISPLAY,
                                            snappyv1::STREAM_ENCODING_H264_OPENH264);
-    videoPipe->setEnabled(true);
     videoPipe->start();
 
     //paint on every frame

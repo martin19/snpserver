@@ -19,24 +19,17 @@ SnpSinkNetworkTcp::~SnpSinkNetworkTcp() {
     buffer.clear();
 }
 
-void SnpSinkNetworkTcp::setEnabled(bool enabled) {
-    SnpComponent::setEnabled(enabled);
-    if(enabled) {
-        buffer.reserve(SNP_SINK_NETWORK_BUFFER_SIZE);
-        buffer.clear();
-    } else {
-        buffer.clear();
-    }
-}
-
 bool SnpSinkNetworkTcp::start() {
     SnpComponent::start();
+    buffer.reserve(SNP_SINK_NETWORK_BUFFER_SIZE);
+    buffer.clear();
     createSocket();
     return true;
 }
 
 void SnpSinkNetworkTcp::stop() {
     SnpComponent::stop();
+    buffer.clear();
     destroySocket();
 }
 
