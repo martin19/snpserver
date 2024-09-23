@@ -6,12 +6,6 @@ art hardware accelerated compression algorithms built into modern cpu/gpu/socs. 
 also experimental client component (SnpClientWebsocket) is available at 
 https://github.com/martin19/snpclient.
 
-!!! This project is in research and development and no releases have been scheduled. !!!
-
-Do not expect anything to work yet.
-
-[![video of session on raspberry pi](docs/tux.png)](https://youtu.be/zPWT9sXT9mE)
-
 ### Supported platforms
 
 As of now the following components are implemented:
@@ -105,8 +99,8 @@ graph TD;
 sequenceDiagram    
     participant snpclient
     participant snpserver    
-    snpserver->>snpclient: StreamInfo 
-    Note right of snpclient: platforms <br> endpoints <br> encodings                     
+    snpserver->>snpclient: Capabilities 
+    Note right of snpclient: platform <br> components                     
 ```
 
 #### Start a stream
@@ -114,10 +108,10 @@ sequenceDiagram
 sequenceDiagram    
     participant snpclient
     participant snpserver
-    snpclient->>snpserver: StreamChange    
-    Note right of snpclient: command: start <br> streamId <br> direction <br> endpoint <br> encoding <br> property_1 .. propertyN
-    snpserver->>snpclient: StreamChange  
-    Note right of snpclient: command: start if success <br> stop if failed  
+    snpclient->>snpserver: Setup    
+    Note right of snpclient: command: start <br> streamId <br> components
+    snpserver->>snpclient: Setup  
+    Note right of snpclient: command: start if success <br> command: stop if fail  
 ```
 
 #### Stop a stream
@@ -125,7 +119,7 @@ sequenceDiagram
 sequenceDiagram    
     participant snpclient
     participant snpserver
-    snpclient->>snpserver: StreamChange    
+    snpclient->>snpserver: Setup    
     Note right of snpclient: command: stop <br> streamId
 ```
 

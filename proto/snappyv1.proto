@@ -2,8 +2,6 @@ syntax = "proto3";
 
 package snappyv1;
 
-//server -> client
-
 enum Platform {
     PLATFORM_WINDOWS = 0;
     PLATFORM_LINUX = 1;
@@ -12,43 +10,28 @@ enum Platform {
     PLATFORM_ANDROID = 4;
 }
 
-enum StreamMedium {
-    STREAM_MEDIUM_VIDEO = 0;
-    STREAM_MEDIUM_AUDIO = 1;
-    STREAM_MEDIUM_PERIPHERAL = 2;
-}
-
-enum StreamEndpoint {
-    STREAM_ENDPOINT_DRM = 0;
-    STREAM_ENDPOINT_X11 = 1;
-    STREAM_ENDPOINT_WAYLAND = 2;
-    STREAM_ENDPOINT_CAMERA = 3;
-    STREAM_ENDPOINT_VIDEO_DUMMY = 4;
-    STREAM_ENDPOINT_DISPLAY = 5;
-    STREAM_ENDPOINT_KEYBOARD = 6;
-    STREAM_ENDPOINT_POINTER = 7;
-    STREAM_ENDPOINT_CURSOR = 8;
-}
-
-enum StreamDirection {
-    STREAM_DIRECTION_INPUT = 0;
-    STREAM_DIRECTION_OUTPUT = 1;
-}
-
-enum StreamEncoding {
-    STREAM_ENCODING_H264_OPENH264 = 0;
-    STREAM_ENCODING_H264_HARDWARE = 1;
-    STREAM_ENCODING_MP3_SOFTWARE = 2;
-    STREAM_ENCODING_MP3_HARDWARE = 3;
+enum ComponentType {
+    COMPONENT_CAPTURE_VIDEO_DRM = 0;
+    COMPONENT_CAPTURE_VIDEO_X11 = 1;
+    COMPONENT_CAPTURE_VIDEO_WAYLAND = 2;
+    COMPONENT_CAPTURE_VIDEO_V4L = 3;
+    COMPONENT_CAPTURE_VIDEO_DUMMY = 4;
+    COMPONENT_OUTPUT_VIDEO_DISPLAY = 5;
+    COMPONENT_OUTPUT_KEYBOARD_X11 = 6;
+    COMPONENT_OUTPUT_POINTER_X11 = 7;
+    COMPONENT_OUTPUT_CURSOR_X11 = 8;
+    COMPONENT_ENCODER_OPENH264 = 9;
+    COMPONENT_DECODER_OPENH264 = 10;
 }
 
 enum Command {
-    COMMAND_INIT = 0;
-    COMMAND_INIT_OK = 1;
-    COMMAND_START = 2;
-    COMMAND_STOP = 3;
-    COMMAND_SET_PARAMETER = 4;
-    COMMAND_DESTROY = 5;
+    COMMAND_START = 0;
+    COMMAND_STOP = 1;
+
+    //COMMAND_INIT = 0;
+    //COMMAND_INIT_OK = 1;
+    //COMMAND_SET_PARAMETER = 4;
+    //COMMAND_DESTROY = 5;
 }
 
 enum PropertyType {
@@ -90,50 +73,49 @@ message Property {
     }
 }
 
-message StreamInfo {
-    Platform platform = 1;
-    repeated StreamEndpoint stream_endpoints = 2;
-    repeated StreamEncoding stream_encodings = 3;
+message Component {
+    ComponentType componentType = 1;
+    repeated Property properties = 2;
 }
 
-message StreamChange {
+message Capabilities {
+    Platform platform = 1;
+    repeated Component components = 2;
+}
+
+message Setup {
     uint32 id = 1;
     Command command = 2;
-    StreamMedium stream_medium = 3;
-    StreamDirection stream_direction = 4;
-    StreamEndpoint stream_endpoint = 5;
-    StreamEncoding stream_encoding = 6;
-    repeated Property property = 7;
+    repeated Component pipe = 3;
 }
 
-//message FrameTiming {
-//    uint32 capture_ts_start_ms = 2;
-//    uint32 capture_ts_end_ms = 3;
-//    uint32 encode_ts_start_ms = 4;
-//    uint32 encode_ts_end_ms = 5;
-//    uint32 send_ts_start_ms = 6;
-//    uint32 send_ts_end_ms = 7;
-//}
-
-message StreamData {
+message Data {
     uint32 stream_id = 1;
-    bytes payload = 2;
-//    optional FrameTiming frame_timing = 3;
+    oneof data {
+        StreamDataRaw dataRaw = 2;
+        StreamDataPointer dataPointer = 3;
+        StreamDataKeyboard dataKeyboard = 4;
+        StreamDataCursor dataCursor = 5;
+    }
 }
 
 enum MessageType {
-    MESSAGE_TYPE_STREAM_CHANGE = 0;
-    MESSAGE_TYPE_STREAM_DATA = 1;
-    MESSAGE_TYPE_STREAM_INFO = 2;
+    MESSAGE_TYPE_COMMAND = 0;
+    MESSAGE_TYPE_DATA = 1;
+    MESSAGE_TYPE_CAPABILITIES = 2;
 }
 
 message Message {
     MessageType type = 1;
     oneof message {
-        StreamChange stream_change = 2;
-        StreamData stream_data = 3;
-        StreamInfo stream_info = 4;
+        Capabilities capabilities = 2;
+        Setup setup = 3;
+        Data data = 4;
     }
+}
+
+message StreamDataRaw {
+    bytes payload = 1;
 }
 
 message StreamDataPointer {
@@ -155,3 +137,13 @@ message StreamDataCursor {
     uint32 hoty = 4;
     bytes image = 5;
 }
+
+//message FrameTiming {
+//    uint32 capture_ts_start_ms = 2;
+//    uint32 capture_ts_end_ms = 3;
+//    uint32 encode_ts_start_ms = 4;
+//    uint32 encode_ts_end_ms = 5;
+//    uint32 send_ts_start_ms = 6;
+//    uint32 send_ts_end_ms = 7;
+//    optional FrameTiming frame_timing = 3;
+//}
