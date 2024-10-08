@@ -8,7 +8,7 @@ https://github.com/martin19/snpclient.
 
 ### Supported platforms
 
-As of now the following components are implemented:
+As of now the following localComponents are implemented:
 
 * keyboard sharing
 * mouse sharing
@@ -100,7 +100,7 @@ sequenceDiagram
     participant snpclient
     participant snpserver    
     snpserver->>snpclient: Capabilities 
-    Note right of snpclient: platform <br> components                     
+    Note right of snpclient: platform <br> localComponents                     
 ```
 
 #### Start a stream
@@ -109,7 +109,7 @@ sequenceDiagram
     participant snpclient
     participant snpserver
     snpclient->>snpserver: Setup    
-    Note right of snpclient: command: start <br> streamId <br> components
+    Note right of snpclient: command: start <br> streamId <br> localComponents
     snpserver->>snpclient: Setup  
     Note right of snpclient: command: start if success <br> command: stop if fail  
 ```

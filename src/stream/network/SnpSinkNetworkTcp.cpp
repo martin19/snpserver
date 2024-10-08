@@ -2,6 +2,7 @@
 #include "sockets.h"
 #include "util/loguru.h"
 #include "network/snappyv1.pb.h"
+#include "stream/SnpComponentRegistry.h"
 
 #define SNP_SINK_NETWORK_BUFFER_SIZE 500000
 
@@ -41,30 +42,10 @@ void SnpSinkNetworkTcp::onInputData(const uint8_t * inputBuffer, int inputLen, b
     buffer.insert(buffer.end(), inputBuffer, inputBuffer + inputLen);
     if(complete) {
         setTimestampStartMs(TimeUtil::getTimeNowMs());
-        sendMessage();
+        sendDataMessage();
         setTimestampEndMs(TimeUtil::getTimeNowMs());
         buffer.clear();
     }
-}
-
-bool SnpSinkNetworkTcp::sendMessage() {
-    snappyv1::Message message;
-    snappyv1::StreamData *streamData = new snappyv1::StreamData();
-
-    streamData->set_stream_id(1);
-    std::basic_string<char> payloadString((const char *)(buffer.data()), buffer.size());
-    streamData->set_payload(payloadString);
-    message.set_type(snappyv1::MESSAGE_TYPE_STREAM_DATA);
-    message.set_allocated_stream_data(streamData);
-    std::basic_string<char> messageString = message.SerializeAsString();
-    int result = send(clientSocket, messageString.c_str(), (int)messageString.size(), 0);
-    LOG_F(INFO, "sent data len=%d", buffer.size());
-    if(result == SOCKET_ERROR) {
-        LOG_F(ERROR, "failed to write to socket (error=%s)", strerror(errno));
-        clientConnected = false;
-        return false;
-    }
-    return true;
 }
 
 void SnpSinkNetworkTcp::createSocket() {
@@ -119,6 +100,7 @@ void SnpSinkNetworkTcp::createSocket() {
         }
         LOG_F(INFO, "client connected.");
         clientConnected = true;
+        sendCapabilitiesMessage();
     }
 }
 
@@ -126,4 +108,49 @@ void SnpSinkNetworkTcp::destroySocket() const {
     closesocket(listenSocket);
     sock_cleanup();
     //TODO: how to stop listen thread and clean it up?
+}
+
+bool SnpSinkNetworkTcp::sendDataMessage() {
+    snappyv1::Message message;
+    message.set_type(snappyv1::MESSAGE_TYPE_DATA);
+    auto data = message.data();
+    auto dataRaw = data.dataraw();
+    std::basic_string<char> payloadString((const char *)(buffer.data()), buffer.size());
+    dataRaw.set_payload(payloadString);
+    data.set_stream_id(1);
+
+    //send message on socket
+    std::basic_string<char> messageString = message.SerializeAsString();
+    int result = send(clientSocket, messageString.c_str(), (int)messageString.size(), 0);
+    LOG_F(INFO, "sent data len=%d", buffer.size());
+    if(result == SOCKET_ERROR) {
+        LOG_F(ERROR, "failed to write to socket (error=%s)", strerror(errno));
+        clientConnected = false;
+        return false;
+    }
+    return true;
+}
+
+bool SnpSinkNetworkTcp::sendCapabilitiesMessage() {
+    snappyv1::Message message;
+    message.set_type(snappyv1::MESSAGE_TYPE_CAPABILITIES);
+    auto capabilities = message.mutable_capabilities();
+    capabilities->set_platform(snappyv1::PLATFORM_WINDOWS);
+    SnpComponentRegistry snpComponentRegistry;
+    auto registeredComponents = snpComponentRegistry.getLocalComponents();
+    for (const auto &registeredComponent: registeredComponents) {
+        auto component = capabilities->add_component();
+        component->set_componenttype(registeredComponent->componenttype());
+    }
+
+    //send message on socket
+    std::basic_string<char> messageString = message.SerializeAsString();
+    int result = send(clientSocket, messageString.c_str(), (int)messageString.size(), 0);
+    LOG_F(INFO, "sent data len=%d", buffer.size());
+    if(result == SOCKET_ERROR) {
+        LOG_F(ERROR, "failed to write to socket (error=%s)", strerror(errno));
+        clientConnected = false;
+        return false;
+    }
+    return true;
 }

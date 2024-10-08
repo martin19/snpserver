@@ -9,6 +9,7 @@ SnpSourceNetworkTcp::SnpSourceNetworkTcp(const SnpSourceNetworkTcpOptions &optio
     streamId = options.streamId;
     host = options.host;
     port = options.port;
+    handleCapabilitiesMessageCb = options.handleCapabilitiesMessageCb;
     connected = false;
 
     addOutputPort(new SnpPort());
@@ -92,16 +93,16 @@ bool SnpSourceNetworkTcp::dispatch() {
     bool result = message.ParseFromArray(buffer.data(), (int)buffer.size());
     if(!result) return false;
     switch(message.type()) {
-        case snappyv1::MESSAGE_TYPE_STREAM_CHANGE:
-            LOG_F(WARNING, "MESSAGE_TYPE_STREAM_CHANGE not implemented, skipping.");
+        case snappyv1::MESSAGE_TYPE_COMMAND:
+            LOG_F(WARNING, "MESSAGE_TYPE_COMMAND not implemented, skipping.");
             return true;
-        case snappyv1::MESSAGE_TYPE_STREAM_DATA:
-            outputPort->onData((const uint8_t*)message.stream_data().payload().c_str(),
-                               message.stream_data().payload().size(),
+        case snappyv1::MESSAGE_TYPE_DATA:
+            outputPort->onData((const uint8_t*)message.data().dataraw().payload().c_str(),
+                               message.data().dataraw().payload().size(),
                                true);
             return true;
-        case snappyv1::MESSAGE_TYPE_STREAM_INFO:
-            LOG_F(WARNING, "MESSAGE_TYPE_STREAM_INFO not implemented, skipping.");
+        case snappyv1::MESSAGE_TYPE_CAPABILITIES:
+            handleCapabilitiesMessageCb(&message);
             return true;
     }
     return true;

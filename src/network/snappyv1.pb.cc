@@ -97,7 +97,7 @@ struct PropertyDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 PropertyDefaultTypeInternal _Property_default_instance_;
 PROTOBUF_CONSTEXPR Component::Component(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.properties_)*/{}
+    /*decltype(_impl_.property_)*/{}
   , /*decltype(_impl_.componenttype_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct ComponentDefaultTypeInternal {
@@ -111,7 +111,7 @@ struct ComponentDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 ComponentDefaultTypeInternal _Component_default_instance_;
 PROTOBUF_CONSTEXPR Capabilities::Capabilities(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.components_)*/{}
+    /*decltype(_impl_.component_)*/{}
   , /*decltype(_impl_.platform_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct CapabilitiesDefaultTypeInternal {
@@ -293,7 +293,7 @@ const uint32_t TableStruct_snappyv1_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::snappyv1::Component, _impl_.componenttype_),
-  PROTOBUF_FIELD_OFFSET(::snappyv1::Component, _impl_.properties_),
+  PROTOBUF_FIELD_OFFSET(::snappyv1::Component, _impl_.property_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::snappyv1::Capabilities, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -301,7 +301,7 @@ const uint32_t TableStruct_snappyv1_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::snappyv1::Capabilities, _impl_.platform_),
-  PROTOBUF_FIELD_OFFSET(::snappyv1::Capabilities, _impl_.components_),
+  PROTOBUF_FIELD_OFFSET(::snappyv1::Capabilities, _impl_.component_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::snappyv1::Setup, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -422,55 +422,60 @@ const char descriptor_table_protodef_snappyv1_2eproto[] PROTOBUF_SECTION_VARIABL
   "\n\003min\030\002 \001(\rH\000\210\001\001\022\020\n\003max\030\003 \001(\rH\001\210\001\001B\006\n\004_m"
   "inB\006\n\004_max\032P\n\013ValueDouble\022\r\n\005value\030\001 \001(\001"
   "\022\020\n\003min\030\002 \001(\001H\000\210\001\001\022\020\n\003max\030\003 \001(\001H\001\210\001\001B\006\n\004"
-  "_minB\006\n\004_maxB\007\n\005value\"c\n\tComponent\022.\n\rco"
+  "_minB\006\n\004_maxB\007\n\005value\"a\n\tComponent\022.\n\rco"
   "mponentType\030\001 \001(\0162\027.snappyv1.ComponentTy"
-  "pe\022&\n\nproperties\030\002 \003(\0132\022.snappyv1.Proper"
-  "ty\"]\n\014Capabilities\022$\n\010platform\030\001 \001(\0162\022.s"
-  "nappyv1.Platform\022\'\n\ncomponents\030\002 \003(\0132\023.s"
-  "nappyv1.Component\"Z\n\005Setup\022\n\n\002id\030\001 \001(\r\022\""
-  "\n\007command\030\002 \001(\0162\021.snappyv1.Command\022!\n\004pi"
-  "pe\030\003 \003(\0132\023.snappyv1.Component\"\351\001\n\004Data\022\021"
-  "\n\tstream_id\030\001 \001(\r\022*\n\007dataRaw\030\002 \001(\0132\027.sna"
-  "ppyv1.StreamDataRawH\000\0222\n\013dataPointer\030\003 \001"
-  "(\0132\033.snappyv1.StreamDataPointerH\000\0224\n\014dat"
-  "aKeyboard\030\004 \001(\0132\034.snappyv1.StreamDataKey"
-  "boardH\000\0220\n\ndataCursor\030\005 \001(\0132\032.snappyv1.S"
-  "treamDataCursorH\000B\006\n\004data\"\253\001\n\007Message\022#\n"
-  "\004type\030\001 \001(\0162\025.snappyv1.MessageType\022.\n\014ca"
-  "pabilities\030\002 \001(\0132\026.snappyv1.Capabilities"
-  "H\000\022 \n\005setup\030\003 \001(\0132\017.snappyv1.SetupH\000\022\036\n\004"
-  "data\030\004 \001(\0132\016.snappyv1.DataH\000B\t\n\007message\""
-  " \n\rStreamDataRaw\022\017\n\007payload\030\001 \001(\014\"K\n\021Str"
-  "eamDataPointer\022\014\n\004absx\030\001 \001(\r\022\014\n\004absy\030\002 \001"
-  "(\r\022\021\n\004mask\030\003 \001(\005H\000\210\001\001B\007\n\005_mask\"C\n\022Stream"
-  "DataKeyboard\022\016\n\006keysym\030\001 \001(\r\022\017\n\007keycode\030"
-  "\002 \001(\r\022\014\n\004down\030\003 \001(\010\"\\\n\020StreamDataCursor\022"
-  "\r\n\005width\030\001 \001(\r\022\016\n\006height\030\002 \001(\r\022\014\n\004hotx\030\003"
-  " \001(\r\022\014\n\004hoty\030\004 \001(\r\022\r\n\005image\030\005 \001(\014*v\n\010Pla"
-  "tform\022\024\n\020PLATFORM_WINDOWS\020\000\022\022\n\016PLATFORM_"
-  "LINUX\020\001\022\022\n\016PLATFORM_MACOS\020\002\022\026\n\022PLATFORM_"
-  "RASPBERRY\020\003\022\024\n\020PLATFORM_ANDROID\020\004*\204\003\n\rCo"
-  "mponentType\022\037\n\033COMPONENT_CAPTURE_VIDEO_D"
-  "RM\020\000\022\037\n\033COMPONENT_CAPTURE_VIDEO_X11\020\001\022#\n"
-  "\037COMPONENT_CAPTURE_VIDEO_WAYLAND\020\002\022\037\n\033CO"
-  "MPONENT_CAPTURE_VIDEO_V4L\020\003\022!\n\035COMPONENT"
-  "_CAPTURE_VIDEO_DUMMY\020\004\022\"\n\036COMPONENT_OUTP"
-  "UT_VIDEO_DISPLAY\020\005\022!\n\035COMPONENT_OUTPUT_K"
-  "EYBOARD_X11\020\006\022 \n\034COMPONENT_OUTPUT_POINTE"
-  "R_X11\020\007\022\037\n\033COMPONENT_OUTPUT_CURSOR_X11\020\010"
-  "\022\036\n\032COMPONENT_ENCODER_OPENH264\020\t\022\036\n\032COMP"
-  "ONENT_DECODER_OPENH264\020\n*.\n\007Command\022\021\n\rC"
-  "OMMAND_START\020\000\022\020\n\014COMMAND_STOP\020\001*t\n\014Prop"
-  "ertyType\022\030\n\024PROPERTY_TYPE_STRING\020\000\022\026\n\022PR"
-  "OPERTY_TYPE_BOOL\020\001\022\030\n\024PROPERTY_TYPE_UINT"
-  "32\020\002\022\030\n\024PROPERTY_TYPE_DOUBLE\020\003*]\n\013Messag"
-  "eType\022\030\n\024MESSAGE_TYPE_COMMAND\020\000\022\025\n\021MESSA"
-  "GE_TYPE_DATA\020\001\022\035\n\031MESSAGE_TYPE_CAPABILIT"
-  "IES\020\002b\006proto3"
+  "pe\022$\n\010property\030\002 \003(\0132\022.snappyv1.Property"
+  "\"\\\n\014Capabilities\022$\n\010platform\030\001 \001(\0162\022.sna"
+  "ppyv1.Platform\022&\n\tcomponent\030\002 \003(\0132\023.snap"
+  "pyv1.Component\"Z\n\005Setup\022\n\n\002id\030\001 \001(\r\022\"\n\007c"
+  "ommand\030\002 \001(\0162\021.snappyv1.Command\022!\n\004pipe\030"
+  "\003 \003(\0132\023.snappyv1.Component\"\351\001\n\004Data\022\021\n\ts"
+  "tream_id\030\001 \001(\r\022*\n\007dataRaw\030\002 \001(\0132\027.snappy"
+  "v1.StreamDataRawH\000\0222\n\013dataPointer\030\003 \001(\0132"
+  "\033.snappyv1.StreamDataPointerH\000\0224\n\014dataKe"
+  "yboard\030\004 \001(\0132\034.snappyv1.StreamDataKeyboa"
+  "rdH\000\0220\n\ndataCursor\030\005 \001(\0132\032.snappyv1.Stre"
+  "amDataCursorH\000B\006\n\004data\"\253\001\n\007Message\022#\n\004ty"
+  "pe\030\001 \001(\0162\025.snappyv1.MessageType\022.\n\014capab"
+  "ilities\030\002 \001(\0132\026.snappyv1.CapabilitiesH\000\022"
+  " \n\005setup\030\003 \001(\0132\017.snappyv1.SetupH\000\022\036\n\004dat"
+  "a\030\004 \001(\0132\016.snappyv1.DataH\000B\t\n\007message\" \n\r"
+  "StreamDataRaw\022\017\n\007payload\030\001 \001(\014\"K\n\021Stream"
+  "DataPointer\022\014\n\004absx\030\001 \001(\r\022\014\n\004absy\030\002 \001(\r\022"
+  "\021\n\004mask\030\003 \001(\005H\000\210\001\001B\007\n\005_mask\"C\n\022StreamDat"
+  "aKeyboard\022\016\n\006keysym\030\001 \001(\r\022\017\n\007keycode\030\002 \001"
+  "(\r\022\014\n\004down\030\003 \001(\010\"\\\n\020StreamDataCursor\022\r\n\005"
+  "width\030\001 \001(\r\022\016\n\006height\030\002 \001(\r\022\014\n\004hotx\030\003 \001("
+  "\r\022\014\n\004hoty\030\004 \001(\r\022\r\n\005image\030\005 \001(\014*v\n\010Platfo"
+  "rm\022\024\n\020PLATFORM_WINDOWS\020\000\022\022\n\016PLATFORM_LIN"
+  "UX\020\001\022\022\n\016PLATFORM_MACOS\020\002\022\026\n\022PLATFORM_RAS"
+  "PBERRY\020\003\022\024\n\020PLATFORM_ANDROID\020\004*\327\004\n\rCompo"
+  "nentType\022\037\n\033COMPONENT_CAPTURE_VIDEO_DRM\020"
+  "\000\022\037\n\033COMPONENT_CAPTURE_VIDEO_X11\020\001\022#\n\037CO"
+  "MPONENT_CAPTURE_VIDEO_WAYLAND\020\002\022\037\n\033COMPO"
+  "NENT_CAPTURE_VIDEO_V4L\020\003\022!\n\035COMPONENT_CA"
+  "PTURE_VIDEO_DUMMY\020\004\022 \n\034COMPONENT_INPUT_K"
+  "EYBOARD_X11\020\005\022\037\n\033COMPONENT_INPUT_POINTER"
+  "_X11\020\006\022\036\n\032COMPONENT_INPUT_CURSOR_X11\020\007\022\""
+  "\n\036COMPONENT_OUTPUT_VIDEO_DISPLAY\020\010\022!\n\035CO"
+  "MPONENT_OUTPUT_KEYBOARD_X11\020\t\022 \n\034COMPONE"
+  "NT_OUTPUT_POINTER_X11\020\n\022\037\n\033COMPONENT_OUT"
+  "PUT_CURSOR_X11\020\013\022\036\n\032COMPONENT_ENCODER_OP"
+  "ENH264\020\014\022\036\n\032COMPONENT_DECODER_OPENH264\020\r"
+  "\022\033\n\027COMPONENT_ENCODER_INTEL\020\016\022\033\n\027COMPONE"
+  "NT_DECODER_INTEL\020\017\022\031\n\025COMPONENT_ENCODER_"
+  "AMD\020\020\022\031\n\025COMPONENT_DECODER_AMD\020\021*.\n\007Comm"
+  "and\022\021\n\rCOMMAND_START\020\000\022\020\n\014COMMAND_STOP\020\001"
+  "*t\n\014PropertyType\022\030\n\024PROPERTY_TYPE_STRING"
+  "\020\000\022\026\n\022PROPERTY_TYPE_BOOL\020\001\022\030\n\024PROPERTY_T"
+  "YPE_UINT32\020\002\022\030\n\024PROPERTY_TYPE_DOUBLE\020\003*]"
+  "\n\013MessageType\022\030\n\024MESSAGE_TYPE_COMMAND\020\000\022"
+  "\025\n\021MESSAGE_TYPE_DATA\020\001\022\035\n\031MESSAGE_TYPE_C"
+  "APABILITIES\020\002b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_snappyv1_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_snappyv1_2eproto = {
-    false, false, 2293, descriptor_table_protodef_snappyv1_2eproto,
+    false, false, 2501, descriptor_table_protodef_snappyv1_2eproto,
     "snappyv1.proto",
     &descriptor_table_snappyv1_2eproto_once, nullptr, 0, 14,
     schemas, file_default_instances, TableStruct_snappyv1_2eproto::offsets,
@@ -518,6 +523,13 @@ bool ComponentType_IsValid(int value) {
     case 8:
     case 9:
     case 10:
+    case 11:
+    case 12:
+    case 13:
+    case 14:
+    case 15:
+    case 16:
+    case 17:
       return true;
     default:
       return false;
@@ -2004,7 +2016,7 @@ Component::Component(const Component& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   Component* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.properties_){from._impl_.properties_}
+      decltype(_impl_.property_){from._impl_.property_}
     , decltype(_impl_.componenttype_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
@@ -2018,7 +2030,7 @@ inline void Component::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.properties_){arena}
+      decltype(_impl_.property_){arena}
     , decltype(_impl_.componenttype_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
@@ -2035,7 +2047,7 @@ Component::~Component() {
 
 inline void Component::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.properties_.~RepeatedPtrField();
+  _impl_.property_.~RepeatedPtrField();
 }
 
 void Component::SetCachedSize(int size) const {
@@ -2048,7 +2060,7 @@ void Component::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.properties_.Clear();
+  _impl_.property_.Clear();
   _impl_.componenttype_ = 0;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -2068,13 +2080,13 @@ const char* Component::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx
         } else
           goto handle_unusual;
         continue;
-      // repeated .snappyv1.Property properties = 2;
+      // repeated .snappyv1.Property property = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
           ptr -= 1;
           do {
             ptr += 1;
-            ptr = ctx->ParseMessage(_internal_add_properties(), ptr);
+            ptr = ctx->ParseMessage(_internal_add_property(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
@@ -2117,10 +2129,10 @@ uint8_t* Component::_InternalSerialize(
       1, this->_internal_componenttype(), target);
   }
 
-  // repeated .snappyv1.Property properties = 2;
+  // repeated .snappyv1.Property property = 2;
   for (unsigned i = 0,
-      n = static_cast<unsigned>(this->_internal_properties_size()); i < n; i++) {
-    const auto& repfield = this->_internal_properties(i);
+      n = static_cast<unsigned>(this->_internal_property_size()); i < n; i++) {
+    const auto& repfield = this->_internal_property(i);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
         InternalWriteMessage(2, repfield, repfield.GetCachedSize(), target, stream);
   }
@@ -2141,9 +2153,9 @@ size_t Component::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .snappyv1.Property properties = 2;
-  total_size += 1UL * this->_internal_properties_size();
-  for (const auto& msg : this->_impl_.properties_) {
+  // repeated .snappyv1.Property property = 2;
+  total_size += 1UL * this->_internal_property_size();
+  for (const auto& msg : this->_impl_.property_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
@@ -2172,7 +2184,7 @@ void Component::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROT
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  _this->_impl_.properties_.MergeFrom(from._impl_.properties_);
+  _this->_impl_.property_.MergeFrom(from._impl_.property_);
   if (from._internal_componenttype() != 0) {
     _this->_internal_set_componenttype(from._internal_componenttype());
   }
@@ -2193,7 +2205,7 @@ bool Component::IsInitialized() const {
 void Component::InternalSwap(Component* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  _impl_.properties_.InternalSwap(&other->_impl_.properties_);
+  _impl_.property_.InternalSwap(&other->_impl_.property_);
   swap(_impl_.componenttype_, other->_impl_.componenttype_);
 }
 
@@ -2219,7 +2231,7 @@ Capabilities::Capabilities(const Capabilities& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   Capabilities* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.components_){from._impl_.components_}
+      decltype(_impl_.component_){from._impl_.component_}
     , decltype(_impl_.platform_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
@@ -2233,7 +2245,7 @@ inline void Capabilities::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.components_){arena}
+      decltype(_impl_.component_){arena}
     , decltype(_impl_.platform_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
@@ -2250,7 +2262,7 @@ Capabilities::~Capabilities() {
 
 inline void Capabilities::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.components_.~RepeatedPtrField();
+  _impl_.component_.~RepeatedPtrField();
 }
 
 void Capabilities::SetCachedSize(int size) const {
@@ -2263,7 +2275,7 @@ void Capabilities::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.components_.Clear();
+  _impl_.component_.Clear();
   _impl_.platform_ = 0;
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
@@ -2283,13 +2295,13 @@ const char* Capabilities::_InternalParse(const char* ptr, ::_pbi::ParseContext* 
         } else
           goto handle_unusual;
         continue;
-      // repeated .snappyv1.Component components = 2;
+      // repeated .snappyv1.Component component = 2;
       case 2:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
           ptr -= 1;
           do {
             ptr += 1;
-            ptr = ctx->ParseMessage(_internal_add_components(), ptr);
+            ptr = ctx->ParseMessage(_internal_add_component(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
@@ -2332,10 +2344,10 @@ uint8_t* Capabilities::_InternalSerialize(
       1, this->_internal_platform(), target);
   }
 
-  // repeated .snappyv1.Component components = 2;
+  // repeated .snappyv1.Component component = 2;
   for (unsigned i = 0,
-      n = static_cast<unsigned>(this->_internal_components_size()); i < n; i++) {
-    const auto& repfield = this->_internal_components(i);
+      n = static_cast<unsigned>(this->_internal_component_size()); i < n; i++) {
+    const auto& repfield = this->_internal_component(i);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
         InternalWriteMessage(2, repfield, repfield.GetCachedSize(), target, stream);
   }
@@ -2356,9 +2368,9 @@ size_t Capabilities::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .snappyv1.Component components = 2;
-  total_size += 1UL * this->_internal_components_size();
-  for (const auto& msg : this->_impl_.components_) {
+  // repeated .snappyv1.Component component = 2;
+  total_size += 1UL * this->_internal_component_size();
+  for (const auto& msg : this->_impl_.component_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
@@ -2387,7 +2399,7 @@ void Capabilities::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::P
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  _this->_impl_.components_.MergeFrom(from._impl_.components_);
+  _this->_impl_.component_.MergeFrom(from._impl_.component_);
   if (from._internal_platform() != 0) {
     _this->_internal_set_platform(from._internal_platform());
   }
@@ -2408,7 +2420,7 @@ bool Capabilities::IsInitialized() const {
 void Capabilities::InternalSwap(Capabilities* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  _impl_.components_.InternalSwap(&other->_impl_.components_);
+  _impl_.component_.InternalSwap(&other->_impl_.component_);
   swap(_impl_.platform_, other->_impl_.platform_);
 }
 

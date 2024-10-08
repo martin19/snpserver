@@ -144,6 +144,7 @@ add_executable(snpserver
     src/util/VideoUtil.cpp
     src/util/PropertyUtil.cpp
     # stream
+    src/stream/SnpComponentRegistry.cpp
     src/stream/SnpProperty.cpp
     src/stream/SnpComponent.cpp
     src/stream/SnpPort.cpp
@@ -218,6 +219,7 @@ add_executable(snpclient
     src/util/VideoUtil.cpp
     src/util/PropertyUtil.cpp
     # stream
+    src/stream/SnpComponentRegistry.cpp
     src/stream/SnpProperty.cpp
     src/stream/SnpComponent.cpp
     src/stream/SnpPort.cpp
@@ -239,7 +241,7 @@ add_executable(snpclient
     ${MMALH264_SOURCES}
     ${OPENH264_SOURCES}
     ${VA_SOURCES}
-)
+        src/stream/SnpComponentRegistry.cpp src/stream/SnpComponentRegistry.h)
 target_link_libraries(snpclient
     Qt::Core
     Qt::Gui

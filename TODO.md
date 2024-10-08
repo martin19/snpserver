@@ -24,10 +24,10 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
     * ✅ DONE: implement buffering of NALUs -> nalus should not be split/combined on protobuf layer
   * ✅ DONE: implement SnpSourceNetworkTcp
   * ✅ DONE: implement initial snappy protobuf protocol handler 
-       --> implemented this directly in Tcp components, think about if this is the right place
+       --> implemented this directly in Tcp localComponents, think about if this is the right place
   * ✅ DONE: implement SnpSinkDisplay
 
-### ✨ MS1.1: refine components and pipes architecture (29.09.2024)
+### ✨ MS1.1: refine localComponents and pipes architecture (29.09.2024)
   * ✅ DONE: implement fps counter in SnpCanvas
   * ✅ DONE: mermaid diagram for pipe structure 
   * ✅ DONE: there is setEnabled, start and stop - do we need both, probably delete enabled flag
@@ -35,7 +35,7 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
   * 
   * 🟦 TODO: propagate properties (width, height) through pipe -> define it 
   * 
-  * 🟦 TODO: probably start/stop pipe components in reverse data flow direction
+  * 🟦 TODO: probably start/stop pipe localComponents in reverse data flow direction
   * 🟦 TODO: what was streamId meant to do? -> define it
   
   * 🟦 TODO: compile and make run release mode with optimizations 

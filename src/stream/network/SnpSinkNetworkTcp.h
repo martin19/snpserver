@@ -26,7 +26,8 @@ private:
     void createSocket();
 
     [[noreturn]] void listenForConnections();
-    bool sendMessage();
+    bool sendDataMessage();
+    bool sendCapabilitiesMessage();
     void destroySocket() const;
     uint32_t streamId;
     std::vector<uint8_t> buffer;

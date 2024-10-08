@@ -21,13 +21,14 @@ int main() {
     sinkOptions.port = 9000;
     sinkOptions.host = "127.0.0.1";
     auto *sink = new SnpSinkNetworkTcp(sinkOptions);
+    sink->start();
 
-    SnpPipe *videoPipe = SnpPipeFactory::createPipe(0, nullptr, sink,
-                                                    snappyv1::STREAM_MEDIUM_VIDEO,
-                                                    snappyv1::STREAM_DIRECTION_OUTPUT,
-                                                    snappyv1::STREAM_ENDPOINT_VIDEO_DUMMY,
-                                                    snappyv1::STREAM_ENCODING_H264_OPENH264);
-    videoPipe->start();
+//    SnpPipe *videoPipe = SnpPipeFactory::createPipe(0, nullptr, sink,
+//                                                    snappyv1::STREAM_MEDIUM_VIDEO,
+//                                                    snappyv1::STREAM_DIRECTION_OUTPUT,
+//                                                    snappyv1::STREAM_ENDPOINT_VIDEO_DUMMY,
+//                                                    snappyv1::STREAM_ENCODING_H264_OPENH264);
+//    videoPipe->start();
     while(TRUE) {
         Sleep(100);
     }

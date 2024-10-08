@@ -16,12 +16,19 @@ enum ComponentType {
     COMPONENT_CAPTURE_VIDEO_WAYLAND = 2;
     COMPONENT_CAPTURE_VIDEO_V4L = 3;
     COMPONENT_CAPTURE_VIDEO_DUMMY = 4;
-    COMPONENT_OUTPUT_VIDEO_DISPLAY = 5;
-    COMPONENT_OUTPUT_KEYBOARD_X11 = 6;
-    COMPONENT_OUTPUT_POINTER_X11 = 7;
-    COMPONENT_OUTPUT_CURSOR_X11 = 8;
-    COMPONENT_ENCODER_OPENH264 = 9;
-    COMPONENT_DECODER_OPENH264 = 10;
+    COMPONENT_INPUT_KEYBOARD_X11 = 5;
+    COMPONENT_INPUT_POINTER_X11 = 6;
+    COMPONENT_INPUT_CURSOR_X11 = 7;
+    COMPONENT_OUTPUT_VIDEO_DISPLAY = 8;
+    COMPONENT_OUTPUT_KEYBOARD_X11 = 9;
+    COMPONENT_OUTPUT_POINTER_X11 = 10;
+    COMPONENT_OUTPUT_CURSOR_X11 = 11;
+    COMPONENT_ENCODER_OPENH264 = 12;
+    COMPONENT_DECODER_OPENH264 = 13;
+    COMPONENT_ENCODER_INTEL = 14;
+    COMPONENT_DECODER_INTEL = 15;
+    COMPONENT_ENCODER_AMD = 16;
+    COMPONENT_DECODER_AMD = 17;
 }
 
 enum Command {
@@ -75,12 +82,12 @@ message Property {
 
 message Component {
     ComponentType componentType = 1;
-    repeated Property properties = 2;
+    repeated Property property = 2;
 }
 
 message Capabilities {
     Platform platform = 1;
-    repeated Component components = 2;
+    repeated Component component = 2;
 }
 
 message Setup {

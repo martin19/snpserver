@@ -141,18 +141,25 @@ enum ComponentType : int {
   COMPONENT_CAPTURE_VIDEO_WAYLAND = 2,
   COMPONENT_CAPTURE_VIDEO_V4L = 3,
   COMPONENT_CAPTURE_VIDEO_DUMMY = 4,
-  COMPONENT_OUTPUT_VIDEO_DISPLAY = 5,
-  COMPONENT_OUTPUT_KEYBOARD_X11 = 6,
-  COMPONENT_OUTPUT_POINTER_X11 = 7,
-  COMPONENT_OUTPUT_CURSOR_X11 = 8,
-  COMPONENT_ENCODER_OPENH264 = 9,
-  COMPONENT_DECODER_OPENH264 = 10,
+  COMPONENT_INPUT_KEYBOARD_X11 = 5,
+  COMPONENT_INPUT_POINTER_X11 = 6,
+  COMPONENT_INPUT_CURSOR_X11 = 7,
+  COMPONENT_OUTPUT_VIDEO_DISPLAY = 8,
+  COMPONENT_OUTPUT_KEYBOARD_X11 = 9,
+  COMPONENT_OUTPUT_POINTER_X11 = 10,
+  COMPONENT_OUTPUT_CURSOR_X11 = 11,
+  COMPONENT_ENCODER_OPENH264 = 12,
+  COMPONENT_DECODER_OPENH264 = 13,
+  COMPONENT_ENCODER_INTEL = 14,
+  COMPONENT_DECODER_INTEL = 15,
+  COMPONENT_ENCODER_AMD = 16,
+  COMPONENT_DECODER_AMD = 17,
   ComponentType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   ComponentType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool ComponentType_IsValid(int value);
 constexpr ComponentType ComponentType_MIN = COMPONENT_CAPTURE_VIDEO_DRM;
-constexpr ComponentType ComponentType_MAX = COMPONENT_DECODER_OPENH264;
+constexpr ComponentType ComponentType_MAX = COMPONENT_DECODER_AMD;
 constexpr int ComponentType_ARRAYSIZE = ComponentType_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ComponentType_descriptor();
@@ -1301,26 +1308,26 @@ class Component final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPropertiesFieldNumber = 2,
+    kPropertyFieldNumber = 2,
     kComponentTypeFieldNumber = 1,
   };
-  // repeated .snappyv1.Property properties = 2;
-  int properties_size() const;
+  // repeated .snappyv1.Property property = 2;
+  int property_size() const;
   private:
-  int _internal_properties_size() const;
+  int _internal_property_size() const;
   public:
-  void clear_properties();
-  ::snappyv1::Property* mutable_properties(int index);
+  void clear_property();
+  ::snappyv1::Property* mutable_property(int index);
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Property >*
-      mutable_properties();
+      mutable_property();
   private:
-  const ::snappyv1::Property& _internal_properties(int index) const;
-  ::snappyv1::Property* _internal_add_properties();
+  const ::snappyv1::Property& _internal_property(int index) const;
+  ::snappyv1::Property* _internal_add_property();
   public:
-  const ::snappyv1::Property& properties(int index) const;
-  ::snappyv1::Property* add_properties();
+  const ::snappyv1::Property& property(int index) const;
+  ::snappyv1::Property* add_property();
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Property >&
-      properties() const;
+      property() const;
 
   // .snappyv1.ComponentType componentType = 1;
   void clear_componenttype();
@@ -1339,7 +1346,7 @@ class Component final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Property > properties_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Property > property_;
     int componenttype_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -1469,26 +1476,26 @@ class Capabilities final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kComponentsFieldNumber = 2,
+    kComponentFieldNumber = 2,
     kPlatformFieldNumber = 1,
   };
-  // repeated .snappyv1.Component components = 2;
-  int components_size() const;
+  // repeated .snappyv1.Component component = 2;
+  int component_size() const;
   private:
-  int _internal_components_size() const;
+  int _internal_component_size() const;
   public:
-  void clear_components();
-  ::snappyv1::Component* mutable_components(int index);
+  void clear_component();
+  ::snappyv1::Component* mutable_component(int index);
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Component >*
-      mutable_components();
+      mutable_component();
   private:
-  const ::snappyv1::Component& _internal_components(int index) const;
-  ::snappyv1::Component* _internal_add_components();
+  const ::snappyv1::Component& _internal_component(int index) const;
+  ::snappyv1::Component* _internal_add_component();
   public:
-  const ::snappyv1::Component& components(int index) const;
-  ::snappyv1::Component* add_components();
+  const ::snappyv1::Component& component(int index) const;
+  ::snappyv1::Component* add_component();
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Component >&
-      components() const;
+      component() const;
 
   // .snappyv1.Platform platform = 1;
   void clear_platform();
@@ -1507,7 +1514,7 @@ class Capabilities final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Component > components_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Component > component_;
     int platform_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -3516,44 +3523,44 @@ inline void Component::set_componenttype(::snappyv1::ComponentType value) {
   // @@protoc_insertion_point(field_set:snappyv1.Component.componentType)
 }
 
-// repeated .snappyv1.Property properties = 2;
-inline int Component::_internal_properties_size() const {
-  return _impl_.properties_.size();
+// repeated .snappyv1.Property property = 2;
+inline int Component::_internal_property_size() const {
+  return _impl_.property_.size();
 }
-inline int Component::properties_size() const {
-  return _internal_properties_size();
+inline int Component::property_size() const {
+  return _internal_property_size();
 }
-inline void Component::clear_properties() {
-  _impl_.properties_.Clear();
+inline void Component::clear_property() {
+  _impl_.property_.Clear();
 }
-inline ::snappyv1::Property* Component::mutable_properties(int index) {
-  // @@protoc_insertion_point(field_mutable:snappyv1.Component.properties)
-  return _impl_.properties_.Mutable(index);
+inline ::snappyv1::Property* Component::mutable_property(int index) {
+  // @@protoc_insertion_point(field_mutable:snappyv1.Component.property)
+  return _impl_.property_.Mutable(index);
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Property >*
-Component::mutable_properties() {
-  // @@protoc_insertion_point(field_mutable_list:snappyv1.Component.properties)
-  return &_impl_.properties_;
+Component::mutable_property() {
+  // @@protoc_insertion_point(field_mutable_list:snappyv1.Component.property)
+  return &_impl_.property_;
 }
-inline const ::snappyv1::Property& Component::_internal_properties(int index) const {
-  return _impl_.properties_.Get(index);
+inline const ::snappyv1::Property& Component::_internal_property(int index) const {
+  return _impl_.property_.Get(index);
 }
-inline const ::snappyv1::Property& Component::properties(int index) const {
-  // @@protoc_insertion_point(field_get:snappyv1.Component.properties)
-  return _internal_properties(index);
+inline const ::snappyv1::Property& Component::property(int index) const {
+  // @@protoc_insertion_point(field_get:snappyv1.Component.property)
+  return _internal_property(index);
 }
-inline ::snappyv1::Property* Component::_internal_add_properties() {
-  return _impl_.properties_.Add();
+inline ::snappyv1::Property* Component::_internal_add_property() {
+  return _impl_.property_.Add();
 }
-inline ::snappyv1::Property* Component::add_properties() {
-  ::snappyv1::Property* _add = _internal_add_properties();
-  // @@protoc_insertion_point(field_add:snappyv1.Component.properties)
+inline ::snappyv1::Property* Component::add_property() {
+  ::snappyv1::Property* _add = _internal_add_property();
+  // @@protoc_insertion_point(field_add:snappyv1.Component.property)
   return _add;
 }
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Property >&
-Component::properties() const {
-  // @@protoc_insertion_point(field_list:snappyv1.Component.properties)
-  return _impl_.properties_;
+Component::property() const {
+  // @@protoc_insertion_point(field_list:snappyv1.Component.property)
+  return _impl_.property_;
 }
 
 // -------------------------------------------------------------------
@@ -3580,44 +3587,44 @@ inline void Capabilities::set_platform(::snappyv1::Platform value) {
   // @@protoc_insertion_point(field_set:snappyv1.Capabilities.platform)
 }
 
-// repeated .snappyv1.Component components = 2;
-inline int Capabilities::_internal_components_size() const {
-  return _impl_.components_.size();
+// repeated .snappyv1.Component component = 2;
+inline int Capabilities::_internal_component_size() const {
+  return _impl_.component_.size();
 }
-inline int Capabilities::components_size() const {
-  return _internal_components_size();
+inline int Capabilities::component_size() const {
+  return _internal_component_size();
 }
-inline void Capabilities::clear_components() {
-  _impl_.components_.Clear();
+inline void Capabilities::clear_component() {
+  _impl_.component_.Clear();
 }
-inline ::snappyv1::Component* Capabilities::mutable_components(int index) {
-  // @@protoc_insertion_point(field_mutable:snappyv1.Capabilities.components)
-  return _impl_.components_.Mutable(index);
+inline ::snappyv1::Component* Capabilities::mutable_component(int index) {
+  // @@protoc_insertion_point(field_mutable:snappyv1.Capabilities.component)
+  return _impl_.component_.Mutable(index);
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Component >*
-Capabilities::mutable_components() {
-  // @@protoc_insertion_point(field_mutable_list:snappyv1.Capabilities.components)
-  return &_impl_.components_;
+Capabilities::mutable_component() {
+  // @@protoc_insertion_point(field_mutable_list:snappyv1.Capabilities.component)
+  return &_impl_.component_;
 }
-inline const ::snappyv1::Component& Capabilities::_internal_components(int index) const {
-  return _impl_.components_.Get(index);
+inline const ::snappyv1::Component& Capabilities::_internal_component(int index) const {
+  return _impl_.component_.Get(index);
 }
-inline const ::snappyv1::Component& Capabilities::components(int index) const {
-  // @@protoc_insertion_point(field_get:snappyv1.Capabilities.components)
-  return _internal_components(index);
+inline const ::snappyv1::Component& Capabilities::component(int index) const {
+  // @@protoc_insertion_point(field_get:snappyv1.Capabilities.component)
+  return _internal_component(index);
 }
-inline ::snappyv1::Component* Capabilities::_internal_add_components() {
-  return _impl_.components_.Add();
+inline ::snappyv1::Component* Capabilities::_internal_add_component() {
+  return _impl_.component_.Add();
 }
-inline ::snappyv1::Component* Capabilities::add_components() {
-  ::snappyv1::Component* _add = _internal_add_components();
-  // @@protoc_insertion_point(field_add:snappyv1.Capabilities.components)
+inline ::snappyv1::Component* Capabilities::add_component() {
+  ::snappyv1::Component* _add = _internal_add_component();
+  // @@protoc_insertion_point(field_add:snappyv1.Capabilities.component)
   return _add;
 }
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Component >&
-Capabilities::components() const {
-  // @@protoc_insertion_point(field_list:snappyv1.Capabilities.components)
-  return _impl_.components_;
+Capabilities::component() const {
+  // @@protoc_insertion_point(field_list:snappyv1.Capabilities.component)
+  return _impl_.component_;
 }
 
 // -------------------------------------------------------------------

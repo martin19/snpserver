@@ -5,11 +5,15 @@
 #include <mutex>
 #include <condition_variable>
 #include "sockets.h"
+#include "network/snappyv1.pb.h"
+
+typedef void (*HandleCapabilitiesMessageCb)(snappyv1::Message* message);
 
 struct SnpSourceNetworkTcpOptions : public SnpComponentOptions {
     uint32_t streamId;
     std::string host;
     uint16_t port;
+    HandleCapabilitiesMessageCb handleCapabilitiesMessageCb;
 };
 
 class SnpSourceNetworkTcp : public SnpComponent {
@@ -26,6 +30,7 @@ private:
 
     [[noreturn]] void connectToServer();
     bool dispatch();
+    HandleCapabilitiesMessageCb handleCapabilitiesMessageCb;
 
     uint32_t streamId;
 
