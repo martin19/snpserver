@@ -23,75 +23,6 @@
 #include <stream/video/SnpEncoderOpenH264.h>
 #include <stream/video/SnpDecoderOpenH264.h>
 
-
-
-SnpPipe *SnpPipeFactory::createPipe(uint32_t streamId,
-                                    SnpComponent *source,
-                                    SnpComponent *sink,
-                                    snappyv1::StreamMedium medium,
-                                    snappyv1::StreamDirection direction,
-                                    snappyv1::StreamEndpoint endpoint,
-                                    snappyv1::StreamEncoding encoding) {
-    switch(medium) {
-        case snappyv1::STREAM_MEDIUM_VIDEO:
-            return createVideoPipe(streamId, source, sink, direction, endpoint, encoding);
-        case snappyv1::STREAM_MEDIUM_AUDIO:
-            return createAudioPipe(streamId, source, sink, direction, endpoint, encoding);
-        case snappyv1::STREAM_MEDIUM_PERIPHERAL:
-            return createPeripheralPipe(streamId, source, sink, direction, endpoint, encoding);
-    }
-
-    return nullptr;
-}
-
-SnpPipe *SnpPipeFactory::createVideoPipe(uint32_t streamId,
-                                         SnpComponent *source,
-                                         SnpComponent *sink,
-                                         snappyv1::StreamDirection direction,
-                                         snappyv1::StreamEndpoint endpoint,
-                                         snappyv1::StreamEncoding encoding) {
-    switch(direction) {
-        case snappyv1::STREAM_DIRECTION_INPUT:
-            return createVideoInputPipe(streamId, source, endpoint, encoding);
-        case snappyv1::STREAM_DIRECTION_OUTPUT:
-            return createVideoOutputPipe(streamId, sink, endpoint, encoding);
-    }
-
-    return nullptr;
-}
-
-SnpPipe *SnpPipeFactory::createAudioPipe(uint32_t streamId,
-                                         SnpComponent *source,
-                                         SnpComponent *sink,
-                                         snappyv1::StreamDirection direction,
-                                         snappyv1::StreamEndpoint endpoint,
-                                         snappyv1::StreamEncoding encoding) {
-    switch(direction) {
-        case snappyv1::STREAM_DIRECTION_INPUT:
-            return createAudioInputPipe(streamId, source, endpoint, encoding);
-        case snappyv1::STREAM_DIRECTION_OUTPUT:
-            return createAudioOutputPipe(streamId, sink, endpoint, encoding);
-    }
-
-    return nullptr;
-}
-
-SnpPipe *SnpPipeFactory::createPeripheralPipe(uint32_t streamId,
-                                              SnpComponent *source,
-                                              SnpComponent *sink,
-                                              snappyv1::StreamDirection direction,
-                                              snappyv1::StreamEndpoint endpoint,
-                                              snappyv1::StreamEncoding encoding) {
-    switch(direction) {
-        case snappyv1::STREAM_DIRECTION_INPUT:
-            return createPeripheralInputPipe(streamId, source, endpoint, encoding);
-        case snappyv1::STREAM_DIRECTION_OUTPUT:
-            return createPeripheralOutputPipe(streamId, sink, endpoint, encoding);
-    }
-
-    return nullptr;
-}
-
 SnpPipe *SnpPipeFactory::createVideoInputPipe(uint32_t streamId,
                                               SnpComponent *source,
                                               snappyv1::StreamEndpoint endpoint,
@@ -218,20 +149,6 @@ SnpPipe *SnpPipeFactory::createVideoOutputPipe(uint32_t streamId,
     return pipe;
 }
 
-SnpPipe *SnpPipeFactory::createAudioInputPipe(uint32_t streamId,
-                                              SnpComponent *source,
-                                              snappyv1::StreamEndpoint endpoint,
-                                              snappyv1::StreamEncoding encoding) {
-    return nullptr;
-}
-
-SnpPipe *SnpPipeFactory::createAudioOutputPipe(uint32_t streamId,
-                                               SnpComponent *sink,
-                                               snappyv1::StreamEndpoint endpoint,
-                                               snappyv1::StreamEncoding encoding) {
-    return nullptr;
-}
-
 SnpPipe *SnpPipeFactory::createPeripheralInputPipe(uint32_t streamId,
                                                    SnpComponent *source,
                                                    snappyv1::StreamEndpoint endpoint,
@@ -315,9 +232,6 @@ SnpPipe *SnpPipeFactory::createPeripheralInputPipe(uint32_t streamId,
     return nullptr;
 }
 
-SnpPipe *SnpPipeFactory::createPeripheralOutputPipe(uint32_t streamId,
-                                                    SnpComponent *sink,
-                                                    snappyv1::StreamEndpoint endpoint,
-                                                    snappyv1::StreamEncoding encoding) {
+SnpPipe *SnpPipeFactory::createPipe(uint32_t streamId, std::vector<SnpComponent *> components) {
     return nullptr;
 }

@@ -18,26 +18,11 @@ public:
     const std::vector<SnpComponent *> &getComponents() const;
     uint32_t framesPassed;
     std::vector<SnpProperty*>* getProperties();
-
-    snappyv1::StreamMedium getMedium() const;
-    void setMedium(snappyv1::StreamMedium medium);
-    snappyv1::StreamEndpoint getEndpoint() const;
-    void setEndpoint(snappyv1::StreamEndpoint endpoint);
-    snappyv1::StreamEncoding getEncoding() const;
-    void setEncoding(snappyv1::StreamEncoding encoding);
-    snappyv1::StreamDirection getDirection() const;
-    void setDirection(snappyv1::StreamDirection direction);
-
 protected:
     std::string componentName;
 private:
     std::vector<SnpComponent*> components;
     bool running;
-
-    snappyv1::StreamMedium medium;
-    snappyv1::StreamEndpoint endpoint;
-    snappyv1::StreamEncoding encoding;
-    snappyv1::StreamDirection direction;
 };
 
 

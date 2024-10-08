@@ -43,35 +43,3 @@ std::vector<SnpProperty*>* SnpPipe::getProperties() {
     }
     return properties;
 }
-
-snappyv1::StreamMedium SnpPipe::getMedium() const {
-    return medium;
-}
-
-void SnpPipe::setMedium(snappyv1::StreamMedium medium) {
-    SnpPipe::medium = medium;
-}
-
-snappyv1::StreamEndpoint SnpPipe::getEndpoint() const {
-    return endpoint;
-}
-
-void SnpPipe::setEndpoint(snappyv1::StreamEndpoint endpoint) {
-    SnpPipe::endpoint = endpoint;
-}
-
-snappyv1::StreamEncoding SnpPipe::getEncoding() const {
-    return encoding;
-}
-
-void SnpPipe::setEncoding(snappyv1::StreamEncoding encoding) {
-    SnpPipe::encoding = encoding;
-}
-
-snappyv1::StreamDirection SnpPipe::getDirection() const {
-    return direction;
-}
-
-void SnpPipe::setDirection(snappyv1::StreamDirection direction) {
-    SnpPipe::direction = direction;
-}

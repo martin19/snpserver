@@ -46,6 +46,15 @@ struct TableStruct_snappyv1_2eproto {
 };
 extern const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_snappyv1_2eproto;
 namespace snappyv1 {
+class Capabilities;
+struct CapabilitiesDefaultTypeInternal;
+extern CapabilitiesDefaultTypeInternal _Capabilities_default_instance_;
+class Component;
+struct ComponentDefaultTypeInternal;
+extern ComponentDefaultTypeInternal _Component_default_instance_;
+class Data;
+struct DataDefaultTypeInternal;
+extern DataDefaultTypeInternal _Data_default_instance_;
 class Message;
 struct MessageDefaultTypeInternal;
 extern MessageDefaultTypeInternal _Message_default_instance_;
@@ -64,12 +73,9 @@ extern Property_ValueStringDefaultTypeInternal _Property_ValueString_default_ins
 class Property_ValueUint32;
 struct Property_ValueUint32DefaultTypeInternal;
 extern Property_ValueUint32DefaultTypeInternal _Property_ValueUint32_default_instance_;
-class StreamChange;
-struct StreamChangeDefaultTypeInternal;
-extern StreamChangeDefaultTypeInternal _StreamChange_default_instance_;
-class StreamData;
-struct StreamDataDefaultTypeInternal;
-extern StreamDataDefaultTypeInternal _StreamData_default_instance_;
+class Setup;
+struct SetupDefaultTypeInternal;
+extern SetupDefaultTypeInternal _Setup_default_instance_;
 class StreamDataCursor;
 struct StreamDataCursorDefaultTypeInternal;
 extern StreamDataCursorDefaultTypeInternal _StreamDataCursor_default_instance_;
@@ -79,23 +85,25 @@ extern StreamDataKeyboardDefaultTypeInternal _StreamDataKeyboard_default_instanc
 class StreamDataPointer;
 struct StreamDataPointerDefaultTypeInternal;
 extern StreamDataPointerDefaultTypeInternal _StreamDataPointer_default_instance_;
-class StreamInfo;
-struct StreamInfoDefaultTypeInternal;
-extern StreamInfoDefaultTypeInternal _StreamInfo_default_instance_;
+class StreamDataRaw;
+struct StreamDataRawDefaultTypeInternal;
+extern StreamDataRawDefaultTypeInternal _StreamDataRaw_default_instance_;
 }  // namespace snappyv1
 PROTOBUF_NAMESPACE_OPEN
+template<> ::snappyv1::Capabilities* Arena::CreateMaybeMessage<::snappyv1::Capabilities>(Arena*);
+template<> ::snappyv1::Component* Arena::CreateMaybeMessage<::snappyv1::Component>(Arena*);
+template<> ::snappyv1::Data* Arena::CreateMaybeMessage<::snappyv1::Data>(Arena*);
 template<> ::snappyv1::Message* Arena::CreateMaybeMessage<::snappyv1::Message>(Arena*);
 template<> ::snappyv1::Property* Arena::CreateMaybeMessage<::snappyv1::Property>(Arena*);
 template<> ::snappyv1::Property_ValueBool* Arena::CreateMaybeMessage<::snappyv1::Property_ValueBool>(Arena*);
 template<> ::snappyv1::Property_ValueDouble* Arena::CreateMaybeMessage<::snappyv1::Property_ValueDouble>(Arena*);
 template<> ::snappyv1::Property_ValueString* Arena::CreateMaybeMessage<::snappyv1::Property_ValueString>(Arena*);
 template<> ::snappyv1::Property_ValueUint32* Arena::CreateMaybeMessage<::snappyv1::Property_ValueUint32>(Arena*);
-template<> ::snappyv1::StreamChange* Arena::CreateMaybeMessage<::snappyv1::StreamChange>(Arena*);
-template<> ::snappyv1::StreamData* Arena::CreateMaybeMessage<::snappyv1::StreamData>(Arena*);
+template<> ::snappyv1::Setup* Arena::CreateMaybeMessage<::snappyv1::Setup>(Arena*);
 template<> ::snappyv1::StreamDataCursor* Arena::CreateMaybeMessage<::snappyv1::StreamDataCursor>(Arena*);
 template<> ::snappyv1::StreamDataKeyboard* Arena::CreateMaybeMessage<::snappyv1::StreamDataKeyboard>(Arena*);
 template<> ::snappyv1::StreamDataPointer* Arena::CreateMaybeMessage<::snappyv1::StreamDataPointer>(Arena*);
-template<> ::snappyv1::StreamInfo* Arena::CreateMaybeMessage<::snappyv1::StreamInfo>(Arena*);
+template<> ::snappyv1::StreamDataRaw* Arena::CreateMaybeMessage<::snappyv1::StreamDataRaw>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace snappyv1 {
 
@@ -127,129 +135,49 @@ inline bool Platform_Parse(
   return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<Platform>(
     Platform_descriptor(), name, value);
 }
-enum StreamMedium : int {
-  STREAM_MEDIUM_VIDEO = 0,
-  STREAM_MEDIUM_AUDIO = 1,
-  STREAM_MEDIUM_PERIPHERAL = 2,
-  StreamMedium_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
-  StreamMedium_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+enum ComponentType : int {
+  COMPONENT_CAPTURE_VIDEO_DRM = 0,
+  COMPONENT_CAPTURE_VIDEO_X11 = 1,
+  COMPONENT_CAPTURE_VIDEO_WAYLAND = 2,
+  COMPONENT_CAPTURE_VIDEO_V4L = 3,
+  COMPONENT_CAPTURE_VIDEO_DUMMY = 4,
+  COMPONENT_OUTPUT_VIDEO_DISPLAY = 5,
+  COMPONENT_OUTPUT_KEYBOARD_X11 = 6,
+  COMPONENT_OUTPUT_POINTER_X11 = 7,
+  COMPONENT_OUTPUT_CURSOR_X11 = 8,
+  COMPONENT_ENCODER_OPENH264 = 9,
+  COMPONENT_DECODER_OPENH264 = 10,
+  ComponentType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  ComponentType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
-bool StreamMedium_IsValid(int value);
-constexpr StreamMedium StreamMedium_MIN = STREAM_MEDIUM_VIDEO;
-constexpr StreamMedium StreamMedium_MAX = STREAM_MEDIUM_PERIPHERAL;
-constexpr int StreamMedium_ARRAYSIZE = StreamMedium_MAX + 1;
+bool ComponentType_IsValid(int value);
+constexpr ComponentType ComponentType_MIN = COMPONENT_CAPTURE_VIDEO_DRM;
+constexpr ComponentType ComponentType_MAX = COMPONENT_DECODER_OPENH264;
+constexpr int ComponentType_ARRAYSIZE = ComponentType_MAX + 1;
 
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* StreamMedium_descriptor();
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ComponentType_descriptor();
 template<typename T>
-inline const std::string& StreamMedium_Name(T enum_t_value) {
-  static_assert(::std::is_same<T, StreamMedium>::value ||
+inline const std::string& ComponentType_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, ComponentType>::value ||
     ::std::is_integral<T>::value,
-    "Incorrect type passed to function StreamMedium_Name.");
+    "Incorrect type passed to function ComponentType_Name.");
   return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
-    StreamMedium_descriptor(), enum_t_value);
+    ComponentType_descriptor(), enum_t_value);
 }
-inline bool StreamMedium_Parse(
-    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, StreamMedium* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<StreamMedium>(
-    StreamMedium_descriptor(), name, value);
-}
-enum StreamEndpoint : int {
-  STREAM_ENDPOINT_DRM = 0,
-  STREAM_ENDPOINT_X11 = 1,
-  STREAM_ENDPOINT_WAYLAND = 2,
-  STREAM_ENDPOINT_CAMERA = 3,
-  STREAM_ENDPOINT_VIDEO_DUMMY = 4,
-  STREAM_ENDPOINT_DISPLAY = 5,
-  STREAM_ENDPOINT_KEYBOARD = 6,
-  STREAM_ENDPOINT_POINTER = 7,
-  STREAM_ENDPOINT_CURSOR = 8,
-  StreamEndpoint_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
-  StreamEndpoint_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
-};
-bool StreamEndpoint_IsValid(int value);
-constexpr StreamEndpoint StreamEndpoint_MIN = STREAM_ENDPOINT_DRM;
-constexpr StreamEndpoint StreamEndpoint_MAX = STREAM_ENDPOINT_CURSOR;
-constexpr int StreamEndpoint_ARRAYSIZE = StreamEndpoint_MAX + 1;
-
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* StreamEndpoint_descriptor();
-template<typename T>
-inline const std::string& StreamEndpoint_Name(T enum_t_value) {
-  static_assert(::std::is_same<T, StreamEndpoint>::value ||
-    ::std::is_integral<T>::value,
-    "Incorrect type passed to function StreamEndpoint_Name.");
-  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
-    StreamEndpoint_descriptor(), enum_t_value);
-}
-inline bool StreamEndpoint_Parse(
-    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, StreamEndpoint* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<StreamEndpoint>(
-    StreamEndpoint_descriptor(), name, value);
-}
-enum StreamDirection : int {
-  STREAM_DIRECTION_INPUT = 0,
-  STREAM_DIRECTION_OUTPUT = 1,
-  StreamDirection_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
-  StreamDirection_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
-};
-bool StreamDirection_IsValid(int value);
-constexpr StreamDirection StreamDirection_MIN = STREAM_DIRECTION_INPUT;
-constexpr StreamDirection StreamDirection_MAX = STREAM_DIRECTION_OUTPUT;
-constexpr int StreamDirection_ARRAYSIZE = StreamDirection_MAX + 1;
-
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* StreamDirection_descriptor();
-template<typename T>
-inline const std::string& StreamDirection_Name(T enum_t_value) {
-  static_assert(::std::is_same<T, StreamDirection>::value ||
-    ::std::is_integral<T>::value,
-    "Incorrect type passed to function StreamDirection_Name.");
-  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
-    StreamDirection_descriptor(), enum_t_value);
-}
-inline bool StreamDirection_Parse(
-    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, StreamDirection* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<StreamDirection>(
-    StreamDirection_descriptor(), name, value);
-}
-enum StreamEncoding : int {
-  STREAM_ENCODING_H264_OPENH264 = 0,
-  STREAM_ENCODING_H264_HARDWARE = 1,
-  STREAM_ENCODING_MP3_SOFTWARE = 2,
-  STREAM_ENCODING_MP3_HARDWARE = 3,
-  StreamEncoding_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
-  StreamEncoding_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
-};
-bool StreamEncoding_IsValid(int value);
-constexpr StreamEncoding StreamEncoding_MIN = STREAM_ENCODING_H264_OPENH264;
-constexpr StreamEncoding StreamEncoding_MAX = STREAM_ENCODING_MP3_HARDWARE;
-constexpr int StreamEncoding_ARRAYSIZE = StreamEncoding_MAX + 1;
-
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* StreamEncoding_descriptor();
-template<typename T>
-inline const std::string& StreamEncoding_Name(T enum_t_value) {
-  static_assert(::std::is_same<T, StreamEncoding>::value ||
-    ::std::is_integral<T>::value,
-    "Incorrect type passed to function StreamEncoding_Name.");
-  return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
-    StreamEncoding_descriptor(), enum_t_value);
-}
-inline bool StreamEncoding_Parse(
-    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, StreamEncoding* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<StreamEncoding>(
-    StreamEncoding_descriptor(), name, value);
+inline bool ComponentType_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, ComponentType* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<ComponentType>(
+    ComponentType_descriptor(), name, value);
 }
 enum Command : int {
-  COMMAND_INIT = 0,
-  COMMAND_INIT_OK = 1,
-  COMMAND_START = 2,
-  COMMAND_STOP = 3,
-  COMMAND_SET_PARAMETER = 4,
-  COMMAND_DESTROY = 5,
+  COMMAND_START = 0,
+  COMMAND_STOP = 1,
   Command_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   Command_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool Command_IsValid(int value);
-constexpr Command Command_MIN = COMMAND_INIT;
-constexpr Command Command_MAX = COMMAND_DESTROY;
+constexpr Command Command_MIN = COMMAND_START;
+constexpr Command Command_MAX = COMMAND_STOP;
 constexpr int Command_ARRAYSIZE = Command_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* Command_descriptor();
@@ -294,15 +222,15 @@ inline bool PropertyType_Parse(
     PropertyType_descriptor(), name, value);
 }
 enum MessageType : int {
-  MESSAGE_TYPE_STREAM_CHANGE = 0,
-  MESSAGE_TYPE_STREAM_DATA = 1,
-  MESSAGE_TYPE_STREAM_INFO = 2,
+  MESSAGE_TYPE_COMMAND = 0,
+  MESSAGE_TYPE_DATA = 1,
+  MESSAGE_TYPE_CAPABILITIES = 2,
   MessageType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   MessageType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool MessageType_IsValid(int value);
-constexpr MessageType MessageType_MIN = MESSAGE_TYPE_STREAM_CHANGE;
-constexpr MessageType MessageType_MAX = MESSAGE_TYPE_STREAM_INFO;
+constexpr MessageType MessageType_MIN = MESSAGE_TYPE_COMMAND;
+constexpr MessageType MessageType_MAX = MESSAGE_TYPE_CAPABILITIES;
 constexpr int MessageType_ARRAYSIZE = MessageType_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* MessageType_descriptor();
@@ -1252,24 +1180,24 @@ class Property final :
 };
 // -------------------------------------------------------------------
 
-class StreamInfo final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:snappyv1.StreamInfo) */ {
+class Component final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:snappyv1.Component) */ {
  public:
-  inline StreamInfo() : StreamInfo(nullptr) {}
-  ~StreamInfo() override;
-  explicit PROTOBUF_CONSTEXPR StreamInfo(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline Component() : Component(nullptr) {}
+  ~Component() override;
+  explicit PROTOBUF_CONSTEXPR Component(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  StreamInfo(const StreamInfo& from);
-  StreamInfo(StreamInfo&& from) noexcept
-    : StreamInfo() {
+  Component(const Component& from);
+  Component(Component&& from) noexcept
+    : Component() {
     *this = ::std::move(from);
   }
 
-  inline StreamInfo& operator=(const StreamInfo& from) {
+  inline Component& operator=(const Component& from) {
     CopyFrom(from);
     return *this;
   }
-  inline StreamInfo& operator=(StreamInfo&& from) noexcept {
+  inline Component& operator=(Component&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -1292,20 +1220,20 @@ class StreamInfo final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const StreamInfo& default_instance() {
+  static const Component& default_instance() {
     return *internal_default_instance();
   }
-  static inline const StreamInfo* internal_default_instance() {
-    return reinterpret_cast<const StreamInfo*>(
-               &_StreamInfo_default_instance_);
+  static inline const Component* internal_default_instance() {
+    return reinterpret_cast<const Component*>(
+               &_Component_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     5;
 
-  friend void swap(StreamInfo& a, StreamInfo& b) {
+  friend void swap(Component& a, Component& b) {
     a.Swap(&b);
   }
-  inline void Swap(StreamInfo* other) {
+  inline void Swap(Component* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -1318,7 +1246,7 @@ class StreamInfo final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(StreamInfo* other) {
+  void UnsafeArenaSwap(Component* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -1326,14 +1254,14 @@ class StreamInfo final :
 
   // implements Message ----------------------------------------------
 
-  StreamInfo* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<StreamInfo>(arena);
+  Component* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<Component>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const StreamInfo& from);
+  void CopyFrom(const Component& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const StreamInfo& from) {
-    StreamInfo::MergeImpl(*this, from);
+  void MergeFrom( const Component& from) {
+    Component::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -1351,15 +1279,15 @@ class StreamInfo final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(StreamInfo* other);
+  void InternalSwap(Component* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "snappyv1.StreamInfo";
+    return "snappyv1.Component";
   }
   protected:
-  explicit StreamInfo(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit Component(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -1373,43 +1301,194 @@ class StreamInfo final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kStreamEndpointsFieldNumber = 2,
-    kStreamEncodingsFieldNumber = 3,
+    kPropertiesFieldNumber = 2,
+    kComponentTypeFieldNumber = 1,
+  };
+  // repeated .snappyv1.Property properties = 2;
+  int properties_size() const;
+  private:
+  int _internal_properties_size() const;
+  public:
+  void clear_properties();
+  ::snappyv1::Property* mutable_properties(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Property >*
+      mutable_properties();
+  private:
+  const ::snappyv1::Property& _internal_properties(int index) const;
+  ::snappyv1::Property* _internal_add_properties();
+  public:
+  const ::snappyv1::Property& properties(int index) const;
+  ::snappyv1::Property* add_properties();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Property >&
+      properties() const;
+
+  // .snappyv1.ComponentType componentType = 1;
+  void clear_componenttype();
+  ::snappyv1::ComponentType componenttype() const;
+  void set_componenttype(::snappyv1::ComponentType value);
+  private:
+  ::snappyv1::ComponentType _internal_componenttype() const;
+  void _internal_set_componenttype(::snappyv1::ComponentType value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:snappyv1.Component)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Property > properties_;
+    int componenttype_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_snappyv1_2eproto;
+};
+// -------------------------------------------------------------------
+
+class Capabilities final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:snappyv1.Capabilities) */ {
+ public:
+  inline Capabilities() : Capabilities(nullptr) {}
+  ~Capabilities() override;
+  explicit PROTOBUF_CONSTEXPR Capabilities(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  Capabilities(const Capabilities& from);
+  Capabilities(Capabilities&& from) noexcept
+    : Capabilities() {
+    *this = ::std::move(from);
+  }
+
+  inline Capabilities& operator=(const Capabilities& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline Capabilities& operator=(Capabilities&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const Capabilities& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const Capabilities* internal_default_instance() {
+    return reinterpret_cast<const Capabilities*>(
+               &_Capabilities_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    6;
+
+  friend void swap(Capabilities& a, Capabilities& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(Capabilities* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(Capabilities* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  Capabilities* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<Capabilities>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const Capabilities& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const Capabilities& from) {
+    Capabilities::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(Capabilities* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "snappyv1.Capabilities";
+  }
+  protected:
+  explicit Capabilities(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kComponentsFieldNumber = 2,
     kPlatformFieldNumber = 1,
   };
-  // repeated .snappyv1.StreamEndpoint stream_endpoints = 2;
-  int stream_endpoints_size() const;
+  // repeated .snappyv1.Component components = 2;
+  int components_size() const;
   private:
-  int _internal_stream_endpoints_size() const;
+  int _internal_components_size() const;
   public:
-  void clear_stream_endpoints();
+  void clear_components();
+  ::snappyv1::Component* mutable_components(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Component >*
+      mutable_components();
   private:
-  ::snappyv1::StreamEndpoint _internal_stream_endpoints(int index) const;
-  void _internal_add_stream_endpoints(::snappyv1::StreamEndpoint value);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* _internal_mutable_stream_endpoints();
+  const ::snappyv1::Component& _internal_components(int index) const;
+  ::snappyv1::Component* _internal_add_components();
   public:
-  ::snappyv1::StreamEndpoint stream_endpoints(int index) const;
-  void set_stream_endpoints(int index, ::snappyv1::StreamEndpoint value);
-  void add_stream_endpoints(::snappyv1::StreamEndpoint value);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>& stream_endpoints() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* mutable_stream_endpoints();
-
-  // repeated .snappyv1.StreamEncoding stream_encodings = 3;
-  int stream_encodings_size() const;
-  private:
-  int _internal_stream_encodings_size() const;
-  public:
-  void clear_stream_encodings();
-  private:
-  ::snappyv1::StreamEncoding _internal_stream_encodings(int index) const;
-  void _internal_add_stream_encodings(::snappyv1::StreamEncoding value);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* _internal_mutable_stream_encodings();
-  public:
-  ::snappyv1::StreamEncoding stream_encodings(int index) const;
-  void set_stream_encodings(int index, ::snappyv1::StreamEncoding value);
-  void add_stream_encodings(::snappyv1::StreamEncoding value);
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>& stream_encodings() const;
-  ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>* mutable_stream_encodings();
+  const ::snappyv1::Component& components(int index) const;
+  ::snappyv1::Component* add_components();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Component >&
+      components() const;
 
   // .snappyv1.Platform platform = 1;
   void clear_platform();
@@ -1420,7 +1499,7 @@ class StreamInfo final :
   void _internal_set_platform(::snappyv1::Platform value);
   public:
 
-  // @@protoc_insertion_point(class_scope:snappyv1.StreamInfo)
+  // @@protoc_insertion_point(class_scope:snappyv1.Capabilities)
  private:
   class _Internal;
 
@@ -1428,10 +1507,7 @@ class StreamInfo final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedField<int> stream_endpoints_;
-    mutable std::atomic<int> _stream_endpoints_cached_byte_size_;
-    ::PROTOBUF_NAMESPACE_ID::RepeatedField<int> stream_encodings_;
-    mutable std::atomic<int> _stream_encodings_cached_byte_size_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Component > components_;
     int platform_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -1440,24 +1516,24 @@ class StreamInfo final :
 };
 // -------------------------------------------------------------------
 
-class StreamChange final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:snappyv1.StreamChange) */ {
+class Setup final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:snappyv1.Setup) */ {
  public:
-  inline StreamChange() : StreamChange(nullptr) {}
-  ~StreamChange() override;
-  explicit PROTOBUF_CONSTEXPR StreamChange(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline Setup() : Setup(nullptr) {}
+  ~Setup() override;
+  explicit PROTOBUF_CONSTEXPR Setup(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  StreamChange(const StreamChange& from);
-  StreamChange(StreamChange&& from) noexcept
-    : StreamChange() {
+  Setup(const Setup& from);
+  Setup(Setup&& from) noexcept
+    : Setup() {
     *this = ::std::move(from);
   }
 
-  inline StreamChange& operator=(const StreamChange& from) {
+  inline Setup& operator=(const Setup& from) {
     CopyFrom(from);
     return *this;
   }
-  inline StreamChange& operator=(StreamChange&& from) noexcept {
+  inline Setup& operator=(Setup&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -1480,20 +1556,20 @@ class StreamChange final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const StreamChange& default_instance() {
+  static const Setup& default_instance() {
     return *internal_default_instance();
   }
-  static inline const StreamChange* internal_default_instance() {
-    return reinterpret_cast<const StreamChange*>(
-               &_StreamChange_default_instance_);
+  static inline const Setup* internal_default_instance() {
+    return reinterpret_cast<const Setup*>(
+               &_Setup_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    6;
+    7;
 
-  friend void swap(StreamChange& a, StreamChange& b) {
+  friend void swap(Setup& a, Setup& b) {
     a.Swap(&b);
   }
-  inline void Swap(StreamChange* other) {
+  inline void Swap(Setup* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -1506,7 +1582,7 @@ class StreamChange final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(StreamChange* other) {
+  void UnsafeArenaSwap(Setup* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -1514,14 +1590,14 @@ class StreamChange final :
 
   // implements Message ----------------------------------------------
 
-  StreamChange* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<StreamChange>(arena);
+  Setup* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<Setup>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const StreamChange& from);
+  void CopyFrom(const Setup& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const StreamChange& from) {
-    StreamChange::MergeImpl(*this, from);
+  void MergeFrom( const Setup& from) {
+    Setup::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -1539,15 +1615,15 @@ class StreamChange final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(StreamChange* other);
+  void InternalSwap(Setup* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "snappyv1.StreamChange";
+    return "snappyv1.Setup";
   }
   protected:
-  explicit StreamChange(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit Setup(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -1561,31 +1637,27 @@ class StreamChange final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPropertyFieldNumber = 7,
+    kPipeFieldNumber = 3,
     kIdFieldNumber = 1,
     kCommandFieldNumber = 2,
-    kStreamMediumFieldNumber = 3,
-    kStreamDirectionFieldNumber = 4,
-    kStreamEndpointFieldNumber = 5,
-    kStreamEncodingFieldNumber = 6,
   };
-  // repeated .snappyv1.Property property = 7;
-  int property_size() const;
+  // repeated .snappyv1.Component pipe = 3;
+  int pipe_size() const;
   private:
-  int _internal_property_size() const;
+  int _internal_pipe_size() const;
   public:
-  void clear_property();
-  ::snappyv1::Property* mutable_property(int index);
-  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Property >*
-      mutable_property();
+  void clear_pipe();
+  ::snappyv1::Component* mutable_pipe(int index);
+  ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Component >*
+      mutable_pipe();
   private:
-  const ::snappyv1::Property& _internal_property(int index) const;
-  ::snappyv1::Property* _internal_add_property();
+  const ::snappyv1::Component& _internal_pipe(int index) const;
+  ::snappyv1::Component* _internal_add_pipe();
   public:
-  const ::snappyv1::Property& property(int index) const;
-  ::snappyv1::Property* add_property();
-  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Property >&
-      property() const;
+  const ::snappyv1::Component& pipe(int index) const;
+  ::snappyv1::Component* add_pipe();
+  const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Component >&
+      pipe() const;
 
   // uint32 id = 1;
   void clear_id();
@@ -1605,43 +1677,7 @@ class StreamChange final :
   void _internal_set_command(::snappyv1::Command value);
   public:
 
-  // .snappyv1.StreamMedium stream_medium = 3;
-  void clear_stream_medium();
-  ::snappyv1::StreamMedium stream_medium() const;
-  void set_stream_medium(::snappyv1::StreamMedium value);
-  private:
-  ::snappyv1::StreamMedium _internal_stream_medium() const;
-  void _internal_set_stream_medium(::snappyv1::StreamMedium value);
-  public:
-
-  // .snappyv1.StreamDirection stream_direction = 4;
-  void clear_stream_direction();
-  ::snappyv1::StreamDirection stream_direction() const;
-  void set_stream_direction(::snappyv1::StreamDirection value);
-  private:
-  ::snappyv1::StreamDirection _internal_stream_direction() const;
-  void _internal_set_stream_direction(::snappyv1::StreamDirection value);
-  public:
-
-  // .snappyv1.StreamEndpoint stream_endpoint = 5;
-  void clear_stream_endpoint();
-  ::snappyv1::StreamEndpoint stream_endpoint() const;
-  void set_stream_endpoint(::snappyv1::StreamEndpoint value);
-  private:
-  ::snappyv1::StreamEndpoint _internal_stream_endpoint() const;
-  void _internal_set_stream_endpoint(::snappyv1::StreamEndpoint value);
-  public:
-
-  // .snappyv1.StreamEncoding stream_encoding = 6;
-  void clear_stream_encoding();
-  ::snappyv1::StreamEncoding stream_encoding() const;
-  void set_stream_encoding(::snappyv1::StreamEncoding value);
-  private:
-  ::snappyv1::StreamEncoding _internal_stream_encoding() const;
-  void _internal_set_stream_encoding(::snappyv1::StreamEncoding value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:snappyv1.StreamChange)
+  // @@protoc_insertion_point(class_scope:snappyv1.Setup)
  private:
   class _Internal;
 
@@ -1649,13 +1685,9 @@ class StreamChange final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Property > property_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Component > pipe_;
     uint32_t id_;
     int command_;
-    int stream_medium_;
-    int stream_direction_;
-    int stream_endpoint_;
-    int stream_encoding_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1663,24 +1695,24 @@ class StreamChange final :
 };
 // -------------------------------------------------------------------
 
-class StreamData final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:snappyv1.StreamData) */ {
+class Data final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:snappyv1.Data) */ {
  public:
-  inline StreamData() : StreamData(nullptr) {}
-  ~StreamData() override;
-  explicit PROTOBUF_CONSTEXPR StreamData(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+  inline Data() : Data(nullptr) {}
+  ~Data() override;
+  explicit PROTOBUF_CONSTEXPR Data(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
 
-  StreamData(const StreamData& from);
-  StreamData(StreamData&& from) noexcept
-    : StreamData() {
+  Data(const Data& from);
+  Data(Data&& from) noexcept
+    : Data() {
     *this = ::std::move(from);
   }
 
-  inline StreamData& operator=(const StreamData& from) {
+  inline Data& operator=(const Data& from) {
     CopyFrom(from);
     return *this;
   }
-  inline StreamData& operator=(StreamData&& from) noexcept {
+  inline Data& operator=(Data&& from) noexcept {
     if (this == &from) return *this;
     if (GetOwningArena() == from.GetOwningArena()
   #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
@@ -1703,20 +1735,28 @@ class StreamData final :
   static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
     return default_instance().GetMetadata().reflection;
   }
-  static const StreamData& default_instance() {
+  static const Data& default_instance() {
     return *internal_default_instance();
   }
-  static inline const StreamData* internal_default_instance() {
-    return reinterpret_cast<const StreamData*>(
-               &_StreamData_default_instance_);
+  enum DataCase {
+    kDataRaw = 2,
+    kDataPointer = 3,
+    kDataKeyboard = 4,
+    kDataCursor = 5,
+    DATA_NOT_SET = 0,
+  };
+
+  static inline const Data* internal_default_instance() {
+    return reinterpret_cast<const Data*>(
+               &_Data_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    7;
+    8;
 
-  friend void swap(StreamData& a, StreamData& b) {
+  friend void swap(Data& a, Data& b) {
     a.Swap(&b);
   }
-  inline void Swap(StreamData* other) {
+  inline void Swap(Data* other) {
     if (other == this) return;
   #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
     if (GetOwningArena() != nullptr &&
@@ -1729,7 +1769,7 @@ class StreamData final :
       ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
     }
   }
-  void UnsafeArenaSwap(StreamData* other) {
+  void UnsafeArenaSwap(Data* other) {
     if (other == this) return;
     GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
     InternalSwap(other);
@@ -1737,14 +1777,14 @@ class StreamData final :
 
   // implements Message ----------------------------------------------
 
-  StreamData* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<StreamData>(arena);
+  Data* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<Data>(arena);
   }
   using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const StreamData& from);
+  void CopyFrom(const Data& from);
   using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const StreamData& from) {
-    StreamData::MergeImpl(*this, from);
+  void MergeFrom( const Data& from) {
+    Data::MergeImpl(*this, from);
   }
   private:
   static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
@@ -1762,15 +1802,15 @@ class StreamData final :
   void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(StreamData* other);
+  void InternalSwap(Data* other);
 
   private:
   friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
   static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "snappyv1.StreamData";
+    return "snappyv1.Data";
   }
   protected:
-  explicit StreamData(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+  explicit Data(::PROTOBUF_NAMESPACE_ID::Arena* arena,
                        bool is_message_owned = false);
   public:
 
@@ -1784,23 +1824,12 @@ class StreamData final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPayloadFieldNumber = 2,
     kStreamIdFieldNumber = 1,
+    kDataRawFieldNumber = 2,
+    kDataPointerFieldNumber = 3,
+    kDataKeyboardFieldNumber = 4,
+    kDataCursorFieldNumber = 5,
   };
-  // bytes payload = 2;
-  void clear_payload();
-  const std::string& payload() const;
-  template <typename ArgT0 = const std::string&, typename... ArgT>
-  void set_payload(ArgT0&& arg0, ArgT... args);
-  std::string* mutable_payload();
-  PROTOBUF_NODISCARD std::string* release_payload();
-  void set_allocated_payload(std::string* payload);
-  private:
-  const std::string& _internal_payload() const;
-  inline PROTOBUF_ALWAYS_INLINE void _internal_set_payload(const std::string& value);
-  std::string* _internal_mutable_payload();
-  public:
-
   // uint32 stream_id = 1;
   void clear_stream_id();
   uint32_t stream_id() const;
@@ -1810,17 +1839,107 @@ class StreamData final :
   void _internal_set_stream_id(uint32_t value);
   public:
 
-  // @@protoc_insertion_point(class_scope:snappyv1.StreamData)
+  // .snappyv1.StreamDataRaw dataRaw = 2;
+  bool has_dataraw() const;
+  private:
+  bool _internal_has_dataraw() const;
+  public:
+  void clear_dataraw();
+  const ::snappyv1::StreamDataRaw& dataraw() const;
+  PROTOBUF_NODISCARD ::snappyv1::StreamDataRaw* release_dataraw();
+  ::snappyv1::StreamDataRaw* mutable_dataraw();
+  void set_allocated_dataraw(::snappyv1::StreamDataRaw* dataraw);
+  private:
+  const ::snappyv1::StreamDataRaw& _internal_dataraw() const;
+  ::snappyv1::StreamDataRaw* _internal_mutable_dataraw();
+  public:
+  void unsafe_arena_set_allocated_dataraw(
+      ::snappyv1::StreamDataRaw* dataraw);
+  ::snappyv1::StreamDataRaw* unsafe_arena_release_dataraw();
+
+  // .snappyv1.StreamDataPointer dataPointer = 3;
+  bool has_datapointer() const;
+  private:
+  bool _internal_has_datapointer() const;
+  public:
+  void clear_datapointer();
+  const ::snappyv1::StreamDataPointer& datapointer() const;
+  PROTOBUF_NODISCARD ::snappyv1::StreamDataPointer* release_datapointer();
+  ::snappyv1::StreamDataPointer* mutable_datapointer();
+  void set_allocated_datapointer(::snappyv1::StreamDataPointer* datapointer);
+  private:
+  const ::snappyv1::StreamDataPointer& _internal_datapointer() const;
+  ::snappyv1::StreamDataPointer* _internal_mutable_datapointer();
+  public:
+  void unsafe_arena_set_allocated_datapointer(
+      ::snappyv1::StreamDataPointer* datapointer);
+  ::snappyv1::StreamDataPointer* unsafe_arena_release_datapointer();
+
+  // .snappyv1.StreamDataKeyboard dataKeyboard = 4;
+  bool has_datakeyboard() const;
+  private:
+  bool _internal_has_datakeyboard() const;
+  public:
+  void clear_datakeyboard();
+  const ::snappyv1::StreamDataKeyboard& datakeyboard() const;
+  PROTOBUF_NODISCARD ::snappyv1::StreamDataKeyboard* release_datakeyboard();
+  ::snappyv1::StreamDataKeyboard* mutable_datakeyboard();
+  void set_allocated_datakeyboard(::snappyv1::StreamDataKeyboard* datakeyboard);
+  private:
+  const ::snappyv1::StreamDataKeyboard& _internal_datakeyboard() const;
+  ::snappyv1::StreamDataKeyboard* _internal_mutable_datakeyboard();
+  public:
+  void unsafe_arena_set_allocated_datakeyboard(
+      ::snappyv1::StreamDataKeyboard* datakeyboard);
+  ::snappyv1::StreamDataKeyboard* unsafe_arena_release_datakeyboard();
+
+  // .snappyv1.StreamDataCursor dataCursor = 5;
+  bool has_datacursor() const;
+  private:
+  bool _internal_has_datacursor() const;
+  public:
+  void clear_datacursor();
+  const ::snappyv1::StreamDataCursor& datacursor() const;
+  PROTOBUF_NODISCARD ::snappyv1::StreamDataCursor* release_datacursor();
+  ::snappyv1::StreamDataCursor* mutable_datacursor();
+  void set_allocated_datacursor(::snappyv1::StreamDataCursor* datacursor);
+  private:
+  const ::snappyv1::StreamDataCursor& _internal_datacursor() const;
+  ::snappyv1::StreamDataCursor* _internal_mutable_datacursor();
+  public:
+  void unsafe_arena_set_allocated_datacursor(
+      ::snappyv1::StreamDataCursor* datacursor);
+  ::snappyv1::StreamDataCursor* unsafe_arena_release_datacursor();
+
+  void clear_data();
+  DataCase data_case() const;
+  // @@protoc_insertion_point(class_scope:snappyv1.Data)
  private:
   class _Internal;
+  void set_has_dataraw();
+  void set_has_datapointer();
+  void set_has_datakeyboard();
+  void set_has_datacursor();
+
+  inline bool has_data() const;
+  inline void clear_has_data();
 
   template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr payload_;
     uint32_t stream_id_;
+    union DataUnion {
+      constexpr DataUnion() : _constinit_{} {}
+        ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized _constinit_;
+      ::snappyv1::StreamDataRaw* dataraw_;
+      ::snappyv1::StreamDataPointer* datapointer_;
+      ::snappyv1::StreamDataKeyboard* datakeyboard_;
+      ::snappyv1::StreamDataCursor* datacursor_;
+    } data_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
+    uint32_t _oneof_case_[1];
+
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_snappyv1_2eproto;
@@ -1871,9 +1990,9 @@ class Message final :
     return *internal_default_instance();
   }
   enum MessageCase {
-    kStreamChange = 2,
-    kStreamData = 3,
-    kStreamInfo = 4,
+    kCapabilities = 2,
+    kSetup = 3,
+    kData = 4,
     MESSAGE_NOT_SET = 0,
   };
 
@@ -1882,7 +2001,7 @@ class Message final :
                &_Message_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    8;
+    9;
 
   friend void swap(Message& a, Message& b) {
     a.Swap(&b);
@@ -1956,9 +2075,9 @@ class Message final :
 
   enum : int {
     kTypeFieldNumber = 1,
-    kStreamChangeFieldNumber = 2,
-    kStreamDataFieldNumber = 3,
-    kStreamInfoFieldNumber = 4,
+    kCapabilitiesFieldNumber = 2,
+    kSetupFieldNumber = 3,
+    kDataFieldNumber = 4,
   };
   // .snappyv1.MessageType type = 1;
   void clear_type();
@@ -1969,68 +2088,68 @@ class Message final :
   void _internal_set_type(::snappyv1::MessageType value);
   public:
 
-  // .snappyv1.StreamChange stream_change = 2;
-  bool has_stream_change() const;
+  // .snappyv1.Capabilities capabilities = 2;
+  bool has_capabilities() const;
   private:
-  bool _internal_has_stream_change() const;
+  bool _internal_has_capabilities() const;
   public:
-  void clear_stream_change();
-  const ::snappyv1::StreamChange& stream_change() const;
-  PROTOBUF_NODISCARD ::snappyv1::StreamChange* release_stream_change();
-  ::snappyv1::StreamChange* mutable_stream_change();
-  void set_allocated_stream_change(::snappyv1::StreamChange* stream_change);
+  void clear_capabilities();
+  const ::snappyv1::Capabilities& capabilities() const;
+  PROTOBUF_NODISCARD ::snappyv1::Capabilities* release_capabilities();
+  ::snappyv1::Capabilities* mutable_capabilities();
+  void set_allocated_capabilities(::snappyv1::Capabilities* capabilities);
   private:
-  const ::snappyv1::StreamChange& _internal_stream_change() const;
-  ::snappyv1::StreamChange* _internal_mutable_stream_change();
+  const ::snappyv1::Capabilities& _internal_capabilities() const;
+  ::snappyv1::Capabilities* _internal_mutable_capabilities();
   public:
-  void unsafe_arena_set_allocated_stream_change(
-      ::snappyv1::StreamChange* stream_change);
-  ::snappyv1::StreamChange* unsafe_arena_release_stream_change();
+  void unsafe_arena_set_allocated_capabilities(
+      ::snappyv1::Capabilities* capabilities);
+  ::snappyv1::Capabilities* unsafe_arena_release_capabilities();
 
-  // .snappyv1.StreamData stream_data = 3;
-  bool has_stream_data() const;
+  // .snappyv1.Setup setup = 3;
+  bool has_setup() const;
   private:
-  bool _internal_has_stream_data() const;
+  bool _internal_has_setup() const;
   public:
-  void clear_stream_data();
-  const ::snappyv1::StreamData& stream_data() const;
-  PROTOBUF_NODISCARD ::snappyv1::StreamData* release_stream_data();
-  ::snappyv1::StreamData* mutable_stream_data();
-  void set_allocated_stream_data(::snappyv1::StreamData* stream_data);
+  void clear_setup();
+  const ::snappyv1::Setup& setup() const;
+  PROTOBUF_NODISCARD ::snappyv1::Setup* release_setup();
+  ::snappyv1::Setup* mutable_setup();
+  void set_allocated_setup(::snappyv1::Setup* setup);
   private:
-  const ::snappyv1::StreamData& _internal_stream_data() const;
-  ::snappyv1::StreamData* _internal_mutable_stream_data();
+  const ::snappyv1::Setup& _internal_setup() const;
+  ::snappyv1::Setup* _internal_mutable_setup();
   public:
-  void unsafe_arena_set_allocated_stream_data(
-      ::snappyv1::StreamData* stream_data);
-  ::snappyv1::StreamData* unsafe_arena_release_stream_data();
+  void unsafe_arena_set_allocated_setup(
+      ::snappyv1::Setup* setup);
+  ::snappyv1::Setup* unsafe_arena_release_setup();
 
-  // .snappyv1.StreamInfo stream_info = 4;
-  bool has_stream_info() const;
+  // .snappyv1.Data data = 4;
+  bool has_data() const;
   private:
-  bool _internal_has_stream_info() const;
+  bool _internal_has_data() const;
   public:
-  void clear_stream_info();
-  const ::snappyv1::StreamInfo& stream_info() const;
-  PROTOBUF_NODISCARD ::snappyv1::StreamInfo* release_stream_info();
-  ::snappyv1::StreamInfo* mutable_stream_info();
-  void set_allocated_stream_info(::snappyv1::StreamInfo* stream_info);
+  void clear_data();
+  const ::snappyv1::Data& data() const;
+  PROTOBUF_NODISCARD ::snappyv1::Data* release_data();
+  ::snappyv1::Data* mutable_data();
+  void set_allocated_data(::snappyv1::Data* data);
   private:
-  const ::snappyv1::StreamInfo& _internal_stream_info() const;
-  ::snappyv1::StreamInfo* _internal_mutable_stream_info();
+  const ::snappyv1::Data& _internal_data() const;
+  ::snappyv1::Data* _internal_mutable_data();
   public:
-  void unsafe_arena_set_allocated_stream_info(
-      ::snappyv1::StreamInfo* stream_info);
-  ::snappyv1::StreamInfo* unsafe_arena_release_stream_info();
+  void unsafe_arena_set_allocated_data(
+      ::snappyv1::Data* data);
+  ::snappyv1::Data* unsafe_arena_release_data();
 
   void clear_message();
   MessageCase message_case() const;
   // @@protoc_insertion_point(class_scope:snappyv1.Message)
  private:
   class _Internal;
-  void set_has_stream_change();
-  void set_has_stream_data();
-  void set_has_stream_info();
+  void set_has_capabilities();
+  void set_has_setup();
+  void set_has_data();
 
   inline bool has_message() const;
   inline void clear_has_message();
@@ -2043,13 +2162,166 @@ class Message final :
     union MessageUnion {
       constexpr MessageUnion() : _constinit_{} {}
         ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized _constinit_;
-      ::snappyv1::StreamChange* stream_change_;
-      ::snappyv1::StreamData* stream_data_;
-      ::snappyv1::StreamInfo* stream_info_;
+      ::snappyv1::Capabilities* capabilities_;
+      ::snappyv1::Setup* setup_;
+      ::snappyv1::Data* data_;
     } message_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
     uint32_t _oneof_case_[1];
 
+  };
+  union { Impl_ _impl_; };
+  friend struct ::TableStruct_snappyv1_2eproto;
+};
+// -------------------------------------------------------------------
+
+class StreamDataRaw final :
+    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:snappyv1.StreamDataRaw) */ {
+ public:
+  inline StreamDataRaw() : StreamDataRaw(nullptr) {}
+  ~StreamDataRaw() override;
+  explicit PROTOBUF_CONSTEXPR StreamDataRaw(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
+
+  StreamDataRaw(const StreamDataRaw& from);
+  StreamDataRaw(StreamDataRaw&& from) noexcept
+    : StreamDataRaw() {
+    *this = ::std::move(from);
+  }
+
+  inline StreamDataRaw& operator=(const StreamDataRaw& from) {
+    CopyFrom(from);
+    return *this;
+  }
+  inline StreamDataRaw& operator=(StreamDataRaw&& from) noexcept {
+    if (this == &from) return *this;
+    if (GetOwningArena() == from.GetOwningArena()
+  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
+        && GetOwningArena() != nullptr
+  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
+    ) {
+      InternalSwap(&from);
+    } else {
+      CopyFrom(from);
+    }
+    return *this;
+  }
+
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
+    return GetDescriptor();
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
+    return default_instance().GetMetadata().descriptor;
+  }
+  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
+    return default_instance().GetMetadata().reflection;
+  }
+  static const StreamDataRaw& default_instance() {
+    return *internal_default_instance();
+  }
+  static inline const StreamDataRaw* internal_default_instance() {
+    return reinterpret_cast<const StreamDataRaw*>(
+               &_StreamDataRaw_default_instance_);
+  }
+  static constexpr int kIndexInFileMessages =
+    10;
+
+  friend void swap(StreamDataRaw& a, StreamDataRaw& b) {
+    a.Swap(&b);
+  }
+  inline void Swap(StreamDataRaw* other) {
+    if (other == this) return;
+  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() != nullptr &&
+        GetOwningArena() == other->GetOwningArena()) {
+   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
+    if (GetOwningArena() == other->GetOwningArena()) {
+  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
+      InternalSwap(other);
+    } else {
+      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
+    }
+  }
+  void UnsafeArenaSwap(StreamDataRaw* other) {
+    if (other == this) return;
+    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
+    InternalSwap(other);
+  }
+
+  // implements Message ----------------------------------------------
+
+  StreamDataRaw* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
+    return CreateMaybeMessage<StreamDataRaw>(arena);
+  }
+  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
+  void CopyFrom(const StreamDataRaw& from);
+  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
+  void MergeFrom( const StreamDataRaw& from) {
+    StreamDataRaw::MergeImpl(*this, from);
+  }
+  private:
+  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
+  public:
+  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
+  bool IsInitialized() const final;
+
+  size_t ByteSizeLong() const final;
+  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
+  uint8_t* _InternalSerialize(
+      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
+  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
+
+  private:
+  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
+  void SharedDtor();
+  void SetCachedSize(int size) const final;
+  void InternalSwap(StreamDataRaw* other);
+
+  private:
+  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
+  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
+    return "snappyv1.StreamDataRaw";
+  }
+  protected:
+  explicit StreamDataRaw(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                       bool is_message_owned = false);
+  public:
+
+  static const ClassData _class_data_;
+  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
+
+  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  enum : int {
+    kPayloadFieldNumber = 1,
+  };
+  // bytes payload = 1;
+  void clear_payload();
+  const std::string& payload() const;
+  template <typename ArgT0 = const std::string&, typename... ArgT>
+  void set_payload(ArgT0&& arg0, ArgT... args);
+  std::string* mutable_payload();
+  PROTOBUF_NODISCARD std::string* release_payload();
+  void set_allocated_payload(std::string* payload);
+  private:
+  const std::string& _internal_payload() const;
+  inline PROTOBUF_ALWAYS_INLINE void _internal_set_payload(const std::string& value);
+  std::string* _internal_mutable_payload();
+  public:
+
+  // @@protoc_insertion_point(class_scope:snappyv1.StreamDataRaw)
+ private:
+  class _Internal;
+
+  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
+  typedef void InternalArenaConstructable_;
+  typedef void DestructorSkippable_;
+  struct Impl_ {
+    ::PROTOBUF_NAMESPACE_ID::internal::ArenaStringPtr payload_;
+    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
   friend struct ::TableStruct_snappyv1_2eproto;
@@ -2104,7 +2376,7 @@ class StreamDataPointer final :
                &_StreamDataPointer_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    9;
+    11;
 
   friend void swap(StreamDataPointer& a, StreamDataPointer& b) {
     a.Swap(&b);
@@ -2279,7 +2551,7 @@ class StreamDataKeyboard final :
                &_StreamDataKeyboard_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    10;
+    12;
 
   friend void swap(StreamDataKeyboard& a, StreamDataKeyboard& b) {
     a.Swap(&b);
@@ -2449,7 +2721,7 @@ class StreamDataCursor final :
                &_StreamDataCursor_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
-    11;
+    13;
 
   friend void swap(StreamDataCursor& a, StreamDataCursor& b) {
     a.Swap(&b);
@@ -3222,352 +3494,545 @@ inline Property::ValueCase Property::value_case() const {
 }
 // -------------------------------------------------------------------
 
-// StreamInfo
+// Component
 
-// .snappyv1.Platform platform = 1;
-inline void StreamInfo::clear_platform() {
-  _impl_.platform_ = 0;
+// .snappyv1.ComponentType componentType = 1;
+inline void Component::clear_componenttype() {
+  _impl_.componenttype_ = 0;
 }
-inline ::snappyv1::Platform StreamInfo::_internal_platform() const {
-  return static_cast< ::snappyv1::Platform >(_impl_.platform_);
+inline ::snappyv1::ComponentType Component::_internal_componenttype() const {
+  return static_cast< ::snappyv1::ComponentType >(_impl_.componenttype_);
 }
-inline ::snappyv1::Platform StreamInfo::platform() const {
-  // @@protoc_insertion_point(field_get:snappyv1.StreamInfo.platform)
-  return _internal_platform();
+inline ::snappyv1::ComponentType Component::componenttype() const {
+  // @@protoc_insertion_point(field_get:snappyv1.Component.componentType)
+  return _internal_componenttype();
 }
-inline void StreamInfo::_internal_set_platform(::snappyv1::Platform value) {
+inline void Component::_internal_set_componenttype(::snappyv1::ComponentType value) {
   
-  _impl_.platform_ = value;
+  _impl_.componenttype_ = value;
 }
-inline void StreamInfo::set_platform(::snappyv1::Platform value) {
-  _internal_set_platform(value);
-  // @@protoc_insertion_point(field_set:snappyv1.StreamInfo.platform)
-}
-
-// repeated .snappyv1.StreamEndpoint stream_endpoints = 2;
-inline int StreamInfo::_internal_stream_endpoints_size() const {
-  return _impl_.stream_endpoints_.size();
-}
-inline int StreamInfo::stream_endpoints_size() const {
-  return _internal_stream_endpoints_size();
-}
-inline void StreamInfo::clear_stream_endpoints() {
-  _impl_.stream_endpoints_.Clear();
-}
-inline ::snappyv1::StreamEndpoint StreamInfo::_internal_stream_endpoints(int index) const {
-  return static_cast< ::snappyv1::StreamEndpoint >(_impl_.stream_endpoints_.Get(index));
-}
-inline ::snappyv1::StreamEndpoint StreamInfo::stream_endpoints(int index) const {
-  // @@protoc_insertion_point(field_get:snappyv1.StreamInfo.stream_endpoints)
-  return _internal_stream_endpoints(index);
-}
-inline void StreamInfo::set_stream_endpoints(int index, ::snappyv1::StreamEndpoint value) {
-  _impl_.stream_endpoints_.Set(index, value);
-  // @@protoc_insertion_point(field_set:snappyv1.StreamInfo.stream_endpoints)
-}
-inline void StreamInfo::_internal_add_stream_endpoints(::snappyv1::StreamEndpoint value) {
-  _impl_.stream_endpoints_.Add(value);
-}
-inline void StreamInfo::add_stream_endpoints(::snappyv1::StreamEndpoint value) {
-  _internal_add_stream_endpoints(value);
-  // @@protoc_insertion_point(field_add:snappyv1.StreamInfo.stream_endpoints)
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>&
-StreamInfo::stream_endpoints() const {
-  // @@protoc_insertion_point(field_list:snappyv1.StreamInfo.stream_endpoints)
-  return _impl_.stream_endpoints_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>*
-StreamInfo::_internal_mutable_stream_endpoints() {
-  return &_impl_.stream_endpoints_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>*
-StreamInfo::mutable_stream_endpoints() {
-  // @@protoc_insertion_point(field_mutable_list:snappyv1.StreamInfo.stream_endpoints)
-  return _internal_mutable_stream_endpoints();
+inline void Component::set_componenttype(::snappyv1::ComponentType value) {
+  _internal_set_componenttype(value);
+  // @@protoc_insertion_point(field_set:snappyv1.Component.componentType)
 }
 
-// repeated .snappyv1.StreamEncoding stream_encodings = 3;
-inline int StreamInfo::_internal_stream_encodings_size() const {
-  return _impl_.stream_encodings_.size();
+// repeated .snappyv1.Property properties = 2;
+inline int Component::_internal_properties_size() const {
+  return _impl_.properties_.size();
 }
-inline int StreamInfo::stream_encodings_size() const {
-  return _internal_stream_encodings_size();
+inline int Component::properties_size() const {
+  return _internal_properties_size();
 }
-inline void StreamInfo::clear_stream_encodings() {
-  _impl_.stream_encodings_.Clear();
+inline void Component::clear_properties() {
+  _impl_.properties_.Clear();
 }
-inline ::snappyv1::StreamEncoding StreamInfo::_internal_stream_encodings(int index) const {
-  return static_cast< ::snappyv1::StreamEncoding >(_impl_.stream_encodings_.Get(index));
-}
-inline ::snappyv1::StreamEncoding StreamInfo::stream_encodings(int index) const {
-  // @@protoc_insertion_point(field_get:snappyv1.StreamInfo.stream_encodings)
-  return _internal_stream_encodings(index);
-}
-inline void StreamInfo::set_stream_encodings(int index, ::snappyv1::StreamEncoding value) {
-  _impl_.stream_encodings_.Set(index, value);
-  // @@protoc_insertion_point(field_set:snappyv1.StreamInfo.stream_encodings)
-}
-inline void StreamInfo::_internal_add_stream_encodings(::snappyv1::StreamEncoding value) {
-  _impl_.stream_encodings_.Add(value);
-}
-inline void StreamInfo::add_stream_encodings(::snappyv1::StreamEncoding value) {
-  _internal_add_stream_encodings(value);
-  // @@protoc_insertion_point(field_add:snappyv1.StreamInfo.stream_encodings)
-}
-inline const ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>&
-StreamInfo::stream_encodings() const {
-  // @@protoc_insertion_point(field_list:snappyv1.StreamInfo.stream_encodings)
-  return _impl_.stream_encodings_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>*
-StreamInfo::_internal_mutable_stream_encodings() {
-  return &_impl_.stream_encodings_;
-}
-inline ::PROTOBUF_NAMESPACE_ID::RepeatedField<int>*
-StreamInfo::mutable_stream_encodings() {
-  // @@protoc_insertion_point(field_mutable_list:snappyv1.StreamInfo.stream_encodings)
-  return _internal_mutable_stream_encodings();
-}
-
-// -------------------------------------------------------------------
-
-// StreamChange
-
-// uint32 id = 1;
-inline void StreamChange::clear_id() {
-  _impl_.id_ = 0u;
-}
-inline uint32_t StreamChange::_internal_id() const {
-  return _impl_.id_;
-}
-inline uint32_t StreamChange::id() const {
-  // @@protoc_insertion_point(field_get:snappyv1.StreamChange.id)
-  return _internal_id();
-}
-inline void StreamChange::_internal_set_id(uint32_t value) {
-  
-  _impl_.id_ = value;
-}
-inline void StreamChange::set_id(uint32_t value) {
-  _internal_set_id(value);
-  // @@protoc_insertion_point(field_set:snappyv1.StreamChange.id)
-}
-
-// .snappyv1.Command command = 2;
-inline void StreamChange::clear_command() {
-  _impl_.command_ = 0;
-}
-inline ::snappyv1::Command StreamChange::_internal_command() const {
-  return static_cast< ::snappyv1::Command >(_impl_.command_);
-}
-inline ::snappyv1::Command StreamChange::command() const {
-  // @@protoc_insertion_point(field_get:snappyv1.StreamChange.command)
-  return _internal_command();
-}
-inline void StreamChange::_internal_set_command(::snappyv1::Command value) {
-  
-  _impl_.command_ = value;
-}
-inline void StreamChange::set_command(::snappyv1::Command value) {
-  _internal_set_command(value);
-  // @@protoc_insertion_point(field_set:snappyv1.StreamChange.command)
-}
-
-// .snappyv1.StreamMedium stream_medium = 3;
-inline void StreamChange::clear_stream_medium() {
-  _impl_.stream_medium_ = 0;
-}
-inline ::snappyv1::StreamMedium StreamChange::_internal_stream_medium() const {
-  return static_cast< ::snappyv1::StreamMedium >(_impl_.stream_medium_);
-}
-inline ::snappyv1::StreamMedium StreamChange::stream_medium() const {
-  // @@protoc_insertion_point(field_get:snappyv1.StreamChange.stream_medium)
-  return _internal_stream_medium();
-}
-inline void StreamChange::_internal_set_stream_medium(::snappyv1::StreamMedium value) {
-  
-  _impl_.stream_medium_ = value;
-}
-inline void StreamChange::set_stream_medium(::snappyv1::StreamMedium value) {
-  _internal_set_stream_medium(value);
-  // @@protoc_insertion_point(field_set:snappyv1.StreamChange.stream_medium)
-}
-
-// .snappyv1.StreamDirection stream_direction = 4;
-inline void StreamChange::clear_stream_direction() {
-  _impl_.stream_direction_ = 0;
-}
-inline ::snappyv1::StreamDirection StreamChange::_internal_stream_direction() const {
-  return static_cast< ::snappyv1::StreamDirection >(_impl_.stream_direction_);
-}
-inline ::snappyv1::StreamDirection StreamChange::stream_direction() const {
-  // @@protoc_insertion_point(field_get:snappyv1.StreamChange.stream_direction)
-  return _internal_stream_direction();
-}
-inline void StreamChange::_internal_set_stream_direction(::snappyv1::StreamDirection value) {
-  
-  _impl_.stream_direction_ = value;
-}
-inline void StreamChange::set_stream_direction(::snappyv1::StreamDirection value) {
-  _internal_set_stream_direction(value);
-  // @@protoc_insertion_point(field_set:snappyv1.StreamChange.stream_direction)
-}
-
-// .snappyv1.StreamEndpoint stream_endpoint = 5;
-inline void StreamChange::clear_stream_endpoint() {
-  _impl_.stream_endpoint_ = 0;
-}
-inline ::snappyv1::StreamEndpoint StreamChange::_internal_stream_endpoint() const {
-  return static_cast< ::snappyv1::StreamEndpoint >(_impl_.stream_endpoint_);
-}
-inline ::snappyv1::StreamEndpoint StreamChange::stream_endpoint() const {
-  // @@protoc_insertion_point(field_get:snappyv1.StreamChange.stream_endpoint)
-  return _internal_stream_endpoint();
-}
-inline void StreamChange::_internal_set_stream_endpoint(::snappyv1::StreamEndpoint value) {
-  
-  _impl_.stream_endpoint_ = value;
-}
-inline void StreamChange::set_stream_endpoint(::snappyv1::StreamEndpoint value) {
-  _internal_set_stream_endpoint(value);
-  // @@protoc_insertion_point(field_set:snappyv1.StreamChange.stream_endpoint)
-}
-
-// .snappyv1.StreamEncoding stream_encoding = 6;
-inline void StreamChange::clear_stream_encoding() {
-  _impl_.stream_encoding_ = 0;
-}
-inline ::snappyv1::StreamEncoding StreamChange::_internal_stream_encoding() const {
-  return static_cast< ::snappyv1::StreamEncoding >(_impl_.stream_encoding_);
-}
-inline ::snappyv1::StreamEncoding StreamChange::stream_encoding() const {
-  // @@protoc_insertion_point(field_get:snappyv1.StreamChange.stream_encoding)
-  return _internal_stream_encoding();
-}
-inline void StreamChange::_internal_set_stream_encoding(::snappyv1::StreamEncoding value) {
-  
-  _impl_.stream_encoding_ = value;
-}
-inline void StreamChange::set_stream_encoding(::snappyv1::StreamEncoding value) {
-  _internal_set_stream_encoding(value);
-  // @@protoc_insertion_point(field_set:snappyv1.StreamChange.stream_encoding)
-}
-
-// repeated .snappyv1.Property property = 7;
-inline int StreamChange::_internal_property_size() const {
-  return _impl_.property_.size();
-}
-inline int StreamChange::property_size() const {
-  return _internal_property_size();
-}
-inline void StreamChange::clear_property() {
-  _impl_.property_.Clear();
-}
-inline ::snappyv1::Property* StreamChange::mutable_property(int index) {
-  // @@protoc_insertion_point(field_mutable:snappyv1.StreamChange.property)
-  return _impl_.property_.Mutable(index);
+inline ::snappyv1::Property* Component::mutable_properties(int index) {
+  // @@protoc_insertion_point(field_mutable:snappyv1.Component.properties)
+  return _impl_.properties_.Mutable(index);
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Property >*
-StreamChange::mutable_property() {
-  // @@protoc_insertion_point(field_mutable_list:snappyv1.StreamChange.property)
-  return &_impl_.property_;
+Component::mutable_properties() {
+  // @@protoc_insertion_point(field_mutable_list:snappyv1.Component.properties)
+  return &_impl_.properties_;
 }
-inline const ::snappyv1::Property& StreamChange::_internal_property(int index) const {
-  return _impl_.property_.Get(index);
+inline const ::snappyv1::Property& Component::_internal_properties(int index) const {
+  return _impl_.properties_.Get(index);
 }
-inline const ::snappyv1::Property& StreamChange::property(int index) const {
-  // @@protoc_insertion_point(field_get:snappyv1.StreamChange.property)
-  return _internal_property(index);
+inline const ::snappyv1::Property& Component::properties(int index) const {
+  // @@protoc_insertion_point(field_get:snappyv1.Component.properties)
+  return _internal_properties(index);
 }
-inline ::snappyv1::Property* StreamChange::_internal_add_property() {
-  return _impl_.property_.Add();
+inline ::snappyv1::Property* Component::_internal_add_properties() {
+  return _impl_.properties_.Add();
 }
-inline ::snappyv1::Property* StreamChange::add_property() {
-  ::snappyv1::Property* _add = _internal_add_property();
-  // @@protoc_insertion_point(field_add:snappyv1.StreamChange.property)
+inline ::snappyv1::Property* Component::add_properties() {
+  ::snappyv1::Property* _add = _internal_add_properties();
+  // @@protoc_insertion_point(field_add:snappyv1.Component.properties)
   return _add;
 }
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Property >&
-StreamChange::property() const {
-  // @@protoc_insertion_point(field_list:snappyv1.StreamChange.property)
-  return _impl_.property_;
+Component::properties() const {
+  // @@protoc_insertion_point(field_list:snappyv1.Component.properties)
+  return _impl_.properties_;
 }
 
 // -------------------------------------------------------------------
 
-// StreamData
+// Capabilities
+
+// .snappyv1.Platform platform = 1;
+inline void Capabilities::clear_platform() {
+  _impl_.platform_ = 0;
+}
+inline ::snappyv1::Platform Capabilities::_internal_platform() const {
+  return static_cast< ::snappyv1::Platform >(_impl_.platform_);
+}
+inline ::snappyv1::Platform Capabilities::platform() const {
+  // @@protoc_insertion_point(field_get:snappyv1.Capabilities.platform)
+  return _internal_platform();
+}
+inline void Capabilities::_internal_set_platform(::snappyv1::Platform value) {
+  
+  _impl_.platform_ = value;
+}
+inline void Capabilities::set_platform(::snappyv1::Platform value) {
+  _internal_set_platform(value);
+  // @@protoc_insertion_point(field_set:snappyv1.Capabilities.platform)
+}
+
+// repeated .snappyv1.Component components = 2;
+inline int Capabilities::_internal_components_size() const {
+  return _impl_.components_.size();
+}
+inline int Capabilities::components_size() const {
+  return _internal_components_size();
+}
+inline void Capabilities::clear_components() {
+  _impl_.components_.Clear();
+}
+inline ::snappyv1::Component* Capabilities::mutable_components(int index) {
+  // @@protoc_insertion_point(field_mutable:snappyv1.Capabilities.components)
+  return _impl_.components_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Component >*
+Capabilities::mutable_components() {
+  // @@protoc_insertion_point(field_mutable_list:snappyv1.Capabilities.components)
+  return &_impl_.components_;
+}
+inline const ::snappyv1::Component& Capabilities::_internal_components(int index) const {
+  return _impl_.components_.Get(index);
+}
+inline const ::snappyv1::Component& Capabilities::components(int index) const {
+  // @@protoc_insertion_point(field_get:snappyv1.Capabilities.components)
+  return _internal_components(index);
+}
+inline ::snappyv1::Component* Capabilities::_internal_add_components() {
+  return _impl_.components_.Add();
+}
+inline ::snappyv1::Component* Capabilities::add_components() {
+  ::snappyv1::Component* _add = _internal_add_components();
+  // @@protoc_insertion_point(field_add:snappyv1.Capabilities.components)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Component >&
+Capabilities::components() const {
+  // @@protoc_insertion_point(field_list:snappyv1.Capabilities.components)
+  return _impl_.components_;
+}
+
+// -------------------------------------------------------------------
+
+// Setup
+
+// uint32 id = 1;
+inline void Setup::clear_id() {
+  _impl_.id_ = 0u;
+}
+inline uint32_t Setup::_internal_id() const {
+  return _impl_.id_;
+}
+inline uint32_t Setup::id() const {
+  // @@protoc_insertion_point(field_get:snappyv1.Setup.id)
+  return _internal_id();
+}
+inline void Setup::_internal_set_id(uint32_t value) {
+  
+  _impl_.id_ = value;
+}
+inline void Setup::set_id(uint32_t value) {
+  _internal_set_id(value);
+  // @@protoc_insertion_point(field_set:snappyv1.Setup.id)
+}
+
+// .snappyv1.Command command = 2;
+inline void Setup::clear_command() {
+  _impl_.command_ = 0;
+}
+inline ::snappyv1::Command Setup::_internal_command() const {
+  return static_cast< ::snappyv1::Command >(_impl_.command_);
+}
+inline ::snappyv1::Command Setup::command() const {
+  // @@protoc_insertion_point(field_get:snappyv1.Setup.command)
+  return _internal_command();
+}
+inline void Setup::_internal_set_command(::snappyv1::Command value) {
+  
+  _impl_.command_ = value;
+}
+inline void Setup::set_command(::snappyv1::Command value) {
+  _internal_set_command(value);
+  // @@protoc_insertion_point(field_set:snappyv1.Setup.command)
+}
+
+// repeated .snappyv1.Component pipe = 3;
+inline int Setup::_internal_pipe_size() const {
+  return _impl_.pipe_.size();
+}
+inline int Setup::pipe_size() const {
+  return _internal_pipe_size();
+}
+inline void Setup::clear_pipe() {
+  _impl_.pipe_.Clear();
+}
+inline ::snappyv1::Component* Setup::mutable_pipe(int index) {
+  // @@protoc_insertion_point(field_mutable:snappyv1.Setup.pipe)
+  return _impl_.pipe_.Mutable(index);
+}
+inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Component >*
+Setup::mutable_pipe() {
+  // @@protoc_insertion_point(field_mutable_list:snappyv1.Setup.pipe)
+  return &_impl_.pipe_;
+}
+inline const ::snappyv1::Component& Setup::_internal_pipe(int index) const {
+  return _impl_.pipe_.Get(index);
+}
+inline const ::snappyv1::Component& Setup::pipe(int index) const {
+  // @@protoc_insertion_point(field_get:snappyv1.Setup.pipe)
+  return _internal_pipe(index);
+}
+inline ::snappyv1::Component* Setup::_internal_add_pipe() {
+  return _impl_.pipe_.Add();
+}
+inline ::snappyv1::Component* Setup::add_pipe() {
+  ::snappyv1::Component* _add = _internal_add_pipe();
+  // @@protoc_insertion_point(field_add:snappyv1.Setup.pipe)
+  return _add;
+}
+inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snappyv1::Component >&
+Setup::pipe() const {
+  // @@protoc_insertion_point(field_list:snappyv1.Setup.pipe)
+  return _impl_.pipe_;
+}
+
+// -------------------------------------------------------------------
+
+// Data
 
 // uint32 stream_id = 1;
-inline void StreamData::clear_stream_id() {
+inline void Data::clear_stream_id() {
   _impl_.stream_id_ = 0u;
 }
-inline uint32_t StreamData::_internal_stream_id() const {
+inline uint32_t Data::_internal_stream_id() const {
   return _impl_.stream_id_;
 }
-inline uint32_t StreamData::stream_id() const {
-  // @@protoc_insertion_point(field_get:snappyv1.StreamData.stream_id)
+inline uint32_t Data::stream_id() const {
+  // @@protoc_insertion_point(field_get:snappyv1.Data.stream_id)
   return _internal_stream_id();
 }
-inline void StreamData::_internal_set_stream_id(uint32_t value) {
+inline void Data::_internal_set_stream_id(uint32_t value) {
   
   _impl_.stream_id_ = value;
 }
-inline void StreamData::set_stream_id(uint32_t value) {
+inline void Data::set_stream_id(uint32_t value) {
   _internal_set_stream_id(value);
-  // @@protoc_insertion_point(field_set:snappyv1.StreamData.stream_id)
+  // @@protoc_insertion_point(field_set:snappyv1.Data.stream_id)
 }
 
-// bytes payload = 2;
-inline void StreamData::clear_payload() {
-  _impl_.payload_.ClearToEmpty();
+// .snappyv1.StreamDataRaw dataRaw = 2;
+inline bool Data::_internal_has_dataraw() const {
+  return data_case() == kDataRaw;
 }
-inline const std::string& StreamData::payload() const {
-  // @@protoc_insertion_point(field_get:snappyv1.StreamData.payload)
-  return _internal_payload();
+inline bool Data::has_dataraw() const {
+  return _internal_has_dataraw();
 }
-template <typename ArgT0, typename... ArgT>
-inline PROTOBUF_ALWAYS_INLINE
-void StreamData::set_payload(ArgT0&& arg0, ArgT... args) {
- 
- _impl_.payload_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
-  // @@protoc_insertion_point(field_set:snappyv1.StreamData.payload)
+inline void Data::set_has_dataraw() {
+  _impl_._oneof_case_[0] = kDataRaw;
 }
-inline std::string* StreamData::mutable_payload() {
-  std::string* _s = _internal_mutable_payload();
-  // @@protoc_insertion_point(field_mutable:snappyv1.StreamData.payload)
-  return _s;
+inline void Data::clear_dataraw() {
+  if (_internal_has_dataraw()) {
+    if (GetArenaForAllocation() == nullptr) {
+      delete _impl_.data_.dataraw_;
+    }
+    clear_has_data();
+  }
 }
-inline const std::string& StreamData::_internal_payload() const {
-  return _impl_.payload_.Get();
-}
-inline void StreamData::_internal_set_payload(const std::string& value) {
-  
-  _impl_.payload_.Set(value, GetArenaForAllocation());
-}
-inline std::string* StreamData::_internal_mutable_payload() {
-  
-  return _impl_.payload_.Mutable(GetArenaForAllocation());
-}
-inline std::string* StreamData::release_payload() {
-  // @@protoc_insertion_point(field_release:snappyv1.StreamData.payload)
-  return _impl_.payload_.Release();
-}
-inline void StreamData::set_allocated_payload(std::string* payload) {
-  if (payload != nullptr) {
-    
+inline ::snappyv1::StreamDataRaw* Data::release_dataraw() {
+  // @@protoc_insertion_point(field_release:snappyv1.Data.dataRaw)
+  if (_internal_has_dataraw()) {
+    clear_has_data();
+    ::snappyv1::StreamDataRaw* temp = _impl_.data_.dataraw_;
+    if (GetArenaForAllocation() != nullptr) {
+      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.data_.dataraw_ = nullptr;
+    return temp;
   } else {
-    
+    return nullptr;
   }
-  _impl_.payload_.SetAllocated(payload, GetArenaForAllocation());
-#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  if (_impl_.payload_.IsDefault()) {
-    _impl_.payload_.Set("", GetArenaForAllocation());
+}
+inline const ::snappyv1::StreamDataRaw& Data::_internal_dataraw() const {
+  return _internal_has_dataraw()
+      ? *_impl_.data_.dataraw_
+      : reinterpret_cast< ::snappyv1::StreamDataRaw&>(::snappyv1::_StreamDataRaw_default_instance_);
+}
+inline const ::snappyv1::StreamDataRaw& Data::dataraw() const {
+  // @@protoc_insertion_point(field_get:snappyv1.Data.dataRaw)
+  return _internal_dataraw();
+}
+inline ::snappyv1::StreamDataRaw* Data::unsafe_arena_release_dataraw() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:snappyv1.Data.dataRaw)
+  if (_internal_has_dataraw()) {
+    clear_has_data();
+    ::snappyv1::StreamDataRaw* temp = _impl_.data_.dataraw_;
+    _impl_.data_.dataraw_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
   }
-#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
-  // @@protoc_insertion_point(field_set_allocated:snappyv1.StreamData.payload)
+}
+inline void Data::unsafe_arena_set_allocated_dataraw(::snappyv1::StreamDataRaw* dataraw) {
+  clear_data();
+  if (dataraw) {
+    set_has_dataraw();
+    _impl_.data_.dataraw_ = dataraw;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:snappyv1.Data.dataRaw)
+}
+inline ::snappyv1::StreamDataRaw* Data::_internal_mutable_dataraw() {
+  if (!_internal_has_dataraw()) {
+    clear_data();
+    set_has_dataraw();
+    _impl_.data_.dataraw_ = CreateMaybeMessage< ::snappyv1::StreamDataRaw >(GetArenaForAllocation());
+  }
+  return _impl_.data_.dataraw_;
+}
+inline ::snappyv1::StreamDataRaw* Data::mutable_dataraw() {
+  ::snappyv1::StreamDataRaw* _msg = _internal_mutable_dataraw();
+  // @@protoc_insertion_point(field_mutable:snappyv1.Data.dataRaw)
+  return _msg;
 }
 
+// .snappyv1.StreamDataPointer dataPointer = 3;
+inline bool Data::_internal_has_datapointer() const {
+  return data_case() == kDataPointer;
+}
+inline bool Data::has_datapointer() const {
+  return _internal_has_datapointer();
+}
+inline void Data::set_has_datapointer() {
+  _impl_._oneof_case_[0] = kDataPointer;
+}
+inline void Data::clear_datapointer() {
+  if (_internal_has_datapointer()) {
+    if (GetArenaForAllocation() == nullptr) {
+      delete _impl_.data_.datapointer_;
+    }
+    clear_has_data();
+  }
+}
+inline ::snappyv1::StreamDataPointer* Data::release_datapointer() {
+  // @@protoc_insertion_point(field_release:snappyv1.Data.dataPointer)
+  if (_internal_has_datapointer()) {
+    clear_has_data();
+    ::snappyv1::StreamDataPointer* temp = _impl_.data_.datapointer_;
+    if (GetArenaForAllocation() != nullptr) {
+      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.data_.datapointer_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::snappyv1::StreamDataPointer& Data::_internal_datapointer() const {
+  return _internal_has_datapointer()
+      ? *_impl_.data_.datapointer_
+      : reinterpret_cast< ::snappyv1::StreamDataPointer&>(::snappyv1::_StreamDataPointer_default_instance_);
+}
+inline const ::snappyv1::StreamDataPointer& Data::datapointer() const {
+  // @@protoc_insertion_point(field_get:snappyv1.Data.dataPointer)
+  return _internal_datapointer();
+}
+inline ::snappyv1::StreamDataPointer* Data::unsafe_arena_release_datapointer() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:snappyv1.Data.dataPointer)
+  if (_internal_has_datapointer()) {
+    clear_has_data();
+    ::snappyv1::StreamDataPointer* temp = _impl_.data_.datapointer_;
+    _impl_.data_.datapointer_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void Data::unsafe_arena_set_allocated_datapointer(::snappyv1::StreamDataPointer* datapointer) {
+  clear_data();
+  if (datapointer) {
+    set_has_datapointer();
+    _impl_.data_.datapointer_ = datapointer;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:snappyv1.Data.dataPointer)
+}
+inline ::snappyv1::StreamDataPointer* Data::_internal_mutable_datapointer() {
+  if (!_internal_has_datapointer()) {
+    clear_data();
+    set_has_datapointer();
+    _impl_.data_.datapointer_ = CreateMaybeMessage< ::snappyv1::StreamDataPointer >(GetArenaForAllocation());
+  }
+  return _impl_.data_.datapointer_;
+}
+inline ::snappyv1::StreamDataPointer* Data::mutable_datapointer() {
+  ::snappyv1::StreamDataPointer* _msg = _internal_mutable_datapointer();
+  // @@protoc_insertion_point(field_mutable:snappyv1.Data.dataPointer)
+  return _msg;
+}
+
+// .snappyv1.StreamDataKeyboard dataKeyboard = 4;
+inline bool Data::_internal_has_datakeyboard() const {
+  return data_case() == kDataKeyboard;
+}
+inline bool Data::has_datakeyboard() const {
+  return _internal_has_datakeyboard();
+}
+inline void Data::set_has_datakeyboard() {
+  _impl_._oneof_case_[0] = kDataKeyboard;
+}
+inline void Data::clear_datakeyboard() {
+  if (_internal_has_datakeyboard()) {
+    if (GetArenaForAllocation() == nullptr) {
+      delete _impl_.data_.datakeyboard_;
+    }
+    clear_has_data();
+  }
+}
+inline ::snappyv1::StreamDataKeyboard* Data::release_datakeyboard() {
+  // @@protoc_insertion_point(field_release:snappyv1.Data.dataKeyboard)
+  if (_internal_has_datakeyboard()) {
+    clear_has_data();
+    ::snappyv1::StreamDataKeyboard* temp = _impl_.data_.datakeyboard_;
+    if (GetArenaForAllocation() != nullptr) {
+      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.data_.datakeyboard_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::snappyv1::StreamDataKeyboard& Data::_internal_datakeyboard() const {
+  return _internal_has_datakeyboard()
+      ? *_impl_.data_.datakeyboard_
+      : reinterpret_cast< ::snappyv1::StreamDataKeyboard&>(::snappyv1::_StreamDataKeyboard_default_instance_);
+}
+inline const ::snappyv1::StreamDataKeyboard& Data::datakeyboard() const {
+  // @@protoc_insertion_point(field_get:snappyv1.Data.dataKeyboard)
+  return _internal_datakeyboard();
+}
+inline ::snappyv1::StreamDataKeyboard* Data::unsafe_arena_release_datakeyboard() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:snappyv1.Data.dataKeyboard)
+  if (_internal_has_datakeyboard()) {
+    clear_has_data();
+    ::snappyv1::StreamDataKeyboard* temp = _impl_.data_.datakeyboard_;
+    _impl_.data_.datakeyboard_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void Data::unsafe_arena_set_allocated_datakeyboard(::snappyv1::StreamDataKeyboard* datakeyboard) {
+  clear_data();
+  if (datakeyboard) {
+    set_has_datakeyboard();
+    _impl_.data_.datakeyboard_ = datakeyboard;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:snappyv1.Data.dataKeyboard)
+}
+inline ::snappyv1::StreamDataKeyboard* Data::_internal_mutable_datakeyboard() {
+  if (!_internal_has_datakeyboard()) {
+    clear_data();
+    set_has_datakeyboard();
+    _impl_.data_.datakeyboard_ = CreateMaybeMessage< ::snappyv1::StreamDataKeyboard >(GetArenaForAllocation());
+  }
+  return _impl_.data_.datakeyboard_;
+}
+inline ::snappyv1::StreamDataKeyboard* Data::mutable_datakeyboard() {
+  ::snappyv1::StreamDataKeyboard* _msg = _internal_mutable_datakeyboard();
+  // @@protoc_insertion_point(field_mutable:snappyv1.Data.dataKeyboard)
+  return _msg;
+}
+
+// .snappyv1.StreamDataCursor dataCursor = 5;
+inline bool Data::_internal_has_datacursor() const {
+  return data_case() == kDataCursor;
+}
+inline bool Data::has_datacursor() const {
+  return _internal_has_datacursor();
+}
+inline void Data::set_has_datacursor() {
+  _impl_._oneof_case_[0] = kDataCursor;
+}
+inline void Data::clear_datacursor() {
+  if (_internal_has_datacursor()) {
+    if (GetArenaForAllocation() == nullptr) {
+      delete _impl_.data_.datacursor_;
+    }
+    clear_has_data();
+  }
+}
+inline ::snappyv1::StreamDataCursor* Data::release_datacursor() {
+  // @@protoc_insertion_point(field_release:snappyv1.Data.dataCursor)
+  if (_internal_has_datacursor()) {
+    clear_has_data();
+    ::snappyv1::StreamDataCursor* temp = _impl_.data_.datacursor_;
+    if (GetArenaForAllocation() != nullptr) {
+      temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
+    }
+    _impl_.data_.datacursor_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline const ::snappyv1::StreamDataCursor& Data::_internal_datacursor() const {
+  return _internal_has_datacursor()
+      ? *_impl_.data_.datacursor_
+      : reinterpret_cast< ::snappyv1::StreamDataCursor&>(::snappyv1::_StreamDataCursor_default_instance_);
+}
+inline const ::snappyv1::StreamDataCursor& Data::datacursor() const {
+  // @@protoc_insertion_point(field_get:snappyv1.Data.dataCursor)
+  return _internal_datacursor();
+}
+inline ::snappyv1::StreamDataCursor* Data::unsafe_arena_release_datacursor() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:snappyv1.Data.dataCursor)
+  if (_internal_has_datacursor()) {
+    clear_has_data();
+    ::snappyv1::StreamDataCursor* temp = _impl_.data_.datacursor_;
+    _impl_.data_.datacursor_ = nullptr;
+    return temp;
+  } else {
+    return nullptr;
+  }
+}
+inline void Data::unsafe_arena_set_allocated_datacursor(::snappyv1::StreamDataCursor* datacursor) {
+  clear_data();
+  if (datacursor) {
+    set_has_datacursor();
+    _impl_.data_.datacursor_ = datacursor;
+  }
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:snappyv1.Data.dataCursor)
+}
+inline ::snappyv1::StreamDataCursor* Data::_internal_mutable_datacursor() {
+  if (!_internal_has_datacursor()) {
+    clear_data();
+    set_has_datacursor();
+    _impl_.data_.datacursor_ = CreateMaybeMessage< ::snappyv1::StreamDataCursor >(GetArenaForAllocation());
+  }
+  return _impl_.data_.datacursor_;
+}
+inline ::snappyv1::StreamDataCursor* Data::mutable_datacursor() {
+  ::snappyv1::StreamDataCursor* _msg = _internal_mutable_datacursor();
+  // @@protoc_insertion_point(field_mutable:snappyv1.Data.dataCursor)
+  return _msg;
+}
+
+inline bool Data::has_data() const {
+  return data_case() != DATA_NOT_SET;
+}
+inline void Data::clear_has_data() {
+  _impl_._oneof_case_[0] = DATA_NOT_SET;
+}
+inline Data::DataCase Data::data_case() const {
+  return Data::DataCase(_impl_._oneof_case_[0]);
+}
 // -------------------------------------------------------------------
 
 // Message
@@ -3592,225 +4057,225 @@ inline void Message::set_type(::snappyv1::MessageType value) {
   // @@protoc_insertion_point(field_set:snappyv1.Message.type)
 }
 
-// .snappyv1.StreamChange stream_change = 2;
-inline bool Message::_internal_has_stream_change() const {
-  return message_case() == kStreamChange;
+// .snappyv1.Capabilities capabilities = 2;
+inline bool Message::_internal_has_capabilities() const {
+  return message_case() == kCapabilities;
 }
-inline bool Message::has_stream_change() const {
-  return _internal_has_stream_change();
+inline bool Message::has_capabilities() const {
+  return _internal_has_capabilities();
 }
-inline void Message::set_has_stream_change() {
-  _impl_._oneof_case_[0] = kStreamChange;
+inline void Message::set_has_capabilities() {
+  _impl_._oneof_case_[0] = kCapabilities;
 }
-inline void Message::clear_stream_change() {
-  if (_internal_has_stream_change()) {
+inline void Message::clear_capabilities() {
+  if (_internal_has_capabilities()) {
     if (GetArenaForAllocation() == nullptr) {
-      delete _impl_.message_.stream_change_;
+      delete _impl_.message_.capabilities_;
     }
     clear_has_message();
   }
 }
-inline ::snappyv1::StreamChange* Message::release_stream_change() {
-  // @@protoc_insertion_point(field_release:snappyv1.Message.stream_change)
-  if (_internal_has_stream_change()) {
+inline ::snappyv1::Capabilities* Message::release_capabilities() {
+  // @@protoc_insertion_point(field_release:snappyv1.Message.capabilities)
+  if (_internal_has_capabilities()) {
     clear_has_message();
-    ::snappyv1::StreamChange* temp = _impl_.message_.stream_change_;
+    ::snappyv1::Capabilities* temp = _impl_.message_.capabilities_;
     if (GetArenaForAllocation() != nullptr) {
       temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
     }
-    _impl_.message_.stream_change_ = nullptr;
+    _impl_.message_.capabilities_ = nullptr;
     return temp;
   } else {
     return nullptr;
   }
 }
-inline const ::snappyv1::StreamChange& Message::_internal_stream_change() const {
-  return _internal_has_stream_change()
-      ? *_impl_.message_.stream_change_
-      : reinterpret_cast< ::snappyv1::StreamChange&>(::snappyv1::_StreamChange_default_instance_);
+inline const ::snappyv1::Capabilities& Message::_internal_capabilities() const {
+  return _internal_has_capabilities()
+      ? *_impl_.message_.capabilities_
+      : reinterpret_cast< ::snappyv1::Capabilities&>(::snappyv1::_Capabilities_default_instance_);
 }
-inline const ::snappyv1::StreamChange& Message::stream_change() const {
-  // @@protoc_insertion_point(field_get:snappyv1.Message.stream_change)
-  return _internal_stream_change();
+inline const ::snappyv1::Capabilities& Message::capabilities() const {
+  // @@protoc_insertion_point(field_get:snappyv1.Message.capabilities)
+  return _internal_capabilities();
 }
-inline ::snappyv1::StreamChange* Message::unsafe_arena_release_stream_change() {
-  // @@protoc_insertion_point(field_unsafe_arena_release:snappyv1.Message.stream_change)
-  if (_internal_has_stream_change()) {
+inline ::snappyv1::Capabilities* Message::unsafe_arena_release_capabilities() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:snappyv1.Message.capabilities)
+  if (_internal_has_capabilities()) {
     clear_has_message();
-    ::snappyv1::StreamChange* temp = _impl_.message_.stream_change_;
-    _impl_.message_.stream_change_ = nullptr;
+    ::snappyv1::Capabilities* temp = _impl_.message_.capabilities_;
+    _impl_.message_.capabilities_ = nullptr;
     return temp;
   } else {
     return nullptr;
   }
 }
-inline void Message::unsafe_arena_set_allocated_stream_change(::snappyv1::StreamChange* stream_change) {
+inline void Message::unsafe_arena_set_allocated_capabilities(::snappyv1::Capabilities* capabilities) {
   clear_message();
-  if (stream_change) {
-    set_has_stream_change();
-    _impl_.message_.stream_change_ = stream_change;
+  if (capabilities) {
+    set_has_capabilities();
+    _impl_.message_.capabilities_ = capabilities;
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:snappyv1.Message.stream_change)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:snappyv1.Message.capabilities)
 }
-inline ::snappyv1::StreamChange* Message::_internal_mutable_stream_change() {
-  if (!_internal_has_stream_change()) {
+inline ::snappyv1::Capabilities* Message::_internal_mutable_capabilities() {
+  if (!_internal_has_capabilities()) {
     clear_message();
-    set_has_stream_change();
-    _impl_.message_.stream_change_ = CreateMaybeMessage< ::snappyv1::StreamChange >(GetArenaForAllocation());
+    set_has_capabilities();
+    _impl_.message_.capabilities_ = CreateMaybeMessage< ::snappyv1::Capabilities >(GetArenaForAllocation());
   }
-  return _impl_.message_.stream_change_;
+  return _impl_.message_.capabilities_;
 }
-inline ::snappyv1::StreamChange* Message::mutable_stream_change() {
-  ::snappyv1::StreamChange* _msg = _internal_mutable_stream_change();
-  // @@protoc_insertion_point(field_mutable:snappyv1.Message.stream_change)
+inline ::snappyv1::Capabilities* Message::mutable_capabilities() {
+  ::snappyv1::Capabilities* _msg = _internal_mutable_capabilities();
+  // @@protoc_insertion_point(field_mutable:snappyv1.Message.capabilities)
   return _msg;
 }
 
-// .snappyv1.StreamData stream_data = 3;
-inline bool Message::_internal_has_stream_data() const {
-  return message_case() == kStreamData;
+// .snappyv1.Setup setup = 3;
+inline bool Message::_internal_has_setup() const {
+  return message_case() == kSetup;
 }
-inline bool Message::has_stream_data() const {
-  return _internal_has_stream_data();
+inline bool Message::has_setup() const {
+  return _internal_has_setup();
 }
-inline void Message::set_has_stream_data() {
-  _impl_._oneof_case_[0] = kStreamData;
+inline void Message::set_has_setup() {
+  _impl_._oneof_case_[0] = kSetup;
 }
-inline void Message::clear_stream_data() {
-  if (_internal_has_stream_data()) {
+inline void Message::clear_setup() {
+  if (_internal_has_setup()) {
     if (GetArenaForAllocation() == nullptr) {
-      delete _impl_.message_.stream_data_;
+      delete _impl_.message_.setup_;
     }
     clear_has_message();
   }
 }
-inline ::snappyv1::StreamData* Message::release_stream_data() {
-  // @@protoc_insertion_point(field_release:snappyv1.Message.stream_data)
-  if (_internal_has_stream_data()) {
+inline ::snappyv1::Setup* Message::release_setup() {
+  // @@protoc_insertion_point(field_release:snappyv1.Message.setup)
+  if (_internal_has_setup()) {
     clear_has_message();
-    ::snappyv1::StreamData* temp = _impl_.message_.stream_data_;
+    ::snappyv1::Setup* temp = _impl_.message_.setup_;
     if (GetArenaForAllocation() != nullptr) {
       temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
     }
-    _impl_.message_.stream_data_ = nullptr;
+    _impl_.message_.setup_ = nullptr;
     return temp;
   } else {
     return nullptr;
   }
 }
-inline const ::snappyv1::StreamData& Message::_internal_stream_data() const {
-  return _internal_has_stream_data()
-      ? *_impl_.message_.stream_data_
-      : reinterpret_cast< ::snappyv1::StreamData&>(::snappyv1::_StreamData_default_instance_);
+inline const ::snappyv1::Setup& Message::_internal_setup() const {
+  return _internal_has_setup()
+      ? *_impl_.message_.setup_
+      : reinterpret_cast< ::snappyv1::Setup&>(::snappyv1::_Setup_default_instance_);
 }
-inline const ::snappyv1::StreamData& Message::stream_data() const {
-  // @@protoc_insertion_point(field_get:snappyv1.Message.stream_data)
-  return _internal_stream_data();
+inline const ::snappyv1::Setup& Message::setup() const {
+  // @@protoc_insertion_point(field_get:snappyv1.Message.setup)
+  return _internal_setup();
 }
-inline ::snappyv1::StreamData* Message::unsafe_arena_release_stream_data() {
-  // @@protoc_insertion_point(field_unsafe_arena_release:snappyv1.Message.stream_data)
-  if (_internal_has_stream_data()) {
+inline ::snappyv1::Setup* Message::unsafe_arena_release_setup() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:snappyv1.Message.setup)
+  if (_internal_has_setup()) {
     clear_has_message();
-    ::snappyv1::StreamData* temp = _impl_.message_.stream_data_;
-    _impl_.message_.stream_data_ = nullptr;
+    ::snappyv1::Setup* temp = _impl_.message_.setup_;
+    _impl_.message_.setup_ = nullptr;
     return temp;
   } else {
     return nullptr;
   }
 }
-inline void Message::unsafe_arena_set_allocated_stream_data(::snappyv1::StreamData* stream_data) {
+inline void Message::unsafe_arena_set_allocated_setup(::snappyv1::Setup* setup) {
   clear_message();
-  if (stream_data) {
-    set_has_stream_data();
-    _impl_.message_.stream_data_ = stream_data;
+  if (setup) {
+    set_has_setup();
+    _impl_.message_.setup_ = setup;
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:snappyv1.Message.stream_data)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:snappyv1.Message.setup)
 }
-inline ::snappyv1::StreamData* Message::_internal_mutable_stream_data() {
-  if (!_internal_has_stream_data()) {
+inline ::snappyv1::Setup* Message::_internal_mutable_setup() {
+  if (!_internal_has_setup()) {
     clear_message();
-    set_has_stream_data();
-    _impl_.message_.stream_data_ = CreateMaybeMessage< ::snappyv1::StreamData >(GetArenaForAllocation());
+    set_has_setup();
+    _impl_.message_.setup_ = CreateMaybeMessage< ::snappyv1::Setup >(GetArenaForAllocation());
   }
-  return _impl_.message_.stream_data_;
+  return _impl_.message_.setup_;
 }
-inline ::snappyv1::StreamData* Message::mutable_stream_data() {
-  ::snappyv1::StreamData* _msg = _internal_mutable_stream_data();
-  // @@protoc_insertion_point(field_mutable:snappyv1.Message.stream_data)
+inline ::snappyv1::Setup* Message::mutable_setup() {
+  ::snappyv1::Setup* _msg = _internal_mutable_setup();
+  // @@protoc_insertion_point(field_mutable:snappyv1.Message.setup)
   return _msg;
 }
 
-// .snappyv1.StreamInfo stream_info = 4;
-inline bool Message::_internal_has_stream_info() const {
-  return message_case() == kStreamInfo;
+// .snappyv1.Data data = 4;
+inline bool Message::_internal_has_data() const {
+  return message_case() == kData;
 }
-inline bool Message::has_stream_info() const {
-  return _internal_has_stream_info();
+inline bool Message::has_data() const {
+  return _internal_has_data();
 }
-inline void Message::set_has_stream_info() {
-  _impl_._oneof_case_[0] = kStreamInfo;
+inline void Message::set_has_data() {
+  _impl_._oneof_case_[0] = kData;
 }
-inline void Message::clear_stream_info() {
-  if (_internal_has_stream_info()) {
+inline void Message::clear_data() {
+  if (_internal_has_data()) {
     if (GetArenaForAllocation() == nullptr) {
-      delete _impl_.message_.stream_info_;
+      delete _impl_.message_.data_;
     }
     clear_has_message();
   }
 }
-inline ::snappyv1::StreamInfo* Message::release_stream_info() {
-  // @@protoc_insertion_point(field_release:snappyv1.Message.stream_info)
-  if (_internal_has_stream_info()) {
+inline ::snappyv1::Data* Message::release_data() {
+  // @@protoc_insertion_point(field_release:snappyv1.Message.data)
+  if (_internal_has_data()) {
     clear_has_message();
-    ::snappyv1::StreamInfo* temp = _impl_.message_.stream_info_;
+    ::snappyv1::Data* temp = _impl_.message_.data_;
     if (GetArenaForAllocation() != nullptr) {
       temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
     }
-    _impl_.message_.stream_info_ = nullptr;
+    _impl_.message_.data_ = nullptr;
     return temp;
   } else {
     return nullptr;
   }
 }
-inline const ::snappyv1::StreamInfo& Message::_internal_stream_info() const {
-  return _internal_has_stream_info()
-      ? *_impl_.message_.stream_info_
-      : reinterpret_cast< ::snappyv1::StreamInfo&>(::snappyv1::_StreamInfo_default_instance_);
+inline const ::snappyv1::Data& Message::_internal_data() const {
+  return _internal_has_data()
+      ? *_impl_.message_.data_
+      : reinterpret_cast< ::snappyv1::Data&>(::snappyv1::_Data_default_instance_);
 }
-inline const ::snappyv1::StreamInfo& Message::stream_info() const {
-  // @@protoc_insertion_point(field_get:snappyv1.Message.stream_info)
-  return _internal_stream_info();
+inline const ::snappyv1::Data& Message::data() const {
+  // @@protoc_insertion_point(field_get:snappyv1.Message.data)
+  return _internal_data();
 }
-inline ::snappyv1::StreamInfo* Message::unsafe_arena_release_stream_info() {
-  // @@protoc_insertion_point(field_unsafe_arena_release:snappyv1.Message.stream_info)
-  if (_internal_has_stream_info()) {
+inline ::snappyv1::Data* Message::unsafe_arena_release_data() {
+  // @@protoc_insertion_point(field_unsafe_arena_release:snappyv1.Message.data)
+  if (_internal_has_data()) {
     clear_has_message();
-    ::snappyv1::StreamInfo* temp = _impl_.message_.stream_info_;
-    _impl_.message_.stream_info_ = nullptr;
+    ::snappyv1::Data* temp = _impl_.message_.data_;
+    _impl_.message_.data_ = nullptr;
     return temp;
   } else {
     return nullptr;
   }
 }
-inline void Message::unsafe_arena_set_allocated_stream_info(::snappyv1::StreamInfo* stream_info) {
+inline void Message::unsafe_arena_set_allocated_data(::snappyv1::Data* data) {
   clear_message();
-  if (stream_info) {
-    set_has_stream_info();
-    _impl_.message_.stream_info_ = stream_info;
+  if (data) {
+    set_has_data();
+    _impl_.message_.data_ = data;
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:snappyv1.Message.stream_info)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:snappyv1.Message.data)
 }
-inline ::snappyv1::StreamInfo* Message::_internal_mutable_stream_info() {
-  if (!_internal_has_stream_info()) {
+inline ::snappyv1::Data* Message::_internal_mutable_data() {
+  if (!_internal_has_data()) {
     clear_message();
-    set_has_stream_info();
-    _impl_.message_.stream_info_ = CreateMaybeMessage< ::snappyv1::StreamInfo >(GetArenaForAllocation());
+    set_has_data();
+    _impl_.message_.data_ = CreateMaybeMessage< ::snappyv1::Data >(GetArenaForAllocation());
   }
-  return _impl_.message_.stream_info_;
+  return _impl_.message_.data_;
 }
-inline ::snappyv1::StreamInfo* Message::mutable_stream_info() {
-  ::snappyv1::StreamInfo* _msg = _internal_mutable_stream_info();
-  // @@protoc_insertion_point(field_mutable:snappyv1.Message.stream_info)
+inline ::snappyv1::Data* Message::mutable_data() {
+  ::snappyv1::Data* _msg = _internal_mutable_data();
+  // @@protoc_insertion_point(field_mutable:snappyv1.Message.data)
   return _msg;
 }
 
@@ -3823,6 +4288,60 @@ inline void Message::clear_has_message() {
 inline Message::MessageCase Message::message_case() const {
   return Message::MessageCase(_impl_._oneof_case_[0]);
 }
+// -------------------------------------------------------------------
+
+// StreamDataRaw
+
+// bytes payload = 1;
+inline void StreamDataRaw::clear_payload() {
+  _impl_.payload_.ClearToEmpty();
+}
+inline const std::string& StreamDataRaw::payload() const {
+  // @@protoc_insertion_point(field_get:snappyv1.StreamDataRaw.payload)
+  return _internal_payload();
+}
+template <typename ArgT0, typename... ArgT>
+inline PROTOBUF_ALWAYS_INLINE
+void StreamDataRaw::set_payload(ArgT0&& arg0, ArgT... args) {
+ 
+ _impl_.payload_.SetBytes(static_cast<ArgT0 &&>(arg0), args..., GetArenaForAllocation());
+  // @@protoc_insertion_point(field_set:snappyv1.StreamDataRaw.payload)
+}
+inline std::string* StreamDataRaw::mutable_payload() {
+  std::string* _s = _internal_mutable_payload();
+  // @@protoc_insertion_point(field_mutable:snappyv1.StreamDataRaw.payload)
+  return _s;
+}
+inline const std::string& StreamDataRaw::_internal_payload() const {
+  return _impl_.payload_.Get();
+}
+inline void StreamDataRaw::_internal_set_payload(const std::string& value) {
+  
+  _impl_.payload_.Set(value, GetArenaForAllocation());
+}
+inline std::string* StreamDataRaw::_internal_mutable_payload() {
+  
+  return _impl_.payload_.Mutable(GetArenaForAllocation());
+}
+inline std::string* StreamDataRaw::release_payload() {
+  // @@protoc_insertion_point(field_release:snappyv1.StreamDataRaw.payload)
+  return _impl_.payload_.Release();
+}
+inline void StreamDataRaw::set_allocated_payload(std::string* payload) {
+  if (payload != nullptr) {
+    
+  } else {
+    
+  }
+  _impl_.payload_.SetAllocated(payload, GetArenaForAllocation());
+#ifdef PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  if (_impl_.payload_.IsDefault()) {
+    _impl_.payload_.Set("", GetArenaForAllocation());
+  }
+#endif // PROTOBUF_FORCE_COPY_DEFAULT_STRING
+  // @@protoc_insertion_point(field_set_allocated:snappyv1.StreamDataRaw.payload)
+}
+
 // -------------------------------------------------------------------
 
 // StreamDataPointer
@@ -4118,6 +4637,10 @@ inline void StreamDataCursor::set_allocated_image(std::string* image) {
 
 // -------------------------------------------------------------------
 
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 
 // @@protoc_insertion_point(namespace_scope)
 
@@ -4130,25 +4653,10 @@ template <>
 inline const EnumDescriptor* GetEnumDescriptor< ::snappyv1::Platform>() {
   return ::snappyv1::Platform_descriptor();
 }
-template <> struct is_proto_enum< ::snappyv1::StreamMedium> : ::std::true_type {};
+template <> struct is_proto_enum< ::snappyv1::ComponentType> : ::std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::snappyv1::StreamMedium>() {
-  return ::snappyv1::StreamMedium_descriptor();
-}
-template <> struct is_proto_enum< ::snappyv1::StreamEndpoint> : ::std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::snappyv1::StreamEndpoint>() {
-  return ::snappyv1::StreamEndpoint_descriptor();
-}
-template <> struct is_proto_enum< ::snappyv1::StreamDirection> : ::std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::snappyv1::StreamDirection>() {
-  return ::snappyv1::StreamDirection_descriptor();
-}
-template <> struct is_proto_enum< ::snappyv1::StreamEncoding> : ::std::true_type {};
-template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::snappyv1::StreamEncoding>() {
-  return ::snappyv1::StreamEncoding_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::snappyv1::ComponentType>() {
+  return ::snappyv1::ComponentType_descriptor();
 }
 template <> struct is_proto_enum< ::snappyv1::Command> : ::std::true_type {};
 template <>
