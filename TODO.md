@@ -32,18 +32,23 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
   * ✅ DONE: mermaid diagram for pipe structure 
   * ✅ DONE: there is setEnabled, start and stop - do we need both, probably delete enabled flag
              and move all code to start, stop
-  * 
-  * 🟦 TODO: propagate properties (width, height) through pipe -> define it 
-  * 
-  * 🟦 TODO: probably start/stop pipe localComponents in reverse data flow direction
-  * 🟦 TODO: what was streamId meant to do? -> define it
-  
-  * 🟦 TODO: compile and make run release mode with optimizations 
+  * ✅ DONE: what was streamId meant to do? -> each pipe has its own streamId, data is 
+             fed into correct pipe according to streamId
+  * ✅ DONE: implement simple option for configuration (ui/file/mock) -> QSettings, snp.ini
 
-  * 🟦 TODO: verify component "compatibility" at runtime
+
+  * 🟦 TODO: connect components in pipe and connect to source pipe (network, local file etc.)
+    * 🟦 TODO: verify component "compatibility" at runtime
+  * 🟦 TODO: send remote config to server and setup pipe using createPipes
+  * 🟦 TODO: implement setting up a pipe via client
+   
+  * 🟦 TODO: propagate properties (width, height) through pipe -> define it 
+  * 🟦 TODO: probably start/stop pipe localComponents in reverse data flow direction
+
+
+  * 🟦 TODO: compile and make run release mode with optimizations 
   * 🟦 TODO: think about porttype (both, copy, mmap) - the idea is good, is the implementation 
-  * 🟦 TODO: fix temporarily deactivated websocket sink (marked usages with "TODO: websocket")
-  * 🟦 TODO: implement simple option for configuration (ui/file/mock) 
+  * 🟦 TODO: fix temporarily deactivated websocket sink (marked usages with "TODO: websocket") 
 
 ### ✨ MS2:
 * implement more codecs

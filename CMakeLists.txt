@@ -139,6 +139,7 @@ add_custom_target(${PROTO_TARGET_NAME} DEPENDS snappy-protobuf-sources)
 add_executable(snpserver
     src/snpserver.cpp
     src/network/snappyv1.pb.cc
+    src/config/SnpConfig.cpp
     src/util/loguru.cpp
     src/util/TimeUtil.cpp
     src/util/VideoUtil.cpp
@@ -214,6 +215,7 @@ add_executable(snpclient
     src/gui/SnpCanvas.cpp
     # general
     src/network/snappyv1.pb.cc
+    src/config/SnpConfig.cpp
     src/util/loguru.cpp
     src/util/TimeUtil.cpp
     src/util/VideoUtil.cpp
@@ -240,8 +242,7 @@ add_executable(snpclient
     ${GL_SOURCES}
     ${MMALH264_SOURCES}
     ${OPENH264_SOURCES}
-    ${VA_SOURCES}
-        src/stream/SnpComponentRegistry.cpp src/stream/SnpComponentRegistry.h)
+    ${VA_SOURCES})
 target_link_libraries(snpclient
     Qt::Core
     Qt::Gui

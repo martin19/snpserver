@@ -12,10 +12,12 @@
 #include "stream/output/SnpSinkDisplay.h"
 #include "stream/video/SnpSourceDummy.h"
 #include "stream/SnpComponentRegistry.h"
+#include "config/SnpConfig.h"
 
 
 SnpPipe *videoPipe = nullptr;
 SnpCanvas *canvas = nullptr;
+SnpConfig* config;
 SnpComponentRegistry* componentRegistry;
 
 void handleCapabilitiesMessageCb(snappyv1::Message* message) {
@@ -36,6 +38,7 @@ void handleCapabilitiesMessageCb(snappyv1::Message* message) {
 
 int runClient() {
     componentRegistry = new SnpComponentRegistry();
+    config = new SnpConfig(R"(P:\snp\snpserver\snp.ini)");
 
     SnpSourceNetworkTcpOptions sourceOptions = {};
     sourceOptions.streamId = 0;
@@ -45,13 +48,15 @@ int runClient() {
     auto *source = new SnpSourceNetworkTcp(sourceOptions);
     source->start();
 
-    //TODO: verify components are there and setup a local and remote pipe
-//    videoPipe = SnpPipeFactory::createPipe(0, source, nullptr,
-//                                           snappyv1::STREAM_MEDIUM_VIDEO,
-//                                           snappyv1::STREAM_DIRECTION_INPUT,
-//                                           snappyv1::STREAM_ENDPOINT_DISPLAY,
-//                                           snappyv1::STREAM_ENCODING_H264_OPENH264);
-//    videoPipe->start();
+
+
+    //setup local pipes
+    //TODO: connect components in pipe and connect to source pipe (network, local file etc.)
+    //TODO: send remote config to server and setup pipe using createPipes
+    std::vector<SnpPipe*>* pipes = SnpPipeFactory::createPipes(config, "local");
+    for (const auto &pipe: *pipes) {
+        pipe->start();
+    }
 
     //paint on every frame
 //    auto* sinkDisplay = dynamic_cast<SnpSinkDisplay *>(videoPipe->getComponents().back());

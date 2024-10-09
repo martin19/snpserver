@@ -1,27 +1,28 @@
-//#include "util/loguru.h"
-//#include "SnpPipeFactory.h"
-//#include "SnpPipe.h"
-//#include "stream/video/SnpSourceDummy.h"
-//#include "stream/output/SnpSinkDisplay.h"
-//#ifdef HAVE_LIBGL
-//    #include <stream/video/SnpSourceGL.h>
-//#endif //HAVE_LIBGL
-//#ifdef HAVE_LIBVA
-//    #include <stream/video/SnpEncoderVaH264.h>
-//#endif //HAVE_LIBVA
-//#ifdef HAVE_LIBX11
-//    #include <stream/video/SnpSourceX11.h>
-//    #include <stream/input/SnpSinkX11Mouse.h>
-//    #include <stream/input/SnpSinkX11Keyboard.h>
-//    #include <stream/input/SnpSourceX11Cursor.h>
-//#endif //HAVE_LIBX11
-//#ifdef HAVE_LIBWEBSOCKETS
-//#include <stream/network/SnpSinkNetworkWebsocket.h>
-//#endif //HAVE_LIBWEBSOCKETS
-//#include <stream/network/SnpSinkNetworkTcp.h>
-//#include <stream/network/SnpSourceNetworkTcp.h>
-//#include <stream/video/SnpEncoderOpenH264.h>
-//#include <stream/video/SnpDecoderOpenH264.h>
+#include <vector>
+#include "util/loguru.h"
+#include "SnpPipeFactory.h"
+#include "SnpPipe.h"
+#include "stream/video/SnpSourceDummy.h"
+#include "stream/output/SnpSinkDisplay.h"
+#ifdef HAVE_LIBGL
+    #include <stream/video/SnpSourceGL.h>
+#endif //HAVE_LIBGL
+#ifdef HAVE_LIBVA
+    #include <stream/video/SnpEncoderVaH264.h>
+#endif //HAVE_LIBVA
+#ifdef HAVE_LIBX11
+    #include <stream/video/SnpSourceX11.h>
+    #include <stream/input/SnpSinkX11Mouse.h>
+    #include <stream/input/SnpSinkX11Keyboard.h>
+    #include <stream/input/SnpSourceX11Cursor.h>
+#endif //HAVE_LIBX11
+#ifdef HAVE_LIBWEBSOCKETS
+#include <stream/network/SnpSinkNetworkWebsocket.h>
+#endif //HAVE_LIBWEBSOCKETS
+#include <stream/network/SnpSinkNetworkTcp.h>
+#include <stream/network/SnpSourceNetworkTcp.h>
+#include <stream/video/SnpEncoderOpenH264.h>
+#include <stream/video/SnpDecoderOpenH264.h>
 //
 //SnpPipe *SnpPipeFactory::createVideoInputPipe(uint32_t streamId,
 //                                              SnpComponent *source,
@@ -235,3 +236,76 @@
 //SnpPipe *SnpPipeFactory::createPipe(uint32_t streamId, std::vector<SnpComponent *> components) {
 //    return nullptr;
 //}
+#include "SnpPipeFactory.h"
+
+std::vector<SnpPipe*>* SnpPipeFactory::createPipes(SnpConfig *pConfig, std::string side) {
+    auto pipes = new std::vector<SnpPipe*>();
+    PipeMap* pipeMap = nullptr;
+    if(side == "local") {
+        pipeMap = pConfig->getLocalPipes();
+    } else {
+        pipeMap = pConfig->getRemotePipes();
+    }
+    for (const auto &pipe: *pipeMap) {
+        uint32_t pipeId = pipe.first;
+        SnpPipe* snpPipe = createPipe(pipeId, &pipe.second);
+        pipes->push_back(snpPipe);
+    }
+    return pipes;
+}
+
+SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snappyv1::Component *> *components) {
+    SnpPipeOptions videoPipeOptions = {};
+    auto pipe = new SnpPipe(videoPipeOptions);
+    for (const auto &component: *components) {
+        SnpComponent* snpComponent = nullptr;
+        switch(component->componenttype()) {
+            case snappyv1::COMPONENT_CAPTURE_VIDEO_DUMMY: {
+                SnpSourceDummyOptions options;
+                options.width = SnpConfig::getPropertyUint(component, "width", 1920);
+                options.height = SnpConfig::getPropertyUint(component, "height", 1080);
+                options.fps = SnpConfig::getPropertyDouble(component, "fps", 30.0);
+                snpComponent = new SnpSourceDummy(options);
+            } break;
+            case snappyv1::COMPONENT_ENCODER_OPENH264: {
+                SnpEncoderOpenH264Options options;
+                options.width = SnpConfig::getPropertyUint(component, "width", 1920);
+                options.height = SnpConfig::getPropertyUint(component, "height", 1080);
+                options.qp = SnpConfig::getPropertyUint(component, "qp", 30);
+                snpComponent = new SnpEncoderOpenH264(options);
+            } break;
+            case snappyv1::COMPONENT_DECODER_OPENH264: {
+                SnpDecoderOpenH264Options options = {};
+                options.width = SnpConfig::getPropertyUint(component, "width", 1920);
+                options.height = SnpConfig::getPropertyUint(component, "height", 1080);
+                options.qp = SnpConfig::getPropertyUint(component, "qp", 30);
+                snpComponent = new SnpDecoderOpenH264(options);
+            } break;
+            case snappyv1::COMPONENT_OUTPUT_VIDEO_DISPLAY: {
+                SnpSinkDisplayOptions options = {};
+                options.width = SnpConfig::getPropertyUint(component, "width", 1920);
+                options.height = SnpConfig::getPropertyUint(component, "height", 1080);
+                snpComponent = new SnpSinkDisplay(options);
+            } break;
+            case snappyv1::COMPONENT_CAPTURE_VIDEO_DRM:
+            case snappyv1::COMPONENT_CAPTURE_VIDEO_X11:
+            case snappyv1::COMPONENT_CAPTURE_VIDEO_WAYLAND:
+            case snappyv1::COMPONENT_CAPTURE_VIDEO_V4L:
+            case snappyv1::COMPONENT_INPUT_KEYBOARD_X11:
+            case snappyv1::COMPONENT_INPUT_POINTER_X11:
+            case snappyv1::COMPONENT_INPUT_CURSOR_X11:
+            case snappyv1::COMPONENT_OUTPUT_KEYBOARD_X11:
+            case snappyv1::COMPONENT_OUTPUT_POINTER_X11:
+            case snappyv1::COMPONENT_OUTPUT_CURSOR_X11:
+            case snappyv1::COMPONENT_ENCODER_INTEL:
+            case snappyv1::COMPONENT_DECODER_INTEL:
+            case snappyv1::COMPONENT_ENCODER_AMD:
+            case snappyv1::COMPONENT_DECODER_AMD:
+            case snappyv1::ComponentType_INT_MIN_SENTINEL_DO_NOT_USE_:
+            case snappyv1::ComponentType_INT_MAX_SENTINEL_DO_NOT_USE_:
+                break;
+        }
+        pipe->addComponent(snpComponent);
+    }
+}
+
