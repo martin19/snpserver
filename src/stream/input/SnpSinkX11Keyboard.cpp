@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <memory.h>
 #include "util/loguru.h"
-#include <network/snappyv1.pb.h>
+#include <network/snp.pb.h>
 
 extern "C" unsigned short code_map_atset1_to_linux[57470];
 
@@ -47,7 +47,7 @@ static void emit(int fd, int type, int code, int val) {
 }
 
 void SnpSinkX11Keyboard::onInputData(const uint8_t *data, int len, bool complete) {
-    snappyv1::StreamDataKeyboard streamDataKeyboard = snappyv1::StreamDataKeyboard();
+    snp::StreamDataKeyboard streamDataKeyboard = snp::StreamDataKeyboard();
     streamDataKeyboard.ParseFromArray(data, len);
 
     bool down = streamDataKeyboard.down();

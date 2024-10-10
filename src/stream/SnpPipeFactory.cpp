@@ -26,13 +26,13 @@
 //
 //SnpPipe *SnpPipeFactory::createVideoInputPipe(uint32_t streamId,
 //                                              SnpComponent *source,
-//                                              snappyv1::StreamEndpoint endpoint,
-//                                              snappyv1::StreamEncoding encoding) {
+//                                              snp::StreamEndpoint endpoint,
+//                                              snp::StreamEncoding encoding) {
 //
 //    SnpComponent *decoder = nullptr;
 //    SnpComponent *sink = nullptr;
 //
-//    if(endpoint == snappyv1::COMPONENT_OUTPUT_VIDEO_DISPLAY) {
+//    if(endpoint == snp::COMPONENT_OUTPUT_VIDEO_DISPLAY) {
 //        SnpSinkDisplayOptions sinkDisplayOptions = {};
 //        sinkDisplayOptions.streamId = 1;
 //        sinkDisplayOptions.width = 1920;
@@ -42,7 +42,7 @@
 //        LOG_F(WARNING, "display endpoint (%d) unavailable.", endpoint);
 //    }
 //
-//    if(encoding == snappyv1::COMPONENT_ENCODER_OPENH264) {
+//    if(encoding == snp::COMPONENT_ENCODER_OPENH264) {
 //        SnpDecoderOpenH264Options decoderOptions = {};
 //        decoder = new SnpDecoderOpenH264(decoderOptions);
 //    } else {
@@ -59,23 +59,23 @@
 //    if(sink != nullptr) pipe->addComponent(sink);
 //
 //    //TODO: set actual values!!
-//    pipe->setMedium(snappyv1::STREAM_MEDIUM_VIDEO);
-//    pipe->setEndpoint(snappyv1::STREAM_ENDPOINT_DISPLAY);
-//    pipe->setEncoding(snappyv1::STREAM_ENCODING_H264_OPENH264);
-//    pipe->setDirection(snappyv1::STREAM_DIRECTION_OUTPUT);
+//    pipe->setMedium(snp::STREAM_MEDIUM_VIDEO);
+//    pipe->setEndpoint(snp::STREAM_ENDPOINT_DISPLAY);
+//    pipe->setEncoding(snp::STREAM_ENCODING_H264_OPENH264);
+//    pipe->setDirection(snp::STREAM_DIRECTION_OUTPUT);
 //
 //    return pipe;
 //}
 //
 //SnpPipe *SnpPipeFactory::createVideoOutputPipe(uint32_t streamId,
 //                                               SnpComponent *sink,
-//                                               snappyv1::StreamEndpoint endpoint,
-//                                               snappyv1::StreamEncoding encoding) {
+//                                               snp::StreamEndpoint endpoint,
+//                                               snp::StreamEncoding encoding) {
 //    SnpComponent *source = nullptr;
 //    SnpComponent *encoder = nullptr;
 //    LOG_F(INFO, "creating video pipe.");
 //
-//    if(endpoint == snappyv1::COMPONENT_CAPTURE_VIDEO_DRM) {
+//    if(endpoint == snp::COMPONENT_CAPTURE_VIDEO_DRM) {
 //#ifdef HAVE_LIBDRM
 //        SnpSourceGLOptions sourceOptions;
 //        sourceOptions.device = "/dev/dri/card0";
@@ -85,7 +85,7 @@
 //        source = nullptr;
 //        LOG_F(WARNING, "x11 endpoint (%d) unavailable.", endpoint);
 //#endif
-//    } else if(endpoint == snappyv1::COMPONENT_CAPTURE_VIDEO_X11) {
+//    } else if(endpoint == snp::COMPONENT_CAPTURE_VIDEO_X11) {
 //#ifdef HAVE_LIBDRM
 //        SnpSourceX11Options sourceOptions;
 //        sourceOptions.display = ":0.0";
@@ -94,7 +94,7 @@
 //        source = nullptr;
 //        LOG_F(WARNING, "x11 endpoint (%d) unavailable.", endpoint);
 //#endif
-//    } else if(endpoint == snappyv1::COMPONENT_CAPTURE_VIDEO_DUMMY) {
+//    } else if(endpoint == snp::COMPONENT_CAPTURE_VIDEO_DUMMY) {
 //        SnpSourceDummyOptions sourceOptions;
 //        sourceOptions.width = 1920;
 //        sourceOptions.height = 1080;
@@ -111,11 +111,11 @@
 ////        encoderMmalH264Options.qp = 20;
 ////        auto *encoderMmalH264 = new SnpEncoderMmalH264(encoderMmalH264Options);
 //
-//    if(encoding == snappyv1::COMPONENT_ENCODER_OPENH264) {
+//    if(encoding == snp::COMPONENT_ENCODER_OPENH264) {
 //        //OPENH264
 //        SnpEncoderOpenH264Options encoderOptions = {};
 //        encoder = new SnpEncoderOpenH264(encoderOptions);
-//    } else if(encoding == snappyv1::COMPONENT_ENCODER_INTEL) {
+//    } else if(encoding == snp::COMPONENT_ENCODER_INTEL) {
 //#ifdef HAVE_LIBVA
 //        SnpEncoderVaH264Options encoderOptions = {};
 //        encoder = new SnpEncoderVaH264(encoderOptions);
@@ -142,19 +142,19 @@
 //    if(sink != nullptr) pipe->addComponent(sink);
 //
 //    //TODO: set actual values!!
-//    pipe->setMedium(snappyv1::STREAM_MEDIUM_VIDEO);
-//    pipe->setEndpoint(snappyv1::STREAM_ENDPOINT_VIDEO_DUMMY);
-//    pipe->setEncoding(snappyv1::STREAM_ENCODING_H264_OPENH264);
-//    pipe->setDirection(snappyv1::STREAM_DIRECTION_OUTPUT);
+//    pipe->setMedium(snp::STREAM_MEDIUM_VIDEO);
+//    pipe->setEndpoint(snp::STREAM_ENDPOINT_VIDEO_DUMMY);
+//    pipe->setEncoding(snp::STREAM_ENCODING_H264_OPENH264);
+//    pipe->setDirection(snp::STREAM_DIRECTION_OUTPUT);
 //
 //    return pipe;
 //}
 //
 //SnpPipe *SnpPipeFactory::createPeripheralInputPipe(uint32_t streamId,
 //                                                   SnpComponent *source,
-//                                                   snappyv1::StreamEndpoint endpoint,
-//                                                   snappyv1::StreamEncoding encoding) {
-//    if(endpoint == snappyv1::COMPONENT_INPUT_POINTER_X11) {
+//                                                   snp::StreamEndpoint endpoint,
+//                                                   snp::StreamEncoding encoding) {
+//    if(endpoint == snp::COMPONENT_INPUT_POINTER_X11) {
 //#ifdef HAVE_LIBX11
 //        LOG_F(INFO, "creating mouse pipe.");
 //        SnpSourceNetworkOptions sourceNetworkOptions = {};
@@ -172,15 +172,15 @@
 //        pipe->addComponent(sourceNetwork);
 //        pipe->addComponent(snpSinkMouse);
 //
-//        pipe->setMedium(snappyv1::STREAM_MEDIUM_PERIPHERAL);
-//        pipe->setEndpoint(snappyv1::STREAM_ENDPOINT_POINTER);
-//        pipe->setDirection(snappyv1::STREAM_DIRECTION_INPUT);
+//        pipe->setMedium(snp::STREAM_MEDIUM_PERIPHERAL);
+//        pipe->setEndpoint(snp::STREAM_ENDPOINT_POINTER);
+//        pipe->setDirection(snp::STREAM_DIRECTION_INPUT);
 //
 //        return pipe;
 //#else
 //        LOG_F(WARNING, "X11 pointer is unavailable.");
 //#endif //HAVE_LIBX11
-//    } else if(endpoint == snappyv1::COMPONENT_INPUT_KEYBOARD_X11) {
+//    } else if(endpoint == snp::COMPONENT_INPUT_KEYBOARD_X11) {
 //#ifdef HAVE_LIBX11
 //        LOG_F(INFO, "creating keyboard pipe.");
 //        SnpSourceNetworkOptions sourceNetworkOptions = {};
@@ -196,15 +196,15 @@
 //        pipe->addComponent(sourceNetwork);
 //        pipe->addComponent(sinkKeyboard);
 //
-//        pipe->setMedium(snappyv1::STREAM_MEDIUM_PERIPHERAL);
-//        pipe->setEndpoint(snappyv1::STREAM_ENDPOINT_KEYBOARD);
-//        pipe->setDirection(snappyv1::STREAM_DIRECTION_INPUT);
+//        pipe->setMedium(snp::STREAM_MEDIUM_PERIPHERAL);
+//        pipe->setEndpoint(snp::STREAM_ENDPOINT_KEYBOARD);
+//        pipe->setDirection(snp::STREAM_DIRECTION_INPUT);
 //
 //        return pipe;
 //#else
 //        LOG_F(WARNING, "X11 keyboard is unavailable.");
 //#endif //HAVE_LIBX11
-//    } else if(endpoint == snappyv1::COMPONENT_INPUT_CURSOR_X11) {
+//    } else if(endpoint == snp::COMPONENT_INPUT_CURSOR_X11) {
 //#ifdef HAVE_LIBX11
 //        LOG_F(INFO, "creating cursor pipe.");
 //        SnpSourceCursorOptions sourceCursorOptions = {};
@@ -220,9 +220,9 @@
 //        pipe->addComponent(sourceCursor);
 //        pipe->addComponent(sinkNetwork);
 //
-//        pipe->setMedium(snappyv1::STREAM_MEDIUM_PERIPHERAL);
-//        pipe->setEndpoint(snappyv1::STREAM_ENDPOINT_CURSOR);
-//        pipe->setDirection(snappyv1::STREAM_DIRECTION_OUTPUT);
+//        pipe->setMedium(snp::STREAM_MEDIUM_PERIPHERAL);
+//        pipe->setEndpoint(snp::STREAM_ENDPOINT_CURSOR);
+//        pipe->setDirection(snp::STREAM_DIRECTION_OUTPUT);
 //
 //        return pipe;
 //#else
@@ -254,55 +254,55 @@ std::vector<SnpPipe*>* SnpPipeFactory::createPipes(SnpConfig *pConfig, std::stri
     return pipes;
 }
 
-SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snappyv1::Component *> *components) {
+SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Component *> *components) {
     SnpPipeOptions videoPipeOptions = {};
     auto pipe = new SnpPipe(videoPipeOptions);
     for (const auto &component: *components) {
         SnpComponent* snpComponent = nullptr;
         switch(component->componenttype()) {
-            case snappyv1::COMPONENT_CAPTURE_VIDEO_DUMMY: {
+            case snp::COMPONENT_CAPTURE_VIDEO_DUMMY: {
                 SnpSourceDummyOptions options;
                 options.width = SnpConfig::getPropertyUint(component, "width", 1920);
                 options.height = SnpConfig::getPropertyUint(component, "height", 1080);
                 options.fps = SnpConfig::getPropertyDouble(component, "fps", 30.0);
                 snpComponent = new SnpSourceDummy(options);
             } break;
-            case snappyv1::COMPONENT_ENCODER_OPENH264: {
+            case snp::COMPONENT_ENCODER_OPENH264: {
                 SnpEncoderOpenH264Options options;
                 options.width = SnpConfig::getPropertyUint(component, "width", 1920);
                 options.height = SnpConfig::getPropertyUint(component, "height", 1080);
                 options.qp = SnpConfig::getPropertyUint(component, "qp", 30);
                 snpComponent = new SnpEncoderOpenH264(options);
             } break;
-            case snappyv1::COMPONENT_DECODER_OPENH264: {
+            case snp::COMPONENT_DECODER_OPENH264: {
                 SnpDecoderOpenH264Options options = {};
                 options.width = SnpConfig::getPropertyUint(component, "width", 1920);
                 options.height = SnpConfig::getPropertyUint(component, "height", 1080);
                 options.qp = SnpConfig::getPropertyUint(component, "qp", 30);
                 snpComponent = new SnpDecoderOpenH264(options);
             } break;
-            case snappyv1::COMPONENT_OUTPUT_VIDEO_DISPLAY: {
+            case snp::COMPONENT_OUTPUT_VIDEO_DISPLAY: {
                 SnpSinkDisplayOptions options = {};
                 options.width = SnpConfig::getPropertyUint(component, "width", 1920);
                 options.height = SnpConfig::getPropertyUint(component, "height", 1080);
                 snpComponent = new SnpSinkDisplay(options);
             } break;
-            case snappyv1::COMPONENT_CAPTURE_VIDEO_DRM:
-            case snappyv1::COMPONENT_CAPTURE_VIDEO_X11:
-            case snappyv1::COMPONENT_CAPTURE_VIDEO_WAYLAND:
-            case snappyv1::COMPONENT_CAPTURE_VIDEO_V4L:
-            case snappyv1::COMPONENT_INPUT_KEYBOARD_X11:
-            case snappyv1::COMPONENT_INPUT_POINTER_X11:
-            case snappyv1::COMPONENT_INPUT_CURSOR_X11:
-            case snappyv1::COMPONENT_OUTPUT_KEYBOARD_X11:
-            case snappyv1::COMPONENT_OUTPUT_POINTER_X11:
-            case snappyv1::COMPONENT_OUTPUT_CURSOR_X11:
-            case snappyv1::COMPONENT_ENCODER_INTEL:
-            case snappyv1::COMPONENT_DECODER_INTEL:
-            case snappyv1::COMPONENT_ENCODER_AMD:
-            case snappyv1::COMPONENT_DECODER_AMD:
-            case snappyv1::ComponentType_INT_MIN_SENTINEL_DO_NOT_USE_:
-            case snappyv1::ComponentType_INT_MAX_SENTINEL_DO_NOT_USE_:
+            case snp::COMPONENT_CAPTURE_VIDEO_DRM:
+            case snp::COMPONENT_CAPTURE_VIDEO_X11:
+            case snp::COMPONENT_CAPTURE_VIDEO_WAYLAND:
+            case snp::COMPONENT_CAPTURE_VIDEO_V4L:
+            case snp::COMPONENT_INPUT_KEYBOARD_X11:
+            case snp::COMPONENT_INPUT_POINTER_X11:
+            case snp::COMPONENT_INPUT_CURSOR_X11:
+            case snp::COMPONENT_OUTPUT_KEYBOARD_X11:
+            case snp::COMPONENT_OUTPUT_POINTER_X11:
+            case snp::COMPONENT_OUTPUT_CURSOR_X11:
+            case snp::COMPONENT_ENCODER_INTEL:
+            case snp::COMPONENT_DECODER_INTEL:
+            case snp::COMPONENT_ENCODER_AMD:
+            case snp::COMPONENT_DECODER_AMD:
+            case snp::ComponentType_INT_MIN_SENTINEL_DO_NOT_USE_:
+            case snp::ComponentType_INT_MAX_SENTINEL_DO_NOT_USE_:
                 break;
         }
         pipe->addComponent(snpComponent);

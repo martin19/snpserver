@@ -23,13 +23,13 @@ SnpClientWebsocket::~SnpClientWebsocket() {
 
 void SnpClientWebsocket::onMessage(uint8_t *data, int len) {
     //decode message
-    snappyv1::Message message = snappyv1::Message();
+    snp::Message message = snp::Message();
     message.ParseFromArray(data, len);
     switch(message.type()) {
-        case snappyv1::MESSAGE_TYPE_STREAM_CHANGE: {
+        case snp::MESSAGE_TYPE_STREAM_CHANGE: {
             onStreamChange(message.stream_change());
         } break;
-        case snappyv1::MESSAGE_TYPE_STREAM_DATA: {
+        case snp::MESSAGE_TYPE_STREAM_DATA: {
             onStreamData(message.stream_data());
         } break;
         default:
@@ -45,8 +45,8 @@ time_t SnpClientWebsocket::getConnectionStartTs() const {
     return connectionStartTs;
 }
 
-void SnpClientWebsocket::onStreamChange(const snappyv1::StreamChange &msg) {
-    using namespace snappyv1;
+void SnpClientWebsocket::onStreamChange(const snp::StreamChange &msg) {
+    using namespace snp;
     switch(msg.command()) {
         case COMMAND_INIT: {
             onStreamChangeInit(msg);
@@ -63,7 +63,7 @@ void SnpClientWebsocket::onStreamChange(const snappyv1::StreamChange &msg) {
     }
 }
 
-void SnpClientWebsocket::onStreamChangeInit(const snappyv1::StreamChange &msg) {
+void SnpClientWebsocket::onStreamChangeInit(const snp::StreamChange &msg) {
     //find pipe for stream in pipe registry and initialize it. when initialized, send ready.
     auto pipe = SnpPipeFactory::createPipe(msg.id(), this, msg.stream_medium(), msg.stream_direction(),
                                            msg.stream_endpoint(), msg.stream_encoding());
@@ -77,7 +77,7 @@ void SnpClientWebsocket::onStreamChangeInit(const snappyv1::StreamChange &msg) {
     }*/
 }
 
-void SnpClientWebsocket::onStreamChangeStart(const snappyv1::StreamChange &msg) {
+void SnpClientWebsocket::onStreamChangeStart(const snp::StreamChange &msg) {
     auto it = pipes.find(msg.id());
     auto pipe = it->second;
     if(pipe) {
@@ -85,7 +85,7 @@ void SnpClientWebsocket::onStreamChangeStart(const snappyv1::StreamChange &msg) 
     }
 }
 
-void SnpClientWebsocket::onStreamChangeStop(const snappyv1::StreamChange &msg) {
+void SnpClientWebsocket::onStreamChangeStop(const snp::StreamChange &msg) {
     auto it = pipes.find(msg.id());
     auto pipe = it->second;
     if(pipe) {
@@ -93,7 +93,7 @@ void SnpClientWebsocket::onStreamChangeStop(const snappyv1::StreamChange &msg) {
     }
 }
 
-void SnpClientWebsocket::onStreamChangeDestroy(const snappyv1::StreamChange &msg) {
+void SnpClientWebsocket::onStreamChangeDestroy(const snp::StreamChange &msg) {
     auto it = pipes.find(msg.id());
     auto pipe = it->second;
     if(pipe) {
@@ -103,9 +103,9 @@ void SnpClientWebsocket::onStreamChangeDestroy(const snappyv1::StreamChange &msg
 }
 
 void SnpClientWebsocket::sendStreamChangeInitOk(uint32_t streamId, SnpPipe *pipe) {
-   using namespace snappyv1;
+   using namespace snp;
    auto *msg1 = new Message();
-   msg1->set_type(snappyv1::MESSAGE_TYPE_STREAM_CHANGE);
+   msg1->set_type(snp::MESSAGE_TYPE_STREAM_CHANGE);
    auto *streamChange = new StreamChange();
    msg1->set_allocated_stream_change(streamChange);
    streamChange->set_id(streamId);
@@ -129,7 +129,7 @@ void SnpClientWebsocket::setStreamListener(uint32_t streamId, StreamListener str
    streamListeners.insert(std::pair(streamId, streamListener));
 }
 
-void SnpClientWebsocket::onStreamData(const snappyv1::StreamData &msg) {
+void SnpClientWebsocket::onStreamData(const snp::StreamData &msg) {
    uint32_t streamId = msg.stream_id();
    auto entry = streamListeners.find(streamId);
    StreamListener listener = entry->second;
@@ -141,7 +141,7 @@ void SnpClientWebsocket::onStreamData(const snappyv1::StreamData &msg) {
 }
 
 void SnpClientWebsocket::sendStreamData(uint32_t streamId, uint8_t *data, int len) {
-   using namespace snappyv1;
+   using namespace snp;
    auto *streamData = new StreamData();
    streamData->set_payload(data, len);
    streamData->set_stream_id(streamId);
@@ -169,7 +169,7 @@ void SnpClientWebsocket::sendStreamData(uint32_t streamId, uint8_t *data, int le
 //    }
 
    auto *msg = new Message();
-   msg->set_type(snappyv1::MESSAGE_TYPE_STREAM_DATA);
+   msg->set_type(snp::MESSAGE_TYPE_STREAM_DATA);
    msg->set_allocated_stream_data(streamData);
 
    this->server->sendMessage(msg, wsi);

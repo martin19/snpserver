@@ -5,9 +5,9 @@
 #include <mutex>
 #include <condition_variable>
 #include "sockets.h"
-#include "network/snappyv1.pb.h"
+#include "network/snp.pb.h"
 
-typedef void (*HandleCapabilitiesMessageCb)(snappyv1::Message* message);
+typedef void (*HandleCapabilitiesMessageCb)(snp::Message* message);
 
 struct SnpSourceNetworkTcpOptions : public SnpComponentOptions {
     uint32_t streamId;

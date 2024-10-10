@@ -24,10 +24,10 @@ int main() {
     sink->start();
 
 //    SnpPipe *videoPipe = SnpPipeFactory::createPipe(0, nullptr, sink,
-//                                                    snappyv1::STREAM_MEDIUM_VIDEO,
-//                                                    snappyv1::STREAM_DIRECTION_OUTPUT,
-//                                                    snappyv1::STREAM_ENDPOINT_VIDEO_DUMMY,
-//                                                    snappyv1::STREAM_ENCODING_H264_OPENH264);
+//                                                    snp::STREAM_MEDIUM_VIDEO,
+//                                                    snp::STREAM_DIRECTION_OUTPUT,
+//                                                    snp::STREAM_ENDPOINT_VIDEO_DUMMY,
+//                                                    snp::STREAM_ENCODING_H264_OPENH264);
 //    videoPipe->start();
     while(TRUE) {
         Sleep(100);

@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package snappyv1;
+package snp;
 
 enum Platform {
     PLATFORM_WINDOWS = 0;
@@ -34,11 +34,6 @@ enum ComponentType {
 enum Command {
     COMMAND_START = 0;
     COMMAND_STOP = 1;
-
-    //COMMAND_INIT = 0;
-    //COMMAND_INIT_OK = 1;
-    //COMMAND_SET_PARAMETER = 4;
-    //COMMAND_DESTROY = 5;
 }
 
 enum PropertyType {

@@ -20,7 +20,7 @@ SnpCanvas *canvas = nullptr;
 SnpConfig* config;
 SnpComponentRegistry* componentRegistry;
 
-void handleCapabilitiesMessageCb(snappyv1::Message* message) {
+void handleCapabilitiesMessageCb(snp::Message* message) {
     componentRegistry->registerRemoteComponents(message);
 
     auto localComponents = componentRegistry->getLocalComponents();

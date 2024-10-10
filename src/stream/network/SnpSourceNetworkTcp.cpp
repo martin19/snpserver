@@ -1,6 +1,6 @@
 #include <mutex>
 #include "SnpSourceNetworkTcp.h"
-#include "network/snappyv1.pb.h"
+#include "network/snp.pb.h"
 
 #define SNP_SOURCE_RECV_BUFFER_SIZE 500000
 #define SNP_SOURCE_NETWORK_BUFFER_SIZE 500000
@@ -89,19 +89,19 @@ void SnpSourceNetworkTcp::createSocket() {
 
 bool SnpSourceNetworkTcp::dispatch() {
     SnpPort *outputPort = getOutputPort(0);
-    snappyv1::Message message;
+    snp::Message message;
     bool result = message.ParseFromArray(buffer.data(), (int)buffer.size());
     if(!result) return false;
     switch(message.type()) {
-        case snappyv1::MESSAGE_TYPE_COMMAND:
+        case snp::MESSAGE_TYPE_COMMAND:
             LOG_F(WARNING, "MESSAGE_TYPE_COMMAND not implemented, skipping.");
             return true;
-        case snappyv1::MESSAGE_TYPE_DATA:
+        case snp::MESSAGE_TYPE_DATA:
             outputPort->onData((const uint8_t*)message.data().dataraw().payload().c_str(),
                                message.data().dataraw().payload().size(),
                                true);
             return true;
-        case snappyv1::MESSAGE_TYPE_CAPABILITIES:
+        case snp::MESSAGE_TYPE_CAPABILITIES:
             handleCapabilitiesMessageCb(&message);
             return true;
     }

@@ -129,7 +129,7 @@ add_custom_command(
             "${CMAKE_CURRENT_SOURCE_DIR}/extern/protobuf-3.21.12/cmake-build-release/protoc.exe"
             "--proto_path=${CMAKE_CURRENT_SOURCE_DIR}/proto"
             "--cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/src/network"
-            "${CMAKE_CURRENT_SOURCE_DIR}/proto/snappyv1.proto"
+            "${CMAKE_CURRENT_SOURCE_DIR}/proto/snp.proto"
 )
 add_custom_target(${PROTO_TARGET_NAME} DEPENDS snappy-protobuf-sources)
 
@@ -138,7 +138,7 @@ add_custom_target(${PROTO_TARGET_NAME} DEPENDS snappy-protobuf-sources)
 ###############################################################################
 add_executable(snpserver
     src/snpserver.cpp
-    src/network/snappyv1.pb.cc
+    src/network/snp.pb.cc
     src/config/SnpConfig.cpp
     src/util/loguru.cpp
     src/util/TimeUtil.cpp
@@ -214,7 +214,7 @@ add_executable(snpclient
     # gui
     src/gui/SnpCanvas.cpp
     # general
-    src/network/snappyv1.pb.cc
+    src/network/snp.pb.cc
     src/config/SnpConfig.cpp
     src/util/loguru.cpp
     src/util/TimeUtil.cpp

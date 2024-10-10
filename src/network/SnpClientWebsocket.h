@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <ctime>
 #include <stream/SnpPipe.h>
-#include "snappyv1.pb.h"
+#include "snp.pb.h"
 
 #include "libwebsockets.h"
 
@@ -21,7 +21,7 @@ public:
 
     bool operator< (const SnpClientWebsocket &right) const;
     void onMessage(uint8_t *data, int len);
-    void send(snappyv1::Message *message);
+    void send(snp::Message *message);
     void sendStreamData(uint32_t streamId, uint8_t *data, int len);
     void sendStreamChangeInitOk(uint32_t streamId, SnpPipe* pipe);
     void setStreamListener(uint32_t streamId, StreamListener streamListener);
@@ -33,13 +33,13 @@ private:
     std::map<uint32_t, SnpPipe*> pipes;
     std::map<uint32_t, StreamListener> streamListeners;
 
-    void onStreamChange(const snappyv1::StreamChange &msg);
-    void onStreamChangeInit(const snappyv1::StreamChange &msg);
-    void onStreamChangeStart(const snappyv1::StreamChange &msg);
-    void onStreamChangeStop(const snappyv1::StreamChange &msg);
-    void onStreamChangeDestroy(const snappyv1::StreamChange &msg);
+    void onStreamChange(const snp::StreamChange &msg);
+    void onStreamChangeInit(const snp::StreamChange &msg);
+    void onStreamChangeStart(const snp::StreamChange &msg);
+    void onStreamChangeStop(const snp::StreamChange &msg);
+    void onStreamChangeDestroy(const snp::StreamChange &msg);
 
-    void onStreamData(const snappyv1::StreamData &msg);
+    void onStreamData(const snp::StreamData &msg);
 };
 
 #endif //SNAPPYVNC_CLIENT_H

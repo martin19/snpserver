@@ -1,4 +1,4 @@
-#include <network/snappyv1.pb.h>
+#include <network/snp.pb.h>
 #include "SnpSourceX11Cursor.h"
 #include "util/loguru.h"
 
@@ -68,7 +68,7 @@ void SnpSourceX11Cursor::destroyX11Client() {
             lastCursorSerial = x11Cursor->cursor_serial;
 
             //create a message and send it
-            auto streamDataCursor = snappyv1::StreamDataCursor();
+            auto streamDataCursor = snp::StreamDataCursor();
             streamDataCursor.set_width(x11Cursor->width);
             streamDataCursor.set_height(x11Cursor->height);
             streamDataCursor.set_hotx(x11Cursor->xhot);

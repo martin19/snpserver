@@ -1,7 +1,7 @@
 #include "SnpWebsocket.h"
 
 #include "libwebsockets.h"
-#include "snappyv1.pb.h"
+#include "snp.pb.h"
 #include "util/loguru.h"
 
 static struct lws_protocols protocols[] = {
@@ -130,7 +130,7 @@ int SnpWebsocket::callback_http(struct lws *wsi,
 //            std::cout << "Output queue size = " << self->outputQueue.size() << std::endl;
             if(self && !self->outputQueue.empty()) {
                 //send next message.
-                snappyv1::Message *msg = self->outputQueue.front();
+                snp::Message *msg = self->outputQueue.front();
                 self->sendBufferLen = msg->ByteSizeLong();
                 msg->SerializeToArray(&self->sendBuffer[LWS_PRE], self->sendBufferLen);
                 //TODO: assuming whole message can be sent.
@@ -157,7 +157,7 @@ int SnpWebsocket::callback_http(struct lws *wsi,
     return 0;
 }
 
-void SnpWebsocket::sendMessage(snappyv1::Message *msg, struct lws *wsi) {
+void SnpWebsocket::sendMessage(snp::Message *msg, struct lws *wsi) {
     outputQueue.push(msg);
     lws_callback_on_writable(wsi);
 }
@@ -165,7 +165,7 @@ void SnpWebsocket::sendMessage(snappyv1::Message *msg, struct lws *wsi) {
 void SnpWebsocket::sendStreamInfo(lws* wsi) {
     LOG_F(INFO,"sendStreamInfo\n");
 
-    using namespace snappyv1;
+    using namespace snp;
     auto pStreamInfo = new StreamInfo();
     pStreamInfo->set_platform(PLATFORM_RASPBERRY);
 

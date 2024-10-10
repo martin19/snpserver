@@ -3,9 +3,9 @@
 
 #include <string>
 #include <QSettings>
-#include "network/snappyv1.pb.h"
+#include "network/snp.pb.h"
 
-typedef std::map<uint32_t, std::vector<snappyv1::Component*>> PipeMap;
+typedef std::map<uint32_t, std::vector<snp::Component*>> PipeMap;
 
 class SnpConfig {
 public:
@@ -14,10 +14,10 @@ public:
     void read(const std::string& filename);
     static void readPipesSection(QSettings *settings, PipeMap *pipes, const std::string &section);
 
-    static uint32_t getPropertyUint(snappyv1::Component*, std::string name, uint32_t defaultValue);
-    static bool getPropertyBool(snappyv1::Component*, std::string name, bool defaultValue);
-    static double getPropertyDouble(snappyv1::Component*, std::string name, double defaultValue);
-    static std::string getPropertyString(snappyv1::Component*, std::string name, std::string defaultValue);
+    static uint32_t getPropertyUint(snp::Component*, std::string name, uint32_t defaultValue);
+    static bool getPropertyBool(snp::Component*, std::string name, bool defaultValue);
+    static double getPropertyDouble(snp::Component*, std::string name, double defaultValue);
+    static std::string getPropertyString(snp::Component*, std::string name, std::string defaultValue);
 
 private:
     PipeMap* localPipes;

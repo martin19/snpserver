@@ -1,7 +1,7 @@
 #include "SnpSinkNetworkTcp.h"
 #include "sockets.h"
 #include "util/loguru.h"
-#include "network/snappyv1.pb.h"
+#include "network/snp.pb.h"
 #include "stream/SnpComponentRegistry.h"
 
 #define SNP_SINK_NETWORK_BUFFER_SIZE 500000
@@ -111,8 +111,8 @@ void SnpSinkNetworkTcp::destroySocket() const {
 }
 
 bool SnpSinkNetworkTcp::sendDataMessage() {
-    snappyv1::Message message;
-    message.set_type(snappyv1::MESSAGE_TYPE_DATA);
+    snp::Message message;
+    message.set_type(snp::MESSAGE_TYPE_DATA);
     auto data = message.data();
     auto dataRaw = data.dataraw();
     std::basic_string<char> payloadString((const char *)(buffer.data()), buffer.size());
@@ -132,10 +132,10 @@ bool SnpSinkNetworkTcp::sendDataMessage() {
 }
 
 bool SnpSinkNetworkTcp::sendCapabilitiesMessage() {
-    snappyv1::Message message;
-    message.set_type(snappyv1::MESSAGE_TYPE_CAPABILITIES);
+    snp::Message message;
+    message.set_type(snp::MESSAGE_TYPE_CAPABILITIES);
     auto capabilities = message.mutable_capabilities();
-    capabilities->set_platform(snappyv1::PLATFORM_WINDOWS);
+    capabilities->set_platform(snp::PLATFORM_WINDOWS);
     SnpComponentRegistry snpComponentRegistry;
     auto registeredComponents = snpComponentRegistry.getLocalComponents();
     for (const auto &registeredComponent: registeredComponents) {

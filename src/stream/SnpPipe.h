@@ -3,7 +3,7 @@
 
 #include "SnpComponent.h"
 #include "SnpProperty.h"
-#include "network/snappyv1.pb.h"
+#include "network/snp.pb.h"
 
 struct SnpPipeOptions {
     std::string name;

@@ -2,11 +2,11 @@
 #define SNPSERVER_PROPERTYUTIL_H
 
 
-#include <network/snappyv1.pb.h>
+#include <network/snp.pb.h>
 
 class PropertyUtil {
 public:
-    static void copySnpPropertyToProtocolProperty(snappyv1::Property& dst, SnpProperty& src);
+    static void copySnpPropertyToProtocolProperty(snp::Property& dst, SnpProperty& src);
 };
 
 

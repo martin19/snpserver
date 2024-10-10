@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <memory.h>
-#include <network/snappyv1.pb.h>
+#include <network/snp.pb.h>
 #include "util/loguru.h"
 
 SnpSinkX11Mouse::SnpSinkX11Mouse(const SnpSinkX11MouseOptions &options) : SnpComponent(options, "sinkMouse") {
@@ -52,7 +52,7 @@ static void emit(int fd, int type, int code, int val) {
 
 void SnpSinkX11Mouse::onInputData(const uint8_t *data, int len, bool complete) {
     //TODO: only complete messages are accepted, verify and clean up interface.
-    snappyv1::StreamDataPointer streamDataPointer = snappyv1::StreamDataPointer();
+    snp::StreamDataPointer streamDataPointer = snp::StreamDataPointer();
     streamDataPointer.ParseFromArray(data, len);
 
     setMousePosition(streamDataPointer.absx(), streamDataPointer.absy());

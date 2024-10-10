@@ -19,7 +19,7 @@ public:
                              lws_callback_reasons reason,
                              void *user, void *in, size_t len);
 
-    void sendMessage(snappyv1::Message *msg, struct lws *wsi);
+    void sendMessage(snp::Message *msg, struct lws *wsi);
 private:
     struct lws_context_creation_info info;
     struct lws_context *context;
@@ -29,7 +29,7 @@ private:
     uint8_t sendBuffer[1024000];
     int sendBufferLen;
 
-    std::queue<snappyv1::Message*> outputQueue;
+    std::queue<snp::Message*> outputQueue;
 };
 
 #endif //HAVE_LIBWEBSOCKETS
