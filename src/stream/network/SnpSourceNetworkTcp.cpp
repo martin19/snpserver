@@ -93,9 +93,6 @@ bool SnpSourceNetworkTcp::dispatch() {
     bool result = message.ParseFromArray(buffer.data(), (int)buffer.size());
     if(!result) return false;
     switch(message.type()) {
-        case snp::MESSAGE_TYPE_COMMAND:
-            LOG_F(WARNING, "MESSAGE_TYPE_COMMAND not implemented, skipping.");
-            return true;
         case snp::MESSAGE_TYPE_DATA: {
             //dispatch data to pipe(s) according to message pipe id
             uint32_t pipeId = message.data().pipe_id();
@@ -112,6 +109,8 @@ bool SnpSourceNetworkTcp::dispatch() {
         case snp::MESSAGE_TYPE_CAPABILITIES:
             handleCapabilitiesMessageCb(&message);
             return true;
+        case snp::MESSAGE_TYPE_SETUP:
+            break;
     }
     return true;
 }
@@ -119,4 +118,32 @@ bool SnpSourceNetworkTcp::dispatch() {
 void SnpSourceNetworkTcp::destroySocket() const {
     closesocket(clientSocket);
     sock_cleanup();
+}
+
+bool SnpSourceNetworkTcp::sendSetupMessage(SnpConfig *pConfig) {
+    for (const auto &pipe: *pConfig->getRemotePipes()) {
+        uint32_t pipeId = pipe.first;
+        std::vector<snp::Component*> components = pipe.second;
+
+        snp::Message message;
+        message.set_type(snp::MESSAGE_TYPE_SETUP);
+        auto setup = message.mutable_setup();
+        setup->set_command(snp::COMMAND_START);
+        setup->set_pipe_id(pipeId);
+        for (const auto &configComponent: components) {
+            snp::Component* component = setup->add_component();
+            component->CopyFrom(*configComponent);
+        }
+
+        //send message on socket
+        std::basic_string<char> messageString = message.SerializeAsString();
+        int result = send(clientSocket, messageString.c_str(), (int)messageString.size(), 0);
+        LOG_F(INFO, "sent data len=%d", buffer.size());
+        if(result == SOCKET_ERROR) {
+            LOG_F(ERROR, "failed to write to socket (error=%s)", strerror(errno));
+            connected = false;
+            return false;
+        }
+        return true;
+    }
 }

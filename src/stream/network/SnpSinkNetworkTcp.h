@@ -6,10 +6,15 @@
 #include <mutex>
 #include <condition_variable>
 #include "sockets.h"
+#include "network/snp.pb.h"
+
+typedef void (*HandleSetupMessageCb)(snp::Message* message);
 
 struct SnpSinkNetworkTcpOptions : public SnpComponentOptions {
     std::string host;
     uint16_t port;
+    std::vector<PortStreamType> portStreamTypes;
+    HandleSetupMessageCb handleSetupMessageCb;
 };
 
 class SnpSinkNetworkTcp : public SnpComponent {
@@ -28,6 +33,8 @@ private:
     bool sendDataMessage(uint32_t pipeId);
     bool sendCapabilitiesMessage();
     void destroySocket() const;
+    bool dispatch();
+
     std::vector<uint8_t> buffer;
 
     SOCKET listenSocket;
@@ -41,6 +48,8 @@ private:
     uint16_t port;
     std::string host;
     struct sockaddr_in server_addr;
+
+    HandleSetupMessageCb handleSetupMessageCb;
 };
 
 #endif //SNPSERVER_SNPSINKNETWORKTCP_H

@@ -6,6 +6,7 @@
 #include <condition_variable>
 #include "sockets.h"
 #include "network/snp.pb.h"
+#include "config/SnpConfig.h"
 
 typedef void (*HandleCapabilitiesMessageCb)(snp::Message* message);
 
@@ -20,9 +21,9 @@ class SnpSourceNetworkTcp : public SnpComponent {
 public:
     explicit SnpSourceNetworkTcp(const SnpSourceNetworkTcpOptions &options);
     ~SnpSourceNetworkTcp() override;
-
     bool start() override;
     void stop() override;
+    bool sendSetupMessage(SnpConfig *pConfig);
 
 private:
     void createSocket();

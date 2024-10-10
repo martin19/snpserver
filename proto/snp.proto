@@ -94,9 +94,9 @@ message Capabilities {
 }
 
 message Setup {
-    uint32 id = 1;
+    uint32 pipe_id = 1;
     Command command = 2;
-    repeated Component pipe = 3;
+    repeated Component component = 3;
 }
 
 message Data {
@@ -110,7 +110,7 @@ message Data {
 }
 
 enum MessageType {
-    MESSAGE_TYPE_COMMAND = 0;
+    MESSAGE_TYPE_SETUP = 0;
     MESSAGE_TYPE_DATA = 1;
     MESSAGE_TYPE_CAPABILITIES = 2;
 }

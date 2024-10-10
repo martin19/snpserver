@@ -5,15 +5,20 @@
 #include "stream/SnpComponentRegistry.h"
 
 #define SNP_SINK_NETWORK_BUFFER_SIZE 500000
+#define SNP_SINK_RECV_BUFFER_SIZE 500000
 
 SnpSinkNetworkTcp::SnpSinkNetworkTcp(const SnpSinkNetworkTcpOptions &options) : SnpComponent(options, "COMPONENT_OUTPUT_TCP") {
     host = options.host;
     port = options.port;
+    handleSetupMessageCb = options.handleSetupMessageCb;
     clientConnected = false;
 
-    addInputPort(new SnpPort());
-    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkNetworkTcp::onInputData, this, std::placeholders::_1,
-                                           std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+    for (const auto &portStreamType: options.portStreamTypes) {
+        auto* inputPort = new SnpPort(PORT_TYPE_BOTH, portStreamType);
+        inputPort->setOnDataCb(std::bind(&SnpSinkNetworkTcp::onInputData, this, std::placeholders::_1,
+                                         std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+        addInputPort(inputPort);
+    }
 }
 
 SnpSinkNetworkTcp::~SnpSinkNetworkTcp() {
@@ -80,6 +85,8 @@ void SnpSinkNetworkTcp::createSocket() {
 }
 
 [[noreturn]] void SnpSinkNetworkTcp::listenForConnections() {
+    int result;
+    uint8_t recvBuffer[SNP_SINK_RECV_BUFFER_SIZE];
     while(true) {
 
         {
@@ -101,7 +108,36 @@ void SnpSinkNetworkTcp::createSocket() {
         LOG_F(INFO, "client connected.");
         clientConnected = true;
         sendCapabilitiesMessage();
+
+        while(clientConnected) {
+            ssize_t bytes_received = recv(clientSocket, (char*)recvBuffer, sizeof(recvBuffer), 0);
+            if(bytes_received == -1) {
+                LOG_F(ERROR, "failed to read from socket (error=%s)", strerror(errno));
+                clientConnected = false;
+                continue;
+            }
+            buffer.insert(buffer.end(), recvBuffer, recvBuffer + bytes_received);
+            result = dispatch();
+            if(result) {
+                buffer.clear();
+            }
+        }
     }
+}
+
+bool SnpSinkNetworkTcp::dispatch() {
+    snp::Message message;
+    bool result = message.ParseFromArray(buffer.data(), (int)buffer.size());
+    if(!result) return false;
+    switch(message.type()) {
+        case snp::MESSAGE_TYPE_SETUP: {
+            handleSetupMessageCb(&message);
+        } break;
+        case snp::MESSAGE_TYPE_DATA:
+        case snp::MESSAGE_TYPE_CAPABILITIES:
+            break;
+    }
+    return true;
 }
 
 void SnpSinkNetworkTcp::destroySocket() const {

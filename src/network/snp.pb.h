@@ -237,14 +237,14 @@ inline bool PropertyType_Parse(
     PropertyType_descriptor(), name, value);
 }
 enum MessageType : int {
-  MESSAGE_TYPE_COMMAND = 0,
+  MESSAGE_TYPE_SETUP = 0,
   MESSAGE_TYPE_DATA = 1,
   MESSAGE_TYPE_CAPABILITIES = 2,
   MessageType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   MessageType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool MessageType_IsValid(int value);
-constexpr MessageType MessageType_MIN = MESSAGE_TYPE_COMMAND;
+constexpr MessageType MessageType_MIN = MESSAGE_TYPE_SETUP;
 constexpr MessageType MessageType_MAX = MESSAGE_TYPE_CAPABILITIES;
 constexpr int MessageType_ARRAYSIZE = MessageType_MAX + 1;
 
@@ -1652,35 +1652,35 @@ class Setup final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPipeFieldNumber = 3,
-    kIdFieldNumber = 1,
+    kComponentFieldNumber = 3,
+    kPipeIdFieldNumber = 1,
     kCommandFieldNumber = 2,
   };
-  // repeated .snp.Component pipe = 3;
-  int pipe_size() const;
+  // repeated .snp.Component component = 3;
+  int component_size() const;
   private:
-  int _internal_pipe_size() const;
+  int _internal_component_size() const;
   public:
-  void clear_pipe();
-  ::snp::Component* mutable_pipe(int index);
+  void clear_component();
+  ::snp::Component* mutable_component(int index);
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snp::Component >*
-      mutable_pipe();
+      mutable_component();
   private:
-  const ::snp::Component& _internal_pipe(int index) const;
-  ::snp::Component* _internal_add_pipe();
+  const ::snp::Component& _internal_component(int index) const;
+  ::snp::Component* _internal_add_component();
   public:
-  const ::snp::Component& pipe(int index) const;
-  ::snp::Component* add_pipe();
+  const ::snp::Component& component(int index) const;
+  ::snp::Component* add_component();
   const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snp::Component >&
-      pipe() const;
+      component() const;
 
-  // uint32 id = 1;
-  void clear_id();
-  uint32_t id() const;
-  void set_id(uint32_t value);
+  // uint32 pipe_id = 1;
+  void clear_pipe_id();
+  uint32_t pipe_id() const;
+  void set_pipe_id(uint32_t value);
   private:
-  uint32_t _internal_id() const;
-  void _internal_set_id(uint32_t value);
+  uint32_t _internal_pipe_id() const;
+  void _internal_set_pipe_id(uint32_t value);
   public:
 
   // .snp.Command command = 2;
@@ -1700,8 +1700,8 @@ class Setup final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snp::Component > pipe_;
-    uint32_t id_;
+    ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snp::Component > component_;
+    uint32_t pipe_id_;
     int command_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
@@ -3639,24 +3639,24 @@ Capabilities::component() const {
 
 // Setup
 
-// uint32 id = 1;
-inline void Setup::clear_id() {
-  _impl_.id_ = 0u;
+// uint32 pipe_id = 1;
+inline void Setup::clear_pipe_id() {
+  _impl_.pipe_id_ = 0u;
 }
-inline uint32_t Setup::_internal_id() const {
-  return _impl_.id_;
+inline uint32_t Setup::_internal_pipe_id() const {
+  return _impl_.pipe_id_;
 }
-inline uint32_t Setup::id() const {
-  // @@protoc_insertion_point(field_get:snp.Setup.id)
-  return _internal_id();
+inline uint32_t Setup::pipe_id() const {
+  // @@protoc_insertion_point(field_get:snp.Setup.pipe_id)
+  return _internal_pipe_id();
 }
-inline void Setup::_internal_set_id(uint32_t value) {
+inline void Setup::_internal_set_pipe_id(uint32_t value) {
   
-  _impl_.id_ = value;
+  _impl_.pipe_id_ = value;
 }
-inline void Setup::set_id(uint32_t value) {
-  _internal_set_id(value);
-  // @@protoc_insertion_point(field_set:snp.Setup.id)
+inline void Setup::set_pipe_id(uint32_t value) {
+  _internal_set_pipe_id(value);
+  // @@protoc_insertion_point(field_set:snp.Setup.pipe_id)
 }
 
 // .snp.Command command = 2;
@@ -3679,44 +3679,44 @@ inline void Setup::set_command(::snp::Command value) {
   // @@protoc_insertion_point(field_set:snp.Setup.command)
 }
 
-// repeated .snp.Component pipe = 3;
-inline int Setup::_internal_pipe_size() const {
-  return _impl_.pipe_.size();
+// repeated .snp.Component component = 3;
+inline int Setup::_internal_component_size() const {
+  return _impl_.component_.size();
 }
-inline int Setup::pipe_size() const {
-  return _internal_pipe_size();
+inline int Setup::component_size() const {
+  return _internal_component_size();
 }
-inline void Setup::clear_pipe() {
-  _impl_.pipe_.Clear();
+inline void Setup::clear_component() {
+  _impl_.component_.Clear();
 }
-inline ::snp::Component* Setup::mutable_pipe(int index) {
-  // @@protoc_insertion_point(field_mutable:snp.Setup.pipe)
-  return _impl_.pipe_.Mutable(index);
+inline ::snp::Component* Setup::mutable_component(int index) {
+  // @@protoc_insertion_point(field_mutable:snp.Setup.component)
+  return _impl_.component_.Mutable(index);
 }
 inline ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snp::Component >*
-Setup::mutable_pipe() {
-  // @@protoc_insertion_point(field_mutable_list:snp.Setup.pipe)
-  return &_impl_.pipe_;
+Setup::mutable_component() {
+  // @@protoc_insertion_point(field_mutable_list:snp.Setup.component)
+  return &_impl_.component_;
 }
-inline const ::snp::Component& Setup::_internal_pipe(int index) const {
-  return _impl_.pipe_.Get(index);
+inline const ::snp::Component& Setup::_internal_component(int index) const {
+  return _impl_.component_.Get(index);
 }
-inline const ::snp::Component& Setup::pipe(int index) const {
-  // @@protoc_insertion_point(field_get:snp.Setup.pipe)
-  return _internal_pipe(index);
+inline const ::snp::Component& Setup::component(int index) const {
+  // @@protoc_insertion_point(field_get:snp.Setup.component)
+  return _internal_component(index);
 }
-inline ::snp::Component* Setup::_internal_add_pipe() {
-  return _impl_.pipe_.Add();
+inline ::snp::Component* Setup::_internal_add_component() {
+  return _impl_.component_.Add();
 }
-inline ::snp::Component* Setup::add_pipe() {
-  ::snp::Component* _add = _internal_add_pipe();
-  // @@protoc_insertion_point(field_add:snp.Setup.pipe)
+inline ::snp::Component* Setup::add_component() {
+  ::snp::Component* _add = _internal_add_component();
+  // @@protoc_insertion_point(field_add:snp.Setup.component)
   return _add;
 }
 inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::snp::Component >&
-Setup::pipe() const {
-  // @@protoc_insertion_point(field_list:snp.Setup.pipe)
-  return _impl_.pipe_;
+Setup::component() const {
+  // @@protoc_insertion_point(field_list:snp.Setup.component)
+  return _impl_.component_;
 }
 
 // -------------------------------------------------------------------

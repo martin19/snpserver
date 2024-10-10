@@ -67,7 +67,8 @@ int runClient() {
         canvas->update();
     });
 
-//TODO: send remote config to server and setup pipe using createPipes
+    source->sendSetupMessage(config);
+    //TODO: send remote config to server and setup pipe using createPipes
 }
 
 int main(int argc, char *argv[]) {

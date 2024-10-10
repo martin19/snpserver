@@ -125,8 +125,8 @@ struct CapabilitiesDefaultTypeInternal {
 PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1 CapabilitiesDefaultTypeInternal _Capabilities_default_instance_;
 PROTOBUF_CONSTEXPR Setup::Setup(
     ::_pbi::ConstantInitialized): _impl_{
-    /*decltype(_impl_.pipe_)*/{}
-  , /*decltype(_impl_.id_)*/0u
+    /*decltype(_impl_.component_)*/{}
+  , /*decltype(_impl_.pipe_id_)*/0u
   , /*decltype(_impl_.command_)*/0
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct SetupDefaultTypeInternal {
@@ -308,9 +308,9 @@ const uint32_t TableStruct_snp_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(prot
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::snp::Setup, _impl_.id_),
+  PROTOBUF_FIELD_OFFSET(::snp::Setup, _impl_.pipe_id_),
   PROTOBUF_FIELD_OFFSET(::snp::Setup, _impl_.command_),
-  PROTOBUF_FIELD_OFFSET(::snp::Setup, _impl_.pipe_),
+  PROTOBUF_FIELD_OFFSET(::snp::Setup, _impl_.component_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::snp::Data, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -426,59 +426,59 @@ const char descriptor_table_protodef_snp_2eproto[] PROTOBUF_SECTION_VARIABLE(pro
   "ype\022\037\n\010property\030\002 \003(\0132\r.snp.Property\"R\n\014"
   "Capabilities\022\037\n\010platform\030\001 \001(\0162\r.snp.Pla"
   "tform\022!\n\tcomponent\030\002 \003(\0132\016.snp.Component"
-  "\"P\n\005Setup\022\n\n\002id\030\001 \001(\r\022\035\n\007command\030\002 \001(\0162\014"
-  ".snp.Command\022\034\n\004pipe\030\003 \003(\0132\016.snp.Compone"
-  "nt\"\323\001\n\004Data\022\017\n\007pipe_id\030\001 \001(\r\022%\n\007dataRaw\030"
-  "\002 \001(\0132\022.snp.StreamDataRawH\000\022-\n\013dataPoint"
-  "er\030\003 \001(\0132\026.snp.StreamDataPointerH\000\022/\n\014da"
-  "taKeyboard\030\004 \001(\0132\027.snp.StreamDataKeyboar"
-  "dH\000\022+\n\ndataCursor\030\005 \001(\0132\025.snp.StreamData"
-  "CursorH\000B\006\n\004data\"\227\001\n\007Message\022\036\n\004type\030\001 \001"
-  "(\0162\020.snp.MessageType\022)\n\014capabilities\030\002 \001"
-  "(\0132\021.snp.CapabilitiesH\000\022\033\n\005setup\030\003 \001(\0132\n"
-  ".snp.SetupH\000\022\031\n\004data\030\004 \001(\0132\t.snp.DataH\000B"
-  "\t\n\007message\" \n\rStreamDataRaw\022\017\n\007payload\030\001"
-  " \001(\014\"K\n\021StreamDataPointer\022\014\n\004absx\030\001 \001(\r\022"
-  "\014\n\004absy\030\002 \001(\r\022\021\n\004mask\030\003 \001(\005H\000\210\001\001B\007\n\005_mas"
-  "k\"C\n\022StreamDataKeyboard\022\016\n\006keysym\030\001 \001(\r\022"
-  "\017\n\007keycode\030\002 \001(\r\022\014\n\004down\030\003 \001(\010\"\\\n\020Stream"
-  "DataCursor\022\r\n\005width\030\001 \001(\r\022\016\n\006height\030\002 \001("
-  "\r\022\014\n\004hotx\030\003 \001(\r\022\014\n\004hoty\030\004 \001(\r\022\r\n\005image\030\005"
-  " \001(\014*v\n\010Platform\022\024\n\020PLATFORM_WINDOWS\020\000\022\022"
-  "\n\016PLATFORM_LINUX\020\001\022\022\n\016PLATFORM_MACOS\020\002\022\026"
-  "\n\022PLATFORM_RASPBERRY\020\003\022\024\n\020PLATFORM_ANDRO"
-  "ID\020\004*\266\006\n\rComponentType\022\037\n\033COMPONENT_CAPT"
-  "URE_VIDEO_DRM\020\000\022\037\n\033COMPONENT_CAPTURE_VID"
-  "EO_X11\020\001\022#\n\037COMPONENT_CAPTURE_VIDEO_WAYL"
-  "AND\020\002\022\037\n\033COMPONENT_CAPTURE_VIDEO_V4L\020\003\022!"
-  "\n\035COMPONENT_CAPTURE_VIDEO_DUMMY\020\004\022 \n\034COM"
-  "PONENT_INPUT_KEYBOARD_X11\020\005\022\037\n\033COMPONENT"
-  "_INPUT_POINTER_X11\020\006\022\036\n\032COMPONENT_INPUT_"
-  "CURSOR_X11\020\007\022\"\n\036COMPONENT_OUTPUT_VIDEO_D"
-  "ISPLAY\020\010\022!\n\035COMPONENT_OUTPUT_KEYBOARD_X1"
-  "1\020\t\022 \n\034COMPONENT_OUTPUT_POINTER_X11\020\n\022\037\n"
-  "\033COMPONENT_OUTPUT_CURSOR_X11\020\013\022\036\n\032COMPON"
-  "ENT_ENCODER_OPENH264\020\014\022\036\n\032COMPONENT_DECO"
-  "DER_OPENH264\020\r\022\033\n\027COMPONENT_ENCODER_INTE"
-  "L\020\016\022\033\n\027COMPONENT_DECODER_INTEL\020\017\022\031\n\025COMP"
-  "ONENT_ENCODER_AMD\020\020\022\031\n\025COMPONENT_DECODER"
-  "_AMD\020\021\022\031\n\025COMPONENT_OUTPUT_FILE\020\022\022\030\n\024COM"
-  "PONENT_OUTPUT_TCP\020\023\022\027\n\023COMPONENT_INPUT_T"
-  "CP\020\024\022\036\n\032COMPONENT_OUTPUT_WEBSOCKET\020\025\022\035\n\031"
-  "COMPONENT_INPUT_WEBSOCKET\020\026\022\032\n\026COMPONENT"
-  "_ENCODER_MMAL\020\027\022\032\n\026COMPONENT_DECODER_MMA"
-  "L\020\030\022\030\n\024COMPONENT_CAPTURE_GL\020\031*.\n\007Command"
-  "\022\021\n\rCOMMAND_START\020\000\022\020\n\014COMMAND_STOP\020\001*t\n"
-  "\014PropertyType\022\030\n\024PROPERTY_TYPE_STRING\020\000\022"
-  "\026\n\022PROPERTY_TYPE_BOOL\020\001\022\030\n\024PROPERTY_TYPE"
-  "_UINT32\020\002\022\030\n\024PROPERTY_TYPE_DOUBLE\020\003*]\n\013M"
-  "essageType\022\030\n\024MESSAGE_TYPE_COMMAND\020\000\022\025\n\021"
-  "MESSAGE_TYPE_DATA\020\001\022\035\n\031MESSAGE_TYPE_CAPA"
-  "BILITIES\020\002b\006proto3"
+  "\"Z\n\005Setup\022\017\n\007pipe_id\030\001 \001(\r\022\035\n\007command\030\002 "
+  "\001(\0162\014.snp.Command\022!\n\tcomponent\030\003 \003(\0132\016.s"
+  "np.Component\"\323\001\n\004Data\022\017\n\007pipe_id\030\001 \001(\r\022%"
+  "\n\007dataRaw\030\002 \001(\0132\022.snp.StreamDataRawH\000\022-\n"
+  "\013dataPointer\030\003 \001(\0132\026.snp.StreamDataPoint"
+  "erH\000\022/\n\014dataKeyboard\030\004 \001(\0132\027.snp.StreamD"
+  "ataKeyboardH\000\022+\n\ndataCursor\030\005 \001(\0132\025.snp."
+  "StreamDataCursorH\000B\006\n\004data\"\227\001\n\007Message\022\036"
+  "\n\004type\030\001 \001(\0162\020.snp.MessageType\022)\n\014capabi"
+  "lities\030\002 \001(\0132\021.snp.CapabilitiesH\000\022\033\n\005set"
+  "up\030\003 \001(\0132\n.snp.SetupH\000\022\031\n\004data\030\004 \001(\0132\t.s"
+  "np.DataH\000B\t\n\007message\" \n\rStreamDataRaw\022\017\n"
+  "\007payload\030\001 \001(\014\"K\n\021StreamDataPointer\022\014\n\004a"
+  "bsx\030\001 \001(\r\022\014\n\004absy\030\002 \001(\r\022\021\n\004mask\030\003 \001(\005H\000\210"
+  "\001\001B\007\n\005_mask\"C\n\022StreamDataKeyboard\022\016\n\006key"
+  "sym\030\001 \001(\r\022\017\n\007keycode\030\002 \001(\r\022\014\n\004down\030\003 \001(\010"
+  "\"\\\n\020StreamDataCursor\022\r\n\005width\030\001 \001(\r\022\016\n\006h"
+  "eight\030\002 \001(\r\022\014\n\004hotx\030\003 \001(\r\022\014\n\004hoty\030\004 \001(\r\022"
+  "\r\n\005image\030\005 \001(\014*v\n\010Platform\022\024\n\020PLATFORM_W"
+  "INDOWS\020\000\022\022\n\016PLATFORM_LINUX\020\001\022\022\n\016PLATFORM"
+  "_MACOS\020\002\022\026\n\022PLATFORM_RASPBERRY\020\003\022\024\n\020PLAT"
+  "FORM_ANDROID\020\004*\266\006\n\rComponentType\022\037\n\033COMP"
+  "ONENT_CAPTURE_VIDEO_DRM\020\000\022\037\n\033COMPONENT_C"
+  "APTURE_VIDEO_X11\020\001\022#\n\037COMPONENT_CAPTURE_"
+  "VIDEO_WAYLAND\020\002\022\037\n\033COMPONENT_CAPTURE_VID"
+  "EO_V4L\020\003\022!\n\035COMPONENT_CAPTURE_VIDEO_DUMM"
+  "Y\020\004\022 \n\034COMPONENT_INPUT_KEYBOARD_X11\020\005\022\037\n"
+  "\033COMPONENT_INPUT_POINTER_X11\020\006\022\036\n\032COMPON"
+  "ENT_INPUT_CURSOR_X11\020\007\022\"\n\036COMPONENT_OUTP"
+  "UT_VIDEO_DISPLAY\020\010\022!\n\035COMPONENT_OUTPUT_K"
+  "EYBOARD_X11\020\t\022 \n\034COMPONENT_OUTPUT_POINTE"
+  "R_X11\020\n\022\037\n\033COMPONENT_OUTPUT_CURSOR_X11\020\013"
+  "\022\036\n\032COMPONENT_ENCODER_OPENH264\020\014\022\036\n\032COMP"
+  "ONENT_DECODER_OPENH264\020\r\022\033\n\027COMPONENT_EN"
+  "CODER_INTEL\020\016\022\033\n\027COMPONENT_DECODER_INTEL"
+  "\020\017\022\031\n\025COMPONENT_ENCODER_AMD\020\020\022\031\n\025COMPONE"
+  "NT_DECODER_AMD\020\021\022\031\n\025COMPONENT_OUTPUT_FIL"
+  "E\020\022\022\030\n\024COMPONENT_OUTPUT_TCP\020\023\022\027\n\023COMPONE"
+  "NT_INPUT_TCP\020\024\022\036\n\032COMPONENT_OUTPUT_WEBSO"
+  "CKET\020\025\022\035\n\031COMPONENT_INPUT_WEBSOCKET\020\026\022\032\n"
+  "\026COMPONENT_ENCODER_MMAL\020\027\022\032\n\026COMPONENT_D"
+  "ECODER_MMAL\020\030\022\030\n\024COMPONENT_CAPTURE_GL\020\031*"
+  ".\n\007Command\022\021\n\rCOMMAND_START\020\000\022\020\n\014COMMAND"
+  "_STOP\020\001*t\n\014PropertyType\022\030\n\024PROPERTY_TYPE"
+  "_STRING\020\000\022\026\n\022PROPERTY_TYPE_BOOL\020\001\022\030\n\024PRO"
+  "PERTY_TYPE_UINT32\020\002\022\030\n\024PROPERTY_TYPE_DOU"
+  "BLE\020\003*[\n\013MessageType\022\026\n\022MESSAGE_TYPE_SET"
+  "UP\020\000\022\025\n\021MESSAGE_TYPE_DATA\020\001\022\035\n\031MESSAGE_T"
+  "YPE_CAPABILITIES\020\002b\006proto3"
   ;
 static ::_pbi::once_flag descriptor_table_snp_2eproto_once;
 const ::_pbi::DescriptorTable descriptor_table_snp_2eproto = {
-    false, false, 2618, descriptor_table_protodef_snp_2eproto,
+    false, false, 2626, descriptor_table_protodef_snp_2eproto,
     "snp.proto",
     &descriptor_table_snp_2eproto_once, nullptr, 0, 14,
     schemas, file_default_instances, TableStruct_snp_2eproto::offsets,
@@ -2457,15 +2457,15 @@ Setup::Setup(const Setup& from)
   : ::PROTOBUF_NAMESPACE_ID::Message() {
   Setup* const _this = this; (void)_this;
   new (&_impl_) Impl_{
-      decltype(_impl_.pipe_){from._impl_.pipe_}
-    , decltype(_impl_.id_){}
+      decltype(_impl_.component_){from._impl_.component_}
+    , decltype(_impl_.pipe_id_){}
     , decltype(_impl_.command_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::memcpy(&_impl_.id_, &from._impl_.id_,
+  ::memcpy(&_impl_.pipe_id_, &from._impl_.pipe_id_,
     static_cast<size_t>(reinterpret_cast<char*>(&_impl_.command_) -
-    reinterpret_cast<char*>(&_impl_.id_)) + sizeof(_impl_.command_));
+    reinterpret_cast<char*>(&_impl_.pipe_id_)) + sizeof(_impl_.command_));
   // @@protoc_insertion_point(copy_constructor:snp.Setup)
 }
 
@@ -2474,8 +2474,8 @@ inline void Setup::SharedCtor(
   (void)arena;
   (void)is_message_owned;
   new (&_impl_) Impl_{
-      decltype(_impl_.pipe_){arena}
-    , decltype(_impl_.id_){0u}
+      decltype(_impl_.component_){arena}
+    , decltype(_impl_.pipe_id_){0u}
     , decltype(_impl_.command_){0}
     , /*decltype(_impl_._cached_size_)*/{}
   };
@@ -2492,7 +2492,7 @@ Setup::~Setup() {
 
 inline void Setup::SharedDtor() {
   GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
-  _impl_.pipe_.~RepeatedPtrField();
+  _impl_.component_.~RepeatedPtrField();
 }
 
 void Setup::SetCachedSize(int size) const {
@@ -2505,10 +2505,10 @@ void Setup::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  _impl_.pipe_.Clear();
-  ::memset(&_impl_.id_, 0, static_cast<size_t>(
+  _impl_.component_.Clear();
+  ::memset(&_impl_.pipe_id_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&_impl_.command_) -
-      reinterpret_cast<char*>(&_impl_.id_)) + sizeof(_impl_.command_));
+      reinterpret_cast<char*>(&_impl_.pipe_id_)) + sizeof(_impl_.command_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -2518,10 +2518,10 @@ const char* Setup::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // uint32 id = 1;
+      // uint32 pipe_id = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          _impl_.id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
+          _impl_.pipe_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint32(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -2535,13 +2535,13 @@ const char* Setup::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
         } else
           goto handle_unusual;
         continue;
-      // repeated .snp.Component pipe = 3;
+      // repeated .snp.Component component = 3;
       case 3:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 26)) {
           ptr -= 1;
           do {
             ptr += 1;
-            ptr = ctx->ParseMessage(_internal_add_pipe(), ptr);
+            ptr = ctx->ParseMessage(_internal_add_component(), ptr);
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<26>(ptr));
@@ -2577,10 +2577,10 @@ uint8_t* Setup::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // uint32 id = 1;
-  if (this->_internal_id() != 0) {
+  // uint32 pipe_id = 1;
+  if (this->_internal_pipe_id() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_id(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt32ToArray(1, this->_internal_pipe_id(), target);
   }
 
   // .snp.Command command = 2;
@@ -2590,10 +2590,10 @@ uint8_t* Setup::_InternalSerialize(
       2, this->_internal_command(), target);
   }
 
-  // repeated .snp.Component pipe = 3;
+  // repeated .snp.Component component = 3;
   for (unsigned i = 0,
-      n = static_cast<unsigned>(this->_internal_pipe_size()); i < n; i++) {
-    const auto& repfield = this->_internal_pipe(i);
+      n = static_cast<unsigned>(this->_internal_component_size()); i < n; i++) {
+    const auto& repfield = this->_internal_component(i);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
         InternalWriteMessage(3, repfield, repfield.GetCachedSize(), target, stream);
   }
@@ -2614,16 +2614,16 @@ size_t Setup::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .snp.Component pipe = 3;
-  total_size += 1UL * this->_internal_pipe_size();
-  for (const auto& msg : this->_impl_.pipe_) {
+  // repeated .snp.Component component = 3;
+  total_size += 1UL * this->_internal_component_size();
+  for (const auto& msg : this->_impl_.component_) {
     total_size +=
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
-  // uint32 id = 1;
-  if (this->_internal_id() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_id());
+  // uint32 pipe_id = 1;
+  if (this->_internal_pipe_id() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt32SizePlusOne(this->_internal_pipe_id());
   }
 
   // .snp.Command command = 2;
@@ -2650,9 +2650,9 @@ void Setup::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  _this->_impl_.pipe_.MergeFrom(from._impl_.pipe_);
-  if (from._internal_id() != 0) {
-    _this->_internal_set_id(from._internal_id());
+  _this->_impl_.component_.MergeFrom(from._impl_.component_);
+  if (from._internal_pipe_id() != 0) {
+    _this->_internal_set_pipe_id(from._internal_pipe_id());
   }
   if (from._internal_command() != 0) {
     _this->_internal_set_command(from._internal_command());
@@ -2674,13 +2674,13 @@ bool Setup::IsInitialized() const {
 void Setup::InternalSwap(Setup* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
-  _impl_.pipe_.InternalSwap(&other->_impl_.pipe_);
+  _impl_.component_.InternalSwap(&other->_impl_.component_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(Setup, _impl_.command_)
       + sizeof(Setup::_impl_.command_)
-      - PROTOBUF_FIELD_OFFSET(Setup, _impl_.id_)>(
-          reinterpret_cast<char*>(&_impl_.id_),
-          reinterpret_cast<char*>(&other->_impl_.id_));
+      - PROTOBUF_FIELD_OFFSET(Setup, _impl_.pipe_id_)>(
+          reinterpret_cast<char*>(&_impl_.pipe_id_),
+          reinterpret_cast<char*>(&other->_impl_.pipe_id_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata Setup::GetMetadata() const {

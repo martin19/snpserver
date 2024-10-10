@@ -36,13 +36,11 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
              fed into correct pipe according to streamId
   * ✅ DONE: implement simple option for configuration (ui/file/mock) -> QSettings, snp.ini
   * ✅ DONE: rename protocol snappyv1 -> snp
+  * ✅ DONE: connect components in pipe and connect to source pipe (network, local file etc.)
+    * ✅ DONE: verify component "compatibility" at runtime
 
-  * 🟦 TODO: connect components in pipe and connect to source pipe (network, local file etc.)
-    * 🟦 TODO: verify component "compatibility" at runtime
-  * 🟦 TODO: send remote config to server and setup pipe using createPipes
-  * 🟦 TODO: implement setting up a pipe via client
-   
-  * 🟦 TODO: propagate properties (width, height) through pipe -> define it 
+  * 🟦 TODO: implement setting up a pipe via client 
+    * 🟦 TODO: send remote config to server and setup pipe using createPipes  
   * 🟦 TODO: probably start/stop pipe localComponents in reverse data flow direction
 
 
