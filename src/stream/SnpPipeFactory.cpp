@@ -256,7 +256,7 @@ std::vector<SnpPipe*>* SnpPipeFactory::createPipes(SnpConfig *pConfig, std::stri
 
 SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Component *> *components) {
     SnpPipeOptions videoPipeOptions = {};
-    auto pipe = new SnpPipe(videoPipeOptions);
+    auto pipe = new SnpPipe(videoPipeOptions, pipeId);
     for (const auto &component: *components) {
         SnpComponent* snpComponent = nullptr;
         switch(component->componenttype()) {
@@ -305,7 +305,8 @@ SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Comp
             case snp::ComponentType_INT_MAX_SENTINEL_DO_NOT_USE_:
                 break;
         }
-        pipe->addComponent(snpComponent);
+        snpComponent->setPipeId(pipeId);
+        pipe->addComponentEnd(snpComponent);
     }
 }
 

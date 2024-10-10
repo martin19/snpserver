@@ -9,7 +9,7 @@
 #endif
 
 
-SnpDecoderOpenH264::SnpDecoderOpenH264(const SnpDecoderOpenH264Options &options) : SnpComponent(options, "decoderOpenH264") {
+SnpDecoderOpenH264::SnpDecoderOpenH264(const SnpDecoderOpenH264Options &options) : SnpComponent(options, "COMPONENT_DECODER_OPENH264") {
 #ifdef _WIN32
     HMODULE hDLL = LoadLibraryA("openh264-2.1.1-win64.dll");
     if(hDLL == nullptr) {
@@ -30,10 +30,13 @@ SnpDecoderOpenH264::SnpDecoderOpenH264(const SnpDecoderOpenH264Options &options)
     yuvBuffer[2] = nullptr;
     rgbBuffer = nullptr;
 
-    addInputPort(new SnpPort());
-    addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO));
-
-    getInputPort(0)->setOnDataCb(std::bind(&SnpDecoderOpenH264::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    addInputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_H264));
+    addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_RGBA));
+    addProperty(new SnpProperty("width", options.width));
+    addProperty(new SnpProperty("height", options.height));
+    addProperty(new SnpProperty("qp", options.qp));
+    getInputPort(0)->setOnDataCb(std::bind(&SnpDecoderOpenH264::onInputData, this, std::placeholders::_1,
+                                           std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 }
 
 SnpDecoderOpenH264::~SnpDecoderOpenH264() {
@@ -42,9 +45,6 @@ SnpDecoderOpenH264::~SnpDecoderOpenH264() {
 
 bool SnpDecoderOpenH264::start() {
     SnpComponent::start();
-    width = 1920;
-    height = 1080;
-    bpp = 4;
     openH264DecoderInit();
     return true;
 }
@@ -54,12 +54,16 @@ void SnpDecoderOpenH264::stop() {
     openH264DecoderDestroy();
 }
 
-void SnpDecoderOpenH264::onInputData(const uint8_t *data, uint32_t len, bool complete) {
+void SnpDecoderOpenH264::onInputData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete) {
     if(!isRunning()) return;
     this->openH264DecoderDecode(data, len);
 }
 
 bool SnpDecoderOpenH264::openH264DecoderInit() {
+    uint32_t width = getProperty("width")->getValueUint32();
+    uint32_t height = getProperty("height")->getValueUint32();
+    uint32_t bpp = getProperty("qp")->getValueUint32();
+
     SDecodingParam sDecodingParam = {0};
     bool result = true;
     int res;
@@ -84,6 +88,10 @@ error:
 }
 
 bool SnpDecoderOpenH264::openH264DecoderDecode(const uint8_t *srcBuffer, int srcLen) {
+    uint32_t width = getProperty("width")->getValueUint32();
+    uint32_t height = getProperty("height")->getValueUint32();
+    uint32_t bpp = getProperty("qp")->getValueUint32();
+
     bool result = true;
     int res;
     SnpPort *outputPort = this->getOutputPort(0);
@@ -101,7 +109,7 @@ bool SnpDecoderOpenH264::openH264DecoderDecode(const uint8_t *srcBuffer, int src
                             sBufferInfo.UsrData.sSystemBuffer.iStride[0],
                             sBufferInfo.UsrData.sSystemBuffer.iStride[1]);
 
-    outputPort->onData(rgbBuffer, width * height * bpp, true);
+    outputPort->onData(getPipeId(), rgbBuffer, width * height * bpp, true);
 
     return result;
 error:

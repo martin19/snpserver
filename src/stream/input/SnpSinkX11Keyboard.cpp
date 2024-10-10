@@ -9,9 +9,10 @@
 
 extern "C" unsigned short code_map_atset1_to_linux[57470];
 
-SnpSinkX11Keyboard::SnpSinkX11Keyboard(const SnpSinkX11KeyboardOptions &options) : SnpComponent(options, "sinkKeyboard") {
+SnpSinkX11Keyboard::SnpSinkX11Keyboard(const SnpSinkX11KeyboardOptions &options) : SnpComponent(options, "COMPONENT_OUTPUT_KEYBOARD_X11") {
     addInputPort(new SnpPort());
-    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkX11Keyboard::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkX11Keyboard::onInputData, this, std::placeholders::_1,
+                                           std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 }
 
 SnpSinkX11Keyboard::~SnpSinkX11Keyboard() {
@@ -46,7 +47,7 @@ static void emit(int fd, int type, int code, int val) {
     }
 }
 
-void SnpSinkX11Keyboard::onInputData(const uint8_t *data, int len, bool complete) {
+void SnpSinkX11Keyboard::onInputData(uint32_t pipeId, const uint8_t *data, int len, bool complete) {
     snp::StreamDataKeyboard streamDataKeyboard = snp::StreamDataKeyboard();
     streamDataKeyboard.ParseFromArray(data, len);
 

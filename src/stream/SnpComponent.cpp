@@ -74,12 +74,32 @@ bool SnpComponent::isRunning() const {
 }
 
 bool SnpComponent::start() {
-    LOG_F(INFO, "starting component \"%s\"", componentName.c_str());
+    LOG_F(INFO, "starting component \"%s\"", name.c_str());
     running = true;
     return true;
 }
 
 void SnpComponent::stop() {
-    LOG_F(INFO, "stopping component \"%s\"", componentName.c_str());
+    LOG_F(INFO, "stopping component \"%s\"", name.c_str());
     running = false;
+}
+
+const std::string &SnpComponent::getName() const {
+    return name;
+}
+
+uint32_t SnpComponent::getPipeId() const {
+    return pipeId;
+}
+
+void SnpComponent::setPipeId(uint32_t pipeId) {
+    SnpComponent::pipeId = pipeId;
+}
+
+const std::vector<SnpPort *> &SnpComponent::getInputPorts() const {
+    return inputPorts;
+}
+
+const std::vector<SnpPort *> &SnpComponent::getOutputPorts() const {
+    return outputPorts;
 }

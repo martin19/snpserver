@@ -6,14 +6,14 @@
 
 #define SNP_SINK_NETWORK_BUFFER_SIZE 500000
 
-SnpSinkNetworkTcp::SnpSinkNetworkTcp(const SnpSinkNetworkTcpOptions &options) : SnpComponent(options, "sinkNetworkTcp") {
-    streamId = options.streamId;
+SnpSinkNetworkTcp::SnpSinkNetworkTcp(const SnpSinkNetworkTcpOptions &options) : SnpComponent(options, "COMPONENT_OUTPUT_TCP") {
     host = options.host;
     port = options.port;
     clientConnected = false;
 
     addInputPort(new SnpPort());
-    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkNetworkTcp::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkNetworkTcp::onInputData, this, std::placeholders::_1,
+                                           std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 }
 
 SnpSinkNetworkTcp::~SnpSinkNetworkTcp() {
@@ -34,7 +34,7 @@ void SnpSinkNetworkTcp::stop() {
     destroySocket();
 }
 
-void SnpSinkNetworkTcp::onInputData(const uint8_t * inputBuffer, int inputLen, bool complete) {
+void SnpSinkNetworkTcp::onInputData(uint32_t pipeId, const uint8_t * inputBuffer, int inputLen, bool complete) {
     if(!clientConnected) {
         return;
     }
@@ -42,7 +42,7 @@ void SnpSinkNetworkTcp::onInputData(const uint8_t * inputBuffer, int inputLen, b
     buffer.insert(buffer.end(), inputBuffer, inputBuffer + inputLen);
     if(complete) {
         setTimestampStartMs(TimeUtil::getTimeNowMs());
-        sendDataMessage();
+        sendDataMessage(pipeId);
         setTimestampEndMs(TimeUtil::getTimeNowMs());
         buffer.clear();
     }
@@ -110,14 +110,14 @@ void SnpSinkNetworkTcp::destroySocket() const {
     //TODO: how to stop listen thread and clean it up?
 }
 
-bool SnpSinkNetworkTcp::sendDataMessage() {
+bool SnpSinkNetworkTcp::sendDataMessage(uint32_t pipeId) {
     snp::Message message;
     message.set_type(snp::MESSAGE_TYPE_DATA);
     auto data = message.data();
     auto dataRaw = data.dataraw();
     std::basic_string<char> payloadString((const char *)(buffer.data()), buffer.size());
     dataRaw.set_payload(payloadString);
-    data.set_stream_id(1);
+    data.set_pipe_id(pipeId);
 
     //send message on socket
     std::basic_string<char> messageString = message.SerializeAsString();

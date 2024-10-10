@@ -35,7 +35,7 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
   * ✅ DONE: what was streamId meant to do? -> each pipe has its own streamId, data is 
              fed into correct pipe according to streamId
   * ✅ DONE: implement simple option for configuration (ui/file/mock) -> QSettings, snp.ini
-
+  * ✅ DONE: rename protocol snappyv1 -> snp
 
   * 🟦 TODO: connect components in pipe and connect to source pipe (network, local file etc.)
     * 🟦 TODO: verify component "compatibility" at runtime

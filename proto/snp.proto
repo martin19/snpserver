@@ -29,6 +29,14 @@ enum ComponentType {
     COMPONENT_DECODER_INTEL = 15;
     COMPONENT_ENCODER_AMD = 16;
     COMPONENT_DECODER_AMD = 17;
+    COMPONENT_OUTPUT_FILE = 18;
+    COMPONENT_OUTPUT_TCP = 19;
+    COMPONENT_INPUT_TCP = 20;
+    COMPONENT_OUTPUT_WEBSOCKET = 21;
+    COMPONENT_INPUT_WEBSOCKET = 22;
+    COMPONENT_ENCODER_MMAL = 23;
+    COMPONENT_DECODER_MMAL = 24;
+    COMPONENT_CAPTURE_GL = 25;
 }
 
 enum Command {
@@ -92,7 +100,7 @@ message Setup {
 }
 
 message Data {
-    uint32 stream_id = 1;
+    uint32 pipe_id = 1;
     oneof data {
         StreamDataRaw dataRaw = 2;
         StreamDataPointer dataPointer = 3;

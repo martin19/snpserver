@@ -154,12 +154,20 @@ enum ComponentType : int {
   COMPONENT_DECODER_INTEL = 15,
   COMPONENT_ENCODER_AMD = 16,
   COMPONENT_DECODER_AMD = 17,
+  COMPONENT_OUTPUT_FILE = 18,
+  COMPONENT_OUTPUT_TCP = 19,
+  COMPONENT_INPUT_TCP = 20,
+  COMPONENT_OUTPUT_WEBSOCKET = 21,
+  COMPONENT_INPUT_WEBSOCKET = 22,
+  COMPONENT_ENCODER_MMAL = 23,
+  COMPONENT_DECODER_MMAL = 24,
+  COMPONENT_CAPTURE_GL = 25,
   ComponentType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   ComponentType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool ComponentType_IsValid(int value);
 constexpr ComponentType ComponentType_MIN = COMPONENT_CAPTURE_VIDEO_DRM;
-constexpr ComponentType ComponentType_MAX = COMPONENT_DECODER_AMD;
+constexpr ComponentType ComponentType_MAX = COMPONENT_CAPTURE_GL;
 constexpr int ComponentType_ARRAYSIZE = ComponentType_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ComponentType_descriptor();
@@ -1831,19 +1839,19 @@ class Data final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kStreamIdFieldNumber = 1,
+    kPipeIdFieldNumber = 1,
     kDataRawFieldNumber = 2,
     kDataPointerFieldNumber = 3,
     kDataKeyboardFieldNumber = 4,
     kDataCursorFieldNumber = 5,
   };
-  // uint32 stream_id = 1;
-  void clear_stream_id();
-  uint32_t stream_id() const;
-  void set_stream_id(uint32_t value);
+  // uint32 pipe_id = 1;
+  void clear_pipe_id();
+  uint32_t pipe_id() const;
+  void set_pipe_id(uint32_t value);
   private:
-  uint32_t _internal_stream_id() const;
-  void _internal_set_stream_id(uint32_t value);
+  uint32_t _internal_pipe_id() const;
+  void _internal_set_pipe_id(uint32_t value);
   public:
 
   // .snp.StreamDataRaw dataRaw = 2;
@@ -1935,7 +1943,7 @@ class Data final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    uint32_t stream_id_;
+    uint32_t pipe_id_;
     union DataUnion {
       constexpr DataUnion() : _constinit_{} {}
         ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized _constinit_;
@@ -3715,24 +3723,24 @@ Setup::pipe() const {
 
 // Data
 
-// uint32 stream_id = 1;
-inline void Data::clear_stream_id() {
-  _impl_.stream_id_ = 0u;
+// uint32 pipe_id = 1;
+inline void Data::clear_pipe_id() {
+  _impl_.pipe_id_ = 0u;
 }
-inline uint32_t Data::_internal_stream_id() const {
-  return _impl_.stream_id_;
+inline uint32_t Data::_internal_pipe_id() const {
+  return _impl_.pipe_id_;
 }
-inline uint32_t Data::stream_id() const {
-  // @@protoc_insertion_point(field_get:snp.Data.stream_id)
-  return _internal_stream_id();
+inline uint32_t Data::pipe_id() const {
+  // @@protoc_insertion_point(field_get:snp.Data.pipe_id)
+  return _internal_pipe_id();
 }
-inline void Data::_internal_set_stream_id(uint32_t value) {
+inline void Data::_internal_set_pipe_id(uint32_t value) {
   
-  _impl_.stream_id_ = value;
+  _impl_.pipe_id_ = value;
 }
-inline void Data::set_stream_id(uint32_t value) {
-  _internal_set_stream_id(value);
-  // @@protoc_insertion_point(field_set:snp.Data.stream_id)
+inline void Data::set_pipe_id(uint32_t value) {
+  _internal_set_pipe_id(value);
+  // @@protoc_insertion_point(field_set:snp.Data.pipe_id)
 }
 
 // .snp.StreamDataRaw dataRaw = 2;

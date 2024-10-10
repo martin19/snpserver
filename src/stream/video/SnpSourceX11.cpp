@@ -31,7 +31,7 @@ bool SnpSourceX11::start() {
             SnpPort * outputPort = this->getOutputPort(0);
 //            this->captureFrame();
             XImage *image = XGetImage(X11Display, rootWindow, 0, 0, width, height, AllPlanes, ZPixmap);
-            outputPort->onData((uint8_t *)image->data, width*height*bytesPerPixel, true);
+            outputPort->onData(getPipeId(), (uint8_t *)image->data, width*height*bytesPerPixel, true);
             XDestroyImage(image);
         }
 #pragma clang diagnostic pop

@@ -11,15 +11,15 @@
 class SnpPipe;
 
 struct SnpComponentOptions {
-    std::string name;
+    uint32_t pipeId;
 };
 
 class SnpComponent {
 public:
-    explicit SnpComponent(const SnpComponentOptions &options, std::string name) {
+    explicit SnpComponent(const SnpComponentOptions &options, const std::string& name) {
         LOG_F(INFO, "Initializing component %s", name.c_str());
-        this->componentName = name;
-        enabled = false;
+        this->name = name;
+        pipeId = options.pipeId;
         running = false;
     };
     virtual ~SnpComponent();
@@ -44,12 +44,26 @@ public:
     SnpPipe *getOwner() const;
     void setOwner(SnpPipe *owner);
 protected:
-    std::string componentName;
+    std::string name;
+public:
+    const std::string &getName() const;
+private:
+    uint32_t pipeId;
+public:
+    uint32_t getPipeId() const;
+
+    void setPipeId(uint32_t pipeId);
+
 private:
     bool running;
-    bool enabled;
     std::vector<SnpPort*> inputPorts;
     std::vector<SnpPort*> outputPorts;
+public:
+    const std::vector<SnpPort *> &getInputPorts() const;
+
+    const std::vector<SnpPort *> &getOutputPorts() const;
+
+private:
 
     uint32_t timestampStartMs;
     uint32_t timestampEndMs;

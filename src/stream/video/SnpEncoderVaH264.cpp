@@ -30,11 +30,12 @@ static unsigned int MaxPicOrderCntLsb = (2<<16);
 static unsigned int Log2MaxFrameNum = 4;
 static unsigned int Log2MaxPicOrderCntLsb = 4;
 
-SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : SnpComponent(options, "encoderVaH264") {
-    addInputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO));
-    addOutputPort(new SnpPort());
+SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : SnpComponent(options, "COMPONENT_ENCODER_INTEL") {
+    addInputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_RGB));
+    addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_H264));
 
-    getInputPort(0)->setOnDataCb(std::bind(&SnpEncoderVaH264::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    getInputPort(0)->setOnDataCb(std::bind(&SnpEncoderVaH264::onInputData, this, std::placeholders::_1,
+                                           std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 
     h264Profile = VAProfileH264ConstrainedBaseline;
     constraintSetFlag = 0;
@@ -75,7 +76,7 @@ void SnpEncoderVaH264::stop() {
     VaH264EncoderDestroy();
 }
 
-void SnpEncoderVaH264::onInputData(const uint8_t *data, uint32_t len, bool complete) {
+void SnpEncoderVaH264::onInputData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete) {
     if(!isRunning()) return;
     this->VaH264EncoderEncode(data, len);
 }
@@ -353,7 +354,7 @@ bool SnpEncoderVaH264::VaH264EncoderEncode(const uint8_t *framebuffer, uint32_t 
 
     while(bufList != nullptr) {
         codedSize += bufList->size;
-        getOutputPort(0)->onData((uint8_t*)bufList->buf, bufList->size, bufList->next == nullptr);
+        getOutputPort(0)->onData(getPipeId(), (uint8_t*)bufList->buf, bufList->size, bufList->next == nullptr);
         bufList = (VACodedBufferSegment*)bufList->next;
     }
 

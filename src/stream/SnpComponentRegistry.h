@@ -6,6 +6,7 @@
 
 class SnpComponentRegistry {
 private:
+    std::unordered_map<std::string, int> componentMap;
     std::set<snp::Component*> localComponents;
     std::set<snp::Component*> remoteComponents;
 public:
@@ -19,6 +20,7 @@ public:
     bool hasRemoteComponent(snp::Component* component);
     std::set<snp::Component*> getLocalComponents();
     std::set<snp::Component*> getRemoteComponents();
+    int getComponentId(const std::string& componentName) const;
 };
 
 

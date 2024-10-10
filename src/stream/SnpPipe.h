@@ -11,15 +11,19 @@ struct SnpPipeOptions {
 
 class SnpPipe {
 public:
-    explicit SnpPipe(SnpPipeOptions &options);
+    explicit SnpPipe(SnpPipeOptions &options, uint32_t pipeId);
     bool start();
     void stop();
-    bool addComponent(SnpComponent *component);
+    bool addComponentBegin(SnpComponent *component);
+    bool addComponentEnd(SnpComponent *component);
     const std::vector<SnpComponent *> &getComponents() const;
     uint32_t framesPassed;
     std::vector<SnpProperty*>* getProperties();
 protected:
-    std::string componentName;
+    std::string name;
+public:
+    const std::string &getName() const;
+
 private:
     std::vector<SnpComponent*> components;
     bool running;

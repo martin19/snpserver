@@ -8,14 +8,15 @@
 #include <network/snp.pb.h>
 #include "util/loguru.h"
 
-SnpSinkX11Mouse::SnpSinkX11Mouse(const SnpSinkX11MouseOptions &options) : SnpComponent(options, "sinkMouse") {
+SnpSinkX11Mouse::SnpSinkX11Mouse(const SnpSinkX11MouseOptions &options) : SnpComponent(options, "COMPONENT_OUTPUT_POINTER_X11") {
     fid = -1;
     width = options.width;
     height = options.height;
     previousButtonMask = 0;
 
     addInputPort(new SnpPort());
-    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkX11Mouse::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkX11Mouse::onInputData, this, std::placeholders::_1,
+                                           std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 }
 
 SnpSinkX11Mouse::~SnpSinkX11Mouse() {
@@ -50,7 +51,7 @@ static void emit(int fd, int type, int code, int val) {
     }
 }
 
-void SnpSinkX11Mouse::onInputData(const uint8_t *data, int len, bool complete) {
+void SnpSinkX11Mouse::onInputData(uint32_t pipeId, const uint8_t *data, int len, bool complete) {
     //TODO: only complete messages are accepted, verify and clean up interface.
     snp::StreamDataPointer streamDataPointer = snp::StreamDataPointer();
     streamDataPointer.ParseFromArray(data, len);

@@ -10,9 +10,9 @@
 typedef void (*HandleCapabilitiesMessageCb)(snp::Message* message);
 
 struct SnpSourceNetworkTcpOptions : public SnpComponentOptions {
-    uint32_t streamId;
     std::string host;
     uint16_t port;
+    std::vector<PortStreamType> portStreamTypes;
     HandleCapabilitiesMessageCb handleCapabilitiesMessageCb;
 };
 
@@ -31,8 +31,6 @@ private:
     [[noreturn]] void connectToServer();
     bool dispatch();
     HandleCapabilitiesMessageCb handleCapabilitiesMessageCb;
-
-    uint32_t streamId;
 
     SOCKET clientSocket;
     std::thread connectThread;

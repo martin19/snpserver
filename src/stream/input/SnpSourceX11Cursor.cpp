@@ -2,7 +2,7 @@
 #include "SnpSourceX11Cursor.h"
 #include "util/loguru.h"
 
-SnpSourceX11Cursor::SnpSourceX11Cursor(const SnpSourceCursorOptions &options) : SnpComponent(options, "sourceCursor") {
+SnpSourceX11Cursor::SnpSourceX11Cursor(const SnpSourceCursorOptions &options) : SnpComponent(options, "COMPONENT_OUTPUT_CURSOR_X11") {
     this->defaultDisplay = ":0.0";
     this->display = nullptr;
     this->lastCursorSerial = 0;
@@ -86,7 +86,7 @@ void SnpSourceX11Cursor::destroyX11Client() {
             XFree(x11Cursor);
             streamDataCursor.set_allocated_image(rgba);
             std::string data = streamDataCursor.SerializeAsString();
-            getOutputPort(0)->onData((const uint8_t*)data.c_str(), data.length(), true);
+            getOutputPort(0)->onData(getPipeId(), (const uint8_t*)data.c_str(), data.length(), true);
         }
     }
 }

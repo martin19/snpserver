@@ -62,7 +62,7 @@ private:
     static bool destroyCaptureFb(FramebufferInfo *framebuffer);
     static bool createDumbBo(int deviceFd, uint32_t width, uint32_t height, uint32_t bpp, dumb_bo** pDumbBo);
     static bool destroyDumbBo(int deviceFd, dumb_bo* dumbBo);
-    void onInputData(const uint8_t *data, int len, bool complete);
+    void onInputData(uint32_t pipeId, const uint8_t *data, int len, bool complete);
 
     std::string device;
     int deviceFd;

@@ -8,18 +8,22 @@
 
 #define CHECK_STATUS(status, msg) if (status != MMAL_SUCCESS) { fprintf(stderr, msg"\n"); goto error; }
 
-SnpEncoderMmalH264::SnpEncoderMmalH264(const SnpEncoderMmalH264Options &options) : SnpComponent(options, "encoderMmalH264") {
-    addInputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO));
-    addOutputPort(new SnpPort());
+SnpEncoderMmalH264::SnpEncoderMmalH264(const SnpEncoderMmalH264Options &options) : SnpComponent(options, "COMPONENT_ENCODER_MMAL") {
+    addInputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_RGB));
+    addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_H264));
+    addProperty(new SnpProperty("width", options.width));
+    addProperty(new SnpProperty("height", options.height));
+    addProperty(new SnpProperty("qp", options.qp));
 
-    getInputPort(0)->setOnDataCb(std::bind(&SnpEncoderMmalH264::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    getInputPort(0)->setOnDataCb(std::bind(&SnpEncoderMmalH264::onInputData, this, std::placeholders::_1,
+                                           std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 }
 
 SnpEncoderMmalH264::~SnpEncoderMmalH264() {
     mmalEncoderDestroy();
 }
 
-void SnpEncoderMmalH264::onInputData(const uint8_t *data, int len, bool complete) {
+void SnpEncoderMmalH264::onInputData(uint32_t pipeId, const uint8_t *data, int len, bool complete) {
     if(!isRunning()) return;
     setTimestampStartMs(TimeUtil::getTimeNowMs());
     mmalEncoderEncode();
@@ -310,10 +314,10 @@ void SnpEncoderMmalH264::mmalOnFrameCallback(MMAL_BUFFER_HEADER_T *bufferHeader)
     SnpPort *outputPort = this->getOutputPort(0);
     if(bufferHeader->flags & MMAL_BUFFER_HEADER_FLAG_NAL_END) {
         setTimestampEndMs(TimeUtil::getTimeNowMs());
-        outputPort->onData(bufferHeader->data, bufferHeader->length, true);
+        outputPort->onData(getPipeId(), bufferHeader->data, bufferHeader->length, true);
     } else {
         std::cout << "Flags:" << bufferHeader->flags << std::endl;
-        outputPort->onData(bufferHeader->data, bufferHeader->length, false);
+        outputPort->onData(getPipeId(), bufferHeader->data, bufferHeader->length, false);
     }
 }
 

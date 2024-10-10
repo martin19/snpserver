@@ -5,14 +5,15 @@
 #define SNP_SOURCE_RECV_BUFFER_SIZE 500000
 #define SNP_SOURCE_NETWORK_BUFFER_SIZE 500000
 
-SnpSourceNetworkTcp::SnpSourceNetworkTcp(const SnpSourceNetworkTcpOptions &options) : SnpComponent(options, "sourceNetwork") {
-    streamId = options.streamId;
+SnpSourceNetworkTcp::SnpSourceNetworkTcp(const SnpSourceNetworkTcpOptions &options) : SnpComponent(options, "COMPONENT_INPUT_TCP") {
     host = options.host;
     port = options.port;
     handleCapabilitiesMessageCb = options.handleCapabilitiesMessageCb;
     connected = false;
 
-    addOutputPort(new SnpPort());
+    for (const auto &portStreamType: options.portStreamTypes) {
+        addOutputPort(new SnpPort(PORT_TYPE_BOTH, portStreamType));
+    }
 }
 
 SnpSourceNetworkTcp::~SnpSourceNetworkTcp() {
@@ -88,7 +89,6 @@ void SnpSourceNetworkTcp::createSocket() {
 }
 
 bool SnpSourceNetworkTcp::dispatch() {
-    SnpPort *outputPort = getOutputPort(0);
     snp::Message message;
     bool result = message.ParseFromArray(buffer.data(), (int)buffer.size());
     if(!result) return false;
@@ -96,11 +96,19 @@ bool SnpSourceNetworkTcp::dispatch() {
         case snp::MESSAGE_TYPE_COMMAND:
             LOG_F(WARNING, "MESSAGE_TYPE_COMMAND not implemented, skipping.");
             return true;
-        case snp::MESSAGE_TYPE_DATA:
-            outputPort->onData((const uint8_t*)message.data().dataraw().payload().c_str(),
-                               message.data().dataraw().payload().size(),
-                               true);
+        case snp::MESSAGE_TYPE_DATA: {
+            //dispatch data to pipe(s) according to message pipe id
+            uint32_t pipeId = message.data().pipe_id();
+            for (const auto &outputPort: getOutputPorts()) {
+                if(outputPort->getOwner()->getPipeId() == pipeId) {
+                    outputPort->onData(message.data().pipe_id(),
+                                       (const uint8_t*)message.data().dataraw().payload().c_str(),
+                                       message.data().dataraw().payload().size(),
+                                       true);
+                }
+            }
             return true;
+        }
         case snp::MESSAGE_TYPE_CAPABILITIES:
             handleCapabilitiesMessageCb(&message);
             return true;

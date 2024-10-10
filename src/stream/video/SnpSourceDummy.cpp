@@ -1,6 +1,8 @@
 #include "SnpSourceDummy.h"
 #include "math.h"
 #include <algorithm>
+#include <QtGui>
+
 #ifdef _WIN32
 #include "windows.h"
 #endif
@@ -9,20 +11,11 @@
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
-SnpSourceDummy::SnpSourceDummy(const SnpSourceDummyOptions &options) : SnpComponent(options, "sourceDummy") {
-    auto port = new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO);
-    auto format = (StreamFormatVideo*)port->getFormat();
-    format->width = 1920;
-    format->height = 1080;
-    addOutputPort(port);
-
-    addProperty(new SnpProperty("fps", PROPERTY_TYPE_DOUBLE));
-    addProperty(new SnpProperty("width", PROPERTY_TYPE_UINT32));
-    addProperty(new SnpProperty("height", PROPERTY_TYPE_UINT32));
-
-    getProperty("fps")->setValue(options.fps);
-    getProperty("width")->setValue(options.width);
-    getProperty("height")->setValue(options.height);
+SnpSourceDummy::SnpSourceDummy(const SnpSourceDummyOptions &options) : SnpComponent(options, "COMPONENT_CAPTURE_VIDEO_DUMMY") {
+    addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_RGBA));
+    addProperty(new SnpProperty("fps", options.fps));
+    addProperty(new SnpProperty("width", options.width));
+    addProperty(new SnpProperty("height", options.height));
 
     framesRendered = 0;
     frameBuffer = (uint8_t*)calloc(options.width*options.height*4, 1);
@@ -44,8 +37,8 @@ void SnpSourceDummy::stop() {
 }
 
 void SnpSourceDummy::renderFrame() {
-    width = getProperty("width")->getValueUint32();
-    height = getProperty("height")->getValueUint32();
+    uint32_t width = getProperty("width")->getValueUint32();
+    uint32_t height = getProperty("height")->getValueUint32();
     double fps = getProperty("fps")->getValueDouble();
 
     initBoxes(200, 200);
@@ -68,7 +61,7 @@ void SnpSourceDummy::renderFrame() {
 
         renderBoxes();
 
-        outputPort->onData(frameBuffer, width*height*4, true);
+        outputPort->onData(getPipeId(), frameBuffer, width*height*4, true);
         framesRendered++;
 
         uint32_t tsAfterPaint = TimeUtil::getTimeNowMs();
@@ -83,6 +76,9 @@ int boxDx[3];
 int boxDy[3];
 
 void SnpSourceDummy::initBoxes(int boxWidth, int boxHeight) {
+    uint32_t width = getProperty("width")->getValueUint32();
+    uint32_t height = getProperty("height")->getValueUint32();
+
     for(int i = 0; i < 3; i++) {
         box[i].dx = 1;
         box[i].dy = 1;
@@ -99,6 +95,9 @@ void SnpSourceDummy::initBoxes(int boxWidth, int boxHeight) {
 }
 
 void SnpSourceDummy::renderBoxes() {
+    uint32_t width = getProperty("width")->getValueUint32();
+    uint32_t height = getProperty("height")->getValueUint32();
+
     uint8_t *dst = frameBuffer;
     for(int i = 0; i < 3; i++) {
         int w2 = box[i].width/2;

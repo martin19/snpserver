@@ -29,7 +29,7 @@ private:
     uint32_t height;
     uint32_t bpp;
 
-    void onInputData(const uint8_t *data, uint32_t len, bool complete);
+    void onInputData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete);
 
     bool openH264EncoderInit();
     bool openH264EncoderEncode(const uint8_t *framebuffer, uint32_t len);

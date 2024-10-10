@@ -4,7 +4,6 @@
 #include <stream/SnpComponent.h>
 
 struct SnpSinkDisplayOptions : public SnpComponentOptions {
-    uint32_t streamId;
     uint32_t width;
     uint32_t height;
 };
@@ -20,7 +19,6 @@ public:
         onFrameCb = cb;
     }
 private:
-    uint32_t streamId;
     uint32_t width;
     uint32_t height;
     std::function<void()> onFrameCb = nullptr;

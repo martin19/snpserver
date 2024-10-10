@@ -40,7 +40,7 @@ private:
     MMAL_POOL_T *pool_in = nullptr;
     MMAL_POOL_T *pool_out = nullptr;
 
-    void onInputData(const uint8_t *data, int len, bool complete);
+    void onInputData(uint32_t pipeId, const uint8_t *data, int len, bool complete);
 
     bool mmalEncoderInit();
     bool mmalEncoderEncode();

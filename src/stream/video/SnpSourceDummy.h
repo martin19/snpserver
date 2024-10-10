@@ -35,17 +35,11 @@ public:
     void stop() override;
 private:
     void renderFrame();
-    void onInputData(const uint8_t *data, int len, bool complete);
 
     Box box[3];
     void initBoxes(int width, int height);
     void renderBoxes();
 
-
-    uint32_t width;
-    uint32_t height;
-    //uint32_t pitch;
-    //uint32_t bytesPerPixel;
     uint32_t framesRendered;
 
     std::thread renderThread;

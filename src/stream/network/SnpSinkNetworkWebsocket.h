@@ -5,7 +5,6 @@
 #include <stream/SnpComponent.h>
 
 struct SnpSinkNetworkOptions : public SnpComponentOptions {
-    uint32_t streamId;
     //SnpClientWebsocket *client;
 };
 
@@ -18,8 +17,7 @@ public:
     void stop() override;
 
 private:
-    void onInputData(const uint8_t *data, int len, bool complete);
-    uint32_t streamId;
+    void onInputData(uint32_t pipeId, const uint8_t *data, int len, bool complete);
     //SnpClientWebsocket *client;
     std::vector<uint8_t> buffer;
 };

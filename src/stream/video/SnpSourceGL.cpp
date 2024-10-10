@@ -22,8 +22,7 @@
 #include <unistd.h>
 //#include <GLES2/glext.h>
 
-SnpSourceGL::SnpSourceGL(const SnpSourceGLOptions &options) : SnpComponent(options, "sourceGL") {
-
+SnpSourceGL::SnpSourceGL(const SnpSourceGLOptions &options) : SnpComponent(options, "COMPONENT_CAPTURE_GL") {
     addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO));
 
     addProperty(new SnpProperty("width", PROPERTY_TYPE_UINT32));
@@ -500,7 +499,7 @@ bool SnpSourceGL::start() {
             SnpPort * outputPort = this->getOutputPort(0);
             this->captureFrame();
             setTimestampEndMs(TimeUtil::getTimeNowMs());
-            outputPort->onData(this->mmapFrameBuffer, width*height*bytesPerPixel, true);
+            outputPort->onData(getPipeId(), this->mmapFrameBuffer, width*height*bytesPerPixel, true);
             usleep(33333);
         }
 #pragma clang diagnostic pop

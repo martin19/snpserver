@@ -9,7 +9,6 @@
 struct SnpDecoderOpenH264Options : public SnpComponentOptions {
     uint32_t width;
     uint32_t height;
-    uint32_t bytesPerPixel;
     uint32_t qp;
 };
 
@@ -24,11 +23,7 @@ public:
 private:
     OpenH264Api openH264Api;
 
-    uint32_t width;
-    uint32_t height;
-    uint32_t bpp;
-
-    void onInputData(const uint8_t *data, uint32_t len, bool complete);
+    void onInputData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete);
 
     bool openH264DecoderInit();
     bool openH264DecoderDecode(const uint8_t *srcBuffer, int srcLen);

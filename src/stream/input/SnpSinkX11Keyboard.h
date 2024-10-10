@@ -15,7 +15,7 @@ public:
     void stop() override;
 
 private:
-    void onInputData(const uint8_t *data, int len, bool complete);
+    void onInputData(uint32_t pipeId, const uint8_t *data, int len, bool complete);
     int fid;
     bool initKeyboard();
     void keyDown(int key);

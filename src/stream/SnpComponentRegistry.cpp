@@ -3,6 +3,35 @@
 #include "network/snp.pb.h"
 
 SnpComponentRegistry::SnpComponentRegistry() {
+    componentMap = {
+            {"COMPONENT_CAPTURE_VIDEO_DRM", 0},
+            {"COMPONENT_CAPTURE_VIDEO_X11", 1},
+            {"COMPONENT_CAPTURE_VIDEO_WAYLAND", 2},
+            {"COMPONENT_CAPTURE_VIDEO_V4L", 3},
+            {"COMPONENT_CAPTURE_VIDEO_DUMMY", 4},
+            {"COMPONENT_INPUT_KEYBOARD_X11", 5},
+            {"COMPONENT_INPUT_POINTER_X11", 6},
+            {"COMPONENT_INPUT_CURSOR_X11", 7},
+            {"COMPONENT_OUTPUT_VIDEO_DISPLAY", 8},
+            {"COMPONENT_OUTPUT_KEYBOARD_X11", 9},
+            {"COMPONENT_OUTPUT_POINTER_X11", 10},
+            {"COMPONENT_OUTPUT_CURSOR_X11", 11},
+            {"COMPONENT_ENCODER_OPENH264", 12},
+            {"COMPONENT_DECODER_OPENH264", 13},
+            {"COMPONENT_ENCODER_INTEL", 14},
+            {"COMPONENT_DECODER_INTEL", 15},
+            {"COMPONENT_ENCODER_AMD", 16},
+            {"COMPONENT_DECODER_AMD", 17},
+            {"COMPONENT_OUTPUT_FILE", 18},
+            {"COMPONENT_OUTPUT_TCP", 19},
+            {"COMPONENT_INPUT_TCP", 20},
+            {"COMPONENT_OUTPUT_WEBSOCKET", 21},
+            {"COMPONENT_INPUT_WEBSOCKET", 22},
+            {"COMPONENT_ENCODER_MMAL", 23},
+            {"COMPONENT_DECODER_MMAL", 24},
+            {"COMPONENT_CAPTURE_GL", 25}
+    };
+
     registerLocalComponents();
 }
 
@@ -113,6 +142,15 @@ void SnpComponentRegistry::registerRemoteComponents(snp::Message *message) {
     for(int i = 0; i < capabilities.component_size(); i++) {
         auto component = new snp::Component(capabilities.component(i));
         registerRemoteComponent(component);
+    }
+}
+
+int SnpComponentRegistry::getComponentId(const std::string& componentName) const {
+    auto it = componentMap.find(componentName);
+    if (it != componentMap.end()) {
+        return it->second;
+    } else {
+        return -1; // Return -1 if component name not found
     }
 }
 

@@ -7,7 +7,7 @@
 #include "libloaderapi.h"
 #endif
 
-SnpEncoderOpenH264::SnpEncoderOpenH264(const SnpEncoderOpenH264Options &options) : SnpComponent(options, "encoderOpenH264") {
+SnpEncoderOpenH264::SnpEncoderOpenH264(const SnpEncoderOpenH264Options &options) : SnpComponent(options, "COMPONENT_ENCODER_OPENH264") {
 #ifdef _WIN32
     HMODULE hDLL = LoadLibraryA("openh264-2.1.1-win64.dll");
     if(hDLL == nullptr) {
@@ -24,10 +24,14 @@ SnpEncoderOpenH264::SnpEncoderOpenH264(const SnpEncoderOpenH264Options &options)
     encoder = nullptr;
     yuvBuffer = nullptr;
 
-    addInputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO));
-    addOutputPort(new SnpPort());
+    addInputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_RGBA));
+    addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_H264));
+    addProperty(new SnpProperty("width", options.width));
+    addProperty(new SnpProperty("height", options.height));
+    addProperty(new SnpProperty("qp", options.qp));
 
-    getInputPort(0)->setOnDataCb(std::bind(&SnpEncoderOpenH264::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    getInputPort(0)->setOnDataCb(std::bind(&SnpEncoderOpenH264::onInputData, this, std::placeholders::_1,
+                                           std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 }
 
 SnpEncoderOpenH264::~SnpEncoderOpenH264() {
@@ -36,9 +40,9 @@ SnpEncoderOpenH264::~SnpEncoderOpenH264() {
 
 bool SnpEncoderOpenH264::start() {
     SnpComponent::start();
-    auto *format = (StreamFormatVideo*)getInputPort(0)->sourcePort->getFormat();
-    width = format->width;
-    height = format->height;
+
+    width = getProperty("width")->getValueUint32();
+    height = getProperty("height")->getValueUint32();
 //        frameWidthMbAligned = (width + 15) & (~15);
 //        frameHeightMbAligned = (height + 15) & (~15);
 
@@ -51,7 +55,7 @@ void SnpEncoderOpenH264::stop() {
     openH264EncoderDestroy();
 }
 
-void SnpEncoderOpenH264::onInputData(const uint8_t *data, uint32_t len, bool complete) {
+void SnpEncoderOpenH264::onInputData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete) {
     if(!isRunning()) return;
     this->openH264EncoderEncode(data, len);
 }
@@ -133,7 +137,7 @@ bool SnpEncoderOpenH264::openH264EncoderEncode(const uint8_t *framebuffer, uint3
                 --iNalIdx;
             } while (iNalIdx >= 0);
 
-            outputPort->onData(pLayerBsInfo->pBsBuf, iLayerSize, true);
+            outputPort->onData(getPipeId(), pLayerBsInfo->pBsBuf, iLayerSize, true);
         }
     }
 

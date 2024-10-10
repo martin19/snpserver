@@ -4,11 +4,11 @@
 
 #define SNP_SINK_FILE_BUFFER_SIZE 500000
 
-SnpSinkFile::SnpSinkFile(const SnpSinkFileOptions &options) : SnpComponent(options, "sinkFile") {
+SnpSinkFile::SnpSinkFile(const SnpSinkFileOptions &options) : SnpComponent(options, "COMPONENT_OUTPUT_FILE") {
     fileName = options.fileName;
 
     addInputPort(new SnpPort());
-    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkFile::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkFile::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 
     buffer.reserve(SNP_SINK_FILE_BUFFER_SIZE);
     buffer.clear();
@@ -18,7 +18,7 @@ SnpSinkFile::~SnpSinkFile() {
     //TODO:
 }
 
-void SnpSinkFile::onInputData(const uint8_t * inputBuffer, int inputLen, bool complete) {
+void SnpSinkFile::onInputData(uint32_t pipeId, const uint8_t * inputBuffer, int inputLen, bool complete) {
     buffer.insert(buffer.end(), inputBuffer, inputBuffer + inputLen);
     if(complete) {
         output.write((char*)buffer.data(), buffer.size());

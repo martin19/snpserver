@@ -8,7 +8,6 @@
 #include "sockets.h"
 
 struct SnpSinkNetworkTcpOptions : public SnpComponentOptions {
-    uint32_t streamId;
     std::string host;
     uint16_t port;
 };
@@ -22,14 +21,13 @@ public:
     void stop() override;
 
 private:
-    void onInputData(const uint8_t *data, int len, bool complete);
+    void onInputData(uint32_t pipeId, const uint8_t *data, int len, bool complete);
     void createSocket();
 
     [[noreturn]] void listenForConnections();
-    bool sendDataMessage();
+    bool sendDataMessage(uint32_t pipeId);
     bool sendCapabilitiesMessage();
     void destroySocket() const;
-    uint32_t streamId;
     std::vector<uint8_t> buffer;
 
     SOCKET listenSocket;

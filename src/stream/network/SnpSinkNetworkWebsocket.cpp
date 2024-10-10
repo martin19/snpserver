@@ -3,13 +3,13 @@
 
 #define SNP_SINK_NETWORK_BUFFER_SIZE 500000
 
-SnpSinkNetworkWebsocket::SnpSinkNetworkWebsocket(const SnpSinkNetworkOptions &options) : SnpComponent(options, "sinkNetwork") {
-    streamId = options.streamId;
+SnpSinkNetworkWebsocket::SnpSinkNetworkWebsocket(const SnpSinkNetworkOptions &options) : SnpComponent(options, "COMPONENT_OUTPUT_WEBSOCKET") {
     //TODO: websocket client = options.client;
 
     addInputPort(new SnpPort());
 
-    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkNetworkWebsocket::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkNetworkWebsocket::onInputData, this, std::placeholders::_1,
+                                           std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 }
 
 SnpSinkNetworkWebsocket::~SnpSinkNetworkWebsocket() {
@@ -28,7 +28,7 @@ void SnpSinkNetworkWebsocket::stop() {
     buffer.clear();
 }
 
-void SnpSinkNetworkWebsocket::onInputData(const uint8_t * inputBuffer, int inputLen, bool complete) {
+void SnpSinkNetworkWebsocket::onInputData(uint32_t pipeId, const uint8_t * inputBuffer, int inputLen, bool complete) {
     buffer.insert(buffer.end(), inputBuffer, inputBuffer + inputLen);
     if(complete) {
         setTimestampStartMs(TimeUtil::getTimeNowMs());

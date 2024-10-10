@@ -13,22 +13,24 @@ enum PortBufferType {
 
 enum PortStreamType {
     PORT_STREAM_TYPE_GENERIC = 0,
-    PORT_STREAM_TYPE_VIDEO = 1,
-    PORT_STREAM_TYPE_AUDIO = 2,
+    PORT_STREAM_TYPE_VIDEO_RGB = 1,
+    PORT_STREAM_TYPE_VIDEO_RGBA = 2,
+    PORT_STREAM_TYPE_VIDEO_H264 = 3,
+    PORT_STREAM_TYPE_AUDIO_MP3 = 4,
 };
 
-struct StreamFormat {
-};
-
-struct StreamFormatVideo : public StreamFormat {
-    uint32_t width;
-    uint32_t height;
-    uint32_t bytesPerPixel;
-};
-
-struct StreamFormatAudio : public StreamFormat {
-
-};
+//struct StreamFormat {
+//};
+//
+//struct StreamFormatVideo : public StreamFormat {
+//    uint32_t width;
+//    uint32_t height;
+//    uint32_t bytesPerPixel;
+//};
+//
+//struct StreamFormatAudio : public StreamFormat {
+//
+//};
 
 
 class SnpPort {
@@ -48,11 +50,11 @@ public:
 
     static bool connect(SnpPort *sourcePort, SnpPort *targetPort);
 
-    void onData(const uint8_t *data, uint32_t len, bool complete) {
-        targetPort->onDataCb(data, len, complete);
+    void onData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete) {
+        targetPort->onDataCb(pipeId, data, len, complete);
     }
 
-    void setOnDataCb(std::function<void(const uint8_t *data, uint32_t len, bool complete)> cb) {
+    void setOnDataCb(std::function<void(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete)> cb) {
         onDataCb = cb;
     }
 
@@ -68,11 +70,13 @@ public:
 private:
     PortBufferType bufferType;
     PortStreamType streamType;
-    StreamFormat *format;
 public:
-    [[nodiscard]] StreamFormat *getFormat() const;
+    PortBufferType getBufferType() const;
+
+    PortStreamType getStreamType() const;
+
 private:
-    std::function<void(const uint8_t *data, int len, bool complete)> onDataCb = nullptr;
+    std::function<void(uint32_t pipeId, const uint8_t *data, int len, bool complete)> onDataCb = nullptr;
     SnpComponent *owner;
 };
 

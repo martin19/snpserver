@@ -13,6 +13,11 @@ enum PropertyType {
 class SnpProperty {
 public:
     SnpProperty(std::string name, PropertyType type);
+    SnpProperty(std::string name, std::string value);
+    SnpProperty(std::string name, uint32_t value);
+    SnpProperty(std::string name, bool value);
+    SnpProperty(std::string name, double value);
+
     void setValue(std::string value);
     void setValue(bool value);
     void setValue(uint32_t value);

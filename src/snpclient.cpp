@@ -40,31 +40,34 @@ int runClient() {
     componentRegistry = new SnpComponentRegistry();
     config = new SnpConfig(R"(P:\snp\snpserver\snp.ini)");
 
+    //setup local pipes
+    std::vector<SnpPipe*>* localPipes = SnpPipeFactory::createPipes(config, "local");
+
+    //add network source component
     SnpSourceNetworkTcpOptions sourceOptions = {};
-    sourceOptions.streamId = 0;
     sourceOptions.port = 9000;
     sourceOptions.host = "127.0.0.1";
     sourceOptions.handleCapabilitiesMessageCb = handleCapabilitiesMessageCb;
+    sourceOptions.portStreamTypes = std::vector<PortStreamType>();
+    for (const auto &pipe: *localPipes) {
+        SnpComponent* first = *pipe->getComponents().begin();
+        sourceOptions.portStreamTypes.push_back(first->getInputPort(0)->getStreamType());
+    }
     auto *source = new SnpSourceNetworkTcp(sourceOptions);
-    source->start();
-
-
-
-    //setup local pipes
-    //TODO: connect components in pipe and connect to source pipe (network, local file etc.)
-    //TODO: send remote config to server and setup pipe using createPipes
-    std::vector<SnpPipe*>* pipes = SnpPipeFactory::createPipes(config, "local");
-    for (const auto &pipe: *pipes) {
+    for (const auto &pipe: *localPipes) {
+        pipe->addComponentBegin(source);
         pipe->start();
     }
 
     //paint on every frame
-//    auto* sinkDisplay = dynamic_cast<SnpSinkDisplay *>(videoPipe->getComponents().back());
-//    sinkDisplay->getInputPort(0)->setOnDataCb([](auto && data, auto && len, auto && PH3) {
-//        QImage* qImage = canvas->getQImage();
-//        memcpy(qImage->bits(), data, len);
-//        canvas->update();
-//    });
+    auto* sinkDisplay = dynamic_cast<SnpSinkDisplay *>(videoPipe->getComponents().back());
+    sinkDisplay->getInputPort(0)->setOnDataCb([](auto pipeId, auto && data, auto && len, auto && PH3) {
+        QImage* qImage = canvas->getQImage();
+        memcpy(qImage->bits(), data, len);
+        canvas->update();
+    });
+
+//TODO: send remote config to server and setup pipe using createPipes
 }
 
 int main(int argc, char *argv[]) {
