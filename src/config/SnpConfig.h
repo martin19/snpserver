@@ -12,19 +12,14 @@ public:
     SnpConfig();
     SnpConfig(const std::string& filename);
     void read(const std::string& filename);
-    static void readPipesSection(QSettings *settings, PipeMap *pipes, const std::string &section);
-
-    static uint32_t getPropertyUint(snp::Component*, std::string name, uint32_t defaultValue);
-    static bool getPropertyBool(snp::Component*, std::string name, bool defaultValue);
-    static double getPropertyDouble(snp::Component*, std::string name, double defaultValue);
-    static std::string getPropertyString(snp::Component*, std::string name, std::string defaultValue);
+    static void readPipesSection(QSettings *settings, PipeMap& pipes, const std::string &section);
 
 private:
-    PipeMap* localPipes;
-    PipeMap* remotePipes;
+    PipeMap localPipes;
+    PipeMap remotePipes;
 public:
-    PipeMap* getLocalPipes();
-    PipeMap* getRemotePipes();
+    PipeMap& getLocalPipes();
+    PipeMap& getRemotePipes();
 
 };
 

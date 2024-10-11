@@ -27,6 +27,7 @@ public:
 private:
     std::vector<SnpComponent*> components;
     bool running;
+    uint32_t pipeId;
 };
 
 

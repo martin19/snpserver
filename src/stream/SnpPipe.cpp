@@ -3,16 +3,16 @@
 #include "util/loguru.h"
 
 SnpPipe::SnpPipe(SnpPipeOptions &options, uint32_t pipeId) {
-    pipeId = pipeId;
+    this->pipeId = pipeId;
     name = options.name;
     running = false;
     framesPassed = 0;
 }
 
 bool SnpPipe::start() {
-    LOG_F(INFO, "starting pipe \"%s\"", name.c_str());
-    for(auto & pComponent : components) {
-        pComponent->start();
+    LOG_F(INFO, "starting pipe %d", pipeId);
+    for(int i = (int)components.size()-1; i >= 0; i--) {
+        if(!components[i]->isRunning()) components[i]->start();
     }
     this->running = true;
     return true;
@@ -29,16 +29,17 @@ bool SnpPipe::addComponentBegin(SnpComponent *component) {
     component->setOwner(this);
     components.insert(components.begin(), component);
     if(components.size() > 1) {
-        SnpComponent* nextComponent = components.at(components.size()-1);
-        if(nextComponent->getInputPort(0)->getStreamType() == component->getOutputPort(0)->getStreamType()) {
-            SnpPort::connect(component->getOutputPort(0), nextComponent->getInputPort(0));
-            LOG_F(ERROR, "cannot connect incompatible components %s -> %s",
-                  component->getName().c_str(), nextComponent->getName().c_str() );
+        SnpComponent* nextComponent = components.at(1);
+        if(SnpPort::canConnect(nextComponent->getInputPort(0), component->getOutputPort(0))) {
+            SnpPort::connect(pipeId, component->getOutputPort(0), nextComponent->getInputPort(0));
             return true;
         } else {
+            LOG_F(ERROR, "cannot connect incompatible components %s -> %s",
+                  component->getName().c_str(), nextComponent->getName().c_str() );
             return false;
         }
     }
+    return true;
 }
 
 bool SnpPipe::addComponentEnd(SnpComponent *component) {
@@ -47,12 +48,12 @@ bool SnpPipe::addComponentEnd(SnpComponent *component) {
     //connect to previous component if one exists
     if(components.size() > 1) {
         SnpComponent* previousComponent = components.at(components.size()-2);
-        if(previousComponent->getOutputPort(0)->getStreamType() == component->getInputPort(0)->getStreamType()) {
-            SnpPort::connect(previousComponent->getOutputPort(0), component->getInputPort(0));
-            LOG_F(ERROR, "cannot connect incompatible components %s -> %s",
-                  previousComponent->getName().c_str(), component->getName().c_str() );
+        if(SnpPort::canConnect(previousComponent->getOutputPort(0), component->getInputPort(0))) {
+            SnpPort::connect(pipeId, previousComponent->getOutputPort(0), component->getInputPort(0));
             return true;
         } else {
+            LOG_F(ERROR, "cannot connect incompatible components %s -> %s",
+                  previousComponent->getName().c_str(), component->getName().c_str() );
             return false;
         }
     }

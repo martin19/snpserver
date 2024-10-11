@@ -13,12 +13,10 @@ SnpSinkNetworkTcp::SnpSinkNetworkTcp(const SnpSinkNetworkTcpOptions &options) : 
     handleSetupMessageCb = options.handleSetupMessageCb;
     clientConnected = false;
 
-    for (const auto &portStreamType: options.portStreamTypes) {
-        auto* inputPort = new SnpPort(PORT_TYPE_BOTH, portStreamType);
-        inputPort->setOnDataCb(std::bind(&SnpSinkNetworkTcp::onInputData, this, std::placeholders::_1,
-                                         std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
-        addInputPort(inputPort);
-    }
+    auto* inputPort = new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_GENERIC);
+    inputPort->setOnDataCb(std::bind(&SnpSinkNetworkTcp::onInputData, this, std::placeholders::_1,
+                                     std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+    addInputPort(inputPort);
 }
 
 SnpSinkNetworkTcp::~SnpSinkNetworkTcp() {
@@ -149,16 +147,16 @@ void SnpSinkNetworkTcp::destroySocket() const {
 bool SnpSinkNetworkTcp::sendDataMessage(uint32_t pipeId) {
     snp::Message message;
     message.set_type(snp::MESSAGE_TYPE_DATA);
-    auto data = message.data();
-    auto dataRaw = data.dataraw();
+    auto data = message.mutable_data();
+    auto dataRaw = data->mutable_dataraw();
     std::basic_string<char> payloadString((const char *)(buffer.data()), buffer.size());
-    dataRaw.set_payload(payloadString);
-    data.set_pipe_id(pipeId);
+    dataRaw->set_payload(payloadString);
+    data->set_pipe_id(pipeId);
 
     //send message on socket
     std::basic_string<char> messageString = message.SerializeAsString();
     int result = send(clientSocket, messageString.c_str(), (int)messageString.size(), 0);
-    LOG_F(INFO, "sent data len=%d", buffer.size());
+    LOG_F(INFO, "sent data message len=%llu", messageString.size());
     if(result == SOCKET_ERROR) {
         LOG_F(ERROR, "failed to write to socket (error=%s)", strerror(errno));
         clientConnected = false;
@@ -182,7 +180,7 @@ bool SnpSinkNetworkTcp::sendCapabilitiesMessage() {
     //send message on socket
     std::basic_string<char> messageString = message.SerializeAsString();
     int result = send(clientSocket, messageString.c_str(), (int)messageString.size(), 0);
-    LOG_F(INFO, "sent data len=%d", buffer.size());
+    LOG_F(INFO, "sent capabilities data len=%llu", messageString.size());
     if(result == SOCKET_ERROR) {
         LOG_F(ERROR, "failed to write to socket (error=%s)", strerror(errno));
         clientConnected = false;

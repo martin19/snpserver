@@ -16,12 +16,7 @@ struct SnpComponentOptions {
 
 class SnpComponent {
 public:
-    explicit SnpComponent(const SnpComponentOptions &options, const std::string& name) {
-        LOG_F(INFO, "Initializing component %s", name.c_str());
-        this->name = name;
-        pipeId = options.pipeId;
-        running = false;
-    };
+    explicit SnpComponent(const SnpComponentOptions &options, const std::string& name);;
     virtual ~SnpComponent();
 
     bool isRunning() const;
@@ -43,28 +38,18 @@ public:
     void setTimestampEndMs(uint32_t timestampEndMs);
     SnpPipe *getOwner() const;
     void setOwner(SnpPipe *owner);
+    const std::vector<SnpPort *> &getInputPorts() const;
+    const std::vector<SnpPort *> &getOutputPorts() const;
+    const std::string &getName() const;
+    uint32_t getPipeId() const;
+    void setPipeId(uint32_t pipeId);
 protected:
     std::string name;
-public:
-    const std::string &getName() const;
 private:
     uint32_t pipeId;
-public:
-    uint32_t getPipeId() const;
-
-    void setPipeId(uint32_t pipeId);
-
-private:
     bool running;
     std::vector<SnpPort*> inputPorts;
     std::vector<SnpPort*> outputPorts;
-public:
-    const std::vector<SnpPort *> &getInputPorts() const;
-
-    const std::vector<SnpPort *> &getOutputPorts() const;
-
-private:
-
     uint32_t timestampStartMs;
     uint32_t timestampEndMs;
     SnpPipe *owner;

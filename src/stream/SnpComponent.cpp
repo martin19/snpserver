@@ -19,6 +19,13 @@ void SnpComponent::addOutputPort(SnpPort *port) {
     outputPorts.push_back(port);
 }
 
+SnpComponent::SnpComponent(const SnpComponentOptions &options, const std::string &name) {
+    LOG_F(INFO, "Initializing component %s", name.c_str());
+    this->name = name;
+    pipeId = options.pipeId;
+    running = false;
+}
+
 SnpComponent::~SnpComponent() {
     for(auto & pPort : inputPorts) {
         delete pPort;

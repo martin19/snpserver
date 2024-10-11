@@ -19,53 +19,53 @@
 #ifdef HAVE_LIBWEBSOCKETS
 #include <stream/network/SnpSinkNetworkWebsocket.h>
 #endif //HAVE_LIBWEBSOCKETS
-#include <stream/network/SnpSinkNetworkTcp.h>
-#include <stream/network/SnpSourceNetworkTcp.h>
 #include <stream/video/SnpEncoderOpenH264.h>
 #include <stream/video/SnpDecoderOpenH264.h>
 #include "SnpPipeFactory.h"
+#include "util/PropertyUtil.h"
 
-std::vector<SnpPipe*>* SnpPipeFactory::createPipes(PipeMap* pipeMap) {
-    auto pipes = new std::vector<SnpPipe*>();
-    for (const auto &pipe: *pipeMap) {
+
+std::vector<SnpPipe*> SnpPipeFactory::createPipes(PipeMap& pipeMap) {
+    std::vector<SnpPipe*> pipes;
+    for (const auto &pipe: pipeMap) {
         uint32_t pipeId = pipe.first;
-        SnpPipe* snpPipe = createPipe(pipeId, &pipe.second);
-        pipes->push_back(snpPipe);
+        SnpPipe* snpPipe = createPipe(pipeId, pipe.second);
+        pipes.push_back(snpPipe);
     }
     return pipes;
 }
 
-SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Component *> *components) {
+SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Component *>& components) {
     SnpPipeOptions videoPipeOptions = {};
     auto pipe = new SnpPipe(videoPipeOptions, pipeId);
-    for (const auto &component: *components) {
+    for (const auto &component: components) {
         SnpComponent* snpComponent = nullptr;
         switch(component->componenttype()) {
             case snp::COMPONENT_CAPTURE_VIDEO_DUMMY: {
                 SnpSourceDummyOptions options;
-                options.width = SnpConfig::getPropertyUint(component, "width", 1920);
-                options.height = SnpConfig::getPropertyUint(component, "height", 1080);
-                options.fps = SnpConfig::getPropertyDouble(component, "fps", 30.0);
+                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
+                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
+                options.fps = PropertyUtil::getPropertyDouble(component, "fps", 30.0);
                 snpComponent = new SnpSourceDummy(options);
             } break;
             case snp::COMPONENT_ENCODER_OPENH264: {
                 SnpEncoderOpenH264Options options;
-                options.width = SnpConfig::getPropertyUint(component, "width", 1920);
-                options.height = SnpConfig::getPropertyUint(component, "height", 1080);
-                options.qp = SnpConfig::getPropertyUint(component, "qp", 30);
+                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
+                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
+                options.qp = PropertyUtil::getPropertyUint(component, "qp", 30);
                 snpComponent = new SnpEncoderOpenH264(options);
             } break;
             case snp::COMPONENT_DECODER_OPENH264: {
                 SnpDecoderOpenH264Options options = {};
-                options.width = SnpConfig::getPropertyUint(component, "width", 1920);
-                options.height = SnpConfig::getPropertyUint(component, "height", 1080);
-                options.qp = SnpConfig::getPropertyUint(component, "qp", 30);
+                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
+                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
+                options.qp = PropertyUtil::getPropertyUint(component, "qp", 30);
                 snpComponent = new SnpDecoderOpenH264(options);
             } break;
             case snp::COMPONENT_OUTPUT_VIDEO_DISPLAY: {
                 SnpSinkDisplayOptions options = {};
-                options.width = SnpConfig::getPropertyUint(component, "width", 1920);
-                options.height = SnpConfig::getPropertyUint(component, "height", 1080);
+                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
+                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
                 snpComponent = new SnpSinkDisplay(options);
             } break;
             case snp::COMPONENT_CAPTURE_VIDEO_DRM:
@@ -89,5 +89,6 @@ SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Comp
         snpComponent->setPipeId(pipeId);
         pipe->addComponentEnd(snpComponent);
     }
+    return pipe;
 }
 

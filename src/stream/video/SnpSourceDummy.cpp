@@ -1,7 +1,6 @@
 #include "SnpSourceDummy.h"
 #include "math.h"
 #include <algorithm>
-#include <QtGui>
 
 #ifdef _WIN32
 #include "windows.h"

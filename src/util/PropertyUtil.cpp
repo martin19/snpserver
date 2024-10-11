@@ -32,6 +32,42 @@ void PropertyUtil::copySnpPropertyToProtocolProperty(snp::Property& dst, SnpProp
     }
 }
 
+uint32_t PropertyUtil::getPropertyUint(snp::Component* component, std::string name, uint32_t defaultValue) {
+    for(int i = 0; i < component->property_size(); i++) {
+        if(component->property(i).name() == name && component->property(i).has_value_uint32()) {
+            return component->property(i).value_uint32().value();
+        }
+    }
+    return defaultValue;
+}
+
+bool PropertyUtil::getPropertyBool(snp::Component* component, std::string name, bool defaultValue) {
+    for(int i = 0; i < component->property_size(); i++) {
+        if(component->property(i).name() == name && component->property(i).has_value_bool()) {
+            return component->property(i).value_bool().value();
+        }
+    }
+    return defaultValue;
+}
+
+double PropertyUtil::getPropertyDouble(snp::Component* component, std::string name, double defaultValue) {
+    for(int i = 0; i < component->property_size(); i++) {
+        if(component->property(i).name() == name && component->property(i).has_value_double()) {
+            return component->property(i).value_double().value();
+        }
+    }
+    return defaultValue;
+}
+
+std::string PropertyUtil::getPropertyString(snp::Component* component, std::string name, std::string defaultValue) {
+    for(int i = 0; i < component->property_size(); i++) {
+        if(component->property(i).name() == name && component->property(i).has_value_string()) {
+            return component->property(i).value_string().value();
+        }
+    }
+    return defaultValue;
+}
+
 //void SnpProperty::fromProperty(snp::Property *parameter) {
 //    //TODO:
 //}

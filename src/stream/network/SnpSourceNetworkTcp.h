@@ -13,7 +13,6 @@ typedef void (*HandleCapabilitiesMessageCb)(snp::Message* message);
 struct SnpSourceNetworkTcpOptions : public SnpComponentOptions {
     std::string host;
     uint16_t port;
-    std::vector<PortStreamType> portStreamTypes;
     HandleCapabilitiesMessageCb handleCapabilitiesMessageCb;
 };
 

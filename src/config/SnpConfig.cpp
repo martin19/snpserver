@@ -15,7 +15,7 @@ void SnpConfig::read(const std::string& filename) {
     readPipesSection(&settings, remotePipes, "remote");
 }
 
-void SnpConfig::readPipesSection(QSettings* settings, PipeMap *pipes, const std::string& section) {
+void SnpConfig::readPipesSection(QSettings* settings, PipeMap& pipes, const std::string& section) {
 
     QString s = QString::fromStdString(section);
 
@@ -25,15 +25,14 @@ void SnpConfig::readPipesSection(QSettings* settings, PipeMap *pipes, const std:
             break;
         }
 
+        std::vector<snp::Component*> pipe;
+
         //read all components for this pipe
         for(int j = 0; j < 256; j++) {
             QString componentKey = QString("%1/pipe/%2/component/%3").arg(s, QString::number(i), QString::number(j));
             if(!settings->contains(componentKey)) {
                 break;
             }
-
-            std::vector<snp::Component*> pipe;
-            pipes->insert(std::pair(i, pipe));
 
             int32_t componentType = settings->value(componentKey, -1).toInt();
             auto c = new snp::Component();
@@ -65,50 +64,16 @@ void SnpConfig::readPipesSection(QSettings* settings, PipeMap *pipes, const std:
                 }
             }
         }
+
+        pipes.insert(std::make_pair(i, pipe));
     }
 }
 
-PipeMap* SnpConfig::getLocalPipes() {
+PipeMap& SnpConfig::getLocalPipes() {
     return localPipes;
 }
 
-PipeMap* SnpConfig::getRemotePipes() {
+PipeMap& SnpConfig::getRemotePipes() {
     return remotePipes;
-}
-
-uint32_t SnpConfig::getPropertyUint(snp::Component* component, std::string name, uint32_t defaultValue) {
-    for(int i = 0; i < component->property_size(); i++) {
-        if(component->property(i).name() == name && component->property(i).has_value_uint32()) {
-            return component->property(i).value_uint32().value();
-        }
-    }
-    return defaultValue;
-}
-
-bool SnpConfig::getPropertyBool(snp::Component* component, std::string name, bool defaultValue) {
-    for(int i = 0; i < component->property_size(); i++) {
-        if(component->property(i).name() == name && component->property(i).has_value_bool()) {
-            return component->property(i).value_bool().value();
-        }
-    }
-    return defaultValue;
-}
-
-double SnpConfig::getPropertyDouble(snp::Component* component, std::string name, double defaultValue) {
-    for(int i = 0; i < component->property_size(); i++) {
-        if(component->property(i).name() == name && component->property(i).has_value_double()) {
-            return component->property(i).value_double().value();
-        }
-    }
-    return defaultValue;
-}
-
-std::string SnpConfig::getPropertyString(snp::Component* component, std::string name, std::string defaultValue) {
-    for(int i = 0; i < component->property_size(); i++) {
-        if(component->property(i).name() == name && component->property(i).has_value_string()) {
-            return component->property(i).value_string().value();
-        }
-    }
-    return defaultValue;
 }
 

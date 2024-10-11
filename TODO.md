@@ -42,7 +42,8 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
   * 🟦 TODO: implement setting up a pipe via client 
     * 🟦 TODO: send remote config to server and setup pipe using createPipes  
   * 🟦 TODO: probably start/stop pipe localComponents in reverse data flow direction
-
+  * 
+  * think about using c++ smart pointers, to avoid memory leaks, e.g. pipe factory.  
 
   * 🟦 TODO: compile and make run release mode with optimizations 
   * 🟦 TODO: think about porttype (both, copy, mmap) - the idea is good, is the implementation 

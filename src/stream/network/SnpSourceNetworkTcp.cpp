@@ -10,10 +10,7 @@ SnpSourceNetworkTcp::SnpSourceNetworkTcp(const SnpSourceNetworkTcpOptions &optio
     port = options.port;
     handleCapabilitiesMessageCb = options.handleCapabilitiesMessageCb;
     connected = false;
-
-    for (const auto &portStreamType: options.portStreamTypes) {
-        addOutputPort(new SnpPort(PORT_TYPE_BOTH, portStreamType));
-    }
+    addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_GENERIC));
 }
 
 SnpSourceNetworkTcp::~SnpSourceNetworkTcp() {
@@ -94,16 +91,10 @@ bool SnpSourceNetworkTcp::dispatch() {
     if(!result) return false;
     switch(message.type()) {
         case snp::MESSAGE_TYPE_DATA: {
-            //dispatch data to pipe(s) according to message pipe id
-            uint32_t pipeId = message.data().pipe_id();
-            for (const auto &outputPort: getOutputPorts()) {
-                if(outputPort->getOwner()->getPipeId() == pipeId) {
-                    outputPort->onData(message.data().pipe_id(),
-                                       (const uint8_t*)message.data().dataraw().payload().c_str(),
-                                       message.data().dataraw().payload().size(),
-                                       true);
-                }
-            }
+            getOutputPort(0)->onData(message.data().pipe_id(),
+               (const uint8_t*)message.data().dataraw().payload().c_str(),
+               message.data().dataraw().payload().size(),
+               true);
             return true;
         }
         case snp::MESSAGE_TYPE_CAPABILITIES:
@@ -121,7 +112,7 @@ void SnpSourceNetworkTcp::destroySocket() const {
 }
 
 bool SnpSourceNetworkTcp::sendSetupMessage(SnpConfig *pConfig) {
-    for (const auto &pipe: *pConfig->getRemotePipes()) {
+    for (const auto &pipe: pConfig->getRemotePipes()) {
         uint32_t pipeId = pipe.first;
         std::vector<snp::Component*> components = pipe.second;
 
@@ -138,7 +129,7 @@ bool SnpSourceNetworkTcp::sendSetupMessage(SnpConfig *pConfig) {
         //send message on socket
         std::basic_string<char> messageString = message.SerializeAsString();
         int result = send(clientSocket, messageString.c_str(), (int)messageString.size(), 0);
-        LOG_F(INFO, "sent data len=%d", buffer.size());
+        LOG_F(INFO, "sent setup message len=%llu", messageString.size());
         if(result == SOCKET_ERROR) {
             LOG_F(ERROR, "failed to write to socket (error=%s)", strerror(errno));
             connected = false;

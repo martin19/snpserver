@@ -1,16 +1,12 @@
 #include <QApplication>
-#include <QPushButton>
 #include <QMainWindow>
 #include "gui/SnpCanvas.h"
 
 #include <iostream>
-#include <network/SnpWebsocket.h>
-#include "util/loguru.h"
 #include "stream/SnpPipeFactory.h"
 #include "stream/network/SnpSourceNetworkTcp.h"
 #include "stream/SnpPipe.h"
 #include "stream/output/SnpSinkDisplay.h"
-#include "stream/video/SnpSourceDummy.h"
 #include "stream/SnpComponentRegistry.h"
 #include "config/SnpConfig.h"
 
@@ -19,6 +15,7 @@ SnpPipe *videoPipe = nullptr;
 SnpCanvas *canvas = nullptr;
 SnpConfig* config;
 SnpComponentRegistry* componentRegistry;
+SnpSourceNetworkTcp* sourceNetworkTcp;
 
 void handleCapabilitiesMessageCb(snp::Message* message) {
     componentRegistry->registerRemoteComponents(message);
@@ -34,6 +31,8 @@ void handleCapabilitiesMessageCb(snp::Message* message) {
     for (const auto &component: remoteComponents) {
         std::cout << component->componenttype() << std::endl;
     }
+
+    sourceNetworkTcp->sendSetupMessage(config);
 }
 
 int runClient() {
@@ -41,34 +40,30 @@ int runClient() {
     config = new SnpConfig(R"(P:\snp\snpserver\snp.ini)");
 
     //setup local pipes
-    std::vector<SnpPipe*>* localPipes = SnpPipeFactory::createPipes(config, "local");
+    std::vector<SnpPipe*> localPipes = SnpPipeFactory::createPipes(config->getLocalPipes());
 
     //add network source component
     SnpSourceNetworkTcpOptions sourceOptions = {};
     sourceOptions.port = 9000;
     sourceOptions.host = "127.0.0.1";
     sourceOptions.handleCapabilitiesMessageCb = handleCapabilitiesMessageCb;
-    sourceOptions.portStreamTypes = std::vector<PortStreamType>();
-    for (const auto &pipe: *localPipes) {
-        SnpComponent* first = *pipe->getComponents().begin();
-        sourceOptions.portStreamTypes.push_back(first->getInputPort(0)->getStreamType());
-    }
-    auto *source = new SnpSourceNetworkTcp(sourceOptions);
-    for (const auto &pipe: *localPipes) {
-        pipe->addComponentBegin(source);
+    sourceNetworkTcp = new SnpSourceNetworkTcp(sourceOptions);
+    for (const auto &pipe: localPipes) {
+        if(!pipe->addComponentBegin(sourceNetworkTcp)) {
+            return 1;
+        }
         pipe->start();
     }
 
     //paint on every frame
-    auto* sinkDisplay = dynamic_cast<SnpSinkDisplay *>(videoPipe->getComponents().back());
+    auto* sinkDisplay = dynamic_cast<SnpSinkDisplay *>(localPipes[0]->getComponents().back());
     sinkDisplay->getInputPort(0)->setOnDataCb([](auto pipeId, auto && data, auto && len, auto && PH3) {
         QImage* qImage = canvas->getQImage();
         memcpy(qImage->bits(), data, len);
         canvas->update();
     });
 
-    source->sendSetupMessage(config);
-    //TODO: send remote config to server and setup pipe using createPipes
+    return 0;
 }
 
 int main(int argc, char *argv[]) {

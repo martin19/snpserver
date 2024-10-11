@@ -139,7 +139,6 @@ add_custom_target(${PROTO_TARGET_NAME} DEPENDS snappy-protobuf-sources)
 add_executable(snpserver
     src/snpserver.cpp
     src/network/snp.pb.cc
-    src/config/SnpConfig.cpp
     src/util/loguru.cpp
     src/util/TimeUtil.cpp
     src/util/VideoUtil.cpp
@@ -157,7 +156,7 @@ add_executable(snpserver
     # input stream
     src/stream/input/keymap_atset1_linux.c
     # network sink/source
-    src/stream/network/SnpSourceNetworkTcp.cpp
+    #src/stream/network/SnpSourceNetworkTcp.cpp
     src/stream/network/SnpSinkNetworkTcp.cpp
     # file sink/source
     src/stream/file/SnpSinkFile.cpp

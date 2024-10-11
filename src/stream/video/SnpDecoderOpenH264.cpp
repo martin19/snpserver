@@ -90,7 +90,7 @@ error:
 bool SnpDecoderOpenH264::openH264DecoderDecode(const uint8_t *srcBuffer, int srcLen) {
     uint32_t width = getProperty("width")->getValueUint32();
     uint32_t height = getProperty("height")->getValueUint32();
-    uint32_t bpp = getProperty("qp")->getValueUint32();
+    uint32_t bpp = 4;
 
     bool result = true;
     int res;

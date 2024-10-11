@@ -2,6 +2,7 @@
 #define SNPSERVER_SNPPORT_H
 
 #include <functional>
+#include <map>
 
 class SnpComponent;
 
@@ -44,38 +45,29 @@ public:
     virtual ~SnpPort();
 
     void init();
+    static bool connect(uint32_t pipeId, SnpPort *sourcePort, SnpPort *targetPort);
+    static bool canConnect(SnpPort *sourcePort, SnpPort *targetPort);
 
-    SnpPort *targetPort;
-    SnpPort *sourcePort;
+    void onData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete);
+    void setOnDataCb(std::function<void(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete)> cb);
+    PortBufferType getBufferType() const;
+    PortStreamType getStreamType() const;
 
-    static bool connect(SnpPort *sourcePort, SnpPort *targetPort);
-
-    void onData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete) {
-        targetPort->onDataCb(pipeId, data, len, complete);
-    }
-
-    void setOnDataCb(std::function<void(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete)> cb) {
-        onDataCb = cb;
-    }
-
+private:
+    std::map<uint32_t, SnpPort*> sourcePorts;
+    std::map<uint32_t, SnpPort*> targetPorts;
+public:
+    std::map<uint32_t, SnpPort *> &getSourcePorts();
+    std::map<uint32_t, SnpPort *> &getTargetPorts();
     //zero copy buffer info
     std::string device;
     int deviceFd;
     uint8_t *dmaBuf;
     int dmaBufFd;
-
     //normal buffer info
     uint8_t *buffer;
-
-private:
     PortBufferType bufferType;
     PortStreamType streamType;
-public:
-    PortBufferType getBufferType() const;
-
-    PortStreamType getStreamType() const;
-
-private:
     std::function<void(uint32_t pipeId, const uint8_t *data, int len, bool complete)> onDataCb = nullptr;
     SnpComponent *owner;
 };
