@@ -3,6 +3,9 @@
 #include "stream/SnpPipe.h"
 #include "network/snp.pb.h"
 #include "stream/SnpPipeFactory.h"
+#include "stream/video/SnpEncoderAmfH264.h"
+#include "stream/video/SnpSourceDummy.h"
+#include "stream/file/SnpSinkFile.h"
 
 SnpSinkNetworkTcp* snpSinkNetworkTcp;
 PipeMap pipeMap;
@@ -40,25 +43,41 @@ int main() {
     return 0;
 }
 
-//s.run();
+int main2() {
 
-//    s.run();
-//    while(1) {
-//        for(auto& it : s.getClients()) {
-//            std::string s = std::string("Hello Client");
-//            it.second.send((uint8_t*)s.data(), s.size());
-//        }
-//        sleep(10);
-//    }
 
-//    VideoCaptureModesettingOptions options = {};
-//    options.width = 100;
-//    options.height = 100;
-//    options.screenNumber = 10;
-//
-//    auto *videoCapture = new VideoCaptureModesetting(&options);
-//    std::cout << "derived options:" << std::endl;
-//    videoCapture->printOptions();
-//
-//    std::cout << "base options:" << std::endl;
-//    videoCapture->VideoCapture::printOptions();
+    SnpPipeOptions pipeOptions = {};
+    pipeOptions.name = "amd";
+    SnpPipe pipe(pipeOptions, 0);
+
+    SnpSourceDummyOptions sourceDummyOptions = {};
+    sourceDummyOptions.width = 400;
+    sourceDummyOptions.height = 300;
+    sourceDummyOptions.fps = 30.0;
+    SnpSourceDummy snpSourceDummy(sourceDummyOptions);
+
+    SnpEncoderAmfH264Options amfH264Options = {};
+    amfH264Options.width = 400;
+    amfH264Options.height = 300;
+    amfH264Options.fps = 30.0;
+    SnpEncoderAmfH264 snpEncoderAmfH264(amfH264Options);
+
+    SnpSinkFileOptions sinkFileOptions = {};
+    sinkFileOptions.fileName = "test.h264";
+    SnpSinkFile snpSinkFile(sinkFileOptions);
+
+    //TODO: every component needs a pipeId (verify this) maybe a constructor parameter is necessary
+    snpSourceDummy.setPipeId(0);
+    snpEncoderAmfH264.setPipeId(0);
+    snpSinkFile.setPipeId(0);
+    pipe.addComponentEnd(&snpSourceDummy);
+    pipe.addComponentEnd(&snpEncoderAmfH264);
+    pipe.addComponentEnd(&snpSinkFile);
+
+    pipe.start();
+
+    while(TRUE) {
+        Sleep(100);
+    }
+    return 0;
+}

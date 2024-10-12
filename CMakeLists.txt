@@ -42,6 +42,19 @@ if(OPENH264_FOUND)
     )
 endif(OPENH264_FOUND)
 
+include_directories(
+    extern/amf
+)
+set(AMF_SOURCES
+        extern/amf/public/common/AMFFactory.cpp
+        extern/amf/public/common/Thread.cpp
+#        extern/amf/public/common/TraceAdapter.cpp
+        extern/amf/public/common/Linux/ThreadLinux.cpp
+        extern/amf/public/common/Windows/ThreadWindows.cpp
+#extern/amf/public/common/AMFSTL.cpp
+        src/stream/video/SnpEncoderAmfH264.cpp
+)
+
 find_package(VA)
 if(VA_FOUND)
     add_definitions(-DHAVE_LIBVA)
@@ -134,7 +147,7 @@ add_custom_command(
 add_custom_target(${PROTO_TARGET_NAME} DEPENDS snappy-protobuf-sources)
 
 ###############################################################################
-# client app
+# server app
 ###############################################################################
 add_executable(snpserver
     src/snpserver.cpp
@@ -156,7 +169,6 @@ add_executable(snpserver
     # input stream
     src/stream/input/keymap_atset1_linux.c
     # network sink/source
-    #src/stream/network/SnpSourceNetworkTcp.cpp
     src/stream/network/SnpSinkNetworkTcp.cpp
     # file sink/source
     src/stream/file/SnpSinkFile.cpp
@@ -165,6 +177,7 @@ add_executable(snpserver
     ${GL_SOURCES}
     ${MMALH264_SOURCES}
     ${OPENH264_SOURCES}
+    ${AMF_SOURCES}
     ${VA_SOURCES}
 )
 
@@ -194,12 +207,14 @@ endif(OPENGL_FOUND)
 
 if(WIN32)
    set(SOCKET_LIBRARIES wsock32 ws2_32)
+   set(WIN32_LIBRARIES winmm)
 endif(WIN32)
 
 # server app
 target_link_libraries(snpserver
     ${OPENH264_LIBRARIES}
     ${SOCKET_LIBRARIES}
+    ${WIN32_LIBRARIES}
     pthread
     libprotobuf
     #dl
@@ -241,13 +256,15 @@ add_executable(snpclient
     ${GL_SOURCES}
     ${MMALH264_SOURCES}
     ${OPENH264_SOURCES}
-    ${VA_SOURCES})
+    ${AMF_SOURCES}
+    ${VA_SOURCES} src/stream/video/SnpEncoderAmfH264.cpp src/stream/video/SnpEncoderAmfH264.h)
 target_link_libraries(snpclient
     Qt::Core
     Qt::Gui
     Qt::Widgets
     ${OPENH264_LIBRARIES}
     ${SOCKET_LIBRARIES}
+    ${WIN32_LIBRARIES}
     pthread
     libprotobuf
 )
