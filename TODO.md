@@ -38,20 +38,17 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
   * ✅ DONE: rename protocol snappyv1 -> snp
   * ✅ DONE: connect components in pipe and connect to source pipe (network, local file etc.)
     * ✅ DONE: verify component "compatibility" at runtime
+  * ✅ DONE: implement setting up a pipe via client 
+    * ✅ DONE: send remote config to server and setup pipe using createPipes  
+  * ✅ DONE: probably start/stop pipe localComponents in reverse data flow direction   
 
-  * 🟦 TODO: implement setting up a pipe via client 
-    * 🟦 TODO: send remote config to server and setup pipe using createPipes  
-  * 🟦 TODO: probably start/stop pipe localComponents in reverse data flow direction
-  * 
-  * think about using c++ smart pointers, to avoid memory leaks, e.g. pipe factory.  
-
-  * 🟦 TODO: compile and make run release mode with optimizations 
-  * 🟦 TODO: think about porttype (both, copy, mmap) - the idea is good, is the implementation 
-  * 🟦 TODO: fix temporarily deactivated websocket sink (marked usages with "TODO: websocket") 
-
-### ✨ MS2:
+### ✨ MS2: hw accelerated video codecs (12.10.2024)
 * implement more codecs
   * 🟦 TODO: implement AMF (advanced media framework) encoder/decoder (https://github.com/GPUOpen-LibrariesAndSDKs/AMF/wiki/Guide-for-Video-CODEC-Encoder-App-Developers)
   * 🟦 TODO: implement VAAPI (intel) encoder/decoder
+  * 🟦 TODO: consider using c++ smart pointers, to avoid memory leaks, e.g. pipe factory.
+  * 🟦 TODO: compile and make run release mode with optimizations
+  * 🟦 TODO: think about porttype (both, copy, mmap) - the idea is good, is the implementation
+  * 🟦 TODO: fix temporarily deactivated websocket sink (marked usages with "TODO: websocket")
 
 🔲✅❎❌🟩
