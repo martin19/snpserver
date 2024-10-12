@@ -70,6 +70,7 @@ bool SnpEncoderAmfH264::start() {
     }
 
     //TODO: dump a warning if parameter could not be set
+    encoder->SetProperty(AMF_VIDEO_ENCODER_USAGE, AMF_VIDEO_ENCODER_USAGE_ULTRA_LOW_LATENCY);
     encoder->SetProperty(AMF_VIDEO_ENCODER_B_PIC_PATTERN, 0);
     encoder->SetProperty(AMF_VIDEO_ENCODER_QUALITY_PRESET, AMF_VIDEO_ENCODER_QUALITY_PRESET_SPEED);
     encoder->SetProperty(AMF_VIDEO_ENCODER_TARGET_BITRATE, 10000000);
@@ -115,10 +116,12 @@ void SnpEncoderAmfH264::onInputData(uint32_t pipeId, const uint8_t *data, uint32
     fillRGBASurface(surfaceIn, (uint8_t *) data);
     res = encoder->SubmitInput(surfaceIn);
     if(res == AMF_OK) {
-        LOG_F(INFO, "SubmitInput ok.");
+        LOG_F(INFO, "SubmitInput AMF_OK");
     } else if(res == AMF_NEED_MORE_INPUT) {
+        LOG_F(INFO, "SubmitInput AMF_NEED_MORE_INPUT");
         // handle full queue, do nothing
     } else if(res == AMF_INPUT_FULL || res == AMF_DECODER_NO_FREE_SURFACES) {
+        LOG_F(INFO, "SubmitInput AMF_INPUT_FULL || AMF_DECODER_NO_FREE_SURFACES");
         //amf_sleep(1); // input queue is full: wait, poll and submit again
         //if input queue is full, drop the frame for now.
     } else {

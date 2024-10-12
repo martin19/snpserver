@@ -44,11 +44,12 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
 
 ### ✨ MS2: hw accelerated video codecs (12.10.2024)
 * implement more codecs
-  * 🟦 TODO: implement AMF (advanced media framework) encoder/decoder (https://github.com/GPUOpen-LibrariesAndSDKs/AMF/wiki/Guide-for-Video-CODEC-Encoder-App-Developers)
+  * ✅ DONE: implement AMF (advanced media framework) encoder/decoder (https://github.com/GPUOpen-LibrariesAndSDKs/AMF/wiki/Guide-for-Video-CODEC-Encoder-App-Developers)
+  * 🟦 TODO: optimize local experiment for stable 1920*1080@60fps
   * 🟦 TODO: implement VAAPI (intel) encoder/decoder
   * 🟦 TODO: consider using c++ smart pointers, to avoid memory leaks, e.g. pipe factory.
   * 🟦 TODO: compile and make run release mode with optimizations
   * 🟦 TODO: think about porttype (both, copy, mmap) - the idea is good, is the implementation
   * 🟦 TODO: fix temporarily deactivated websocket sink (marked usages with "TODO: websocket")
-
+ 
 🔲✅❎❌🟩

@@ -94,6 +94,7 @@ void SnpSourceDummy::initBoxes(int boxWidth, int boxHeight) {
 }
 
 void SnpSourceDummy::renderBoxes() {
+    int vel = 5;
     uint32_t width = getProperty("width")->getValueUint32();
     uint32_t height = getProperty("height")->getValueUint32();
 
@@ -116,16 +117,16 @@ void SnpSourceDummy::renderBoxes() {
         }
 
         if(box[i].x >= width - w2) {
-            box[i].dx = -1;
+            box[i].dx = -vel;
         }
         if(box[i].x <= w2) {
-            box[i].dx = +1;
+            box[i].dx = +vel;
         }
         if(box[i].y >= height - h2) {
-            box[i].dy = -1;
+            box[i].dy = -vel;
         }
         if(box[i].y <= h2) {
-            box[i].dy = +1;
+            box[i].dy = +vel;
         }
         box[i].x += box[i].dx;
         box[i].y += box[i].dy;

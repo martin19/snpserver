@@ -181,6 +181,13 @@ add_executable(snpserver
     ${VA_SOURCES}
 )
 
+target_compile_options(
+    snpserver
+    PUBLIC
+    $<$<CONFIG:Debug>:-g>        # Add debugging symbols in Debug mode
+    $<$<CONFIG:Release>:-O3>     # Add optimization in Release mode
+)
+
 if(VA_FOUND)
     target_link_libraries(snpserver ${VA_LIBRARIES})
 endif(VA_FOUND)
@@ -267,6 +274,13 @@ target_link_libraries(snpclient
     ${WIN32_LIBRARIES}
     pthread
     libprotobuf
+)
+
+target_compile_options(
+        snpclient
+        PUBLIC
+        $<$<CONFIG:Debug>:-g>        # Add debugging symbols in Debug mode
+        $<$<CONFIG:Release>:-O3>     # Add optimization in Release mode
 )
 
 if (WIN32)
