@@ -22,16 +22,19 @@ private:
     void onInputData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete);
 
     bool decoderInit();
+    void decode(const uint8_t *data, uint32_t len);
     void decoderDestroy();
+
+//    bool converterInit();
+//    void convert(amf::AMFSurfacePtr surfaceIn, amf::AMFSurfacePtr surfaceOut);
+//    void converterDestroy();
 
     uint32_t width;
     uint32_t height;
-    amf::AMFContextPtr      context;
-    amf::AMFComponentPtr    decoder;
-//  amf::AMFDataStreamPtr   datastream;
-//  BitStreamParserPtr      parser;
+    amf::AMFContextPtr context;
+    amf::AMFComponentPtr decoder;
+    amf::AMFComponentPtr converter;
     amf::AMFBufferPtr amfInputBuffer;
-//    uint8_t *yuvBuffer[3];
     uint8_t *rgbaBuffer;
 };
 
