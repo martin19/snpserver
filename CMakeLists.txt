@@ -46,13 +46,12 @@ include_directories(
     extern/amf
 )
 set(AMF_SOURCES
-        extern/amf/public/common/AMFFactory.cpp
-        extern/amf/public/common/Thread.cpp
-#        extern/amf/public/common/TraceAdapter.cpp
-        extern/amf/public/common/Linux/ThreadLinux.cpp
-        extern/amf/public/common/Windows/ThreadWindows.cpp
-#extern/amf/public/common/AMFSTL.cpp
-        src/stream/video/SnpEncoderAmfH264.cpp
+    extern/amf/public/common/AMFFactory.cpp
+    extern/amf/public/common/Thread.cpp
+    extern/amf/public/common/Linux/ThreadLinux.cpp
+    extern/amf/public/common/Windows/ThreadWindows.cpp
+    src/stream/video/SnpEncoderAmfH264.cpp
+    src/stream/video/SnpDecoderAmfH264.cpp
 )
 
 find_package(VA)
@@ -264,7 +263,7 @@ add_executable(snpclient
     ${MMALH264_SOURCES}
     ${OPENH264_SOURCES}
     ${AMF_SOURCES}
-    ${VA_SOURCES} src/stream/video/SnpEncoderAmfH264.cpp src/stream/video/SnpEncoderAmfH264.h)
+    ${VA_SOURCES} src/stream/video/SnpEncoderAmfH264.cpp src/stream/video/SnpEncoderAmfH264.h src/stream/video/SnpDecoderAmfH264.cpp src/stream/video/SnpDecoderAmfH264.h)
 target_link_libraries(snpclient
     Qt::Core
     Qt::Gui

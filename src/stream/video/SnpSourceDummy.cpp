@@ -15,6 +15,8 @@ SnpSourceDummy::SnpSourceDummy(const SnpSourceDummyOptions &options) : SnpCompon
     addProperty(new SnpProperty("fps", options.fps));
     addProperty(new SnpProperty("width", options.width));
     addProperty(new SnpProperty("height", options.height));
+    addProperty(new SnpProperty("boxCount", options.boxCount));
+    addProperty(new SnpProperty("boxSpeed", options.boxSpeed));
 
     framesRendered = 0;
     frameBuffer = (uint8_t*)calloc(options.width*options.height*4, 1);
@@ -69,16 +71,12 @@ void SnpSourceDummy::renderFrame() {
     }
 }
 
-int boxPosX[3];
-int boxPosY[3];
-int boxDx[3];
-int boxDy[3];
-
 void SnpSourceDummy::initBoxes(int boxWidth, int boxHeight) {
     uint32_t width = getProperty("width")->getValueUint32();
     uint32_t height = getProperty("height")->getValueUint32();
+    uint32_t boxCount = getProperty("boxCount")->getValueUint32();
 
-    for(int i = 0; i < 3; i++) {
+    for(int i = 0; i < boxCount; i++) {
         box[i].dx = 1;
         box[i].dy = 1;
         float r1 = (float)rand()/(float)RAND_MAX;
@@ -94,12 +92,13 @@ void SnpSourceDummy::initBoxes(int boxWidth, int boxHeight) {
 }
 
 void SnpSourceDummy::renderBoxes() {
-    int vel = 5;
     uint32_t width = getProperty("width")->getValueUint32();
     uint32_t height = getProperty("height")->getValueUint32();
+    uint32_t boxCount = getProperty("boxCount")->getValueUint32();
+    uint32_t boxSpeed = getProperty("boxSpeed")->getValueUint32();
 
     uint8_t *dst = frameBuffer;
-    for(int i = 0; i < 3; i++) {
+    for(int i = 0; i < boxCount; i++) {
         int w2 = box[i].width/2;
         int h2 = box[i].height/2;
         uint32_t xstart = box[i].x - w2;
@@ -117,16 +116,16 @@ void SnpSourceDummy::renderBoxes() {
         }
 
         if(box[i].x >= width - w2) {
-            box[i].dx = -vel;
+            box[i].dx = -boxSpeed;
         }
         if(box[i].x <= w2) {
-            box[i].dx = +vel;
+            box[i].dx = +boxSpeed;
         }
         if(box[i].y >= height - h2) {
-            box[i].dy = -vel;
+            box[i].dy = -boxSpeed;
         }
         if(box[i].y <= h2) {
-            box[i].dy = +vel;
+            box[i].dy = +boxSpeed;
         }
         box[i].x += box[i].dx;
         box[i].y += box[i].dy;

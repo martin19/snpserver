@@ -98,9 +98,10 @@ bool SnpDecoderOpenH264::openH264DecoderDecode(const uint8_t *srcBuffer, int src
 
     LOG_F(INFO, "received data len=%d", srcLen);
     SBufferInfo sBufferInfo;
-    decoder->DecodeFrame2(srcBuffer, srcLen, yuvBuffer, &sBufferInfo);
+    //res = decoder->DecodeFrame2(srcBuffer, srcLen, yuvBuffer, &sBufferInfo);
+    res = decoder->DecodeFrameNoDelay(srcBuffer, srcLen, yuvBuffer, &sBufferInfo);
     if(sBufferInfo.iBufferStatus != 1) {
-        LOG_F(WARNING, "DecodeFrame2 failed.");
+        LOG_F(WARNING, "DecodeFrame2 failed. decoding-state=%d", res);
         return false;
     }
     LOG_F(INFO, "DecodeFrame2 success.");

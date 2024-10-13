@@ -111,3 +111,21 @@ void VideoUtil::yuv420ToRgba(uint8_t *rgb, unsigned char **yuv, int width, int h
         }
     }
 }
+
+void VideoUtil::nv12ToRgba(uint8_t *rgba, uint8_t *planeY, uint8_t *planeUV, int width, int height, int strideY, int strideUV) {
+    for(uint32_t y = 0; y < height; y++) {
+        uint8_t *lineY = planeY + y * strideY;
+        uint8_t *lineUV = planeUV + (y >> 1) * strideUV;
+        uint8_t *lineRGBA = rgba + y * width * 4;
+        for(uint32_t x = 0; x < width; x++) {
+            int C = lineY[x] - 16;
+            int D = lineUV[((x>>1)<<1)    ] - 128;
+            int E = lineUV[((x>>1)<<1) + 1] - 128;
+
+            *lineRGBA++ = std::clamp(( 298 * C           + 409 * E + 128) >> 8, 0, 255);
+            *lineRGBA++ = std::clamp(( 298 * C - 100 * D - 208 * E + 128) >> 8, 0, 255);
+            *lineRGBA++ = std::clamp(( 298 * C + 516 * D           + 128) >> 8, 0, 255);
+            *lineRGBA++ = 255;
+        }
+    }
+}

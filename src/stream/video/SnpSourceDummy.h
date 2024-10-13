@@ -13,6 +13,8 @@ struct SnpSourceDummyOptions : public SnpComponentOptions {
     double fps;
     uint32_t width;
     uint32_t height;
+    uint32_t boxCount;
+    uint32_t boxSpeed;
 };
 
 struct Box {
@@ -36,7 +38,7 @@ public:
 private:
     void renderFrame();
 
-    Box box[3];
+    Box box[1000];
     void initBoxes(int width, int height);
     void renderBoxes();
 

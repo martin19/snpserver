@@ -51,19 +51,19 @@ int main2() {
     SnpPipe pipe(pipeOptions, 0);
 
     SnpSourceDummyOptions sourceDummyOptions = {};
-    sourceDummyOptions.width = 400;
-    sourceDummyOptions.height = 300;
-    sourceDummyOptions.fps = 30.0;
+    sourceDummyOptions.width = 1920;
+    sourceDummyOptions.height = 1080;
+    sourceDummyOptions.fps = 60.0;
     SnpSourceDummy snpSourceDummy(sourceDummyOptions);
 
     SnpEncoderAmfH264Options amfH264Options = {};
-    amfH264Options.width = 400;
-    amfH264Options.height = 300;
-    amfH264Options.fps = 30.0;
+    amfH264Options.width = 1920;
+    amfH264Options.height = 1080;
+    amfH264Options.fps = 60.0;
     SnpEncoderAmfH264 snpEncoderAmfH264(amfH264Options);
 
     SnpSinkFileOptions sinkFileOptions = {};
-    sinkFileOptions.fileName = "test.h264";
+    sinkFileOptions.fileName = "test1.h264";
     SnpSinkFile snpSinkFile(sinkFileOptions);
 
     //TODO: every component needs a pipeId (verify this) maybe a constructor parameter is necessary
@@ -80,4 +80,7 @@ int main2() {
         Sleep(100);
     }
     return 0;
+
+    //play raw h264 file:
+    //vlc file:///p:/snp/snpserver/cmake-build-release-windows/test1.h264 --demux h264
 }

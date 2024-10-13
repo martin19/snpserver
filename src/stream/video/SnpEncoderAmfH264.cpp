@@ -70,10 +70,11 @@ bool SnpEncoderAmfH264::start() {
     }
 
     //TODO: dump a warning if parameter could not be set
-    encoder->SetProperty(AMF_VIDEO_ENCODER_USAGE, AMF_VIDEO_ENCODER_USAGE_ULTRA_LOW_LATENCY);
+//    encoder->SetProperty(AMF_VIDEO_ENCODER_USAGE, AMF_VIDEO_ENCODER_USAGE_ULTRA_LOW_LATENCY);
+    encoder->SetProperty(AMF_VIDEO_ENCODER_USAGE, AMF_VIDEO_ENCODER_USAGE_LOW_LATENCY);
     encoder->SetProperty(AMF_VIDEO_ENCODER_B_PIC_PATTERN, 0);
     encoder->SetProperty(AMF_VIDEO_ENCODER_QUALITY_PRESET, AMF_VIDEO_ENCODER_QUALITY_PRESET_SPEED);
-    encoder->SetProperty(AMF_VIDEO_ENCODER_TARGET_BITRATE, 10000000);
+    encoder->SetProperty(AMF_VIDEO_ENCODER_TARGET_BITRATE, 30000000);
     encoder->SetProperty(AMF_VIDEO_ENCODER_FRAMERATE, fps);
 //4kmode
 //    res = pEncoder->SetProperty(AMF_VIDEO_ENCODER_PROFILE, AMF_VIDEO_ENCODER_PROFILE_HIGH);

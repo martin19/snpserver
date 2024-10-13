@@ -24,6 +24,7 @@
 #include "SnpPipeFactory.h"
 #include "util/PropertyUtil.h"
 #include "stream/video/SnpEncoderAmfH264.h"
+#include "stream/video/SnpDecoderAmfH264.h"
 
 
 std::vector<SnpPipe*> SnpPipeFactory::createPipes(PipeMap& pipeMap) {
@@ -47,6 +48,8 @@ SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Comp
                 options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
                 options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
                 options.fps = PropertyUtil::getPropertyDouble(component, "fps", 30.0);
+                options.boxCount = PropertyUtil::getPropertyUint(component, "boxCount", 3);
+                options.boxSpeed = PropertyUtil::getPropertyUint(component, "boxSpeed", 1);
                 snpComponent = new SnpSourceDummy(options);
             } break;
             case snp::COMPONENT_ENCODER_OPENH264: {
@@ -75,7 +78,13 @@ SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Comp
                 options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
                 options.fps = PropertyUtil::getPropertyDouble(component, "fps", 30.0);
                 snpComponent = new SnpEncoderAmfH264(options);
-            }
+            } break;
+            case snp::COMPONENT_DECODER_AMD: {
+                SnpDecoderAmfH264Options options = {};
+                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
+                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
+                snpComponent = new SnpDecoderAmfH264(options);
+            } break;
             case snp::COMPONENT_CAPTURE_VIDEO_DRM:
             case snp::COMPONENT_CAPTURE_VIDEO_X11:
             case snp::COMPONENT_CAPTURE_VIDEO_WAYLAND:
@@ -88,7 +97,6 @@ SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Comp
             case snp::COMPONENT_OUTPUT_CURSOR_X11:
             case snp::COMPONENT_ENCODER_INTEL:
             case snp::COMPONENT_DECODER_INTEL:
-            case snp::COMPONENT_DECODER_AMD:
             case snp::ComponentType_INT_MIN_SENTINEL_DO_NOT_USE_:
             case snp::ComponentType_INT_MAX_SENTINEL_DO_NOT_USE_:
                 break;
