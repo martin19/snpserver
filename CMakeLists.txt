@@ -13,9 +13,10 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Mo
 set(protobuf_BUILD_TESTS OFF)
 add_subdirectory("extern/protobuf-3.21.12")
 
-# library: QT 6.7.2
-set(Qt6_DIR C:/Qt/6.7.2/mingw_64/lib/cmake/Qt6/)
-set(CMAKE_PREFIX_PATH C:/Qt/6.7.2/mingw_64/lib/cmake)
+# library: QT 6.7.2+
+set(QT_VERSION 6.8.0)
+set(Qt6_DIR C:/Qt/${QT_VERSION}/mingw_64/lib/cmake/Qt6/)
+set(CMAKE_PREFIX_PATH C:/Qt/${QT_VERSION}/mingw_64/lib/cmake)
 find_package(Qt6 COMPONENTS
     Core
     Gui

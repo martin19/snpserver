@@ -36,16 +36,26 @@ curl -L http://ciscobinary.openh264.org/libopenh264-2.1.1-linux64.6.so.bz2 | bzi
 sudo chmod 755 /usr/local/lib/libopenh264-2.1.1-linux64.so.6
 
 # download protobuf and copy to source folder
-curl -o ./extern/protobuf-3.21.12/protobuf-27.3.tar.gz https://github.com/protocolbuffers/protobuf/releases/download/v21.12/protobuf-21.12.tar.gz
+curl -o ./extern/protobuf-3.21.12/protobuf-cpp-3.21.12.tar.gz https://github.com/protocolbuffers/protobuf/releases/download/v21.12/protobuf-cpp-3.21.12.tar.gz
 cd ./extern/protobuf-3.21.12
-tar -xvzf protobuf-21.12.tar.gz
+tar -xvzf protobuf-cpp-3.21.12.tar.gz
 ```
 
 ### Build on Windows 7/10/11
-TODO
+TODO: clean up dependencies and installation procedure
+TODO: copy openh264 dll to executable path
+TODO: reference snp.ini at correct location
 
 #### Install dependencies
-TODO
+1. download qt 6.8 from `https://doc.qt.io/qt-6/windows.html` and install to `c:\qt`
+
+2. protobuf libraries
+```sh
+# download protobuf 3.21.12 and extract to `extern/protobuf-3.21.12
+curl -o ./extern/protobuf-3.21.12/protobuf-cpp-3.21.12.zip https://github.com/protocolbuffers/protobuf/releases/download/v21.12/protobuf-cpp-3.21.12.zip
+cd extern/protobuf-3.21.12
+unzip protobuf-cpp-3.21.12.zip
+```
 
 #### Common pitfalls
 
