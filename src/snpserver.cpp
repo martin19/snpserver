@@ -6,6 +6,7 @@
 #include "stream/video/SnpEncoderAmfH264.h"
 #include "stream/video/SnpSourceDummy.h"
 #include "stream/file/SnpSinkFile.h"
+#include "stream/video/SnpEncoderOpenH264.h"
 
 SnpSinkNetworkTcp* snpSinkNetworkTcp;
 PipeMap pipeMap;
@@ -62,8 +63,15 @@ int main2() {
     amfH264Options.fps = 60.0;
     SnpEncoderAmfH264 snpEncoderAmfH264(amfH264Options);
 
+//    SnpEncoderOpenH264Options openH264Options = {};
+//    openH264Options.width = 1920;
+//    openH264Options.height = 1080;
+//    openH264Options.qp = 10.0;
+//    SnpEncoderOpenH264 snpEncoderOpenH264(openH264Options);
+
+
     SnpSinkFileOptions sinkFileOptions = {};
-    sinkFileOptions.fileName = "test1.h264";
+    sinkFileOptions.fileName = "test1amfh264.h264";
     SnpSinkFile snpSinkFile(sinkFileOptions);
 
     //TODO: every component needs a pipeId (verify this) maybe a constructor parameter is necessary

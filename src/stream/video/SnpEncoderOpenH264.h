@@ -10,7 +10,7 @@
 struct SnpEncoderOpenH264Options : public SnpComponentOptions {
     uint32_t width;
     uint32_t height;
-    uint32_t bytesPerPixel;
+    double fps;
     uint32_t qp;
 };
 

@@ -45,14 +45,15 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
 ### ✨ MS2: hw accelerated video codecs (12.10.2024)
 * implement more codecs
   * ✅ DONE: implement AMF (advanced media framework) encoder/decoder (https://github.com/GPUOpen-LibrariesAndSDKs/AMF/wiki/Guide-for-Video-CODEC-Encoder-App-Developers)
-  * 🟦 TODO: optimize local experiment for stable 1920x1080@60fps  
-    * 🟦 TODO: openh264 doesn't seem to be able to decode 1920x1080@60 - implement frame skipping based on timestamps
-    * -> problem seems to be on decoder side, if intra period is set to 1 (only keyframes) the stream achieves
-    * around 40fps - if its value is higher decoder errors accumulate either a bug in snp code or in decoder
-    * -> implement amd decoder first and see if that works. 
-    * 
-    * 🟦 TODO: implement AMF decoder, **encoder** cpu usage is really low (while openh264 exeeds 50%)  
+  * ✅ DONE: optimize local experiment for stable 1920x1080@60fps  
+    * ✅ DONE: find problem with openh264, amf decoder cannot handle stream created by openh264 encoder  
+    * -> despite initializing with 1080 height openh264 encodes to 1088 height which amf decoder does not like.  
+  * ✅ DONE: implement AMF decoder, **encoder** cpu usage is really low (while openh264 exeeds 50%)  
+  
+
   * 🟦 TODO: implement VAAPI (intel) encoder/decoder
+
+
   * 🟦 TODO: consider using c++ smart pointers, to avoid memory leaks, e.g. pipe factory.
   * 🟦 TODO: compile and make run release mode with optimizations
   * 🟦 TODO: think about porttype (both, copy, mmap) - the idea is good, is the implementation

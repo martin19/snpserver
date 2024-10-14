@@ -28,6 +28,7 @@ SnpEncoderOpenH264::SnpEncoderOpenH264(const SnpEncoderOpenH264Options &options)
     addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_H264));
     addProperty(new SnpProperty("width", options.width));
     addProperty(new SnpProperty("height", options.height));
+    addProperty(new SnpProperty("fps", options.fps));
     addProperty(new SnpProperty("qp", options.qp));
 
     getInputPort(0)->setOnDataCb(std::bind(&SnpEncoderOpenH264::onInputData, this, std::placeholders::_1,
@@ -62,16 +63,18 @@ void SnpEncoderOpenH264::onInputData(uint32_t pipeId, const uint8_t *data, uint3
 
 bool SnpEncoderOpenH264::openH264EncoderInit() {
     bool result = true;
+
+    double fps = getProperty("fps")->getValueDouble();
     int res;
 
     SEncParamExt paramExt = {};
     paramExt.bEnableFrameSkip = true;
-    paramExt.uiIntraPeriod = 60;
+    paramExt.uiIntraPeriod = 2;
     paramExt.iNumRefFrame = 1;
-    paramExt.fMaxFrameRate = 60.0;
-    paramExt.iPicWidth = width;
-    paramExt.iPicHeight = height;
-    paramExt.iTargetBitrate = 10000000;
+    paramExt.fMaxFrameRate = (float)fps;
+    paramExt.iPicWidth = (int)width;
+    paramExt.iPicHeight = (int)height;
+    paramExt.iTargetBitrate = 30000000;
     paramExt.iMinQp = 5;
     paramExt.iMaxQp = 10;
     paramExt.iUsageType = SCREEN_CONTENT_REAL_TIME;
@@ -126,8 +129,7 @@ bool SnpEncoderOpenH264::openH264EncoderEncode(const uint8_t *framebuffer, uint3
     if(res == cmResultSuccess && info.eFrameType != videoFrameTypeSkip) {
         //output bitstream
         int iLayer;
-        for (iLayer=0; iLayer < info.iLayerNum; iLayer++)
-        {
+        for (iLayer=0; iLayer < info.iLayerNum; iLayer++) {
             SLayerBSInfo* pLayerBsInfo = &info.sLayerInfo[iLayer];
 
             int iLayerSize = 0;
@@ -137,7 +139,8 @@ bool SnpEncoderOpenH264::openH264EncoderEncode(const uint8_t *framebuffer, uint3
                 --iNalIdx;
             } while (iNalIdx >= 0);
 
-            outputPort->onData(getPipeId(), pLayerBsInfo->pBsBuf, iLayerSize, true);
+            bool complete = iLayer == info.iLayerNum-1;
+            outputPort->onData(getPipeId(), pLayerBsInfo->pBsBuf, iLayerSize, complete);
         }
     }
 

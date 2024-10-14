@@ -56,6 +56,7 @@ SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Comp
                 SnpEncoderOpenH264Options options;
                 options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
                 options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
+                options.fps = PropertyUtil::getPropertyDouble(component, "fps", 20.0);
                 options.qp = PropertyUtil::getPropertyUint(component, "qp", 30);
                 snpComponent = new SnpEncoderOpenH264(options);
             } break;
