@@ -54,9 +54,9 @@ bool SnpDecoderAmfH264::decoderInit() {
         return false;
     }
 
-    res = amf::AMFContext1Ptr(context)->InitDX9(NULL);
+    res = amf::AMFContext1Ptr(context)->InitDX11(NULL);
     if (res != AMF_OK) {
-        LOG_F(ERROR, "InitDX9(NULL) failed.");
+        LOG_F(ERROR, "InitDX11(NULL) failed.");
         return false;
     }
 
@@ -65,7 +65,7 @@ bool SnpDecoderAmfH264::decoderInit() {
         LOG_F(ERROR, "g_AMFFactory.GetFactory()->CreateComponent failed.");
     }
 
-    amf::AMF_SURFACE_FORMAT formatOut = amf::AMF_SURFACE_NV12;
+    amf::AMF_SURFACE_FORMAT formatOut = amf::AMF_SURFACE_RGBA;
 
 // our sample H264 parser provides decode order timestamps - change this depend on demuxer
 //  decoder->SetProperty(AMF_TIMESTAMP_MODE, amf_int64(AMF_TS_DECODE));
@@ -107,28 +107,29 @@ void SnpDecoderAmfH264::decode(const uint8_t *data, uint32_t len) {
         return;
     }
 
-//    amf::AMFSurfacePtr surfaceNv12(amfOutputDataPtr);
-//    amf::AMFSurfacePtr surfaceRGBA;
-//    convert(surfaceNv12, surfaceRGBA);
-//    amf::AMFPlane* rgbaPlane = surfaceRGBA->GetPlane(amf::AMF_PLANE_PACKED);
-//    res = amfOutputDataPtr->Convert(amf::AMF_MEMORY_HOST);
-//    if(res != AMF_OK) {
-//        return;
-//    }
-//    SnpPort *outputPort = this->getOutputPort(0);
-//    outputPort->onData(getPipeId(), (uint8_t*)rgbaPlane->GetNative(), width * height * 4, true);
-
     res = amfOutputDataPtr->Convert(amf::AMF_MEMORY_HOST);
     if(res != AMF_OK) {
         return;
     }
-    amf::AMFSurfacePtr surfaceNv12(amfOutputDataPtr);
-    amf::AMFPlane* planeY = surfaceNv12->GetPlane(amf::AMF_PLANE_Y);
-    amf::AMFPlane* planeUV = surfaceNv12->GetPlane(amf::AMF_PLANE_UV);
-    int planeYHPitch = planeY->GetHPitch();
-    int planeUVHPitch = planeUV->GetHPitch();
-    VideoUtil::nv12ToRgba(rgbaBuffer, (uint8_t*)planeY->GetNative(), (uint8_t*)planeUV->GetNative(),
-                          (int)width, (int)height, planeYHPitch, planeUVHPitch);
+
+    amf::AMFSurfacePtr surfaceRgba(amfOutputDataPtr);
+    amf::AMFPlane* planeRGBA = surfaceRgba->GetPlane(amf::AMF_PLANE_PACKED);
+
+    int planeHPitch = planeRGBA->GetHPitch();
+
+    auto *src = (uint8_t*)planeRGBA->GetNative();
+    auto *dst = rgbaBuffer;
+    for(int y = 0; y < height; y++) {
+        uint8_t* lineSrc = src + y*planeHPitch;
+        uint8_t* lineDst = dst + y*(width<<2);
+        for(int x = 0; x < width; x++) {
+            *lineDst++ = *lineSrc++;
+            *lineDst++ = *lineSrc++;
+            *lineDst++ = *lineSrc++;
+            *lineDst++ = 255;
+            lineSrc++;
+        }
+    }
 
     SnpPort *outputPort = this->getOutputPort(0);
     outputPort->onData(getPipeId(), (uint8_t*)rgbaBuffer, width * height * 4, true);
