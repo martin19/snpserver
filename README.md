@@ -57,6 +57,9 @@ cd extern/protobuf-3.21.12
 unzip protobuf-cpp-3.21.12.zip
 ```
 
+3. libva library environment variables
+see https://www.nuget.org/packages/Microsoft.Direct3D.VideoAccelerationCompatibilityPack/
+
 #### Common pitfalls
 
 Check whether X11 or wayland is running:

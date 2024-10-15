@@ -55,18 +55,22 @@ set(AMF_SOURCES
     src/stream/video/SnpDecoderAmfH264.cpp
 )
 
-find_package(VA)
-if(VA_FOUND)
-    add_definitions(-DHAVE_LIBVA)
-    include_directories(
-            ${VA_INCLUDE_DIR}
-            /usr/include/libdrm #todo move this
-    )
-    set(VA_SOURCES
-            src/stream/video/SnpEncoderVaH264.cpp
-            src/stream/video/h264/VaBitstream.cpp
-    )
-endif(VA_FOUND)
+#find_package(VA)
+#if(VA_FOUND)
+#    add_definitions(-DHAVE_LIBVA)
+#endif(VA_FOUND)
+set(VA_INCLUDE_DIR extern/libva/x64/include/)
+include_directories(
+        ${VA_INCLUDE_DIR}
+)
+set(VA_SOURCES
+        src/stream/video/SnpEncoderVaH264.cpp
+        src/stream/video/h264/VaBitstream.cpp
+)
+set(VA_LIBRARIES
+    ${CMAKE_CURRENT_SOURCE_DIR}/extern/libva/x64/lib/libva.dll.a
+    ${CMAKE_CURRENT_SOURCE_DIR}/extern/libva/x64/lib/libva_win32.dll.a
+)
 
 find_package(MMALH264)
 if(MMALH264_FOUND)
@@ -122,7 +126,7 @@ if(LIBGL_FOUND)
     set(GL_SOURCES
         src/util/DrmUtil.cpp
         src/stream/video/SnpSourceGL.cpp
-            src/stream/network/SnpSinkNetworkTcp.cpp src/stream/network/SnpSinkNetworkTcp.h src/stream/network/sockets.h src/stream/video/SnpSourceDummy.cpp src/stream/video/SnpSourceDummy.h src/snpclient.cpp src/stream/video/SnpDecoderOpenH264.cpp src/stream/video/SnpDecoderOpenH264.h)
+    )
 endif(LIBGL_FOUND)
 
 if(LIBWEBSOCKETS_FOUND)
@@ -220,6 +224,7 @@ endif(WIN32)
 # server app
 target_link_libraries(snpserver
     ${OPENH264_LIBRARIES}
+    ${VA_LIBRARIES}
     ${SOCKET_LIBRARIES}
     ${WIN32_LIBRARIES}
     pthread
@@ -264,7 +269,7 @@ add_executable(snpclient
     ${MMALH264_SOURCES}
     ${OPENH264_SOURCES}
     ${AMF_SOURCES}
-    ${VA_SOURCES} src/stream/video/SnpEncoderAmfH264.cpp src/stream/video/SnpEncoderAmfH264.h src/stream/video/SnpDecoderAmfH264.cpp src/stream/video/SnpDecoderAmfH264.h)
+    ${VA_SOURCES})
 target_link_libraries(snpclient
     Qt::Core
     Qt::Gui

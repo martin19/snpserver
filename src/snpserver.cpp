@@ -7,6 +7,7 @@
 #include "stream/video/SnpSourceDummy.h"
 #include "stream/file/SnpSinkFile.h"
 #include "stream/video/SnpEncoderOpenH264.h"
+#include "stream/video/SnpEncoderVaH264.h"
 
 SnpSinkNetworkTcp* snpSinkNetworkTcp;
 PipeMap pipeMap;
@@ -29,9 +30,10 @@ void handleSetupMessageCb(snp::Message* message) {
     }
 }
 
-int main() {
+int main2() {
     SnpSinkNetworkTcpOptions sinkOptions = {};
     sinkOptions.port = 9000;
+    //sinkOptions.host = "192.168.3.21";
     sinkOptions.host = "127.0.0.1";
     sinkOptions.handleSetupMessageCb = handleSetupMessageCb;
     snpSinkNetworkTcp = new SnpSinkNetworkTcp(sinkOptions);
@@ -44,7 +46,7 @@ int main() {
     return 0;
 }
 
-int main2() {
+int main() {
 
 
     SnpPipeOptions pipeOptions = {};
@@ -57,18 +59,23 @@ int main2() {
     sourceDummyOptions.fps = 60.0;
     SnpSourceDummy snpSourceDummy(sourceDummyOptions);
 
-    SnpEncoderAmfH264Options amfH264Options = {};
-    amfH264Options.width = 1920;
-    amfH264Options.height = 1080;
-    amfH264Options.fps = 60.0;
-    SnpEncoderAmfH264 snpEncoderAmfH264(amfH264Options);
+//    SnpEncoderAmfH264Options amfH264Options = {};
+//    amfH264Options.width = 1920;
+//    amfH264Options.height = 1080;
+//    amfH264Options.fps = 60.0;
+//    SnpEncoderAmfH264 snpEncoder(amfH264Options);
 
 //    SnpEncoderOpenH264Options openH264Options = {};
 //    openH264Options.width = 1920;
 //    openH264Options.height = 1080;
 //    openH264Options.qp = 10.0;
-//    SnpEncoderOpenH264 snpEncoderOpenH264(openH264Options);
+//    SnpEncoderOpenH264 snpEncoder(openH264Options);
 
+    SnpEncoderVaH264Options vaH264Options = {};
+    vaH264Options.width = 1920;
+    vaH264Options.height = 1080;
+    vaH264Options.qp = 10.0;
+    SnpEncoderVaH264 snpEncoder(vaH264Options);
 
     SnpSinkFileOptions sinkFileOptions = {};
     sinkFileOptions.fileName = "test1amfh264.h264";
@@ -76,10 +83,10 @@ int main2() {
 
     //TODO: every component needs a pipeId (verify this) maybe a constructor parameter is necessary
     snpSourceDummy.setPipeId(0);
-    snpEncoderAmfH264.setPipeId(0);
+    snpEncoder.setPipeId(0);
     snpSinkFile.setPipeId(0);
     pipe.addComponentEnd(&snpSourceDummy);
-    pipe.addComponentEnd(&snpEncoderAmfH264);
+    pipe.addComponentEnd(&snpEncoder);
     pipe.addComponentEnd(&snpSinkFile);
 
     pipe.start();
