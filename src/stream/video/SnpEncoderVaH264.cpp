@@ -66,7 +66,7 @@ bool SnpEncoderVaH264::start() {
 
 void SnpEncoderVaH264::stop() {
     SnpComponent::stop();
-//    VaH264EncoderDestroy();
+    destroyVa();
 }
 
 bool SnpEncoderVaH264::initVaEncoder() {
@@ -770,6 +770,84 @@ bool SnpEncoderVaH264::waitForPreviousFrame() {
     }
 
     frameIndex = swapChain->GetCurrentBackBufferIndex();
+    return result;
+error:
+    return result;
+}
+
+bool SnpEncoderVaH264::destroyVa() {
+    bool result = true;
+    VAStatus status;
+
+    destroyVaProc();
+    destroyVaEnc();
+
+    // Destroy VA Common
+
+    status = vaDestroySurfaces(vaDisplay, vaRenderTargets, FrameCount);
+    CHECK_VASTATUS(status, "vaDestroySurfaces");
+
+    status = vaDestroySurfaces(vaDisplay, vaRGBASurfaces, vaNumRGBASurfaces);
+    CHECK_VASTATUS(status, "vaDestroySurfaces");
+
+    status = vaDestroySurfaces(vaDisplay, &vaSurfaceNV12, 1);
+    CHECK_VASTATUS(status, "vaDestroySurfaces");
+
+    vaTerminate(vaDisplay);
+    CHECK_VASTATUS(status, "vaTerminate");
+
+    return result;
+error:
+    return result;
+}
+
+bool SnpEncoderVaH264::destroyVaProc() {
+    bool result = true;
+    VAStatus status;
+
+    status = vaDestroyConfig(vaDisplay, vaProcConfigId);
+    CHECK_VASTATUS(status, "vaDestroyConfig");
+
+    status = vaDestroyContext(vaDisplay, vaCopyCtx);
+    CHECK_VASTATUS(status, "vaDestroyContext");
+
+    status = vaDestroyContext(vaDisplay, vaBlendCtx);
+    CHECK_VASTATUS(status, "vaDestroyContext");
+
+    status = vaDestroyContext(vaDisplay, vaColorConvCtx);
+    CHECK_VASTATUS(status, "vaDestroyContext");
+
+    status = vaDestroyBuffer(vaDisplay, vaCopyBuf);
+    CHECK_VASTATUS(status, "vaDestroyBuffer");
+
+    status = vaDestroyBuffer(vaDisplay, vaColorConvBuf);
+    CHECK_VASTATUS(status, "vaDestroyBuffer");
+
+    status = vaDestroyBuffer(vaDisplay, vaBlendBuf);
+    CHECK_VASTATUS(status, "vaDestroyBuffer");
+
+    return result;
+error:
+    return result;
+}
+
+bool SnpEncoderVaH264::destroyVaEnc() {
+    bool result = true;
+    VAStatus status;
+
+    status = vaDestroyConfig(vaDisplay, vaEncConfigId);
+    CHECK_VASTATUS(status, "vaDestroyConfig");
+
+    status = vaDestroyContext(vaDisplay, vaEncContextId);
+    CHECK_VASTATUS(status, "vaDestroyContext");
+
+    for (UINT i = 0; i < _countof(vaEncPipelineBufferId); i++) {
+        vaDestroyBuffer(vaDisplay, vaEncPipelineBufferId[i]);
+        CHECK_VASTATUS(status, "vaDestroyBuffer");
+    }
+
+    finalEncodedBitstream.flush();
+    finalEncodedBitstream.close();
     return result;
 error:
     return result;

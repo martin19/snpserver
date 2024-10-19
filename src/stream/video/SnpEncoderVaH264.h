@@ -117,6 +117,9 @@ private:
                        VARectangle *pSrcRegions, VARectangle *pDstRegions, VASurfaceID dstSurface, float alpha);
 
 
+    bool destroyVa();
+    bool destroyVaProc();
+    bool destroyVaEnc();
 };
 
 #endif //SNPSERVER_SNPENCODERVAH264_H
