@@ -7,9 +7,11 @@
 #include "va/va.h"
 #include "va/va_enc_h264.h"
 #include "va/va_win32.h"
-#include "d3d12.h"
-#include <d3d12video.h>
+#include <d3d12.h>
+#include <directx/d3d12video.h>
+#include <directx/d3dx12.h>
 #include <dxgi1_4.h>
+#include <cassert>
 #include "va/DXUtil.h"
 
 //TODO: query d3d12 capabilities: (see https://github.com/microsoft/DirectX-Graphics-Samples/blob/master/Samples/Desktop/D3D12HelloWorld/src/HelloVAEncode/D3D12HelloVAEncode.cpp)
@@ -27,6 +29,14 @@
         LOG_F(ERROR,"%s failed.\n", __func__);                      \
         goto error;                                                 \
     }
+
+void SnpEncoderVaH264::vaInfoCallback(void* context, char* message) {
+    LOG_F(INFO, "VAAPI: %s", message);
+}
+
+void SnpEncoderVaH264::vaErrorCallback(void* context, char* message) {
+    LOG_F(INFO, "VAAPI: %s", message);
+}
 
 SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : SnpComponent(options, "COMPONENT_ENCODER_INTEL") {
     addInputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_RGB));
@@ -49,9 +59,6 @@ bool SnpEncoderVaH264::start() {
 
     width = getProperty("width")->getValueUint32();
     height = getProperty("height")->getValueUint32();
-
-//    frameWidthMbAligned = (width + 15) & (~15);
-//    frameHeightMbAligned = (height + 15) & (~15);
 
     initVaEncoder();
     return true;
@@ -228,6 +235,83 @@ bool SnpEncoderVaH264::performVaEncodeFrame(VASurfaceID dstSurface, VABufferID d
         status = vaUnmapBuffer(vaDisplay, dstCompressedbit);
         CHECK_VASTATUS(status, "vaUnMapBuffer");
     }
+
+    return result;
+error:
+    return result;
+}
+
+bool SnpEncoderVaH264::performVaWorkload() {
+    VAStatus status;
+    bool result = true;
+
+    // Copy the cleared render target with solid color into m_vaRGBASurfaces[i]
+    for (UINT i = 0; i < numVPRegions; i++) {
+        performVaBlit(vaCopyCtx, vaCopyBuf, &vaRenderTargets[frameIndex], 1, NULL, NULL, vaRGBASurfaces[i], 1.0f);
+    }
+
+    // Blit the source surface m_NumVPRegions times in different regions in the output surface
+
+    // Blend, translate and scale src_regions into dst_regions of the render target
+    performVaBlit(vaBlendCtx, vaBlendBuf, vaRGBASurfaces, numVPRegions, pBlendRegions[curRegionVariation],
+                  pBlendRegions[curRegionVariation], vaRenderTargets[frameIndex], alphaBlend);
+    curRegionVariation = ((curRegionVariation + 1) % regionVariations);
+
+    // Color convert RGB into NV12 for encode
+    performVaBlit(vaColorConvCtx, vaColorConvBuf, &vaRenderTargets[frameIndex], 1, NULL, NULL, vaSurfaceNV12, 1.0f);
+
+    // Encode render target frame into an H.264 bitstream
+    performVaEncodeFrame(vaSurfaceNV12, vaEncPipelineBufferId[VA_H264ENC_BUFFER_INDEX_COMPRESSED_BIT]);
+
+    return result;
+error:
+    return result;
+}
+
+bool SnpEncoderVaH264::performVaBlit(VAContextID context, VABufferID buffer, VASurfaceID* pInSurfaces,
+                                     UINT inSurfacesCount, VARectangle* pSrcRegions, VARectangle* pDstRegions,
+                                     VASurfaceID dstSurface, float alpha) {
+    VAStatus status;
+    bool result = true;
+
+    assert(inSurfacesCount <= vaNumRGBASurfaces);
+
+    status = vaBeginPicture(vaDisplay, context, dstSurface);
+    CHECK_VASTATUS(status, "vaBeginPicture");
+
+    for (size_t i = 0; i < inSurfacesCount; i++) {
+        VAProcPipelineParameterBuffer* pipeline_param;
+        status = vaMapBuffer(vaDisplay, buffer, (void**)&pipeline_param);
+        memset(pipeline_param, 0, sizeof(VAProcPipelineParameterBuffer));
+        CHECK_VASTATUS(status, "vaMapBuffer");
+        pipeline_param->surface = pInSurfaces[i];
+        if (pSrcRegions)
+            pipeline_param->surface_region = &pSrcRegions[i];
+        if (pDstRegions)
+            pipeline_param->output_region = &pDstRegions[i];
+
+        // Check the VA platform can perform global alpha
+        // blend using the queried capabilities previously
+        VABlendState blend;
+        if (procPipelineCaps.blend_flags & VA_BLEND_GLOBAL_ALPHA) {
+            memset(&blend, 0, sizeof(VABlendState));
+            blend.flags = VA_BLEND_GLOBAL_ALPHA;
+            blend.global_alpha = alpha;
+            pipeline_param->blend_state = &blend;
+        }
+
+        status = vaUnmapBuffer(vaDisplay, buffer);
+        CHECK_VASTATUS(status, "vaUnMapBuffer");
+
+        // Apply VPBlit
+        vaRenderPicture(vaDisplay, context, &buffer, 1);
+    }
+    status = vaEndPicture(vaDisplay, context);
+    CHECK_VASTATUS(status, "vaEndPicture");
+
+    // Wait for completion on GPU for the indicated VASurface
+    status = vaSyncSurface(vaDisplay, dstSurface);
+    CHECK_VASTATUS(status, "vaSyncSurface");
 
     return result;
 error:
@@ -442,10 +526,10 @@ bool SnpEncoderVaH264::importRenderTargetsToVa() {
         },
     };
 
-    HANDLE renderTargets[FrameCount];
+    HANDLE renderTargets2[FrameCount];
     for (size_t i = 0; i < FrameCount; i++) {
         HRESULT hr = device->CreateSharedHandle(renderTargets[i].Get(), nullptr,GENERIC_ALL,
-                                                  nullptr,&renderTargets[i]);
+                                                  nullptr,&renderTargets2[i]);
         CHECK_VASTATUS(hr, "device->CreateSharedHandle");
     }
     createSurfacesAttribList[2].value.value.p = renderTargets;
@@ -582,13 +666,111 @@ error:
 
 void SnpEncoderVaH264::onInputData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete) {
     if(!isRunning()) return;
-//    this->VaH264EncoderEncode(data, len);
+    encodeFrameVa(data, len);
 }
 
-void SnpEncoderVaH264::vaInfoCallback(void* context, char* message) {
-    LOG_F(INFO, "VAAPI: %s", message);
+bool SnpEncoderVaH264::encodeFrameVa(const uint8_t *data, uint32_t len) {
+    bool result = true;
+    VAStatus status;
+
+    // Record all the commands we need to render the scene into the command list.
+    // In this case, clear the render target with a predefined color
+    populateCommandList();
+
+    // Execute the command list.
+    ID3D12CommandList* ppCommandLists[] = { commandList.Get() };
+    commandQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+
+    // Before calling PerformVAWorkload, we must ensure the following:
+    //  1. The D3D12 resources to be used must be in D3D12_RESOURCE_STATE_COMMON state
+    //      * PopulateCommandList is already transitioning the resource to D3D12_RESOURCE_STATE_PRESENT
+    //          which happens to also match the definition of D3D12_RESOURCE_STATE_COMMON
+    //  2. The D3D12 resources must not have any pending GPU operations
+    //      * Call WaitForPreviousFrame below for this end, to wait for the ExecuteCommandLists below
+    //          that clears this render target with a predefined solid color.
+
+    waitForPreviousFrame();
+
+    // Perform the VA workload on the current render target
+    // The VA driver internally manages any other state transitions and it is expected that
+    // PerformVAWorkload calls vaSyncSurface, which ensures the affected resources are
+    // back in COMMON state and all the GPU work flushed and finished on them
+    // Currently only m_VARenderTargets[m_frameIndex] is used in the VA workload,
+    // transition it back to present mode for the call below.
+
+    performVaWorkload();
+
+    waitForPreviousFrame();
+
+    return result;
+error:
+    return result;
 }
 
-void SnpEncoderVaH264::vaErrorCallback(void* context, char* message) {
-    LOG_F(INFO, "VAAPI: %s", message);
+bool SnpEncoderVaH264::populateCommandList() {
+    bool result = true;
+    HRESULT status;
+    CD3DX12_RESOURCE_BARRIER barrier1;
+    CD3DX12_RESOURCE_BARRIER barrier2;
+    CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(rtvHeap->GetCPUDescriptorHandleForHeapStart(), frameIndex, m_rtvDescriptorSize);
+
+    // Command list allocators can only be reset when the associated
+    // command lists have finished execution on the GPU; apps should use
+    // fences to determine GPU execution progress.
+    status = commandAllocator->Reset();
+    CHECK_VASTATUS(status, "commandAllocator->Reset");
+
+    // However, when ExecuteCommandList() is called on a particular command
+    // list, that command list can then be reset at any time and must be before
+    // re-recording.
+    status = commandList->Reset(commandAllocator.Get(), pipelineState.Get());
+    CHECK_VASTATUS(status, "commandList->Reset");
+
+    // Indicate that the back buffer will be used as a render target.
+    barrier1 = CD3DX12_RESOURCE_BARRIER::Transition(renderTargets[frameIndex].Get(),
+        D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+    commandList->ResourceBarrier(1, &barrier1);
+
+    // Record commands.
+    commandList->ClearRenderTargetView(rtvHandle, colors[curRegionVariation], 0, nullptr);
+
+    // Indicate that the back buffer will now be used to present.
+    barrier2 = CD3DX12_RESOURCE_BARRIER::Transition(renderTargets[frameIndex].Get(),
+        D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+    commandList->ResourceBarrier(1, &barrier2);
+
+    status = commandList->Close();
+    CHECK_VASTATUS(status, "commandList->Close");
+
+    return result;
+error:
+    return result;
+}
+
+bool SnpEncoderVaH264::waitForPreviousFrame() {
+    bool result = true;
+    HRESULT status;
+
+    // WAITING FOR THE FRAME TO COMPLETE BEFORE CONTINUING IS NOT BEST PRACTICE.
+    // This is code implemented as such for simplicity. The D3D12HelloFrameBuffering
+    // sample illustrates how to use fences for efficient resource usage and to
+    // maximize GPU utilization.
+
+    // Signal and increment the fence value.
+    status = commandQueue->Signal(fence.Get(), fenceValue);
+
+
+    fenceValue++;
+
+    // Wait until the previous frame is finished.
+    if (fence->GetCompletedValue() < fenceValue) {
+        status = fence->SetEventOnCompletion(fenceValue, fenceEvent);
+        CHECK_VASTATUS(status, fence->SetEventOnCompletion);
+        WaitForSingleObject(fenceEvent, INFINITE);
+    }
+
+    frameIndex = swapChain->GetCurrentBackBufferIndex();
+    return result;
+error:
+    return result;
 }

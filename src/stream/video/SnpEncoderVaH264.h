@@ -41,6 +41,12 @@ private:
 
     static const UINT FrameCount = 2;
 
+    // Synchronization objects.
+    UINT frameIndex = 0;
+    HANDLE fenceEvent;
+    ComPtr<ID3D12Fence> fence;
+    UINT64 fenceValue = 0;
+
     //pipeline objects
     ComPtr<IDXGISwapChain3> swapChain;
     ComPtr<IDXGIAdapter1> adapter;
@@ -90,9 +96,9 @@ private:
     static void vaInfoCallback(void *context, char *message);
     static void vaErrorCallback(void *context, char *message);
 
+    //initialization of va and directx
     bool initVaPipeline();
     bool initD3D12Pipeline();
-
     bool initVaDisplay();
     bool ensureVaProcSupport();
     bool ensureVaEncSupport();
@@ -102,7 +108,15 @@ private:
     bool initVaEncoder();
     bool initVaEncContext();
 
+    bool encodeFrameVa(const uint8_t *data, uint32_t len);
+    bool populateCommandList();
+    bool waitForPreviousFrame();
+    bool performVaWorkload();
     bool performVaEncodeFrame(VASurfaceID dstSurface, VABufferID dstCompressedBit);
+    bool performVaBlit(VAContextID context, VABufferID buffer, VASurfaceID *pInSurfaces, UINT inSurfacesCount,
+                       VARectangle *pSrcRegions, VARectangle *pDstRegions, VASurfaceID dstSurface, float alpha);
+
+
 };
 
 #endif //SNPSERVER_SNPENCODERVAH264_H
