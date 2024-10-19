@@ -66,6 +66,7 @@ include_directories(
 set(VA_SOURCES
         src/stream/video/SnpEncoderVaH264.cpp
         src/stream/video/h264/VaBitstream.cpp
+        src/stream/video/va/DXUtil.cpp
 )
 set(VA_LIBRARIES
     ${CMAKE_CURRENT_SOURCE_DIR}/extern/libva/x64/lib/libva.dll.a
@@ -99,7 +100,7 @@ if(UNIX)
     set(LIBDRM_FOUND TRUE)
     set(LIBX11_FOUND TRUE)
     set(LIBGL_FOUND TRUE)
-    add_library(libdrm SHARED IMPORTED src/stream/video/h264/OpenH264Api.h src/stream/output/SnpSinkDisplay.cpp src/stream/output/SnpSinkDisplay.h)
+    add_library(libdrm SHARED IMPORTED src/stream/video/h264/OpenH264Api.h src/stream/output/SnpSinkDisplay.cpp src/stream/output/SnpSinkDisplay.h src/stream/video/va/DXUtil.cpp src/stream/video/va/DXUtil.h)
     #raspberry
     #set_target_properties(libdrm PROPERTIES IMPORTED_LOCATION /usr/local/lib/arm-linux-gnueabihf/libdrm.so.2)
     #set_target_properties(libdrm PROPERTIES VERSION 2 SOVERSION 2.4)

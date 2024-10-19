@@ -101,6 +101,8 @@ private:
     bool initVaProcContext();
     bool initVaEncoder();
     bool initVaEncContext();
+
+    bool performVaEncodeFrame(VASurfaceID dstSurface, VABufferID dstCompressedBit);
 };
 
 #endif //SNPSERVER_SNPENCODERVAH264_H

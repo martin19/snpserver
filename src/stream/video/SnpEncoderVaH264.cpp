@@ -10,6 +10,7 @@
 #include "d3d12.h"
 #include <d3d12video.h>
 #include <dxgi1_4.h>
+#include "va/DXUtil.h"
 
 //TODO: query d3d12 capabilities: (see https://github.com/microsoft/DirectX-Graphics-Samples/blob/master/Samples/Desktop/D3D12HelloWorld/src/HelloVAEncode/D3D12HelloVAEncode.cpp)
 // https://www.vcodex.com/h264avc-picture-management/
@@ -68,42 +69,165 @@ bool SnpEncoderVaH264::initVaEncoder() {
 
 bool SnpEncoderVaH264::initD3D12Pipeline() {
     bool result = true;
-    HRESULT status;
-    UINT dxgiFactoryFlags = 0;
+//    HRESULT status;
+//    UINT dxgiFactoryFlags = 0;
+//    D3D12_COMMAND_QUEUE_DESC queueDesc = {};
+//    DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
+//    ComPtr<IDXGISwapChain1> swapChain;
+//
+//#if defined(_DEBUG)
+//    // Enable the debug layer (requires the Graphics Tools "optional feature").
+//    // NOTE: Enabling the debug layer after device creation will invalidate the active device.
+//    {
+//        ComPtr<ID3D12Debug> debugController;
+//        if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
+//        {
+//            debugController->EnableDebugLayer();
+//
+//            // Enable additional debug layers.
+//            dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
+//        }
+//    }
+//#endif
+//
+//    Microsoft::WRL::ComPtr<IDXGIFactory4> factory;
+//    status = CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&factory));
+//    CHECK_VASTATUS(status, "CreateDXGIFactory2");
+//
+//
+//    if (useWarpDevice) {
+//        status = factory->EnumWarpAdapter(IID_PPV_ARGS(&adapter))
+//        CHECK_VASTATUS(status, "factory->EnumWarpAdapter");
+//        status = D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0,IID_PPV_ARGS(&device));
+//        CHECK_VASTATUS(status, "D3D12CreateDevice");
+//    } else {
+//        DXUtil::GetHardwareAdapter(factory.Get(), &adapter, true);
+//        status = D3D12CreateDevice(adapter.Get(),D3D_FEATURE_LEVEL_11_0,IID_PPV_ARGS(&device));
+//        CHECK_VASTATUS(status, "D3D12CreateDevice");
+//    }
+//
+//    // Describe and create the command queue.
+//    queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+//    queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+//
+//    status = device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&commandQueue)));
+//    CHECK_VASTATUS(status, "device->CreateCommandQueue");
+//
+//    // Describe and create the swap chain.
+//    swapChainDesc.BufferCount = FrameCount;
+//    swapChainDesc.Width = width;
+//    swapChainDesc.Height = height;
+//    swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+//    swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+//    swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+//    swapChainDesc.SampleDesc.Count = 1;
+//
+//
+//    status = factory->CreateSwapChainForHwnd(
+//            commandQueue.Get(),        // Swap chain needs the queue so that it can force a flush on it.
+//            Win32Application::GetHwnd(),
+//            &swapChainDesc,
+//            nullptr,
+//            nullptr,
+//            &swapChain
+//    ));
+//
+//    //TODO: unclear if we need DX12 pipeline. Probably encoder works without it.
 
-#if defined(_DEBUG)
-    // Enable the debug layer (requires the Graphics Tools "optional feature").
-    // NOTE: Enabling the debug layer after device creation will invalidate the active device.
+    return result;
+error:
+    return result;
+}
+
+bool SnpEncoderVaH264::performVaEncodeFrame(VASurfaceID dstSurface, VABufferID dstCompressedbit) {
+    VAStatus status;
+    bool result = true;
+
+    status = vaBeginPicture(vaDisplay, vaEncContextId, dstSurface);
+    CHECK_VASTATUS(status, "vaBeginPicture");
+
+    // VAEncSequenceParameterBufferH264
     {
-        ComPtr<ID3D12Debug> debugController;
-        if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
-        {
-            debugController->EnableDebugLayer();
+        VAEncSequenceParameterBufferH264* pMappedBuf;
+        status = vaMapBuffer(vaDisplay, vaEncPipelineBufferId[VA_H264ENC_BUFFER_INDEX_SEQ], (void**)&pMappedBuf);
+        CHECK_VASTATUS(status, "vaMapBuffer");
+        memset(pMappedBuf, 0, sizeof(*pMappedBuf));
 
-            // Enable additional debug layers.
-            dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
-        }
+        // Level 4.1 as per H.264 codec standard
+        pMappedBuf->level_idc = 41;
+
+        // 2 * fps_num for 30fps
+        pMappedBuf->time_scale = 2 * 30;
+        // fps_den
+        pMappedBuf->num_units_in_tick = 1;
+
+        pMappedBuf->intra_idr_period = 1;
+        pMappedBuf->seq_fields.bits.pic_order_cnt_type = 2;
+
+        status = vaUnmapBuffer(vaDisplay, vaEncPipelineBufferId[VA_H264ENC_BUFFER_INDEX_SEQ]);
+        CHECK_VASTATUS(status, "vaUnMapBuffer");
     }
-#endif
 
-    Microsoft::WRL::ComPtr<IDXGIFactory4> factory;
-    status = CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&factory));
-    CHECK_VASTATUS(status, "CreateDXGIFactory2");
+    // VAEncPictureParameterBufferH264
+    {
+        VAEncPictureParameterBufferH264* pMappedBuf;
+        status = vaMapBuffer(vaDisplay, vaEncPipelineBufferId[VA_H264ENC_BUFFER_INDEX_PIC], (void**)&pMappedBuf);
+        CHECK_VASTATUS(status, "vaMapBuffer");
+        memset(pMappedBuf, 0, sizeof(*pMappedBuf));
 
+        pMappedBuf->pic_fields.bits.idr_pic_flag = 1;
+        // We can use always 0 as each frame is an IDR which resets the GOP
+        pMappedBuf->CurrPic.TopFieldOrderCnt = 0;
+        pMappedBuf->CurrPic.picture_id = dstSurface;
+        pMappedBuf->coded_buf = dstCompressedbit;
 
-    if (useWarpDevice) {
-        status = factory->EnumWarpAdapter(IID_PPV_ARGS(&adapter))
-        CHECK_VASTATUS(status, "factory->EnumWarpAdapter");
-        status = D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0,IID_PPV_ARGS(&device));
-        CHECK_VASTATUS(status, "D3D12CreateDevice");
+        status = vaUnmapBuffer(vaDisplay, vaEncPipelineBufferId[VA_H264ENC_BUFFER_INDEX_PIC]);
+        CHECK_VASTATUS(status, "vaUnMapBuffer");
+    }
+
+    // VAEncSliceParameterBufferH264
+    {
+        VAEncSliceParameterBufferH264* pMappedBuf;
+        status = vaMapBuffer(vaDisplay, vaEncPipelineBufferId[VA_H264ENC_BUFFER_INDEX_SLICE], (void**)&pMappedBuf);
+        CHECK_VASTATUS(status, "vaMapBuffer")
+        memset(pMappedBuf, 0, sizeof(*pMappedBuf));
+
+        pMappedBuf->num_macroblocks = (width / H264_MB_PIXEL_SIZE * height / H264_MB_PIXEL_SIZE);
+        pMappedBuf->slice_type = 2; // intra slice
+        status = vaUnmapBuffer(vaDisplay, vaEncPipelineBufferId[VA_H264ENC_BUFFER_INDEX_SLICE]);
+        CHECK_VASTATUS(status, "vaUnMapBuffer");
+    }
+
+    // Apply encode, send the first 3 seq, pic, slice buffers
+    vaRenderPicture(vaDisplay, vaEncContextId, vaEncPipelineBufferId, 3);
+
+    status = vaEndPicture(vaDisplay, vaEncContextId);
+    CHECK_VASTATUS(status, "vaEndPicture");
+
+    // Wait for completion on GPU for the indicated VABuffer/VASurface
+    // Attempt vaSyncBuffer if VA driver implements it first
+    status = vaSyncBuffer(vaDisplay, dstCompressedbit, VA_TIMEOUT_INFINITE);
+    if (status != VA_STATUS_ERROR_UNIMPLEMENTED) {
+        CHECK_VASTATUS(status, "vaSyncBuffer");
     } else {
-        GetHardwareAdapter(factory.Get(), &adapter, true);
-        status = D3D12CreateDevice(adapter.Get(),D3D_FEATURE_LEVEL_11_0,IID_PPV_ARGS(&device));
-        CHECK_VASTATUS(status, "D3D12CreateDevice");
+        // Legacy API call otherwise
+        status = vaSyncSurface(vaDisplay, dstSurface);
+        CHECK_VASTATUS(status, "vaSyncSurface");
     }
 
-    // Describe and create the command queue.
-    //TODO below and above GetHardwareAdapter is part of DXSample.h
+    // Flush encoded bitstream to disk
+    {
+        VACodedBufferSegment *buf_list, *buf;
+        status = vaMapBuffer(vaDisplay, dstCompressedbit, (void**)&buf_list);
+        CHECK_VASTATUS(status, "vaMapBuffer");
+        for (buf = buf_list; buf; buf = (VACodedBufferSegment*) buf->next) {
+            //TODO: write to output port instead
+            finalEncodedBitstream.write(reinterpret_cast<char*>(buf->buf), buf->size);
+        }
+
+        status = vaUnmapBuffer(vaDisplay, dstCompressedbit);
+        CHECK_VASTATUS(status, "vaUnMapBuffer");
+    }
 
     return result;
 error:
