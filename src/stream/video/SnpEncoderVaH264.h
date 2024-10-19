@@ -31,11 +31,8 @@ public:
     void stop() override;
 
 private:
-    uint32_t width;
-    uint32_t height;
-
-    //taken roughly from h264 encoder example from libva utils
-    bool VaH264EncoderInit();
+    uint32_t width = 0;
+    uint32_t height = 0;
 
     void onInputData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete);
 
@@ -43,29 +40,29 @@ private:
 
     // Synchronization objects.
     UINT frameIndex = 0;
-    HANDLE fenceEvent;
-    ComPtr<ID3D12Fence> fence;
+    HANDLE fenceEvent = nullptr;
+    ComPtr<ID3D12Fence> fence = nullptr;
     UINT64 fenceValue = 0;
 
     //pipeline objects
-    ComPtr<IDXGISwapChain3> swapChain;
-    ComPtr<IDXGIAdapter1> adapter;
-    ComPtr<ID3D12Device> device;
+    ComPtr<IDXGISwapChain3> swapChain = nullptr;
+    ComPtr<IDXGIAdapter1> adapter = nullptr;
+    ComPtr<ID3D12Device> device = nullptr;
     ComPtr<ID3D12Resource> renderTargets[FrameCount];
-    ComPtr<ID3D12CommandAllocator> commandAllocator;
-    ComPtr<ID3D12CommandQueue> commandQueue;
-    ComPtr<ID3D12DescriptorHeap> rtvHeap;
-    ComPtr<ID3D12PipelineState> pipelineState;
-    ComPtr<ID3D12GraphicsCommandList> commandList;
+    ComPtr<ID3D12CommandAllocator> commandAllocator = nullptr;
+    ComPtr<ID3D12CommandQueue> commandQueue = nullptr;
+    ComPtr<ID3D12DescriptorHeap> rtvHeap = nullptr;
+    ComPtr<ID3D12PipelineState> pipelineState = nullptr;
+    ComPtr<ID3D12GraphicsCommandList> commandList = nullptr;
     UINT m_rtvDescriptorSize = 0;
 
     //va objects
-    VADisplay vaDisplay;
+    VADisplay vaDisplay = nullptr;
     VASurfaceID vaRenderTargets[FrameCount] = { };
     static const uint32_t vaNumRGBASurfaces = 16;
     VASurfaceID vaRGBASurfaces[vaNumRGBASurfaces] = { };
     VASurfaceID vaSurfaceNV12 = 0;
-    UINT numVPRegions;
+    UINT numVPRegions = 0;
     VAConfigID vaProcConfigId = 0;
     // Context for color rgb to yuv conversion
     VAContextID vaColorConvCtx = 0;
@@ -79,7 +76,8 @@ private:
     const float regionsSizeRatio = 1.2f;
     static const UINT regionVariations = 216;
     UINT curRegionVariation = 0;
-    VARectangle pBlendRegions[regionVariations/*Prepare two sets of regions so there's some motion*/][vaNumRGBASurfaces];
+    /*Prepare two sets of regions so there's some motion*/
+    VARectangle pBlendRegions[regionVariations][vaNumRGBASurfaces];
     float colors[regionVariations][4];
 
     // Video Encoder
@@ -93,7 +91,7 @@ private:
     static const UINT H264_MB_PIXEL_SIZE = 16;
     std::ofstream finalEncodedBitstream;
 
-    static void vaInfoCallback(void *context, char *message);
+    static void vaInfoCallback([[maybe_unused]] void *context, char *message);
     static void vaErrorCallback(void *context, char *message);
 
     //initialization of va and directx

@@ -1,4 +1,3 @@
-#include <util/assert.h>
 #include <iostream>
 #include <util/VideoUtil.h>
 #include <cstring>
@@ -10,7 +9,6 @@
 #include <d3d12.h>
 #include <directx/d3d12video.h>
 #include <directx/d3dx12.h>
-#include <dxgi1_4.h>
 #include <cassert>
 #include "va/DXUtil.h"
 
@@ -20,7 +18,7 @@
 #define CHECK_VASTATUS(va_status,func)                                  \
     if (va_status != VA_STATUS_SUCCESS) {                               \
         result = false;                                                 \
-        LOG_F(ERROR,"%s failed with status %d,exit\n", __func__, va_status); \
+        LOG_F(ERROR,"%s failed with status %d,exit\n", __func__, (int)va_status); \
         goto error;                                                        \
     }
 
@@ -30,11 +28,11 @@
         goto error;                                                 \
     }
 
-void SnpEncoderVaH264::vaInfoCallback(void* context, char* message) {
+void SnpEncoderVaH264::vaInfoCallback([[maybe_unused]] void* context, char* message) {
     LOG_F(INFO, "VAAPI: %s", message);
 }
 
-void SnpEncoderVaH264::vaErrorCallback(void* context, char* message) {
+void SnpEncoderVaH264::vaErrorCallback([[maybe_unused]] void* context, char* message) {
     LOG_F(INFO, "VAAPI: %s", message);
 }
 
@@ -151,13 +149,13 @@ bool SnpEncoderVaH264::performVaEncodeFrame(VASurfaceID dstSurface, VABufferID d
     bool result = true;
 
     status = vaBeginPicture(vaDisplay, vaEncContextId, dstSurface);
-    CHECK_VASTATUS(status, "vaBeginPicture");
+    CHECK_VASTATUS(status, "vaBeginPicture")
 
     // VAEncSequenceParameterBufferH264
     {
         VAEncSequenceParameterBufferH264* pMappedBuf;
         status = vaMapBuffer(vaDisplay, vaEncPipelineBufferId[VA_H264ENC_BUFFER_INDEX_SEQ], (void**)&pMappedBuf);
-        CHECK_VASTATUS(status, "vaMapBuffer");
+        CHECK_VASTATUS(status, "vaMapBuffer")
         memset(pMappedBuf, 0, sizeof(*pMappedBuf));
 
         // Level 4.1 as per H.264 codec standard
@@ -172,14 +170,14 @@ bool SnpEncoderVaH264::performVaEncodeFrame(VASurfaceID dstSurface, VABufferID d
         pMappedBuf->seq_fields.bits.pic_order_cnt_type = 2;
 
         status = vaUnmapBuffer(vaDisplay, vaEncPipelineBufferId[VA_H264ENC_BUFFER_INDEX_SEQ]);
-        CHECK_VASTATUS(status, "vaUnMapBuffer");
+        CHECK_VASTATUS(status, "vaUnMapBuffer")
     }
 
     // VAEncPictureParameterBufferH264
     {
         VAEncPictureParameterBufferH264* pMappedBuf;
         status = vaMapBuffer(vaDisplay, vaEncPipelineBufferId[VA_H264ENC_BUFFER_INDEX_PIC], (void**)&pMappedBuf);
-        CHECK_VASTATUS(status, "vaMapBuffer");
+        CHECK_VASTATUS(status, "vaMapBuffer")
         memset(pMappedBuf, 0, sizeof(*pMappedBuf));
 
         pMappedBuf->pic_fields.bits.idr_pic_flag = 1;
@@ -189,7 +187,7 @@ bool SnpEncoderVaH264::performVaEncodeFrame(VASurfaceID dstSurface, VABufferID d
         pMappedBuf->coded_buf = dstCompressedbit;
 
         status = vaUnmapBuffer(vaDisplay, vaEncPipelineBufferId[VA_H264ENC_BUFFER_INDEX_PIC]);
-        CHECK_VASTATUS(status, "vaUnMapBuffer");
+        CHECK_VASTATUS(status, "vaUnMapBuffer")
     }
 
     // VAEncSliceParameterBufferH264
@@ -202,24 +200,24 @@ bool SnpEncoderVaH264::performVaEncodeFrame(VASurfaceID dstSurface, VABufferID d
         pMappedBuf->num_macroblocks = (width / H264_MB_PIXEL_SIZE * height / H264_MB_PIXEL_SIZE);
         pMappedBuf->slice_type = 2; // intra slice
         status = vaUnmapBuffer(vaDisplay, vaEncPipelineBufferId[VA_H264ENC_BUFFER_INDEX_SLICE]);
-        CHECK_VASTATUS(status, "vaUnMapBuffer");
+        CHECK_VASTATUS(status, "vaUnMapBuffer")
     }
 
     // Apply encode, send the first 3 seq, pic, slice buffers
     vaRenderPicture(vaDisplay, vaEncContextId, vaEncPipelineBufferId, 3);
 
     status = vaEndPicture(vaDisplay, vaEncContextId);
-    CHECK_VASTATUS(status, "vaEndPicture");
+    CHECK_VASTATUS(status, "vaEndPicture")
 
     // Wait for completion on GPU for the indicated VABuffer/VASurface
     // Attempt vaSyncBuffer if VA driver implements it first
     status = vaSyncBuffer(vaDisplay, dstCompressedbit, VA_TIMEOUT_INFINITE);
     if (status != VA_STATUS_ERROR_UNIMPLEMENTED) {
-        CHECK_VASTATUS(status, "vaSyncBuffer");
+        CHECK_VASTATUS(status, "vaSyncBuffer")
     } else {
         // Legacy API call otherwise
         status = vaSyncSurface(vaDisplay, dstSurface);
-        CHECK_VASTATUS(status, "vaSyncSurface");
+        CHECK_VASTATUS(status, "vaSyncSurface")
     }
 
     // Flush encoded bitstream to disk
@@ -247,7 +245,7 @@ bool SnpEncoderVaH264::performVaWorkload() {
 
     // Copy the cleared render target with solid color into m_vaRGBASurfaces[i]
     for (UINT i = 0; i < numVPRegions; i++) {
-        performVaBlit(vaCopyCtx, vaCopyBuf, &vaRenderTargets[frameIndex], 1, NULL, NULL, vaRGBASurfaces[i], 1.0f);
+        performVaBlit(vaCopyCtx, vaCopyBuf, &vaRenderTargets[frameIndex], 1, nullptr, nullptr, vaRGBASurfaces[i], 1.0f);
     }
 
     // Blit the source surface m_NumVPRegions times in different regions in the output surface
@@ -258,7 +256,7 @@ bool SnpEncoderVaH264::performVaWorkload() {
     curRegionVariation = ((curRegionVariation + 1) % regionVariations);
 
     // Color convert RGB into NV12 for encode
-    performVaBlit(vaColorConvCtx, vaColorConvBuf, &vaRenderTargets[frameIndex], 1, NULL, NULL, vaSurfaceNV12, 1.0f);
+    performVaBlit(vaColorConvCtx, vaColorConvBuf, &vaRenderTargets[frameIndex], 1, nullptr, nullptr, vaSurfaceNV12, 1.0f);
 
     // Encode render target frame into an H.264 bitstream
     performVaEncodeFrame(vaSurfaceNV12, vaEncPipelineBufferId[VA_H264ENC_BUFFER_INDEX_COMPRESSED_BIT]);
@@ -277,13 +275,13 @@ bool SnpEncoderVaH264::performVaBlit(VAContextID context, VABufferID buffer, VAS
     assert(inSurfacesCount <= vaNumRGBASurfaces);
 
     status = vaBeginPicture(vaDisplay, context, dstSurface);
-    CHECK_VASTATUS(status, "vaBeginPicture");
+    CHECK_VASTATUS(status, "vaBeginPicture")
 
     for (size_t i = 0; i < inSurfacesCount; i++) {
         VAProcPipelineParameterBuffer* pipeline_param;
         status = vaMapBuffer(vaDisplay, buffer, (void**)&pipeline_param);
         memset(pipeline_param, 0, sizeof(VAProcPipelineParameterBuffer));
-        CHECK_VASTATUS(status, "vaMapBuffer");
+        CHECK_VASTATUS(status, "vaMapBuffer")
         pipeline_param->surface = pInSurfaces[i];
         if (pSrcRegions)
             pipeline_param->surface_region = &pSrcRegions[i];
@@ -301,17 +299,17 @@ bool SnpEncoderVaH264::performVaBlit(VAContextID context, VABufferID buffer, VAS
         }
 
         status = vaUnmapBuffer(vaDisplay, buffer);
-        CHECK_VASTATUS(status, "vaUnMapBuffer");
+        CHECK_VASTATUS(status, "vaUnMapBuffer")
 
         // Apply VPBlit
         vaRenderPicture(vaDisplay, context, &buffer, 1);
     }
     status = vaEndPicture(vaDisplay, context);
-    CHECK_VASTATUS(status, "vaEndPicture");
+    CHECK_VASTATUS(status, "vaEndPicture")
 
     // Wait for completion on GPU for the indicated VASurface
     status = vaSyncSurface(vaDisplay, dstSurface);
-    CHECK_VASTATUS(status, "vaSyncSurface");
+    CHECK_VASTATUS(status, "vaSyncSurface")
 
     return result;
 error:
@@ -321,17 +319,17 @@ error:
 bool SnpEncoderVaH264::initVaPipeline() {
     bool result;
     result = initVaDisplay();
-    CHECK_RESULT(result, "initVaDisplay");
+    CHECK_RESULT(result, "initVaDisplay")
     result = ensureVaProcSupport();
-    CHECK_RESULT(result, "ensureVaProcSupport");
+    CHECK_RESULT(result, "ensureVaProcSupport")
     result = ensureVaEncSupport();
-    CHECK_RESULT(result, "ensureVaEncSupport");
+    CHECK_RESULT(result, "ensureVaEncSupport")
     result = createVaSurfaces();
-    CHECK_RESULT(result, "createVaSurfaces");
+    CHECK_RESULT(result, "createVaSurfaces")
     result = importRenderTargetsToVa();
-    CHECK_RESULT(result, "importRenderTargetsToVa");
+    CHECK_RESULT(result, "importRenderTargetsToVa")
     result = initVaProcContext();
-    CHECK_RESULT(result, "initVaProcContext");
+    CHECK_RESULT(result, "initVaProcContext")
     result = initVaEncContext();
     CHECK_RESULT(result, "initVaEncContext")
 
@@ -350,7 +348,7 @@ bool SnpEncoderVaH264::initVaDisplay() {
     vaSetErrorCallback(vaDisplay, reinterpret_cast<VAMessageCallback>(&SnpEncoderVaH264::vaErrorCallback), nullptr);
 
     vaStatus = vaInitialize(vaDisplay, &majorVer, &minorVer);
-    CHECK_VASTATUS(vaStatus, "vaInitialize");
+    CHECK_VASTATUS(vaStatus, "vaInitialize")
 
     LOG_F(INFO, "va display acquired (version %d.%d)", majorVer, minorVer);
 
@@ -371,7 +369,7 @@ bool SnpEncoderVaH264::ensureVaProcSupport() {
     int numEntrypoints = vaMaxNumEntrypoints(vaDisplay);
     std::vector<VAEntrypoint> entrypoints(numEntrypoints);
     vaStatus = vaQueryConfigEntrypoints(vaDisplay,VAProfileNone,entrypoints.data(),&numEntrypoints);
-    CHECK_VASTATUS(vaStatus, "vaQueryConfigEntrypoints");
+    CHECK_VASTATUS(vaStatus, "vaQueryConfigEntrypoints")
 
     for (int32_t i = 0; !supportsVideoProcessing && i < numEntrypoints; i++) {
         if (entrypoints[i] == VAEntrypointVideoProc)
@@ -402,7 +400,7 @@ bool SnpEncoderVaH264::ensureVaProcSupport() {
     };
 
     vaStatus = spVideoDevice->CheckFeatureSupport(D3D12_FEATURE_VIDEO_PROCESS_SUPPORT, &dx12ProcCaps, sizeof(dx12ProcCaps));
-    CHECK_VASTATUS(vaStatus, "spVideoDevice->CheckFeatureSupport");
+    CHECK_VASTATUS(vaStatus, "spVideoDevice->CheckFeatureSupport")
     if ((dx12ProcCaps.SupportFlags & D3D12_VIDEO_PROCESS_SUPPORT_FLAG_SUPPORTED) == 0) {
         LOG_F(ERROR, "VAEntrypointVideoProc not supported for format DXGI_FORMAT_R8G8B8A8_UNORM.");
         return false;
@@ -412,7 +410,7 @@ bool SnpEncoderVaH264::ensureVaProcSupport() {
     dx12ProcCaps.OutputFormat.Format = DXGI_FORMAT_NV12;
     dx12ProcCaps.OutputFormat.ColorSpace = DXGI_COLOR_SPACE_YCBCR_STUDIO_G22_LEFT_P709;
     vaStatus = spVideoDevice->CheckFeatureSupport(D3D12_FEATURE_VIDEO_PROCESS_SUPPORT, &dx12ProcCaps, sizeof(dx12ProcCaps));
-    CHECK_VASTATUS(vaStatus, "spVideoDevice->CheckFeatureSupport");
+    CHECK_VASTATUS(vaStatus, "spVideoDevice->CheckFeatureSupport")
 
     if ((dx12ProcCaps.SupportFlags & D3D12_VIDEO_PROCESS_SUPPORT_FLAG_SUPPORTED) == 0) {
         LOG_F(ERROR, "VAEntrypointVideoProc not supported for conversion DXGI_FORMAT_R8G8B8A8_UNORM to DXGI_FORMAT_NV12.");
@@ -433,7 +431,7 @@ bool SnpEncoderVaH264::ensureVaEncSupport() {
     int numEntrypoints = vaMaxNumEntrypoints(vaDisplay);
     std::vector<VAEntrypoint> entrypoints(numEntrypoints);
     vaStatus = vaQueryConfigEntrypoints(vaDisplay,VAProfileH264Main,entrypoints.data(),&numEntrypoints);
-    CHECK_VASTATUS(vaStatus, "vaQueryConfigEntrypoints for VAProfileH264Main");
+    CHECK_VASTATUS(vaStatus, "vaQueryConfigEntrypoints for VAProfileH264Main")
 
     for (int32_t i = 0; !supportsH264Enc && i < numEntrypoints; i++) {
         if (entrypoints[i] == VAEntrypointEncSlice)
@@ -478,12 +476,12 @@ bool SnpEncoderVaH264::createVaSurfaces() {
     vaStatus = vaCreateSurfaces(vaDisplay,VA_RT_FORMAT_RGB32, width, height,
             vaRGBASurfaces,vaNumRGBASurfaces,createSurfacesAttribList,
             _countof(createSurfacesAttribList));
-    CHECK_VASTATUS(vaStatus, "vaCreateSurfaces");
+    CHECK_VASTATUS(vaStatus, "vaCreateSurfaces")
 
     createSurfacesAttribList[0].value.value.i = VA_FOURCC_NV12;
     vaStatus = vaCreateSurfaces(vaDisplay,VA_RT_FORMAT_YUV420, width, height,
             &vaSurfaceNV12,1,createSurfacesAttribList,_countof(createSurfacesAttribList));
-    CHECK_VASTATUS(vaStatus, "vaCreateSurfaces");
+    CHECK_VASTATUS(vaStatus, "vaCreateSurfaces")
 
     return result;
 error:
@@ -530,7 +528,7 @@ bool SnpEncoderVaH264::importRenderTargetsToVa() {
     for (size_t i = 0; i < FrameCount; i++) {
         HRESULT hr = device->CreateSharedHandle(renderTargets[i].Get(), nullptr,GENERIC_ALL,
                                                   nullptr,&renderTargets2[i]);
-        CHECK_VASTATUS(hr, "device->CreateSharedHandle");
+        CHECK_VASTATUS(hr, "device->CreateSharedHandle")
     }
     createSurfacesAttribList[2].value.value.p = renderTargets;
 
@@ -545,7 +543,7 @@ bool SnpEncoderVaH264::importRenderTargetsToVa() {
             FrameCount,
             createSurfacesAttribList,
             _countof(createSurfacesAttribList));
-    CHECK_VASTATUS(vaStatus, "vaCreateSurfaces");
+    CHECK_VASTATUS(vaStatus, "vaCreateSurfaces")
 
     return result;
 error:
@@ -558,46 +556,46 @@ bool SnpEncoderVaH264::initVaProcContext() {
 
     vaStatus = vaCreateConfig(vaDisplay, VAProfileNone, VAEntrypointVideoProc, nullptr,
             0,&vaProcConfigId);
-    CHECK_VASTATUS(vaStatus, "vaCreateConfig");
+    CHECK_VASTATUS(vaStatus, "vaCreateConfig")
 
     // Context for color rgb to yuv conversion
     {
         vaStatus = vaCreateContext(vaDisplay,vaProcConfigId,(int)width,(int)height,
                 VA_PROGRESSIVE,vaRenderTargets,FrameCount,&vaColorConvCtx);
-        CHECK_VASTATUS(vaStatus, "vaCreateContext");
+        CHECK_VASTATUS(vaStatus, "vaCreateContext")
 
         vaStatus = vaCreateBuffer(vaDisplay,vaColorConvCtx,VAProcPipelineParameterBufferType,
                 sizeof(VAProcPipelineParameterBuffer),1,nullptr,&vaColorConvBuf);
-        CHECK_VASTATUS(vaStatus, "vaCreateBuffer");
+        CHECK_VASTATUS(vaStatus, "vaCreateBuffer")
     }
 
     // Context for single RGB -> RGB copy
     {
         vaStatus = vaCreateContext(vaDisplay,vaProcConfigId,(int)width,(int)height,
                 VA_PROGRESSIVE,vaRenderTargets,FrameCount,&vaCopyCtx);
-        CHECK_VASTATUS(vaStatus, "vaCreateContext");
+        CHECK_VASTATUS(vaStatus, "vaCreateContext")
 
         vaStatus = vaCreateBuffer(vaDisplay,vaCopyCtx,VAProcPipelineParameterBufferType,
                 sizeof(VAProcPipelineParameterBuffer),1,nullptr,&vaCopyBuf);
-        CHECK_VASTATUS(vaStatus, "vaCreateBuffer");
+        CHECK_VASTATUS(vaStatus, "vaCreateBuffer")
     }
 
     // Context for multiple RGB -> RGB blend
     {
         vaStatus = vaCreateContext(vaDisplay,vaProcConfigId,(int)width,(int)height,
                 VA_PROGRESSIVE,vaRenderTargets,FrameCount,&vaBlendCtx);
-        CHECK_VASTATUS(vaStatus, "vaCreateContext");
+        CHECK_VASTATUS(vaStatus, "vaCreateContext")
 
         vaStatus = vaCreateBuffer(vaDisplay,vaBlendCtx,VAProcPipelineParameterBufferType,
                 sizeof(VAProcPipelineParameterBuffer),1,nullptr,&vaBlendBuf);
-        CHECK_VASTATUS(vaStatus, "vaCreateBuffer");
+        CHECK_VASTATUS(vaStatus, "vaCreateBuffer")
 
         vaStatus = vaQueryVideoProcPipelineCaps(vaDisplay,vaBlendCtx,nullptr,0,
                 &procPipelineCaps);
-        CHECK_VASTATUS(vaStatus, "vaQueryVideoProcPipelineCaps");
+        CHECK_VASTATUS(vaStatus, "vaQueryVideoProcPipelineCaps")
 
-        int32_t XIncrement = (int32_t)width / numVPRegions;
-        int32_t YIncrement = (int32_t)height / numVPRegions;
+        auto XIncrement = (int32_t)(width / numVPRegions);
+        auto YIncrement = (int32_t)(height / numVPRegions);
         int32_t XShift = 6;
         int32_t YShift = 6;
         for (INT i = 0; i < regionVariations; i++) {
@@ -607,15 +605,15 @@ bool SnpEncoderVaH264::initVaProcContext() {
             pBlendRegions[i][numVPRegions - 1].height = height / 2;
 
             for (INT j = 0; j < numVPRegions - 1; j++) {
-                pBlendRegions[i][j].x = std::min((int16_t)width, (int16_t)(j * XIncrement + i * 0.25f * j * XShift));
-                pBlendRegions[i][j].y = std::min((int16_t)height, (int16_t)(j * YIncrement + i * 0.5f * YShift));
-                pBlendRegions[i][j].width = regionsSizeRatio * XIncrement;
-                pBlendRegions[i][j].height = regionsSizeRatio * YIncrement;
+                pBlendRegions[i][j].x = std::min((int16_t)width, (int16_t)((float)j * (float)XIncrement + (float)i * 0.25f * (float)j * (float)XShift));
+                pBlendRegions[i][j].y = std::min((int16_t)height, (int16_t)((float)j * (float)YIncrement + (float)i * 0.5f * (float)YShift));
+                pBlendRegions[i][j].width = (uint16_t)(regionsSizeRatio * (float)XIncrement);
+                pBlendRegions[i][j].height = (uint16_t)(regionsSizeRatio * (float)YIncrement);
             }
 
             colors[i][0] = 0.0f;
             colors[i][1] = 0.2f;
-            colors[i][2] = 0.1f + std::min(0.4f, i*0.0125f);
+            colors[i][2] = 0.1f + std::min(0.4f, (float)i*0.0125f);
             colors[i][3] = 1.0f;
         }
     }
@@ -632,32 +630,32 @@ bool SnpEncoderVaH264::initVaEncContext() {
     finalEncodedBitstream.open("output_bitstream.h264", std::ios::binary);
     vaStatus = vaCreateConfig(vaDisplay,VAProfileH264Main,VAEntrypointEncSlice,
             nullptr,0,&vaEncConfigId);
-    CHECK_VASTATUS(vaStatus, "vaCreateConfig");
+    CHECK_VASTATUS(vaStatus, "vaCreateConfig")
 
     vaStatus = vaCreateContext(vaDisplay,vaEncConfigId,(int)width,(int)height,
             VA_PROGRESSIVE,vaRenderTargets,FrameCount,&vaEncContextId);
-    CHECK_VASTATUS(vaStatus, "vaCreateContext");
+    CHECK_VASTATUS(vaStatus, "vaCreateContext")
 
     vaStatus = vaCreateBuffer(vaDisplay,vaEncContextId,VAEncSequenceParameterBufferType,
             sizeof(VAEncSequenceParameterBufferH264),1, nullptr,
             &vaEncPipelineBufferId[VA_H264ENC_BUFFER_INDEX_SEQ]);
-    CHECK_VASTATUS(vaStatus, "vaCreateBuffer");
+    CHECK_VASTATUS(vaStatus, "vaCreateBuffer")
 
     vaStatus = vaCreateBuffer(vaDisplay,vaEncContextId,VAEncPictureParameterBufferType,
             sizeof(VAEncPictureParameterBufferH264),1,nullptr,
             &vaEncPipelineBufferId[VA_H264ENC_BUFFER_INDEX_PIC]);
-    CHECK_VASTATUS(vaStatus, "vaCreateBuffer");
+    CHECK_VASTATUS(vaStatus, "vaCreateBuffer")
 
     vaStatus = vaCreateBuffer(vaDisplay,vaEncContextId, VAEncSliceParameterBufferType,
             sizeof(VAEncSliceParameterBufferH264),1,nullptr,
             &vaEncPipelineBufferId[VA_H264ENC_BUFFER_INDEX_SLICE]);
-    CHECK_VASTATUS(vaStatus, "vaCreateBuffer");
+    CHECK_VASTATUS(vaStatus, "vaCreateBuffer")
 
     // Worst case within reason assume same as uncompressed surface
     vaStatus = vaCreateBuffer(vaDisplay,vaEncContextId,VAEncCodedBufferType,
             width * height * 3,1,nullptr,
             &vaEncPipelineBufferId[VA_H264ENC_BUFFER_INDEX_COMPRESSED_BIT]);
-    CHECK_VASTATUS(vaStatus, "vaCreateBuffer");
+    CHECK_VASTATUS(vaStatus, "vaCreateBuffer")
 
     return result;
 error:
@@ -672,13 +670,14 @@ void SnpEncoderVaH264::onInputData(uint32_t pipeId, const uint8_t *data, uint32_
 bool SnpEncoderVaH264::encodeFrameVa(const uint8_t *data, uint32_t len) {
     bool result = true;
     VAStatus status;
+    ID3D12CommandList* ppCommandLists[] = { commandList.Get() };
 
     // Record all the commands we need to render the scene into the command list.
     // In this case, clear the render target with a predefined color
-    populateCommandList();
+    result = populateCommandList();
+    CHECK_RESULT(result, "populateCommandList");
 
     // Execute the command list.
-    ID3D12CommandList* ppCommandLists[] = { commandList.Get() };
     commandQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
 
     // Before calling PerformVAWorkload, we must ensure the following:
@@ -689,7 +688,8 @@ bool SnpEncoderVaH264::encodeFrameVa(const uint8_t *data, uint32_t len) {
     //      * Call WaitForPreviousFrame below for this end, to wait for the ExecuteCommandLists below
     //          that clears this render target with a predefined solid color.
 
-    waitForPreviousFrame();
+    result = waitForPreviousFrame();
+    CHECK_RESULT(result, "waitForPreviousFrame");
 
     // Perform the VA workload on the current render target
     // The VA driver internally manages any other state transitions and it is expected that
@@ -698,9 +698,11 @@ bool SnpEncoderVaH264::encodeFrameVa(const uint8_t *data, uint32_t len) {
     // Currently only m_VARenderTargets[m_frameIndex] is used in the VA workload,
     // transition it back to present mode for the call below.
 
-    performVaWorkload();
+    result = performVaWorkload();
+    CHECK_RESULT(result, "performVaWorkload");
 
-    waitForPreviousFrame();
+    result = waitForPreviousFrame();
+    CHECK_RESULT(result, "waitForPreviousFrame");
 
     return result;
 error:
@@ -712,19 +714,19 @@ bool SnpEncoderVaH264::populateCommandList() {
     HRESULT status;
     CD3DX12_RESOURCE_BARRIER barrier1;
     CD3DX12_RESOURCE_BARRIER barrier2;
-    CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(rtvHeap->GetCPUDescriptorHandleForHeapStart(), frameIndex, m_rtvDescriptorSize);
+    CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(rtvHeap->GetCPUDescriptorHandleForHeapStart(), (int)frameIndex, m_rtvDescriptorSize);
 
     // Command list allocators can only be reset when the associated
     // command lists have finished execution on the GPU; apps should use
     // fences to determine GPU execution progress.
     status = commandAllocator->Reset();
-    CHECK_VASTATUS(status, "commandAllocator->Reset");
+    CHECK_VASTATUS(status, "commandAllocator->Reset")
 
     // However, when ExecuteCommandList() is called on a particular command
     // list, that command list can then be reset at any time and must be before
     // re-recording.
     status = commandList->Reset(commandAllocator.Get(), pipelineState.Get());
-    CHECK_VASTATUS(status, "commandList->Reset");
+    CHECK_VASTATUS(status, "commandList->Reset")
 
     // Indicate that the back buffer will be used as a render target.
     barrier1 = CD3DX12_RESOURCE_BARRIER::Transition(renderTargets[frameIndex].Get(),
@@ -740,7 +742,7 @@ bool SnpEncoderVaH264::populateCommandList() {
     commandList->ResourceBarrier(1, &barrier2);
 
     status = commandList->Close();
-    CHECK_VASTATUS(status, "commandList->Close");
+    CHECK_VASTATUS(status, "commandList->Close")
 
     return result;
 error:
@@ -785,16 +787,16 @@ bool SnpEncoderVaH264::destroyVa() {
     // Destroy VA Common
 
     status = vaDestroySurfaces(vaDisplay, vaRenderTargets, FrameCount);
-    CHECK_VASTATUS(status, "vaDestroySurfaces");
+    CHECK_VASTATUS(status, "vaDestroySurfaces")
 
     status = vaDestroySurfaces(vaDisplay, vaRGBASurfaces, vaNumRGBASurfaces);
-    CHECK_VASTATUS(status, "vaDestroySurfaces");
+    CHECK_VASTATUS(status, "vaDestroySurfaces")
 
     status = vaDestroySurfaces(vaDisplay, &vaSurfaceNV12, 1);
-    CHECK_VASTATUS(status, "vaDestroySurfaces");
+    CHECK_VASTATUS(status, "vaDestroySurfaces")
 
     vaTerminate(vaDisplay);
-    CHECK_VASTATUS(status, "vaTerminate");
+    CHECK_VASTATUS(status, "vaTerminate")
 
     return result;
 error:
@@ -806,25 +808,25 @@ bool SnpEncoderVaH264::destroyVaProc() {
     VAStatus status;
 
     status = vaDestroyConfig(vaDisplay, vaProcConfigId);
-    CHECK_VASTATUS(status, "vaDestroyConfig");
+    CHECK_VASTATUS(status, "vaDestroyConfig")
 
     status = vaDestroyContext(vaDisplay, vaCopyCtx);
-    CHECK_VASTATUS(status, "vaDestroyContext");
+    CHECK_VASTATUS(status, "vaDestroyContext")
 
     status = vaDestroyContext(vaDisplay, vaBlendCtx);
-    CHECK_VASTATUS(status, "vaDestroyContext");
+    CHECK_VASTATUS(status, "vaDestroyContext")
 
     status = vaDestroyContext(vaDisplay, vaColorConvCtx);
-    CHECK_VASTATUS(status, "vaDestroyContext");
+    CHECK_VASTATUS(status, "vaDestroyContext")
 
     status = vaDestroyBuffer(vaDisplay, vaCopyBuf);
-    CHECK_VASTATUS(status, "vaDestroyBuffer");
+    CHECK_VASTATUS(status, "vaDestroyBuffer")
 
     status = vaDestroyBuffer(vaDisplay, vaColorConvBuf);
-    CHECK_VASTATUS(status, "vaDestroyBuffer");
+    CHECK_VASTATUS(status, "vaDestroyBuffer")
 
     status = vaDestroyBuffer(vaDisplay, vaBlendBuf);
-    CHECK_VASTATUS(status, "vaDestroyBuffer");
+    CHECK_VASTATUS(status, "vaDestroyBuffer")
 
     return result;
 error:
@@ -836,14 +838,14 @@ bool SnpEncoderVaH264::destroyVaEnc() {
     VAStatus status;
 
     status = vaDestroyConfig(vaDisplay, vaEncConfigId);
-    CHECK_VASTATUS(status, "vaDestroyConfig");
+    CHECK_VASTATUS(status, "vaDestroyConfig")
 
     status = vaDestroyContext(vaDisplay, vaEncContextId);
-    CHECK_VASTATUS(status, "vaDestroyContext");
+    CHECK_VASTATUS(status, "vaDestroyContext")
 
     for (UINT i = 0; i < _countof(vaEncPipelineBufferId); i++) {
         vaDestroyBuffer(vaDisplay, vaEncPipelineBufferId[i]);
-        CHECK_VASTATUS(status, "vaDestroyBuffer");
+        CHECK_VASTATUS(status, "vaDestroyBuffer")
     }
 
     finalEncodedBitstream.flush();
