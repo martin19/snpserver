@@ -59,14 +59,14 @@ set(AMF_SOURCES
 #if(VA_FOUND)
 #    add_definitions(-DHAVE_LIBVA)
 #endif(VA_FOUND)
-set(VA_INCLUDE_DIR extern/libva/x64/include/)
-include_directories(
-        ${VA_INCLUDE_DIR}
+set(VA_INCLUDE_DIRS
+    extern/libva/x64/include/
+    extern/libva/x64/include/directx
 )
+include_directories(${VA_INCLUDE_DIRS})
 set(VA_SOURCES
         src/stream/video/SnpEncoderVaH264.cpp
         src/stream/video/h264/VaBitstream.cpp
-        src/stream/video/va/DXUtil.cpp
 )
 set(VA_LIBRARIES
     ${CMAKE_CURRENT_SOURCE_DIR}/extern/libva/x64/lib/libva.dll.a

@@ -6,11 +6,8 @@
 #include "va/va.h"
 #include "va/va_enc_h264.h"
 #include "va/va_win32.h"
-#include <d3d12.h>
-#include <directx/d3d12video.h>
-#include <directx/d3dx12.h>
+#include "d3d12video.h"
 #include <cassert>
-#include "va/DXUtil.h"
 
 //TODO: query d3d12 capabilities: (see https://github.com/microsoft/DirectX-Graphics-Samples/blob/master/Samples/Desktop/D3D12HelloWorld/src/HelloVAEncode/D3D12HelloVAEncode.cpp)
 // https://www.vcodex.com/h264avc-picture-management/
@@ -68,80 +65,7 @@ void SnpEncoderVaH264::stop() {
 }
 
 bool SnpEncoderVaH264::initVaEncoder() {
-    initD3D12Pipeline();
     initVaPipeline();
-}
-
-bool SnpEncoderVaH264::initD3D12Pipeline() {
-    bool result = true;
-//    HRESULT status;
-//    UINT dxgiFactoryFlags = 0;
-//    D3D12_COMMAND_QUEUE_DESC queueDesc = {};
-//    DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
-//    ComPtr<IDXGISwapChain1> swapChain;
-//
-//#if defined(_DEBUG)
-//    // Enable the debug layer (requires the Graphics Tools "optional feature").
-//    // NOTE: Enabling the debug layer after device creation will invalidate the active device.
-//    {
-//        ComPtr<ID3D12Debug> debugController;
-//        if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController))))
-//        {
-//            debugController->EnableDebugLayer();
-//
-//            // Enable additional debug layers.
-//            dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
-//        }
-//    }
-//#endif
-//
-//    Microsoft::WRL::ComPtr<IDXGIFactory4> factory;
-//    status = CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&factory));
-//    CHECK_VASTATUS(status, "CreateDXGIFactory2");
-//
-//
-//    if (useWarpDevice) {
-//        status = factory->EnumWarpAdapter(IID_PPV_ARGS(&adapter))
-//        CHECK_VASTATUS(status, "factory->EnumWarpAdapter");
-//        status = D3D12CreateDevice(adapter.Get(), D3D_FEATURE_LEVEL_11_0,IID_PPV_ARGS(&device));
-//        CHECK_VASTATUS(status, "D3D12CreateDevice");
-//    } else {
-//        DXUtil::GetHardwareAdapter(factory.Get(), &adapter, true);
-//        status = D3D12CreateDevice(adapter.Get(),D3D_FEATURE_LEVEL_11_0,IID_PPV_ARGS(&device));
-//        CHECK_VASTATUS(status, "D3D12CreateDevice");
-//    }
-//
-//    // Describe and create the command queue.
-//    queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-//    queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-//
-//    status = device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&commandQueue)));
-//    CHECK_VASTATUS(status, "device->CreateCommandQueue");
-//
-//    // Describe and create the swap chain.
-//    swapChainDesc.BufferCount = FrameCount;
-//    swapChainDesc.Width = width;
-//    swapChainDesc.Height = height;
-//    swapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-//    swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-//    swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-//    swapChainDesc.SampleDesc.Count = 1;
-//
-//
-//    status = factory->CreateSwapChainForHwnd(
-//            commandQueue.Get(),        // Swap chain needs the queue so that it can force a flush on it.
-//            Win32Application::GetHwnd(),
-//            &swapChainDesc,
-//            nullptr,
-//            nullptr,
-//            &swapChain
-//    ));
-//
-//    //TODO: unclear if we need DX12 pipeline. Probably encoder works without it.
-
-    return result;
-error:
-    return result;
 }
 
 bool SnpEncoderVaH264::performVaEncodeFrame(VASurfaceID dstSurface, VABufferID dstCompressedbit) {
@@ -320,8 +244,8 @@ bool SnpEncoderVaH264::initVaPipeline() {
     bool result;
     result = initVaDisplay();
     CHECK_RESULT(result, "initVaDisplay")
-    result = ensureVaProcSupport();
-    CHECK_RESULT(result, "ensureVaProcSupport")
+//    result = ensureVaProcSupport();
+//    CHECK_RESULT(result, "ensureVaProcSupport")
     result = ensureVaEncSupport();
     CHECK_RESULT(result, "ensureVaEncSupport")
     result = createVaSurfaces();
@@ -381,8 +305,9 @@ bool SnpEncoderVaH264::ensureVaProcSupport() {
         return false;
     }
 
-    vaStatus = device->QueryInterface(IID_PPV_ARGS(spVideoDevice.GetAddressOf()));
-    CHECK_VASTATUS(vaStatus, "device->QueryInterface");
+//TODO: doesnt work on mingw
+//    vaStatus = device->QueryInterface(IID_PPV_ARGS(spVideoDevice.GetAddressOf()));
+//    CHECK_VASTATUS(vaStatus, "device->QueryInterface");
     spVideoDevice->CheckFeatureSupport(D3D12_FEATURE_VIDEO_PROCESS_MAX_INPUT_STREAMS, &vpMaxInputStreams, sizeof(vpMaxInputStreams));
     numVPRegions = std::min(vpMaxInputStreams.MaxInputStreams, (UINT)4);
 
@@ -712,34 +637,34 @@ error:
 bool SnpEncoderVaH264::populateCommandList() {
     bool result = true;
     HRESULT status;
-    CD3DX12_RESOURCE_BARRIER barrier1;
-    CD3DX12_RESOURCE_BARRIER barrier2;
-    CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(rtvHeap->GetCPUDescriptorHandleForHeapStart(), (int)frameIndex, m_rtvDescriptorSize);
-
-    // Command list allocators can only be reset when the associated
-    // command lists have finished execution on the GPU; apps should use
-    // fences to determine GPU execution progress.
-    status = commandAllocator->Reset();
-    CHECK_VASTATUS(status, "commandAllocator->Reset")
-
-    // However, when ExecuteCommandList() is called on a particular command
-    // list, that command list can then be reset at any time and must be before
-    // re-recording.
-    status = commandList->Reset(commandAllocator.Get(), pipelineState.Get());
-    CHECK_VASTATUS(status, "commandList->Reset")
-
-    // Indicate that the back buffer will be used as a render target.
-    barrier1 = CD3DX12_RESOURCE_BARRIER::Transition(renderTargets[frameIndex].Get(),
-        D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-    commandList->ResourceBarrier(1, &barrier1);
-
-    // Record commands.
-    commandList->ClearRenderTargetView(rtvHandle, colors[curRegionVariation], 0, nullptr);
-
-    // Indicate that the back buffer will now be used to present.
-    barrier2 = CD3DX12_RESOURCE_BARRIER::Transition(renderTargets[frameIndex].Get(),
-        D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-    commandList->ResourceBarrier(1, &barrier2);
+//    CD3DX12_RESOURCE_BARRIER barrier1;
+//    CD3DX12_RESOURCE_BARRIER barrier2;
+//    CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(rtvHeap->GetCPUDescriptorHandleForHeapStart(), (int)frameIndex, m_rtvDescriptorSize);
+//
+//    // Command list allocators can only be reset when the associated
+//    // command lists have finished execution on the GPU; apps should use
+//    // fences to determine GPU execution progress.
+//    status = commandAllocator->Reset();
+//    CHECK_VASTATUS(status, "commandAllocator->Reset")
+//
+//    // However, when ExecuteCommandList() is called on a particular command
+//    // list, that command list can then be reset at any time and must be before
+//    // re-recording.
+//    status = commandList->Reset(commandAllocator.Get(), pipelineState.Get());
+//    CHECK_VASTATUS(status, "commandList->Reset")
+//
+//    // Indicate that the back buffer will be used as a render target.
+//    barrier1 = CD3DX12_RESOURCE_BARRIER::Transition(renderTargets[frameIndex].Get(),
+//        D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+//    commandList->ResourceBarrier(1, &barrier1);
+//
+//    // Record commands.
+//    commandList->ClearRenderTargetView(rtvHandle, colors[curRegionVariation], 0, nullptr);
+//
+//    // Indicate that the back buffer will now be used to present.
+//    barrier2 = CD3DX12_RESOURCE_BARRIER::Transition(renderTargets[frameIndex].Get(),
+//        D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+//    commandList->ResourceBarrier(1, &barrier2);
 
     status = commandList->Close();
     CHECK_VASTATUS(status, "commandList->Close")

@@ -78,7 +78,7 @@ int main() {
     SnpEncoderVaH264 snpEncoder(vaH264Options);
 
     SnpSinkFileOptions sinkFileOptions = {};
-    sinkFileOptions.fileName = "test1amfh264.h264";
+    sinkFileOptions.fileName = "test1vah264.h264";
     SnpSinkFile snpSinkFile(sinkFileOptions);
 
     //TODO: every component needs a pipeId (verify this) maybe a constructor parameter is necessary
