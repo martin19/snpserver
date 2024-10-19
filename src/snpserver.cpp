@@ -55,7 +55,7 @@ int main() {
 
     SnpSourceDummyOptions sourceDummyOptions = {};
     sourceDummyOptions.width = 1920;
-    sourceDummyOptions.height = 1080;
+    sourceDummyOptions.height = 1088;
     sourceDummyOptions.fps = 60.0;
     SnpSourceDummy snpSourceDummy(sourceDummyOptions);
 
@@ -73,7 +73,7 @@ int main() {
 
     SnpEncoderVaH264Options vaH264Options = {};
     vaH264Options.width = 1920;
-    vaH264Options.height = 1080;
+    vaH264Options.height = 1088;
     vaH264Options.qp = 10.0;
     SnpEncoderVaH264 snpEncoder(vaH264Options);
 

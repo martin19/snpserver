@@ -33,6 +33,7 @@ public:
 private:
     uint32_t width = 0;
     uint32_t height = 0;
+    uint8_t* yuvBuffer = nullptr;
 
     void onInputData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete);
 
@@ -59,26 +60,7 @@ private:
     //va objects
     VADisplay vaDisplay = nullptr;
     VASurfaceID vaRenderTargets[FrameCount] = { };
-    static const uint32_t vaNumRGBASurfaces = 16;
-    VASurfaceID vaRGBASurfaces[vaNumRGBASurfaces] = { };
-    VASurfaceID vaSurfaceNV12 = 0;
-    UINT numVPRegions = 0;
-    VAConfigID vaProcConfigId = 0;
-    // Context for color rgb to yuv conversion
-    VAContextID vaColorConvCtx = 0;
-    VABufferID vaColorConvBuf = 0;
-    VAContextID vaCopyCtx = 0;
-    VABufferID vaCopyBuf = 0;
-    VAContextID vaBlendCtx = 0;
-    VABufferID vaBlendBuf = 0;
-    VAProcPipelineCaps procPipelineCaps = { };
-    const float alphaBlend = 0.75f;
-    const float regionsSizeRatio = 1.2f;
-    static const UINT regionVariations = 216;
-    UINT curRegionVariation = 0;
-    /*Prepare two sets of regions so there's some motion*/
-    VARectangle pBlendRegions[regionVariations][vaNumRGBASurfaces];
-    float colors[regionVariations][4];
+    VASurfaceID vaSurfaceYuv = 0;
 
     // Video Encoder
     VAConfigID vaEncConfigId = 0;
@@ -89,34 +71,21 @@ private:
     static const VABufferID VA_H264ENC_BUFFER_INDEX_SLICE = 2;
     static const VABufferID VA_H264ENC_BUFFER_INDEX_COMPRESSED_BIT = 3;
     static const UINT H264_MB_PIXEL_SIZE = 16;
-    std::ofstream finalEncodedBitstream;
 
     static void vaInfoCallback([[maybe_unused]] void *context, char *message);
     static void vaErrorCallback(void *context, char *message);
 
-    //initialization of va and directx
+    //initialization of va
     bool initVaPipeline();
-    bool initD3D12Pipeline();
     bool initVaDisplay();
-    bool ensureVaProcSupport();
     bool ensureVaEncSupport();
     bool createVaSurfaces();
-    bool importRenderTargetsToVa();
-    bool initVaProcContext();
     bool initVaEncoder();
     bool initVaEncContext();
 
     bool encodeFrameVa(const uint8_t *data, uint32_t len);
-    bool populateCommandList();
-    bool waitForPreviousFrame();
-    bool performVaWorkload();
-    bool performVaEncodeFrame(VASurfaceID dstSurface, VABufferID dstCompressedBit);
-    bool performVaBlit(VAContextID context, VABufferID buffer, VASurfaceID *pInSurfaces, UINT inSurfacesCount,
-                       VARectangle *pSrcRegions, VARectangle *pDstRegions, VASurfaceID dstSurface, float alpha);
-
 
     bool destroyVa();
-    bool destroyVaProc();
     bool destroyVaEnc();
 };
 

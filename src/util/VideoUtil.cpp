@@ -1,7 +1,7 @@
 #include "VideoUtil.h"
 #include <algorithm>
 
-void VideoUtil::rgba2NV1(uint8_t *destination, const uint8_t *rgb, uint32_t srcWidth, uint32_t srcHeight, uint32_t dstWidth, uint32_t dstHeight) {
+void VideoUtil::rgba2NV12(uint8_t *destination, const uint8_t *rgb, uint32_t srcWidth, uint32_t srcHeight, uint32_t dstWidth, uint32_t dstHeight) {
     int image_size = dstWidth * dstHeight;
     int upos = image_size;
     int vpos = image_size + 1;

@@ -65,8 +65,9 @@ set(VA_INCLUDE_DIRS
 )
 include_directories(${VA_INCLUDE_DIRS})
 set(VA_SOURCES
-        src/stream/video/SnpEncoderVaH264.cpp
-        src/stream/video/h264/VaBitstream.cpp
+    src/stream/video/SnpEncoderVaH264.cpp
+    src/stream/video/h264/VaBitstream.cpp
+    src/stream/video/h264/VaUtils.cpp
 )
 set(VA_LIBRARIES
     ${CMAKE_CURRENT_SOURCE_DIR}/extern/libva/x64/lib/libva.dll.a
@@ -270,7 +271,7 @@ add_executable(snpclient
     ${MMALH264_SOURCES}
     ${OPENH264_SOURCES}
     ${AMF_SOURCES}
-    ${VA_SOURCES})
+    ${VA_SOURCES} src/stream/video/h264/VaUtils.cpp src/stream/video/h264/VaUtils.h)
 target_link_libraries(snpclient
     Qt::Core
     Qt::Gui
