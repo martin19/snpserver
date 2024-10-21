@@ -61,8 +61,8 @@ SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : Snp
     idrPeriod = 10000;
     initialQp = 25;
     minimalQp = 25;
-    iFramePeriod = 6;
-    idrFramePeriod = 0;
+    iFramePeriod = 1;
+    idrFramePeriod = 1;
     ipPeriod = 1;
     configAttribNum = 0;
     currentFrameNum = 0;
@@ -186,7 +186,7 @@ bool SnpEncoderVaH264::initVa() {
 
         LOG_F(INFO, "Support VAConfigAttribEncPackedHeaders\n");
 
-        h264PackedHeader = true;
+        h264PackedHeader = false;
         configAttrib[configAttribNum].type = VAConfigAttribEncPackedHeaders;
         configAttrib[configAttribNum].value = VA_ENC_PACKED_HEADER_NONE;
 
@@ -304,7 +304,7 @@ bool SnpEncoderVaH264::VaH264EncoderEncode(const uint8_t *framebuffer, uint32_t 
 
 //    std::cout << encodingFrameNum << std::endl;
 
-    bitstream = new VaBitstream(h264Profile, seqParam, picParam, sliceParam, constraintSetFlag, frameBitrate);
+//    bitstream = new VaBitstream(h264Profile, seqParam, picParam, sliceParam, constraintSetFlag, frameBitrate);
 
     //upload yuv data to surface
     vaStatus = vaDeriveImage(vaDisplay, srcSurface[0], &surfaceImage);
@@ -315,7 +315,8 @@ bool SnpEncoderVaH264::VaH264EncoderEncode(const uint8_t *framebuffer, uint32_t 
     vaStatus = vaMapBuffer(vaDisplay, surfaceImage.buf, &surfacePtr);
     CHECK_VASTATUS(vaStatus, "vaMapBuffer");
 
-    VideoUtil::rgba2NV12((uint8_t*)surfacePtr, framebuffer, width, height, frameWidthMbAligned, frameHeightMbAligned);
+    VideoUtil::rgba2Nv12((uint8_t*)surfacePtr, (uint8_t*)framebuffer, (int)width, (int)height,
+                         (int)surfaceImage.pitches[0], (int)surfaceImage.pitches[1]);
 
     vaStatus = vaUnmapBuffer(vaDisplay, surfaceImage.buf);
     CHECK_VASTATUS(vaStatus, "vaUnmapBuffer");
@@ -348,10 +349,10 @@ bool SnpEncoderVaH264::VaH264EncoderEncode(const uint8_t *framebuffer, uint32_t 
     if(currentFrameType == FRAME_IDR) {
         renderSequence();
         renderPicture();
-        if(h264PackedHeader) {
-            renderPackedSequence();
-            renderPackedPicture();
-        }
+//        if(h264PackedHeader) {
+//            renderPackedSequence();
+//            renderPackedPicture();
+//        }
     } else {
         renderPicture();
     }
@@ -360,13 +361,14 @@ bool SnpEncoderVaH264::VaH264EncoderEncode(const uint8_t *framebuffer, uint32_t 
     vaStatus = vaEndPicture(vaDisplay, contextId);
     CHECK_VASTATUS(vaStatus, "vaEndPicture");
 
-    vaStatus = vaSyncSurface(vaDisplay, refSurface[0]);
+    vaStatus = vaSyncSurface(vaDisplay, srcSurface[0]);
     CHECK_VASTATUS(vaStatus, "vaSyncSurface");
 
     vaStatus = vaMapBuffer(vaDisplay, codedBuf[0], (void **)&bufList);
     CHECK_VASTATUS(vaStatus, "vaMapBuffer");
 
     while(bufList != nullptr) {
+        LOG_F(INFO, "encoded size = %d", bufList->size);
         codedSize += bufList->size;
         getOutputPort(0)->onData(getPipeId(), (uint8_t*)bufList->buf, bufList->size, bufList->next == nullptr);
         bufList = (VACodedBufferSegment*)bufList->next;

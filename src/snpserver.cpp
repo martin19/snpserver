@@ -57,6 +57,8 @@ int main() {
     sourceDummyOptions.width = 1920;
     sourceDummyOptions.height = 1088;
     sourceDummyOptions.fps = 60.0;
+    sourceDummyOptions.boxCount = 5;
+    sourceDummyOptions.boxSpeed = 1;
     SnpSourceDummy snpSourceDummy(sourceDummyOptions);
 
 //    SnpEncoderAmfH264Options amfH264Options = {};
@@ -98,4 +100,5 @@ int main() {
 
     //play raw h264 file:
     //vlc file:///p:/snp/snpserver/cmake-build-release-windows/test1.h264 --demux h264
+    //c:\Program Files\VideoLAN\VLC>vlc file:///C:/Users/martin/CLionProjects/snpserver/cmake-build-debug/test1vah264.h264 --demux h264
 }
