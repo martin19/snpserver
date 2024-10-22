@@ -37,7 +37,7 @@ void handleCapabilitiesMessageCb(snp::Message* message) {
 
 int runClient() {
     componentRegistry = new SnpComponentRegistry();
-    config = new SnpConfig(R"(P:\snp\snpserver\snp.ini)");
+    config = new SnpConfig(R"(C:\Users\martin\CLionProjects\snpserver\snp.ini)");
 
     //setup local pipes
     std::vector<SnpPipe*> localPipes = SnpPipeFactory::createPipes(config->getLocalPipes());

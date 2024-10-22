@@ -13,9 +13,10 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Mo
 set(protobuf_BUILD_TESTS OFF)
 add_subdirectory("extern/protobuf-3.21.12")
 
-# library: QT 6.7.2
-set(Qt6_DIR C:/Qt/6.7.2/mingw_64/lib/cmake/Qt6/)
-set(CMAKE_PREFIX_PATH C:/Qt/6.7.2/mingw_64/lib/cmake)
+# library: QT 6.7.2+
+set(QT_VERSION 6.8.0)
+set(Qt6_DIR C:/Qt/${QT_VERSION}/mingw_64/lib/cmake/Qt6/)
+set(CMAKE_PREFIX_PATH C:/Qt/${QT_VERSION}/mingw_64/lib/cmake)
 find_package(Qt6 COMPONENTS
     Core
     Gui
@@ -54,18 +55,24 @@ set(AMF_SOURCES
     src/stream/video/SnpDecoderAmfH264.cpp
 )
 
-find_package(VA)
-if(VA_FOUND)
-    add_definitions(-DHAVE_LIBVA)
-    include_directories(
-            ${VA_INCLUDE_DIR}
-            /usr/include/libdrm #todo move this
-    )
-    set(VA_SOURCES
-            src/stream/video/SnpEncoderVaH264.cpp
-            src/stream/video/h264/VaBitstream.cpp
-    )
-endif(VA_FOUND)
+#find_package(VA)
+#if(VA_FOUND)
+#    add_definitions(-DHAVE_LIBVA)
+#endif(VA_FOUND)
+set(VA_INCLUDE_DIRS
+    extern/libva/x64/include/
+    extern/libva/x64/include/directx
+)
+include_directories(${VA_INCLUDE_DIRS})
+set(VA_SOURCES
+    src/stream/video/SnpEncoderVaH264.cpp
+    src/stream/video/h264/VaBitstream.cpp
+    src/stream/video/h264/VaUtils.cpp
+)
+set(VA_LIBRARIES
+    ${CMAKE_CURRENT_SOURCE_DIR}/extern/libva/x64/lib/libva.dll.a
+    ${CMAKE_CURRENT_SOURCE_DIR}/extern/libva/x64/lib/libva_win32.dll.a
+)
 
 find_package(MMALH264)
 if(MMALH264_FOUND)
@@ -94,7 +101,7 @@ if(UNIX)
     set(LIBDRM_FOUND TRUE)
     set(LIBX11_FOUND TRUE)
     set(LIBGL_FOUND TRUE)
-    add_library(libdrm SHARED IMPORTED src/stream/video/h264/OpenH264Api.h src/stream/output/SnpSinkDisplay.cpp src/stream/output/SnpSinkDisplay.h)
+    add_library(libdrm SHARED IMPORTED src/stream/video/h264/OpenH264Api.h src/stream/output/SnpSinkDisplay.cpp src/stream/output/SnpSinkDisplay.h src/stream/video/va/DXUtil.cpp src/stream/video/va/DXUtil.h)
     #raspberry
     #set_target_properties(libdrm PROPERTIES IMPORTED_LOCATION /usr/local/lib/arm-linux-gnueabihf/libdrm.so.2)
     #set_target_properties(libdrm PROPERTIES VERSION 2 SOVERSION 2.4)
@@ -121,7 +128,7 @@ if(LIBGL_FOUND)
     set(GL_SOURCES
         src/util/DrmUtil.cpp
         src/stream/video/SnpSourceGL.cpp
-            src/stream/network/SnpSinkNetworkTcp.cpp src/stream/network/SnpSinkNetworkTcp.h src/stream/network/sockets.h src/stream/video/SnpSourceDummy.cpp src/stream/video/SnpSourceDummy.h src/snpclient.cpp src/stream/video/SnpDecoderOpenH264.cpp src/stream/video/SnpDecoderOpenH264.h)
+    )
 endif(LIBGL_FOUND)
 
 if(LIBWEBSOCKETS_FOUND)
@@ -219,6 +226,7 @@ endif(WIN32)
 # server app
 target_link_libraries(snpserver
     ${OPENH264_LIBRARIES}
+    ${VA_LIBRARIES}
     ${SOCKET_LIBRARIES}
     ${WIN32_LIBRARIES}
     pthread
@@ -263,7 +271,7 @@ add_executable(snpclient
     ${MMALH264_SOURCES}
     ${OPENH264_SOURCES}
     ${AMF_SOURCES}
-    ${VA_SOURCES} src/stream/video/SnpEncoderAmfH264.cpp src/stream/video/SnpEncoderAmfH264.h src/stream/video/SnpDecoderAmfH264.cpp src/stream/video/SnpDecoderAmfH264.h)
+    ${VA_SOURCES} src/stream/video/h264/VaUtils.cpp src/stream/video/h264/VaUtils.h)
 target_link_libraries(snpclient
     Qt::Core
     Qt::Gui

@@ -25,6 +25,7 @@
 #include "util/PropertyUtil.h"
 #include "stream/video/SnpEncoderAmfH264.h"
 #include "stream/video/SnpDecoderAmfH264.h"
+#include "stream/video/SnpEncoderVaH264.h"
 
 
 std::vector<SnpPipe*> SnpPipeFactory::createPipes(PipeMap& pipeMap) {
@@ -86,6 +87,13 @@ SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Comp
                 options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
                 snpComponent = new SnpDecoderAmfH264(options);
             } break;
+            case snp::COMPONENT_ENCODER_INTEL: {
+                SnpEncoderVaH264Options options = {};
+                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
+                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
+                snpComponent = new SnpEncoderVaH264(options);
+            } break;
+            case snp::COMPONENT_DECODER_INTEL:
             case snp::COMPONENT_CAPTURE_VIDEO_DRM:
             case snp::COMPONENT_CAPTURE_VIDEO_X11:
             case snp::COMPONENT_CAPTURE_VIDEO_WAYLAND:
@@ -96,8 +104,6 @@ SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Comp
             case snp::COMPONENT_OUTPUT_KEYBOARD_X11:
             case snp::COMPONENT_OUTPUT_POINTER_X11:
             case snp::COMPONENT_OUTPUT_CURSOR_X11:
-            case snp::COMPONENT_ENCODER_INTEL:
-            case snp::COMPONENT_DECODER_INTEL:
             case snp::ComponentType_INT_MIN_SENTINEL_DO_NOT_USE_:
             case snp::ComponentType_INT_MAX_SENTINEL_DO_NOT_USE_:
                 break;
