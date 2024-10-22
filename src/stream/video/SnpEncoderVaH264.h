@@ -33,8 +33,8 @@ private:
 
     void onInputData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete);
 
-    bool VaH264EncoderInit();
-    bool VaH264EncoderEncode(const uint8_t *framebuffer, uint32_t len);
+    bool initVaH264Encoder();
+    bool encodeFrameVaH264(const uint8_t *framebuffer, uint32_t len);
     void VaH264EncoderDestroy();
 //    static void rgba2Yuv(uint8_t *destination, const uint8_t *rgb, int width, int height);
 
@@ -47,8 +47,7 @@ private:
     uint32_t initialQp;
     uint32_t minimalQp;
     uint32_t idrPeriod;
-    uint32_t idrFramePeriod;
-    uint32_t iFramePeriod;
+    uint32_t iPeriod;
     uint32_t ipPeriod;
     uint32_t frameWidthMbAligned;
     uint32_t frameHeightMbAligned;
