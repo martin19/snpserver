@@ -33,14 +33,14 @@ private:
 
     void onInputData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete);
 
-    bool initVaH264Encoder();
     bool encodeFrameVaH264(const uint8_t *framebuffer, uint32_t len);
-    void VaH264EncoderDestroy();
-//    static void rgba2Yuv(uint8_t *destination, const uint8_t *rgb, int width, int height);
 
-    //taken roughly from h264 encoder example from libva utils
+    bool initVaH264Encoder();
     bool initVa();
     bool setupEncode();
+    bool releaseVaH264Encoder();
+    bool releaseEncode();
+    bool releaseVa();
 
     VAProfile h264Profile;
     int frameBitrate;
@@ -62,7 +62,6 @@ private:
     int constraintSetFlag;
     VAConfigAttrib attrib[VAConfigAttribTypeMax];
     VAConfigAttrib configAttrib[VAConfigAttribTypeMax];
-    int encPackedHeaderIdx;
 
     int configAttribNum;
     VASurfaceID srcSurface[SURFACE_NUM];
@@ -73,21 +72,15 @@ private:
     VAEncSequenceParameterBufferH264 seqParam;
     VAEncPictureParameterBufferH264 picParam;
     VAEncSliceParameterBufferH264 sliceParam;
-    VAPictureH264 currentCurrPic;
     VAPictureH264 referenceFrames[SURFACE_NUM];
     VAPictureH264 refPicList0_P[SURFACE_NUM];
     VAEntrypoint requestedEntrypoint;
     VAEntrypoint selectedEntrypoint;
-    bool h264PackedHeader;
 
-    VaBitstream *bitstream;
     void updateReferenceFrames();
     bool renderSequence();
     bool renderPicture();
     bool renderSlice();
-    bool renderPackedSequence();
-    bool renderPackedPicture();
-    bool renderPackedSlice();
 
     static void vaInfoCallback(void *context, char *message);
     static void vaErrorCallback(void *context, char *message);

@@ -57,6 +57,11 @@ SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : Snp
     initialQp = 25;
     minimalQp = 25;
 
+//TODO: this setting works.
+//    idrPeriod = 1;
+//    iPeriod = 1;
+//    ipPeriod = 1;
+//TODO: this setting does not work.
     idrPeriod = 60;
     iPeriod = 30;
     ipPeriod = 1;
@@ -81,11 +86,12 @@ bool SnpEncoderVaH264::start() {
 
 void SnpEncoderVaH264::stop() {
     SnpComponent::stop();
+    releaseVaH264Encoder();
 }
 
 void SnpEncoderVaH264::onInputData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete) {
     if(!isRunning()) return;
-    this->encodeFrameVaH264(data, len);
+    encodeFrameVaH264(data, len);
 }
 
 bool SnpEncoderVaH264::initVa() {
@@ -183,7 +189,6 @@ bool SnpEncoderVaH264::initVa() {
 
         LOG_F(INFO, "Support VAConfigAttribEncPackedHeaders\n");
 
-        h264PackedHeader = false;
         configAttrib[configAttribNum].type = VAConfigAttribEncPackedHeaders;
         configAttrib[configAttribNum].value = VA_ENC_PACKED_HEADER_NONE;
 
@@ -207,7 +212,6 @@ bool SnpEncoderVaH264::initVa() {
             configAttrib[configAttribNum].value |= VA_ENC_PACKED_HEADER_MISC;
         }
 
-        encPackedHeaderIdx = configAttribNum;
         configAttribNum++;
     }
 
@@ -288,6 +292,11 @@ bool SnpEncoderVaH264::initVaH264Encoder() {
     return result;
 error:
     return result;
+}
+
+bool SnpEncoderVaH264::releaseVaH264Encoder() {
+    releaseEncode();
+    releaseVa();
 }
 
 bool SnpEncoderVaH264::encodeFrameVaH264(const uint8_t *framebuffer, uint32_t len) {
@@ -391,11 +400,6 @@ void SnpEncoderVaH264::updateReferenceFrames() {
         currentFrameNum = 0;
 }
 
-void SnpEncoderVaH264::VaH264EncoderDestroy() {
-    //release_encode();
-    //deinit_va();
-}
-
 bool SnpEncoderVaH264::renderSequence() {
     bool result = true;
     VAStatus vaStatus;
@@ -474,7 +478,6 @@ bool SnpEncoderVaH264::renderPicture() {
     picParam.CurrPic.flags = 0;
     picParam.CurrPic.TopFieldOrderCnt = 0;
     picParam.CurrPic.BottomFieldOrderCnt = 0;
-    currentCurrPic = picParam.CurrPic;
     picParam.num_ref_idx_l0_active_minus1 = 1;
     picParam.num_ref_idx_l1_active_minus1 = 0;
 
@@ -520,7 +523,6 @@ bool SnpEncoderVaH264::renderSlice() {
     if(currentFrameType == FRAME_IDR) {
         //idr-frame
         sliceParam.idr_pic_id++;
-    } else if(currentFrameType == FRAME_P) {
     } else if(currentFrameType == FRAME_P || currentFrameType == FRAME_I) {
         for(int i = 0; i < 32;i++) {
             sliceParam.RefPicList0[i].picture_id = VA_INVALID_SURFACE;
@@ -539,10 +541,6 @@ bool SnpEncoderVaH264::renderSlice() {
                               1, &sliceParam, &sliceParamBuf);
     CHECK_VASTATUS(vaStatus, "vaCreateBuffer")
 
-    if(h264PackedHeader && (configAttrib[encPackedHeaderIdx].value & VA_ENC_PACKED_HEADER_SLICE)) {
-        renderPackedSlice();
-    }
-
     vaStatus = vaRenderPicture(vaDisplay, contextId, &sliceParamBuf, 1);
     CHECK_VASTATUS(vaStatus, "vaRenderPicture")
 
@@ -551,123 +549,22 @@ bool SnpEncoderVaH264::renderSlice() {
     return result;
 }
 
-bool SnpEncoderVaH264::renderPackedSequence() {
-    bool result = true;
+bool SnpEncoderVaH264::releaseEncode() {
+    int i;
 
-    VAStatus vaStatus;
-    VAEncPackedHeaderParameterBuffer headerParameterBuffer;
-    VABufferID packedseqParaBufid, packedseqDataBufid, renderId[2];
-    unsigned int lengthInBits;
-    unsigned char *packedseqBuffer = nullptr;
+    vaDestroySurfaces(vaDisplay, &srcSurface[0], SURFACE_NUM);
+    vaDestroySurfaces(vaDisplay, &refSurface[0], SURFACE_NUM);
 
-    lengthInBits = bitstream->build_packed_seq_buffer(&packedseqBuffer);
+    for (i = 0; i < SURFACE_NUM; i++)
+        vaDestroyBuffer(vaDisplay, codedBuf[i]);
 
-    headerParameterBuffer.type = VAEncPackedHeaderSequence;
+    vaDestroyContext(vaDisplay, contextId);
+    vaDestroyConfig(vaDisplay, configId);
 
-    headerParameterBuffer.bit_length = lengthInBits; /*length_in_bits*/
-    headerParameterBuffer.has_emulation_bytes = 0;
-    vaStatus = vaCreateBuffer(vaDisplay,
-                              contextId,
-                              VAEncPackedHeaderParameterBufferType,
-                              sizeof(headerParameterBuffer), 1, &headerParameterBuffer,
-                              &packedseqParaBufid);
-    CHECK_VASTATUS(vaStatus, "vaCreateBuffer")
-
-    vaStatus = vaCreateBuffer(vaDisplay,
-                              contextId,
-                              VAEncPackedHeaderDataBufferType,
-                              (lengthInBits + 7) / 8, 1, packedseqBuffer,
-                              &packedseqDataBufid);
-    CHECK_VASTATUS(vaStatus, "vaCreateBuffer")
-
-    renderId[0] = packedseqParaBufid;
-    renderId[1] = packedseqDataBufid;
-    vaStatus = vaRenderPicture(vaDisplay, contextId, renderId, 2);
-    CHECK_VASTATUS(vaStatus, "vaRenderPicture")
-
-    free(packedseqBuffer);
-
-    return result;
-    error:
-    return result;
+    return true;
 }
 
-bool SnpEncoderVaH264::renderPackedPicture() {
-    bool result = true;
-
-    VAStatus vaStatus;
-    VAEncPackedHeaderParameterBuffer headerParameterBuffer;
-    VABufferID packedpicParaBufid, packedpicDataBufid, render_id[2];
-    unsigned int lengthInBits;
-    unsigned char *packedpicBuffer = nullptr;
-
-    lengthInBits = bitstream->build_packed_pic_buffer(&packedpicBuffer);
-    headerParameterBuffer.type = VAEncPackedHeaderPicture;
-    headerParameterBuffer.bit_length = lengthInBits;
-    headerParameterBuffer.has_emulation_bytes = 0;
-
-    vaStatus = vaCreateBuffer(vaDisplay,
-                              contextId,
-                              VAEncPackedHeaderParameterBufferType,
-                              sizeof(headerParameterBuffer), 1, &headerParameterBuffer,
-                              &packedpicParaBufid);
-    CHECK_VASTATUS(vaStatus, "vaCreateBuffer")
-
-    vaStatus = vaCreateBuffer(vaDisplay,
-                              contextId,
-                              VAEncPackedHeaderDataBufferType,
-                              (lengthInBits + 7) / 8, 1, packedpicBuffer,
-                              &packedpicDataBufid);
-    CHECK_VASTATUS(vaStatus, "vaCreateBuffer")
-
-    render_id[0] = packedpicParaBufid;
-    render_id[1] = packedpicDataBufid;
-    vaStatus = vaRenderPicture(vaDisplay, contextId, render_id, 2);
-    CHECK_VASTATUS(vaStatus, "vaRenderPicture")
-
-    free(packedpicBuffer);
-
-    return result;
-    error:
-    return result;
-}
-
-bool SnpEncoderVaH264::renderPackedSlice() {
-    bool result = true;
-
-    VAStatus vaStatus;
-    VAEncPackedHeaderParameterBuffer packedheader_param_buffer;
-    VABufferID packedsliceParaBufid, packedsliceDataBufid, renderId[2];
-    unsigned int lengthInBits;
-    unsigned char *packedsliceBuffer = nullptr;
-
-    lengthInBits = bitstream->build_packed_slice_buffer(&packedsliceBuffer);
-    packedheader_param_buffer.type = VAEncPackedHeaderSlice;
-    packedheader_param_buffer.bit_length = lengthInBits;
-    packedheader_param_buffer.has_emulation_bytes = 0;
-
-    vaStatus = vaCreateBuffer(vaDisplay,
-                              contextId,
-                              VAEncPackedHeaderParameterBufferType,
-                              sizeof(packedheader_param_buffer), 1, &packedheader_param_buffer,
-                              &packedsliceParaBufid);
-    CHECK_VASTATUS(vaStatus, "vaCreateBuffer")
-
-    vaStatus = vaCreateBuffer(vaDisplay,
-                              contextId,
-                              VAEncPackedHeaderDataBufferType,
-                              (lengthInBits + 7) / 8, 1, packedsliceBuffer,
-                              &packedsliceDataBufid);
-    CHECK_VASTATUS(vaStatus, "vaCreateBuffer")
-
-    renderId[0] = packedsliceParaBufid;
-    renderId[1] = packedsliceDataBufid;
-    vaStatus = vaRenderPicture(vaDisplay, contextId, renderId, 2);
-    CHECK_VASTATUS(vaStatus, "vaRenderPicture")
-
-    free(packedsliceBuffer);
-
-    return result;
-    error:
-    return result;
+bool SnpEncoderVaH264::releaseVa() {
+    vaTerminate(vaDisplay);
+    return true;
 }
