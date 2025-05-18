@@ -29,7 +29,6 @@ void SnpEncoderVaH264::vaErrorCallback([[maybe_unused]] void* context, char* mes
 #define FRAME_I 2
 #define FRAME_IDR 7
 
-//TODO: what are these?
 static unsigned int MaxFrameNum = (2<<4);
 static unsigned int MaxPicOrderCntLsb = (2<<16);
 static unsigned int Log2MaxFrameNum = 4;
@@ -72,6 +71,7 @@ SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : Snp
     encodingFrameNum = 0;
 
     numShortTerm = 0;
+    numRefFrames = 1;
     LOG_F(INFO, "Initialized.");
 }
 
@@ -340,6 +340,8 @@ bool SnpEncoderVaH264::encodeFrameVaH264(const uint8_t *framebuffer, uint32_t le
         currentFrameType = FRAME_P;
     }
 
+    updateRefPicList();
+
     if (currentFrameType == FRAME_IDR) {
         numShortTerm = 0;
 //        currentFrameNum = 0;
@@ -383,21 +385,35 @@ error:
     return result;
 }
 
+void SnpEncoderVaH264::updateRefPicList() {
+    currentCurrPic.picture_id = srcSurface[0];  // The surface used for the current frame
+    currentCurrPic.frame_idx = currentFrameNum; // Frame number modulo MaxFrameNum
+    currentCurrPic.flags = 0;                   // Will be set to SHORT_TERM_REFERENCE if used as reference
+    currentCurrPic.TopFieldOrderCnt = 0;
+    currentCurrPic.BottomFieldOrderCnt = 0;
+}
+
 void SnpEncoderVaH264::updateReferenceFrames() {
     int i;
+    if(currentFrameType != FRAME_B) {
+        currentCurrPic.flags = VA_PICTURE_H264_SHORT_TERM_REFERENCE;
 
-//    currentCurrPic.flags = VA_PICTURE_H264_SHORT_TERM_REFERENCE;
-//    numShortTerm++;
-//    if (numShortTerm > numRefFrames)
-//        numShortTerm = numRefFrames;
-//    for (i=numShortTerm-1; i>0; i--)
-//        referenceFrames[i] = referenceFrames[i-1];
-//    referenceFrames[0] = currentCurrPic;
+        // Shift references to make room at index 0
+        for (int i = std::min(numShortTerm, numRefFrames - 1); i > 0; --i) {
+            referenceFrames[i] = referenceFrames[i - 1];
+        }
 
-    if (currentFrameType != FRAME_B)
-        currentFrameNum++;
-    if (currentFrameNum == MaxFrameNum)
+        referenceFrames[0] = currentCurrPic;
+
+        if(numShortTerm < numRefFrames) {
+            numShortTerm++;
+        }
+    }
+
+    currentFrameNum++;
+    if (currentFrameNum == MaxFrameNum) {
         currentFrameNum = 0;
+    }
 }
 
 bool SnpEncoderVaH264::renderSequence() {
@@ -473,26 +489,21 @@ bool SnpEncoderVaH264::renderPicture() {
     VAStatus vaStatus;
     VABufferID picParamBuf;
 
-    picParam.CurrPic.picture_id = refSurface[0];
-    picParam.CurrPic.frame_idx = currentFrameNum;
-    picParam.CurrPic.flags = 0;
-    picParam.CurrPic.TopFieldOrderCnt = 0;
-    picParam.CurrPic.BottomFieldOrderCnt = 0;
-    picParam.num_ref_idx_l0_active_minus1 = 1;
+    picParam.CurrPic = currentCurrPic;
+    picParam.num_ref_idx_l0_active_minus1 = 0;
     picParam.num_ref_idx_l1_active_minus1 = 0;
 
-    for(int i = 0; i < 16; i++) {
+    // Fill the reference frame list
+    for (int i = 0; i < numShortTerm; ++i) {
+        picParam.ReferenceFrames[i] = referenceFrames[i];
+    }
+
+    for (int i = numShortTerm; i < 16; ++i) {
         picParam.ReferenceFrames[i].picture_id = VA_INVALID_SURFACE;
         picParam.ReferenceFrames[i].flags = VA_PICTURE_H264_INVALID;
     }
 
-    //setup reference frames
-    if(currentFrameType != FRAME_IDR) {
-        picParam.ReferenceFrames[0].picture_id = refSurface[0];
-        picParam.ReferenceFrames[0].flags = VA_PICTURE_H264_SHORT_TERM_REFERENCE;
-    }
-
-    picParam.pic_fields.bits.idr_pic_flag = currentFrameType == FRAME_IDR;
+    picParam.pic_fields.bits.idr_pic_flag = (currentFrameType == FRAME_IDR);
     picParam.pic_fields.bits.reference_pic_flag = 1;
     picParam.pic_fields.bits.entropy_coding_mode_flag = 0; //1 = cabac //TODO: cabac
     picParam.pic_fields.bits.deblocking_filter_control_present_flag = 0; //TODO: filter

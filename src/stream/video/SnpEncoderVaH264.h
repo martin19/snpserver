@@ -55,6 +55,7 @@ private:
     uint32_t currentFrameNum;
     uint32_t currentFrameType;
     int numShortTerm;
+    int numRefFrames;
 
     VADisplay vaDisplay;
     VAProfile vaProfile;
@@ -72,11 +73,13 @@ private:
     VAEncSequenceParameterBufferH264 seqParam;
     VAEncPictureParameterBufferH264 picParam;
     VAEncSliceParameterBufferH264 sliceParam;
+    VAPictureH264 currentCurrPic;
     VAPictureH264 referenceFrames[SURFACE_NUM];
     VAPictureH264 refPicList0_P[SURFACE_NUM];
     VAEntrypoint requestedEntrypoint;
     VAEntrypoint selectedEntrypoint;
 
+    void updateRefPicList();
     void updateReferenceFrames();
     bool renderSequence();
     bool renderPicture();
