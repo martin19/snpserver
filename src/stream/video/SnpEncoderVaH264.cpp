@@ -52,15 +52,10 @@ SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : Snp
     frameHeightMbAligned = (height + 15) & (~15);
     h264Profile = VAProfileH264ConstrainedBaseline;
     constraintSetFlag = 0;
-    frameBitrate = 30000000;
+    frameBitrate = 15000000;
     initialQp = 25;
-    minimalQp = 25;
+    minimalQp = 5;
 
-//TODO: this setting works.
-//    idrPeriod = 1;
-//    iPeriod = 1;
-//    ipPeriod = 1;
-//TODO: this setting does not work.
     idrPeriod = 60;
     iPeriod = 30;
     ipPeriod = 1;
@@ -71,7 +66,7 @@ SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : Snp
     encodingFrameNum = 0;
 
     numShortTerm = 0;
-    numRefFrames = 1;
+    numRefFrames = 4;
     LOG_F(INFO, "Initialized.");
 }
 
