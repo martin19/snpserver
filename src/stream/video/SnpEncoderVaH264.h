@@ -6,7 +6,7 @@
 #include "stream/SnpComponent.h"
 #include "va/va.h"
 
-#define SURFACE_NUM 1
+#define SURFACE_NUM 4
 #define MIN(a, b) ((a)>(b)?(b):(a))
 #define MAX(a, b) ((a)>(b)?(a):(b))
 
@@ -79,6 +79,7 @@ private:
     VAEntrypoint requestedEntrypoint;
     VAEntrypoint selectedEntrypoint;
 
+    bool renderPackedHeaders();
     void updateRefPicList();
     void updateReferenceFrames();
     bool renderSequence();
