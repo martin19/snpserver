@@ -39,7 +39,7 @@ SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : Snp
     addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_H264));
     addProperty(new SnpProperty("width", options.width));
     addProperty(new SnpProperty("height", options.height));
-    //addProperty(new SnpProperty("fps", options.fps));
+//    addProperty(new SnpProperty("fps", options.fps));
 
     width = options.width;
     height = options.height;
@@ -233,7 +233,7 @@ bool SnpEncoderVaH264::initVa() {
     }
 
     return result;
-    error:
+error:
     return result;
 }
 
@@ -441,7 +441,6 @@ error:
 }
 
 void SnpEncoderVaH264::updateReferenceFrames() {
-    int i;
     if(currentFrameType != FRAME_B) {
         currentCurrPic.flags = VA_PICTURE_H264_SHORT_TERM_REFERENCE;
 
@@ -468,9 +467,12 @@ bool SnpEncoderVaH264::renderSequence() {
     VAStatus vaStatus;
     VABufferID seqParamBuf;
     VABufferID rcParamBuf;
-    VABufferID renderId[2];
+    VABufferID renderId[3];
     VAEncMiscParameterBuffer *miscParam, *miscParamTmp;
     VAEncMiscParameterRateControl *miscRateCtrl;
+    VABufferID frameRateBuf;
+    VAEncMiscParameterBuffer* miscFrameRateParam;
+    VAEncMiscParameterFrameRate* frameRateData;
 
     seqParam.level_idc = 41;
     seqParam.picture_width_in_mbs = frameWidthMbAligned / 16;
@@ -483,16 +485,15 @@ bool SnpEncoderVaH264::renderSequence() {
 
     seqParam.max_num_ref_frames = 1;
     seqParam.seq_fields.bits.frame_mbs_only_flag = 1;
-    seqParam.time_scale = 900;
-    seqParam.num_units_in_tick = 15; /* Tc = num_units_in_tick / time_sacle */
-//    seqParam.seq_fields.bits.pic_order_cnt_type = 2;
-    seqParam.seq_fields.bits.log2_max_pic_order_cnt_lsb_minus4 = Log2MaxPicOrderCntLsb - 4;
+    seqParam.time_scale = 120; //TODO: this must be consistent with capture frames per second
+    seqParam.num_units_in_tick = 1; /* Tc = num_units_in_tick / time_scale */
+    seqParam.seq_fields.bits.pic_order_cnt_type = 2;
+    seqParam.seq_fields.bits.log2_max_pic_order_cnt_lsb_minus4 = 0;
     seqParam.seq_fields.bits.log2_max_frame_num_minus4 = Log2MaxFrameNum - 4;
     seqParam.seq_fields.bits.frame_mbs_only_flag = 1;
     seqParam.seq_fields.bits.chroma_format_idc = 1;
     seqParam.seq_fields.bits.direct_8x8_inference_flag = 1;
-
-    //TODO: cropping omitted now
+    seqParam.vui_parameters_present_flag = 1;
 
     vaStatus = vaCreateBuffer(vaDisplay, contextId, VAEncSequenceParameterBufferType, sizeof(seqParam),
                               1, &seqParam, &seqParamBuf);
@@ -518,10 +519,26 @@ bool SnpEncoderVaH264::renderSequence() {
     miscRateCtrl->basic_unit_size = 0;
     vaUnmapBuffer(vaDisplay, rcParamBuf);
 
+    //frame rate info
+    vaStatus = vaCreateBuffer(vaDisplay,contextId, VAEncMiscParameterBufferType,
+            sizeof(VAEncMiscParameterBuffer) + sizeof(VAEncMiscParameterFrameRate),1,
+            nullptr,&frameRateBuf);
+    CHECK_VASTATUS(vaStatus, "vaCreateBuffer (frameRate)");
+
+    vaMapBuffer(vaDisplay, frameRateBuf, (void**)&miscFrameRateParam);
+    CHECK_VASTATUS(vaStatus, "vaMapBuffer (frameRate)");
+
+    miscFrameRateParam->type = VAEncMiscParameterTypeFrameRate;
+    frameRateData = (VAEncMiscParameterFrameRate*)miscFrameRateParam->data;
+    frameRateData->framerate = 60; // your target frame rate
+    vaUnmapBuffer(vaDisplay, frameRateBuf);
+
+
     renderId[0] = seqParamBuf;
     renderId[1] = rcParamBuf;
+    renderId[2] = frameRateBuf;
 
-    vaStatus = vaRenderPicture(vaDisplay, contextId, &renderId[0], 1);
+    vaStatus = vaRenderPicture(vaDisplay, contextId, &renderId[0], 3);
     CHECK_VASTATUS(vaStatus, "vaRenderPicture")
 
     return result;
@@ -550,8 +567,8 @@ bool SnpEncoderVaH264::renderPicture() {
 
     picParam.pic_fields.bits.idr_pic_flag = (currentFrameType == FRAME_IDR);
     picParam.pic_fields.bits.reference_pic_flag = 1;
-    picParam.pic_fields.bits.entropy_coding_mode_flag = 0; //1 = cabac //TODO: cabac
-    picParam.pic_fields.bits.deblocking_filter_control_present_flag = 0; //TODO: filter
+    picParam.pic_fields.bits.entropy_coding_mode_flag = 0; //1 = cabac
+    picParam.pic_fields.bits.deblocking_filter_control_present_flag = 0;
     picParam.frame_num = currentFrameNum;
     picParam.coded_buf = codedBuf[0];
     picParam.last_picture = 0;

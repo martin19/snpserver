@@ -80,7 +80,6 @@ private:
     VAEntrypoint selectedEntrypoint;
 
     bool renderPackedHeaders();
-    void updateRefPicList();
     void updateReferenceFrames();
     bool renderSequence();
     bool renderPicture();
