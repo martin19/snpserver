@@ -29,7 +29,6 @@ void SnpEncoderVaH264::vaErrorCallback([[maybe_unused]] void* context, char* mes
 #define FRAME_I 2
 #define FRAME_IDR 7
 
-//TODO: what are these?
 static unsigned int MaxFrameNum = (2<<4);
 static unsigned int MaxPicOrderCntLsb = (2<<16);
 static unsigned int Log2MaxFrameNum = 4;
@@ -40,7 +39,7 @@ SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : Snp
     addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_H264));
     addProperty(new SnpProperty("width", options.width));
     addProperty(new SnpProperty("height", options.height));
-    //addProperty(new SnpProperty("fps", options.fps));
+//    addProperty(new SnpProperty("fps", options.fps));
 
     width = options.width;
     height = options.height;
@@ -53,15 +52,10 @@ SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : Snp
     frameHeightMbAligned = (height + 15) & (~15);
     h264Profile = VAProfileH264ConstrainedBaseline;
     constraintSetFlag = 0;
-    frameBitrate = 30000000;
+    frameBitrate = 15000000;
     initialQp = 25;
-    minimalQp = 25;
+    minimalQp = 5;
 
-//TODO: this setting works.
-//    idrPeriod = 1;
-//    iPeriod = 1;
-//    ipPeriod = 1;
-//TODO: this setting does not work.
     idrPeriod = 60;
     iPeriod = 30;
     ipPeriod = 1;
@@ -72,6 +66,7 @@ SnpEncoderVaH264::SnpEncoderVaH264(const SnpEncoderVaH264Options &options) : Snp
     encodingFrameNum = 0;
 
     numShortTerm = 0;
+    numRefFrames = 4;
     LOG_F(INFO, "Initialized.");
 }
 
@@ -238,7 +233,7 @@ bool SnpEncoderVaH264::initVa() {
     }
 
     return result;
-    error:
+error:
     return result;
 }
 
@@ -308,8 +303,11 @@ bool SnpEncoderVaH264::encodeFrameVaH264(const uint8_t *framebuffer, uint32_t le
     VACodedBufferSegment *bufList;
     uint32_t codedSize = 0;
 
+    uint32_t surfaceIndex = encodingFrameNum % SURFACE_NUM;
+    VASurfaceID surface = srcSurface[surfaceIndex];
+
     //upload yuv data to surface
-    vaStatus = vaDeriveImage(vaDisplay, srcSurface[0], &surfaceImage);
+    vaStatus = vaDeriveImage(vaDisplay, surface, &surfaceImage);
     CHECK_VASTATUS(vaStatus, "vaDeriveImage")
 
     vaStatus = vaMapBuffer(vaDisplay, surfaceImage.buf, &surfacePtr);
@@ -325,38 +323,40 @@ bool SnpEncoderVaH264::encodeFrameVaH264(const uint8_t *framebuffer, uint32_t le
     CHECK_VASTATUS(vaStatus, "vaDestroyImage")
 
     //encode the frame()
-    vaStatus = vaBeginPicture(vaDisplay, contextId, srcSurface[0]);
+    vaStatus = vaBeginPicture(vaDisplay, contextId, surface);
     CHECK_VASTATUS(vaStatus, "vaBeginPicture")
 
     memset(&seqParam, 0, sizeof(seqParam));
     memset(&picParam, 0, sizeof(picParam));
     memset(&sliceParam, 0, sizeof(sliceParam));
 
-    if(encodingFrameNum == 0) {
+    if (encodingFrameNum % idrPeriod == 0) {
         currentFrameType = FRAME_IDR;
-    } else if(iPeriod != 0 && (encodingFrameNum - 1) % iPeriod == 0) {
+    } else if (encodingFrameNum % iPeriod == 0) {
         currentFrameType = FRAME_I;
     } else {
         currentFrameType = FRAME_P;
     }
 
+    currentCurrPic.picture_id = srcSurface[surfaceIndex];
+    currentCurrPic.frame_idx = currentFrameNum;
+    currentCurrPic.flags = 0;
+    currentCurrPic.TopFieldOrderCnt = 0;
+    currentCurrPic.BottomFieldOrderCnt = 0;
+
     if (currentFrameType == FRAME_IDR) {
         numShortTerm = 0;
-//        currentFrameNum = 0;
+        renderSequence();
+        renderPackedHeaders();
     }
 
-    if(currentFrameType == FRAME_IDR) {
-        renderSequence();
-        renderPicture();
-    } else {
-        renderPicture();
-    }
+    renderPicture();
     renderSlice();
 
     vaStatus = vaEndPicture(vaDisplay, contextId);
     CHECK_VASTATUS(vaStatus, "vaEndPicture")
 
-    vaStatus = vaSyncSurface(vaDisplay, srcSurface[0]);
+    vaStatus = vaSyncSurface(vaDisplay, surface);
     CHECK_VASTATUS(vaStatus, "vaSyncSurface")
 
     vaStatus = vaMapBuffer(vaDisplay, codedBuf[0], (void **)&bufList);
@@ -383,21 +383,83 @@ error:
     return result;
 }
 
+bool SnpEncoderVaH264::renderPackedHeaders() {
+    bool result = true;
+    VAStatus vaStatus;
+    VAEncPackedHeaderParameterBuffer packedHeaderParam = {};
+    VABufferID packedHeaderBuf;
+    VABufferID packedDataBuf;
+    VABufferID spsBuffers[2];
+    VABufferID ppsBuffers[2];
+
+    // === SPS ===
+    packedHeaderParam.type = VAEncPackedHeaderSequence;
+    packedHeaderParam.bit_length = 0;
+    packedHeaderParam.has_emulation_bytes = 1;
+
+    vaStatus = vaCreateBuffer(vaDisplay, contextId,
+                              VAEncPackedHeaderParameterBufferType,
+                              sizeof(packedHeaderParam), 1,
+                              &packedHeaderParam, &packedHeaderBuf);
+    CHECK_VASTATUS(vaStatus, "vaCreateBuffer SPS header")
+
+    vaStatus = vaCreateBuffer(vaDisplay, contextId,
+                              VAEncPackedHeaderDataBufferType,
+                              0, 1,
+                              nullptr, &packedDataBuf);  // driver fills it in
+    CHECK_VASTATUS(vaStatus, "vaCreateBuffer SPS data")
+
+    spsBuffers[0] = packedHeaderBuf;
+    spsBuffers[1] = packedDataBuf;
+
+    vaStatus = vaRenderPicture(vaDisplay, contextId, spsBuffers, 2);
+    CHECK_VASTATUS(vaStatus, "vaRenderPicture SPS")
+
+    // === PPS ===
+    packedHeaderParam.type = VAEncPackedHeaderPicture;
+
+    vaStatus = vaCreateBuffer(vaDisplay, contextId,
+                              VAEncPackedHeaderParameterBufferType,
+                              sizeof(packedHeaderParam), 1,
+                              &packedHeaderParam, &packedHeaderBuf);
+    CHECK_VASTATUS(vaStatus, "vaCreateBuffer PPS header")
+
+    vaStatus = vaCreateBuffer(vaDisplay, contextId,
+                              VAEncPackedHeaderDataBufferType,
+                              0, 1,
+                              nullptr, &packedDataBuf);  // driver fills it in
+    CHECK_VASTATUS(vaStatus, "vaCreateBuffer PPS data")
+
+    ppsBuffers[0] = packedHeaderBuf;
+    ppsBuffers[1] = packedDataBuf;
+    vaStatus = vaRenderPicture(vaDisplay, contextId, ppsBuffers, 2);
+    CHECK_VASTATUS(vaStatus, "vaRenderPicture PPS")
+
+    return true;
+error:
+    return false;
+}
+
 void SnpEncoderVaH264::updateReferenceFrames() {
-    int i;
+    if(currentFrameType != FRAME_B) {
+        currentCurrPic.flags = VA_PICTURE_H264_SHORT_TERM_REFERENCE;
 
-//    currentCurrPic.flags = VA_PICTURE_H264_SHORT_TERM_REFERENCE;
-//    numShortTerm++;
-//    if (numShortTerm > numRefFrames)
-//        numShortTerm = numRefFrames;
-//    for (i=numShortTerm-1; i>0; i--)
-//        referenceFrames[i] = referenceFrames[i-1];
-//    referenceFrames[0] = currentCurrPic;
+        // Shift references to make room at index 0
+        for (int i = std::min(numShortTerm, numRefFrames - 1); i > 0; --i) {
+            referenceFrames[i] = referenceFrames[i - 1];
+        }
 
-    if (currentFrameType != FRAME_B)
-        currentFrameNum++;
-    if (currentFrameNum == MaxFrameNum)
+        referenceFrames[0] = currentCurrPic;
+
+        if(numShortTerm < numRefFrames) {
+            numShortTerm++;
+        }
+    }
+
+    currentFrameNum++;
+    if (currentFrameNum == MaxFrameNum) {
         currentFrameNum = 0;
+    }
 }
 
 bool SnpEncoderVaH264::renderSequence() {
@@ -405,9 +467,12 @@ bool SnpEncoderVaH264::renderSequence() {
     VAStatus vaStatus;
     VABufferID seqParamBuf;
     VABufferID rcParamBuf;
-    VABufferID renderId[2];
+    VABufferID renderId[3];
     VAEncMiscParameterBuffer *miscParam, *miscParamTmp;
     VAEncMiscParameterRateControl *miscRateCtrl;
+    VABufferID frameRateBuf;
+    VAEncMiscParameterBuffer* miscFrameRateParam;
+    VAEncMiscParameterFrameRate* frameRateData;
 
     seqParam.level_idc = 41;
     seqParam.picture_width_in_mbs = frameWidthMbAligned / 16;
@@ -420,51 +485,64 @@ bool SnpEncoderVaH264::renderSequence() {
 
     seqParam.max_num_ref_frames = 1;
     seqParam.seq_fields.bits.frame_mbs_only_flag = 1;
-    seqParam.time_scale = 900;
-    seqParam.num_units_in_tick = 15; /* Tc = num_units_in_tick / time_sacle */
-//    seqParam.seq_fields.bits.pic_order_cnt_type = 2;
-    seqParam.seq_fields.bits.log2_max_pic_order_cnt_lsb_minus4 = Log2MaxPicOrderCntLsb - 4;
+    seqParam.time_scale = 120; //TODO: this must be consistent with capture frames per second
+    seqParam.num_units_in_tick = 1; /* Tc = num_units_in_tick / time_scale */
+    seqParam.seq_fields.bits.pic_order_cnt_type = 2;
+    seqParam.seq_fields.bits.log2_max_pic_order_cnt_lsb_minus4 = 0;
     seqParam.seq_fields.bits.log2_max_frame_num_minus4 = Log2MaxFrameNum - 4;
     seqParam.seq_fields.bits.frame_mbs_only_flag = 1;
     seqParam.seq_fields.bits.chroma_format_idc = 1;
     seqParam.seq_fields.bits.direct_8x8_inference_flag = 1;
-
-    //TODO: cropping omitted now
+    seqParam.vui_parameters_present_flag = 1;
 
     vaStatus = vaCreateBuffer(vaDisplay, contextId, VAEncSequenceParameterBufferType, sizeof(seqParam),
                               1, &seqParam, &seqParamBuf);
     CHECK_VASTATUS(vaStatus, "vaCreateBuffer")
 
     //rate control
-//    vaStatus = vaCreateBuffer(vaDisplay, contextId, VAEncMiscParameterBufferType,
-//                              sizeof(VAEncMiscParameterBuffer) + sizeof(VAEncMiscParameterRateControl), 1,
-//                                  nullptr, &rcParamBuf);
-//    CHECK_VASTATUS(vaStatus, "vaCreateBuffer")
-//
-//    vaMapBuffer(vaDisplay, rcParamBuf, (void**)&miscParam);
-//    CHECK_VASTATUS(vaStatus, "vaMapBuffer")
-//
-//    miscParam->type = VAEncMiscParameterTypeRateControl;
-//    miscRateCtrl = (VAEncMiscParameterRateControl *)miscParam->data;
-//    memset(miscRateCtrl, 0, sizeof(*miscRateCtrl));
-//    miscRateCtrl->bits_per_second = frameBitrate;
-//    miscRateCtrl->target_percentage = 66;
-//    miscRateCtrl->window_size = 1000;
-//    miscRateCtrl->initial_qp = initialQp;
-//    miscRateCtrl->min_qp = minimalQp;
-//    miscRateCtrl->basic_unit_size = 0;
-//    vaUnmapBuffer(vaDisplay, rcParamBuf);
+    vaStatus = vaCreateBuffer(vaDisplay, contextId, VAEncMiscParameterBufferType,
+                              sizeof(VAEncMiscParameterBuffer) + sizeof(VAEncMiscParameterRateControl), 1,
+                                  nullptr, &rcParamBuf);
+    CHECK_VASTATUS(vaStatus, "vaCreateBuffer")
+
+    vaMapBuffer(vaDisplay, rcParamBuf, (void**)&miscParam);
+    CHECK_VASTATUS(vaStatus, "vaMapBuffer")
+
+    miscParam->type = VAEncMiscParameterTypeRateControl;
+    miscRateCtrl = (VAEncMiscParameterRateControl *)miscParam->data;
+    memset(miscRateCtrl, 0, sizeof(*miscRateCtrl));
+    miscRateCtrl->bits_per_second = frameBitrate;
+    miscRateCtrl->target_percentage = 66;
+    miscRateCtrl->window_size = 1000;
+    miscRateCtrl->initial_qp = initialQp;
+    miscRateCtrl->min_qp = minimalQp;
+    miscRateCtrl->basic_unit_size = 0;
+    vaUnmapBuffer(vaDisplay, rcParamBuf);
+
+    //frame rate info
+    vaStatus = vaCreateBuffer(vaDisplay,contextId, VAEncMiscParameterBufferType,
+            sizeof(VAEncMiscParameterBuffer) + sizeof(VAEncMiscParameterFrameRate),1,
+            nullptr,&frameRateBuf);
+    CHECK_VASTATUS(vaStatus, "vaCreateBuffer (frameRate)");
+
+    vaMapBuffer(vaDisplay, frameRateBuf, (void**)&miscFrameRateParam);
+    CHECK_VASTATUS(vaStatus, "vaMapBuffer (frameRate)");
+
+    miscFrameRateParam->type = VAEncMiscParameterTypeFrameRate;
+    frameRateData = (VAEncMiscParameterFrameRate*)miscFrameRateParam->data;
+    frameRateData->framerate = 60; // your target frame rate
+    vaUnmapBuffer(vaDisplay, frameRateBuf);
+
 
     renderId[0] = seqParamBuf;
-//    renderId[1] = rcParamBuf;
+    renderId[1] = rcParamBuf;
+    renderId[2] = frameRateBuf;
 
-    vaStatus = vaRenderPicture(vaDisplay, contextId, &renderId[0], 1);
+    vaStatus = vaRenderPicture(vaDisplay, contextId, &renderId[0], 3);
     CHECK_VASTATUS(vaStatus, "vaRenderPicture")
 
-    //TODO: misc_priv_value omitted now.
-
     return result;
-    error:
+error:
     return result;
 }
 
@@ -473,29 +551,24 @@ bool SnpEncoderVaH264::renderPicture() {
     VAStatus vaStatus;
     VABufferID picParamBuf;
 
-    picParam.CurrPic.picture_id = refSurface[0];
-    picParam.CurrPic.frame_idx = currentFrameNum;
-    picParam.CurrPic.flags = 0;
-    picParam.CurrPic.TopFieldOrderCnt = 0;
-    picParam.CurrPic.BottomFieldOrderCnt = 0;
-    picParam.num_ref_idx_l0_active_minus1 = 1;
+    picParam.CurrPic = currentCurrPic;
+    picParam.num_ref_idx_l0_active_minus1 = 0;
     picParam.num_ref_idx_l1_active_minus1 = 0;
 
-    for(int i = 0; i < 16; i++) {
+    // Fill the reference frame list
+    for (int i = 0; i < numShortTerm; ++i) {
+        picParam.ReferenceFrames[i] = referenceFrames[i];
+    }
+
+    for (int i = numShortTerm; i < 16; ++i) {
         picParam.ReferenceFrames[i].picture_id = VA_INVALID_SURFACE;
         picParam.ReferenceFrames[i].flags = VA_PICTURE_H264_INVALID;
     }
 
-    //setup reference frames
-    if(currentFrameType != FRAME_IDR) {
-        picParam.ReferenceFrames[0].picture_id = refSurface[0];
-        picParam.ReferenceFrames[0].flags = VA_PICTURE_H264_SHORT_TERM_REFERENCE;
-    }
-
-    picParam.pic_fields.bits.idr_pic_flag = currentFrameType == FRAME_IDR;
+    picParam.pic_fields.bits.idr_pic_flag = (currentFrameType == FRAME_IDR);
     picParam.pic_fields.bits.reference_pic_flag = 1;
-    picParam.pic_fields.bits.entropy_coding_mode_flag = 0; //1 = cabac //TODO: cabac
-    picParam.pic_fields.bits.deblocking_filter_control_present_flag = 0; //TODO: filter
+    picParam.pic_fields.bits.entropy_coding_mode_flag = 0; //1 = cabac
+    picParam.pic_fields.bits.deblocking_filter_control_present_flag = 0;
     picParam.frame_num = currentFrameNum;
     picParam.coded_buf = codedBuf[0];
     picParam.last_picture = 0;
@@ -519,12 +592,17 @@ bool SnpEncoderVaH264::renderSlice() {
     VABufferID sliceParamBuf;
 
     sliceParam.macroblock_address = 0;
-    sliceParam.num_macroblocks = frameWidthMbAligned * frameHeightMbAligned/(16*16);
+
+    uint32_t mbWidth  = (width  + 15) / 16;
+    uint32_t mbHeight = (height + 15) / 16;
+
+    sliceParam.num_macroblocks = mbWidth * mbHeight;
+
     if(currentFrameType == FRAME_IDR) {
         //idr-frame
         sliceParam.idr_pic_id++;
     } else if(currentFrameType == FRAME_P || currentFrameType == FRAME_I) {
-        for(int i = 0; i < 32;i++) {
+        for(int i = 0; i < 32; i++) {
             sliceParam.RefPicList0[i].picture_id = VA_INVALID_SURFACE;
             sliceParam.RefPicList0[i].flags = VA_PICTURE_H264_INVALID;
         }
@@ -535,7 +613,7 @@ bool SnpEncoderVaH264::renderSlice() {
     sliceParam.slice_beta_offset_div2 = 0;
     sliceParam.direct_spatial_mv_pred_flag = 1;
     sliceParam.slice_type = currentFrameType == FRAME_IDR ? 2 : currentFrameType;
-    sliceParam.pic_order_cnt_lsb = 0; //(currentFrameDisplay - currentIDRDisplay) % MaxPicOrderCntLsb;
+    sliceParam.pic_order_cnt_lsb = encodingFrameNum;
 
     vaStatus = vaCreateBuffer(vaDisplay, contextId, VAEncSliceParameterBufferType, sizeof(sliceParam),
                               1, &sliceParam, &sliceParamBuf);

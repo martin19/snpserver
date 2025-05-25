@@ -101,10 +101,10 @@ void SnpSourceDummy::renderBoxes() {
     for(int i = 0; i < boxCount; i++) {
         int w2 = box[i].width/2;
         int h2 = box[i].height/2;
-        uint32_t xstart = box[i].x - w2;
-        uint32_t ystart = box[i].y - h2;
-        uint32_t xend = box[i].x + w2;
-        uint32_t yend = box[i].y + h2;
+        uint32_t xstart = MAX(0, box[i].x - w2);
+        uint32_t ystart = MAX(0, box[i].y - h2);
+        uint32_t xend = MIN(width, box[i].x + w2);
+        uint32_t yend = MIN(height, box[i].y + h2);
         for(uint32_t y = ystart; y < yend; y++) {
             for(uint32_t x = xstart; x < xend; x++) {
                 dst = &frameBuffer[(y*width+x)*4];
