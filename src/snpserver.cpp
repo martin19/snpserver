@@ -7,12 +7,17 @@
 #include "stream/video/SnpSourceDummy.h"
 #include "stream/file/SnpSinkFile.h"
 #include "stream/video/SnpEncoderOpenH264.h"
-#include "stream/video/SnpEncoderVaH264.h"
+#include "stream/video/SnpSourceDda.h"
+#include "context/SnpContext.h"
+//#include "stream/video/SnpEncoderVaH264.h"
 
+SnpContext snpContext;
 SnpSinkNetworkTcp* snpSinkNetworkTcp;
 PipeMap pipeMap;
 
 void handleSetupMessageCb(snp::Message* message) {
+
+
     //create a local config from message
     const snp::Setup& setup = message->setup();
     std::vector<snp::Component*> pipe;
@@ -23,7 +28,7 @@ void handleSetupMessageCb(snp::Message* message) {
     }
     pipeMap.insert(std::pair(setup.pipe_id(), pipe));
 
-    std::vector<SnpPipe*> localPipes = SnpPipeFactory::createPipes(pipeMap);
+    std::vector<SnpPipe*> localPipes = SnpPipeFactory::createPipes(pipeMap, &snpContext);
     for (const auto &localPipe: localPipes) {
         localPipe->addComponentEnd(snpSinkNetworkTcp);
         localPipe->start();
@@ -47,47 +52,30 @@ int main2() {
 }
 
 int main() {
-
-
     SnpPipeOptions pipeOptions = {};
     pipeOptions.name = "amd";
-    SnpPipe pipe(pipeOptions, 0);
+    SnpPipe pipe(pipeOptions, 0, &snpContext);
 
-    SnpSourceDummyOptions sourceDummyOptions = {};
-    sourceDummyOptions.width = 1920;
-    sourceDummyOptions.height = 1088;
-    sourceDummyOptions.fps = 60.0;
-    sourceDummyOptions.boxCount = 5;
-    sourceDummyOptions.boxSpeed = 1;
-    SnpSourceDummy snpSourceDummy(sourceDummyOptions);
+    SnpSourceDdaOptions sourceDdaOptions = {};
+    sourceDdaOptions.width = 1920;
+    sourceDdaOptions.height = 1080;
+    SnpSourceDda snpSourceDda(sourceDdaOptions);
 
-//    SnpEncoderAmfH264Options amfH264Options = {};
-//    amfH264Options.width = 1920;
-//    amfH264Options.height = 1080;
-//    amfH264Options.fps = 60.0;
-//    SnpEncoderAmfH264 snpEncoder(amfH264Options);
-
-//    SnpEncoderOpenH264Options openH264Options = {};
-//    openH264Options.width = 1920;
-//    openH264Options.height = 1080;
-//    openH264Options.qp = 10.0;
-//    SnpEncoderOpenH264 snpEncoder(openH264Options);
-
-    SnpEncoderVaH264Options vaH264Options = {};
-    vaH264Options.width = 1920;
-    vaH264Options.height = 1088;
-    vaH264Options.qp = 10.0;
-    SnpEncoderVaH264 snpEncoder(vaH264Options);
-
+    SnpEncoderAmfH264Options amfH264Options = {};
+    amfH264Options.width = 1920;
+    amfH264Options.height = 1080;
+    amfH264Options.qp = 10.0;
+    SnpEncoderAmfH264 snpEncoder(amfH264Options);
+//
     SnpSinkFileOptions sinkFileOptions = {};
-    sinkFileOptions.fileName = "test1vah264.h264";
+    sinkFileOptions.fileName = "test1dda.h264";
     SnpSinkFile snpSinkFile(sinkFileOptions);
 
     //TODO: every component needs a pipeId (verify this) maybe a constructor parameter is necessary
-    snpSourceDummy.setPipeId(0);
+    snpSourceDda.setPipeId(0);
     snpEncoder.setPipeId(0);
     snpSinkFile.setPipeId(0);
-    pipe.addComponentEnd(&snpSourceDummy);
+    pipe.addComponentEnd(&snpSourceDda);
     pipe.addComponentEnd(&snpEncoder);
     pipe.addComponentEnd(&snpSinkFile);
 

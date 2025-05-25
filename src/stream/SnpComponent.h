@@ -7,6 +7,7 @@
 #include "SnpPort.h"
 #include "SnpProperty.h"
 #include "util/loguru.h"
+#include "context/SnpContext.h"
 
 class SnpPipe;
 

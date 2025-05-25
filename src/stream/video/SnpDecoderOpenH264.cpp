@@ -5,6 +5,7 @@
 #include "libloaderapi.h"
 #include "util/VideoUtil.h"
 #include "util/loguru.h"
+#include "stream/data/SnpDataRam.h"
 
 #endif
 
@@ -30,13 +31,13 @@ SnpDecoderOpenH264::SnpDecoderOpenH264(const SnpDecoderOpenH264Options &options)
     yuvBuffer[2] = nullptr;
     rgbBuffer = nullptr;
 
-    addInputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_H264));
-    addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_RGBA));
+    addInputPort(new SnpPort(PORT_STREAM_TYPE_VIDEO_H264));
+    addOutputPort(new SnpPort(PORT_STREAM_TYPE_VIDEO_RGBA));
     addProperty(new SnpProperty("width", options.width));
     addProperty(new SnpProperty("height", options.height));
     addProperty(new SnpProperty("qp", options.qp));
     getInputPort(0)->setOnDataCb(std::bind(&SnpDecoderOpenH264::onInputData, this, std::placeholders::_1,
-                                           std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+                                           std::placeholders::_2));
 }
 
 SnpDecoderOpenH264::~SnpDecoderOpenH264() {
@@ -54,9 +55,11 @@ void SnpDecoderOpenH264::stop() {
     openH264DecoderDestroy();
 }
 
-void SnpDecoderOpenH264::onInputData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete) {
+void SnpDecoderOpenH264::onInputData(uint32_t pipeId, SnpData* data) {
     if(!isRunning()) return;
-    this->openH264DecoderDecode(data, len);
+    if(auto* ram = dynamic_cast<SnpDataRam*>(data)) {
+        this->openH264DecoderDecode(ram->getData(), ram->getLen());
+    }
 }
 
 bool SnpDecoderOpenH264::openH264DecoderInit() {
@@ -110,7 +113,8 @@ bool SnpDecoderOpenH264::openH264DecoderDecode(const uint8_t *srcBuffer, int src
                             sBufferInfo.UsrData.sSystemBuffer.iStride[0],
                             sBufferInfo.UsrData.sSystemBuffer.iStride[1]);
 
-    outputPort->onData(getPipeId(), rgbBuffer, width * height * bpp, true);
+    SnpDataRam ram(rgbBuffer, width * height * bpp, true);
+    outputPort->onData(getPipeId(), &ram);
 
     return result;
 error:

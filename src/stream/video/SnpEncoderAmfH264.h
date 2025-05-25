@@ -25,7 +25,7 @@ private:
     uint32_t height;
     uint32_t bpp;
 
-    void onInputData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete);
+    void onInputData(uint32_t pipeId, SnpData *data);
 
     amf::AMFContextPtr context;
     amf::AMFComponentPtr encoder;

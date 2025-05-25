@@ -3,6 +3,7 @@
 #include "util/loguru.h"
 #include "network/snp.pb.h"
 #include "stream/SnpComponentRegistry.h"
+#include "stream/data/SnpDataRam.h"
 
 #define SNP_SINK_NETWORK_BUFFER_SIZE 500000
 #define SNP_SINK_RECV_BUFFER_SIZE 500000
@@ -13,9 +14,9 @@ SnpSinkNetworkTcp::SnpSinkNetworkTcp(const SnpSinkNetworkTcpOptions &options) : 
     handleSetupMessageCb = options.handleSetupMessageCb;
     clientConnected = false;
 
-    auto* inputPort = new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_GENERIC);
+    auto* inputPort = new SnpPort(PORT_STREAM_TYPE_GENERIC);
     inputPort->setOnDataCb(std::bind(&SnpSinkNetworkTcp::onInputData, this, std::placeholders::_1,
-                                     std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+                                     std::placeholders::_2));
     addInputPort(inputPort);
 }
 
@@ -37,18 +38,22 @@ void SnpSinkNetworkTcp::stop() {
     destroySocket();
 }
 
-void SnpSinkNetworkTcp::onInputData(uint32_t pipeId, const uint8_t * inputBuffer, int inputLen, bool complete) {
+void SnpSinkNetworkTcp::onInputData(uint32_t pipeId, SnpData *data) {
     if(!clientConnected) {
         return;
     }
 
-    buffer.insert(buffer.end(), inputBuffer, inputBuffer + inputLen);
-    if(complete) {
-        setTimestampStartMs(TimeUtil::getTimeNowMs());
-        sendDataMessage(pipeId);
-        setTimestampEndMs(TimeUtil::getTimeNowMs());
-        buffer.clear();
+    if(auto* ram = dynamic_cast<SnpDataRam*>(data)) {
+        buffer.insert(buffer.end(), ram->getData(), ram->getData() + ram->getLen());
+        if(ram->getComplete()) {
+            setTimestampStartMs(TimeUtil::getTimeNowMs());
+            sendDataMessage(pipeId);
+            setTimestampEndMs(TimeUtil::getTimeNowMs());
+            buffer.clear();
+        }
     }
+
+
 }
 
 void SnpSinkNetworkTcp::createSocket() {

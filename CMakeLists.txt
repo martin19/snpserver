@@ -56,7 +56,8 @@ set(AMF_SOURCES
 )
 
 #find_package(VA)
-if(VA_FOUND)
+#if(VA_FOUND)
+if(FALSE)
     add_definitions(-DHAVE_LIBVA)
     set(VA_INCLUDE_DIRS
         extern/libva/x64/include/
@@ -72,7 +73,7 @@ if(VA_FOUND)
         ${CMAKE_CURRENT_SOURCE_DIR}/extern/libva/x64/lib/libva.dll.a
         ${CMAKE_CURRENT_SOURCE_DIR}/extern/libva/x64/lib/libva_win32.dll.a
     )
-endif(VA_FOUND)
+endif(FALSE)
 
 find_package(MMALH264)
 if(MMALH264_FOUND)
@@ -86,6 +87,14 @@ if(MMALH264_FOUND)
         src/stream/video/SnpEncoderMmalH264.cpp
     )
 endif(MMALH264_FOUND)
+
+#if(DDA_FOUND)
+    add_definitions(-DHAVE_DDA)
+    set(DDA_SOURCES
+            src/stream/video/SnpSourceDda.cpp
+            src/context/Dx11DeviceManager.cpp
+    )
+#endif(DDA_FOUND)
 
 include_directories(
     src
@@ -178,6 +187,13 @@ add_executable(snpserver
     src/stream/network/SnpSinkNetworkTcp.cpp
     # file sink/source
     src/stream/file/SnpSinkFile.cpp
+    # data
+    src/stream/data/SnpData.cpp
+    src/stream/data/SnpDataDx11.cpp
+    src/stream/data/SnpDataRam.cpp
+    # context
+    src/context/SnpContext.cpp
+    # system dependent
     ${X11_SOURCES}
     ${DRM_SOURCES}
     ${GL_SOURCES}
@@ -185,6 +201,7 @@ add_executable(snpserver
     ${OPENH264_SOURCES}
     ${AMF_SOURCES}
     ${VA_SOURCES}
+    ${DDA_SOURCES}
 )
 
 target_compile_options(
@@ -220,7 +237,7 @@ endif(OPENGL_FOUND)
 
 if(WIN32)
    set(SOCKET_LIBRARIES wsock32 ws2_32)
-   set(WIN32_LIBRARIES winmm)
+   set(WIN32_LIBRARIES winmm d3d11 dxgi dxguid uuid)
 endif(WIN32)
 
 # server app

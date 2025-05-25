@@ -37,6 +37,7 @@ enum ComponentType {
     COMPONENT_ENCODER_MMAL = 23;
     COMPONENT_DECODER_MMAL = 24;
     COMPONENT_CAPTURE_GL = 25;
+    COMPONENT_CAPTURE_DDA = 26;
 }
 
 enum Command {

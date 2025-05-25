@@ -11,8 +11,8 @@ typedef std::map<uint32_t, std::vector<snp::Component*>> PipeMap;
 
 class SnpPipeFactory {
 public:
-    static SnpPipe* createPipe(uint32_t pipeId, const std::vector<snp::Component*>& components);
-    static std::vector<SnpPipe *> createPipes(PipeMap& pipeMap);
+    static SnpPipe* createPipe(uint32_t pipeId, const std::vector<snp::Component*>& components, SnpContext *context);
+    static std::vector<SnpPipe *> createPipes(PipeMap& pipeMap, SnpContext *context);
 };
 
 

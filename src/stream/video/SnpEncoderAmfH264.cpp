@@ -7,6 +7,11 @@
 #include "public/include/components/VideoEncoderHEVC.h"
 #include "public/include/components/VideoEncoderAV1.h"
 #include "public/common/Thread.h"
+#include "stream/data/SnpDataRam.h"
+#include "stream/data/SnpDataDx11.h"
+#include "../SnpPipe.h"
+#include "public/include/components/VideoConverter.h"
+#include "public/include/core/Data.h"
 
 static const amf::AMF_SURFACE_FORMAT efcSurfaceFormat[] = {
         amf::AMF_SURFACE_RGBA,
@@ -21,15 +26,15 @@ static const wchar_t* pCodecNames[] = {
 };
 
 SnpEncoderAmfH264::SnpEncoderAmfH264(const SnpEncoderAmfH264Options &options) : SnpComponent(options, "COMPONENT_ENCODER_AMD") {
-    addInputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_RGBA));
-    addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_H264));
+    addInputPort(new SnpPort(PORT_STREAM_TYPE_VIDEO_RGBA));
+    addOutputPort(new SnpPort(PORT_STREAM_TYPE_VIDEO_H264));
     addProperty(new SnpProperty("width", options.width));
     addProperty(new SnpProperty("height", options.height));
     addProperty(new SnpProperty("fps", options.fps));
     addProperty(new SnpProperty("qp", options.qp));
 
     getInputPort(0)->setOnDataCb(std::bind(&SnpEncoderAmfH264::onInputData, this, std::placeholders::_1,
-                                           std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+                                           std::placeholders::_2));
 }
 
 SnpEncoderAmfH264::~SnpEncoderAmfH264() {
@@ -58,11 +63,19 @@ bool SnpEncoderAmfH264::start() {
         return false;
     }
 
-    res = amf::AMFContext1Ptr(context)->InitVulkan(NULL);
+    SnpPipe* pipe = getOwner();
+    ID3D11Device *device = pipe->getContext()->getDx11DeviceManager()->getDevice();
+    res = amf::AMFContext1Ptr(context)->InitDX11(device);
     if (res != AMF_OK) {
-        LOG_F(ERROR, "InitVulkan(NULL) failed.");
+        LOG_F(ERROR, "InitDX11(device) failed.");
         return false;
     }
+
+//    res = amf::AMFContext1Ptr(context)->InitVulkan(NULL);
+//    if (res != AMF_OK) {
+//        LOG_F(ERROR, "InitVulkan(NULL) failed.");
+//        return false;
+//    }
 
     res = g_AMFFactory.GetFactory()->CreateComponent(context, pCodecNames[0], &encoder);
     if (res != AMF_OK) {
@@ -86,7 +99,7 @@ bool SnpEncoderAmfH264::start() {
     encoder->SetProperty(AMF_VIDEO_ENCODER_LOWLATENCY_MODE, true);
     encoder->SetProperty(AMF_VIDEO_ENCODER_FRAMESIZE, ::AMFConstructSize((int)width, (int)height));
 
-    res = encoder->Init(amf::AMF_SURFACE_RGBA, (int)width, (int)height);
+    res = encoder->Init(amf::AMF_SURFACE_BGRA, (int)width, (int)height);
     if (res != AMF_OK) {
         LOG_F(ERROR, "encoder->Init failed.");
     }
@@ -104,17 +117,46 @@ void SnpEncoderAmfH264::stop() {
     g_AMFFactory.Terminate();
 }
 
-void SnpEncoderAmfH264::onInputData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete) {
+void SnpEncoderAmfH264::onInputData(uint32_t pipeId, SnpData* data) {
     AMF_RESULT res = AMF_OK;
     SnpPort *outputPort = this->getOutputPort(0);
 
-    res = context->AllocSurface(amf::AMF_MEMORY_HOST, amf::AMF_SURFACE_RGBA, (int)width, (int)height, &surfaceIn);
-    if (res != AMF_OK) {
-        LOG_F(ERROR, "context->AllocSurface failed.");
-        return;
+    if(auto* ram = dynamic_cast<SnpDataRam*>(data)) {
+        res = context->AllocSurface(amf::AMF_MEMORY_HOST, amf::AMF_SURFACE_RGBA, (int)width, (int)height, &surfaceIn);
+        if (res != AMF_OK) {
+            LOG_F(ERROR, "context->AllocSurface failed.");
+            return;
+        }
+
+        fillRGBASurface(surfaceIn, ram->getData());
+    } else if(auto* dx11 = dynamic_cast<SnpDataDx11*>(data)) {
+        ID3D11Texture2D* tex = dx11->getTexture();
+
+        //TODO: need to convert texture from B8G8R8A8 to NV12
+
+//        {
+//            ID3D11Texture2D* texture = tex;
+//            D3D11_TEXTURE2D_DESC desc;
+//            texture->GetDesc(&desc);
+//
+//            std::cout << "Width: " << desc.Width << std::endl;
+//            std::cout << "Height: " << desc.Height << std::endl;
+//            std::cout << "Format: " << desc.Format << std::endl;
+//            std::cout << "MipLevels: " << desc.MipLevels << std::endl;
+//            std::cout << "ArraySize: " << desc.ArraySize << std::endl;
+//            std::cout << "SampleDesc.Count: " << desc.SampleDesc.Count << std::endl;
+//            std::cout << "Usage: " << desc.Usage << std::endl;
+//            std::cout << "BindFlags: " << desc.BindFlags << std::endl;
+//        }
+
+        // Wrap existing DX11 texture with AMF
+        res = context->CreateSurfaceFromDX11Native(tex, &surfaceIn, nullptr);
+        if (res != AMF_OK || !surfaceIn) {
+            LOG_F(ERROR, "CreateSurfaceFromDX11Native failed.");
+            return;
+        }
     }
 
-    fillRGBASurface(surfaceIn, (uint8_t *) data);
     res = encoder->SubmitInput(surfaceIn);
     if(res == AMF_OK) {
         LOG_F(INFO, "SubmitInput AMF_OK");
@@ -126,7 +168,7 @@ void SnpEncoderAmfH264::onInputData(uint32_t pipeId, const uint8_t *data, uint32
         //amf_sleep(1); // input queue is full: wait, poll and submit again
         //if input queue is full, drop the frame for now.
     } else {
-        LOG_F(ERROR, "SubmitInput failed.");
+        LOG_F(ERROR, "SubmitInput failed: 0x%X", res);
         surfaceIn = nullptr;
     }
 
@@ -141,7 +183,8 @@ void SnpEncoderAmfH264::onInputData(uint32_t pipeId, const uint8_t *data, uint32
     }
     if (pData != nullptr) {
         amf::AMFBufferPtr pBuffer(pData);
-        outputPort->onData(getPipeId(), (uint8_t*)pBuffer->GetNative(), pBuffer->GetSize(), true);
+        SnpDataRam ram((uint8_t*)pBuffer->GetNative(), pBuffer->GetSize(), true);
+        outputPort->onData(getPipeId(), &ram);
     }
 }
 

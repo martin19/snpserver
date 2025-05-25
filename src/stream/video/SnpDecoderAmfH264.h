@@ -19,7 +19,7 @@ public:
     bool start() override;
     void stop() override;
 private:
-    void onInputData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete);
+    void onInputData(uint32_t pipeId, SnpData* data);
 
     bool decoderInit();
     void decode(const uint8_t *data, uint32_t len);

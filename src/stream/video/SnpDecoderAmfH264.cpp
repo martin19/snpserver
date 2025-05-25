@@ -5,15 +5,16 @@
 #include "public/include/core/Plane.h"
 #include "public/include/core/Surface.h"
 #include "util/VideoUtil.h"
+#include "stream/data/SnpDataRam.h"
 
 
 SnpDecoderAmfH264::SnpDecoderAmfH264(const SnpDecoderAmfH264Options &options) : SnpComponent(options, "COMPONENT_DECODER_AMD") {
-    addInputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_H264));
-    addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_RGBA));
+    addInputPort(new SnpPort(PORT_STREAM_TYPE_VIDEO_H264));
+    addOutputPort(new SnpPort(PORT_STREAM_TYPE_VIDEO_RGBA));
     addProperty(new SnpProperty("width", options.width));
     addProperty(new SnpProperty("height", options.height));
     getInputPort(0)->setOnDataCb(std::bind(&SnpDecoderAmfH264::onInputData, this, std::placeholders::_1,
-                                           std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+                                           std::placeholders::_2));
 }
 
 SnpDecoderAmfH264::~SnpDecoderAmfH264() {
@@ -132,7 +133,8 @@ void SnpDecoderAmfH264::decode(const uint8_t *data, uint32_t len) {
     }
 
     SnpPort *outputPort = this->getOutputPort(0);
-    outputPort->onData(getPipeId(), (uint8_t*)rgbaBuffer, width * height * 4, true);
+    SnpDataRam ram( (uint8_t*)rgbaBuffer, width * height * 4, true);
+    outputPort->onData(getPipeId(), &ram);
 }
 
 //bool SnpDecoderAmfH264::converterInit() {
@@ -180,8 +182,10 @@ void SnpDecoderAmfH264::decode(const uint8_t *data, uint32_t len) {
 //}
 
 
-void SnpDecoderAmfH264::onInputData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete) {
-    decode(data, len);
+void SnpDecoderAmfH264::onInputData(uint32_t pipeId, SnpData* data) {
+    if(auto* ram = dynamic_cast<SnpDataRam*>(data)) {
+        decode(ram->getData(), ram->getLen());
+    }
 }
 
 

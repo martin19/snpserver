@@ -25,21 +25,22 @@
 #include "util/PropertyUtil.h"
 #include "stream/video/SnpEncoderAmfH264.h"
 #include "stream/video/SnpDecoderAmfH264.h"
+#include "stream/video/SnpSourceDda.h"
 
 
-std::vector<SnpPipe*> SnpPipeFactory::createPipes(PipeMap& pipeMap) {
+std::vector<SnpPipe*> SnpPipeFactory::createPipes(PipeMap& pipeMap, SnpContext* context) {
     std::vector<SnpPipe*> pipes;
     for (const auto &pipe: pipeMap) {
         uint32_t pipeId = pipe.first;
-        SnpPipe* snpPipe = createPipe(pipeId, pipe.second);
+        SnpPipe* snpPipe = createPipe(pipeId, pipe.second, context);
         pipes.push_back(snpPipe);
     }
     return pipes;
 }
 
-SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Component *>& components) {
+SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Component *>& components, SnpContext* context) {
     SnpPipeOptions videoPipeOptions = {};
-    auto pipe = new SnpPipe(videoPipeOptions, pipeId);
+    auto pipe = new SnpPipe(videoPipeOptions, pipeId, context);
     for (const auto &component: components) {
         SnpComponent* snpComponent = nullptr;
         switch(component->componenttype()) {
@@ -51,6 +52,12 @@ SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Comp
                 options.boxCount = PropertyUtil::getPropertyUint(component, "boxCount", 3);
                 options.boxSpeed = PropertyUtil::getPropertyUint(component, "boxSpeed", 1);
                 snpComponent = new SnpSourceDummy(options);
+            } break;
+            case snp::COMPONENT_CAPTURE_DDA: {
+                SnpSourceDdaOptions options;
+                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
+                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
+                snpComponent = new SnpSourceDda(options);
             } break;
             case snp::COMPONENT_ENCODER_OPENH264: {
                 SnpEncoderOpenH264Options options;

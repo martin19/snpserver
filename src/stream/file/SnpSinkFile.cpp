@@ -1,4 +1,5 @@
 #include "SnpSinkFile.h"
+#include "stream/data/SnpDataRam.h"
 #include <util/TimeUtil.h>
 #include <fstream>
 
@@ -8,7 +9,7 @@ SnpSinkFile::SnpSinkFile(const SnpSinkFileOptions &options) : SnpComponent(optio
     fileName = options.fileName;
 
     addInputPort(new SnpPort());
-    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkFile::onInputData, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+    getInputPort(0)->setOnDataCb(std::bind(&SnpSinkFile::onInputData, this, std::placeholders::_1, std::placeholders::_2));
 
     buffer.reserve(SNP_SINK_FILE_BUFFER_SIZE);
     buffer.clear();
@@ -18,11 +19,13 @@ SnpSinkFile::~SnpSinkFile() {
     //TODO:
 }
 
-void SnpSinkFile::onInputData(uint32_t pipeId, const uint8_t * inputBuffer, int inputLen, bool complete) {
-    buffer.insert(buffer.end(), inputBuffer, inputBuffer + inputLen);
-    if(complete) {
-        output.write((char*)buffer.data(), buffer.size());
-        buffer.clear();
+void SnpSinkFile::onInputData(uint32_t pipeId, SnpData *data) {
+    if(auto* ram = dynamic_cast<SnpDataRam*>(data)) {
+        buffer.insert(buffer.end(), ram->getData(), ram->getData() + ram->getLen());
+        if(ram->getComplete()) {
+            output.write((char*)buffer.data(), buffer.size());
+            buffer.clear();
+        }
     }
 }
 

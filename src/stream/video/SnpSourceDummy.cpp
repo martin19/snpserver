@@ -1,17 +1,17 @@
 #include "SnpSourceDummy.h"
 #include "math.h"
-#include <algorithm>
 
 #ifdef _WIN32
 #include "windows.h"
 #endif
 #include "util/TimeUtil.h"
+#include "stream/data/SnpDataRam.h"
 
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
 SnpSourceDummy::SnpSourceDummy(const SnpSourceDummyOptions &options) : SnpComponent(options, "COMPONENT_CAPTURE_VIDEO_DUMMY") {
-    addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_RGBA));
+    addOutputPort(new SnpPort(PORT_STREAM_TYPE_VIDEO_RGBA));
     addProperty(new SnpProperty("fps", options.fps));
     addProperty(new SnpProperty("width", options.width));
     addProperty(new SnpProperty("height", options.height));
@@ -62,7 +62,8 @@ void SnpSourceDummy::renderFrame() {
 
         renderBoxes();
 
-        outputPort->onData(getPipeId(), frameBuffer, width*height*4, true);
+        SnpDataRam ram(frameBuffer, width*height*4, true);
+        outputPort->onData(getPipeId(), &ram);
         framesRendered++;
 
         uint32_t tsAfterPaint = TimeUtil::getTimeNowMs();

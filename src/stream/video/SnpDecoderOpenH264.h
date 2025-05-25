@@ -23,7 +23,7 @@ public:
 private:
     OpenH264Api openH264Api;
 
-    void onInputData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete);
+    void onInputData(uint32_t pipeId, SnpData* data);
 
     bool openH264DecoderInit();
     bool openH264DecoderDecode(const uint8_t *srcBuffer, int srcLen);

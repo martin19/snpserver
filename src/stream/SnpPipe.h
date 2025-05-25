@@ -4,6 +4,7 @@
 #include "SnpComponent.h"
 #include "SnpProperty.h"
 #include "network/snp.pb.h"
+#include "context/SnpContext.h"
 
 struct SnpPipeOptions {
     std::string name;
@@ -11,7 +12,7 @@ struct SnpPipeOptions {
 
 class SnpPipe {
 public:
-    explicit SnpPipe(SnpPipeOptions &options, uint32_t pipeId);
+    explicit SnpPipe(SnpPipeOptions &options, uint32_t pipeId, SnpContext *context);
     bool start();
     void stop();
     bool addComponentBegin(SnpComponent *component);
@@ -23,6 +24,11 @@ protected:
     std::string name;
 public:
     const std::string &getName() const;
+
+private:
+    SnpContext *context;
+public:
+    SnpContext *getContext() const;
 
 private:
     std::vector<SnpComponent*> components;

@@ -1,7 +1,7 @@
 #include "SnpSinkDisplay.h"
 
 SnpSinkDisplay::SnpSinkDisplay(const SnpSinkDisplayOptions &options) : SnpComponent(options, "COMPONENT_OUTPUT_VIDEO_DISPLAY") {
-    addInputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_RGBA));
+    addInputPort(new SnpPort(PORT_STREAM_TYPE_VIDEO_RGBA));
     addProperty(new SnpProperty("width", options.width));
     addProperty(new SnpProperty("height", options.height));
     width = options.width;

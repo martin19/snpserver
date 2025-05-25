@@ -2,8 +2,9 @@
 #include "SnpPipe.h"
 #include "util/loguru.h"
 
-SnpPipe::SnpPipe(SnpPipeOptions &options, uint32_t pipeId) {
+SnpPipe::SnpPipe(SnpPipeOptions &options, uint32_t pipeId, SnpContext* context) {
     this->pipeId = pipeId;
+    this->context = context;
     name = options.name;
     running = false;
     framesPassed = 0;
@@ -72,4 +73,8 @@ std::vector<SnpProperty*>* SnpPipe::getProperties() {
         }
     }
     return properties;
+}
+
+SnpContext *SnpPipe::getContext() const {
+    return context;
 }

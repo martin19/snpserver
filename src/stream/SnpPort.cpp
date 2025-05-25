@@ -3,13 +3,11 @@
 
 SnpPort::SnpPort() {
     owner = nullptr;
-    bufferType = PORT_TYPE_COPY;
     streamType = PORT_STREAM_TYPE_GENERIC;
 }
 
-SnpPort::SnpPort(PortBufferType bufferType, PortStreamType streamType) {
+SnpPort::SnpPort(PortStreamType streamType) {
     owner = nullptr;
-    this->bufferType = bufferType;
     this->streamType = streamType;
 }
 
@@ -52,21 +50,17 @@ void SnpPort::setOwner(SnpComponent *owner) {
     SnpPort::owner = owner;
 }
 
-PortBufferType SnpPort::getBufferType() const {
-    return bufferType;
-}
-
 PortStreamType SnpPort::getStreamType() const {
     return streamType;
 }
 
-void SnpPort::onData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete) {
+void SnpPort::onData(uint32_t pipeId, SnpData* data) {
     SnpPort* targetPort = getTargetPorts().at(pipeId);
     if(targetPort == nullptr) return;
-    targetPort->onDataCb(pipeId, data, len, complete);
+    targetPort->onDataCb(pipeId, data);
 }
 
-void SnpPort::setOnDataCb(std::function<void(uint32_t, const uint8_t *, uint32_t, bool)> cb) {
+void SnpPort::setOnDataCb(std::function<void(uint32_t, SnpData *)> cb) {
     onDataCb = cb;
 }
 

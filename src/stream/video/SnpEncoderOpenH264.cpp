@@ -5,6 +5,8 @@
 #ifdef _WIN32
 #include "windows.h"
 #include "libloaderapi.h"
+#include "stream/data/SnpDataRam.h"
+
 #endif
 
 SnpEncoderOpenH264::SnpEncoderOpenH264(const SnpEncoderOpenH264Options &options) : SnpComponent(options, "COMPONENT_ENCODER_OPENH264") {
@@ -24,15 +26,14 @@ SnpEncoderOpenH264::SnpEncoderOpenH264(const SnpEncoderOpenH264Options &options)
     encoder = nullptr;
     yuvBuffer = nullptr;
 
-    addInputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_RGBA));
-    addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_VIDEO_H264));
+    addInputPort(new SnpPort(PORT_STREAM_TYPE_VIDEO_RGBA));
+    addOutputPort(new SnpPort(PORT_STREAM_TYPE_VIDEO_H264));
     addProperty(new SnpProperty("width", options.width));
     addProperty(new SnpProperty("height", options.height));
     addProperty(new SnpProperty("fps", options.fps));
     addProperty(new SnpProperty("qp", options.qp));
 
-    getInputPort(0)->setOnDataCb(std::bind(&SnpEncoderOpenH264::onInputData, this, std::placeholders::_1,
-                                           std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+    getInputPort(0)->setOnDataCb(std::bind(&SnpEncoderOpenH264::onInputData, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 SnpEncoderOpenH264::~SnpEncoderOpenH264() {
@@ -56,9 +57,11 @@ void SnpEncoderOpenH264::stop() {
     openH264EncoderDestroy();
 }
 
-void SnpEncoderOpenH264::onInputData(uint32_t pipeId, const uint8_t *data, uint32_t len, bool complete) {
+void SnpEncoderOpenH264::onInputData(uint32_t pipeId, SnpData* data) {
     if(!isRunning()) return;
-    this->openH264EncoderEncode(data, len);
+    if(auto* ram = dynamic_cast<SnpDataRam*>(data)) {
+        this->openH264EncoderEncode(ram->getData(), ram->getLen());
+    }
 }
 
 bool SnpEncoderOpenH264::openH264EncoderInit() {
@@ -140,7 +143,9 @@ bool SnpEncoderOpenH264::openH264EncoderEncode(const uint8_t *framebuffer, uint3
             } while (iNalIdx >= 0);
 
             bool complete = iLayer == info.iLayerNum-1;
-            outputPort->onData(getPipeId(), pLayerBsInfo->pBsBuf, iLayerSize, complete);
+
+            SnpDataRam ram(pLayerBsInfo->pBsBuf, iLayerSize, complete);
+            outputPort->onData(getPipeId(), &ram);
         }
     }
 
