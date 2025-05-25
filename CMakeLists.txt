@@ -14,7 +14,7 @@ set(protobuf_BUILD_TESTS OFF)
 add_subdirectory("extern/protobuf-3.21.12")
 
 # library: QT 6.7.2+
-set(QT_VERSION 6.8.0)
+set(QT_VERSION 6.7.2)
 set(Qt6_DIR C:/Qt/${QT_VERSION}/mingw_64/lib/cmake/Qt6/)
 set(CMAKE_PREFIX_PATH C:/Qt/${QT_VERSION}/mingw_64/lib/cmake)
 find_package(Qt6 COMPONENTS
@@ -56,23 +56,23 @@ set(AMF_SOURCES
 )
 
 #find_package(VA)
-#if(VA_FOUND)
-#    add_definitions(-DHAVE_LIBVA)
-#endif(VA_FOUND)
-set(VA_INCLUDE_DIRS
-    extern/libva/x64/include/
-    extern/libva/x64/include/directx
-)
-include_directories(${VA_INCLUDE_DIRS})
-set(VA_SOURCES
-    src/stream/video/SnpEncoderVaH264.cpp
-    src/stream/video/h264/VaBitstream.cpp
-    src/stream/video/h264/VaUtils.cpp
-)
-set(VA_LIBRARIES
-    ${CMAKE_CURRENT_SOURCE_DIR}/extern/libva/x64/lib/libva.dll.a
-    ${CMAKE_CURRENT_SOURCE_DIR}/extern/libva/x64/lib/libva_win32.dll.a
-)
+if(VA_FOUND)
+    add_definitions(-DHAVE_LIBVA)
+    set(VA_INCLUDE_DIRS
+        extern/libva/x64/include/
+        extern/libva/x64/include/directx
+    )
+    include_directories(${VA_INCLUDE_DIRS})
+    set(VA_SOURCES
+        src/stream/video/SnpEncoderVaH264.cpp
+        src/stream/video/h264/VaBitstream.cpp
+        src/stream/video/h264/VaUtils.cpp
+    )
+    set(VA_LIBRARIES
+        ${CMAKE_CURRENT_SOURCE_DIR}/extern/libva/x64/lib/libva.dll.a
+        ${CMAKE_CURRENT_SOURCE_DIR}/extern/libva/x64/lib/libva_win32.dll.a
+    )
+endif(VA_FOUND)
 
 find_package(MMALH264)
 if(MMALH264_FOUND)
@@ -271,7 +271,7 @@ add_executable(snpclient
     ${MMALH264_SOURCES}
     ${OPENH264_SOURCES}
     ${AMF_SOURCES}
-    ${VA_SOURCES} src/stream/video/h264/VaUtils.cpp src/stream/video/h264/VaUtils.h)
+    ${VA_SOURCES})
 target_link_libraries(snpclient
     Qt::Core
     Qt::Gui
