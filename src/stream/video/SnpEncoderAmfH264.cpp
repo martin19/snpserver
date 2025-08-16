@@ -63,19 +63,19 @@ bool SnpEncoderAmfH264::start() {
         return false;
     }
 
-//    SnpPipe* pipe = getOwner();
-//    ID3D11Device *device = pipe->getContext()->getDx11DeviceManager()->getDevice();
-//    res = amf::AMFContext1Ptr(context)->InitDX11(device);
-//    if (res != AMF_OK) {
-//        LOG_F(ERROR, "InitDX11(device) failed.");
-//        return false;
-//    }
-
-    res = amf::AMFContext1Ptr(context)->InitVulkan(NULL);
+    SnpPipe* pipe = getOwner();
+    ID3D11Device *device = pipe->getContext()->getDx11DeviceManager()->getDevice();
+    res = amf::AMFContext1Ptr(context)->InitDX11(device);
     if (res != AMF_OK) {
-        LOG_F(ERROR, "InitVulkan(NULL) failed.");
+        LOG_F(ERROR, "InitDX11(device) failed.");
         return false;
     }
+
+//    res = amf::AMFContext1Ptr(context)->InitVulkan(NULL);
+//    if (res != AMF_OK) {
+//        LOG_F(ERROR, "InitVulkan(NULL) failed.");
+//        return false;
+//    }
 
     res = g_AMFFactory.GetFactory()->CreateComponent(context, pCodecNames[0], &encoder);
     if (res != AMF_OK) {

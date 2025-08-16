@@ -88,14 +88,14 @@ if(MMALH264_FOUND)
     )
 endif(MMALH264_FOUND)
 
-#find_package(DDA)
-##if(DDA_FOUND)
-#    add_definitions(-DHAVE_DDA)
-#    set(DDA_SOURCES
-#            src/stream/video/SnpSourceDda.cpp
-#            src/context/Dx11DeviceManager.cpp
-#    )
-##endif(DDA_FOUND)
+find_package(DDA)
+if(DDA_FOUND)
+    add_definitions(-DHAVE_DDA)
+    set(DDA_SOURCES
+        src/stream/video/SnpSourceDda.cpp
+        src/context/Dx11DeviceManager.cpp
+    )
+endif(DDA_FOUND)
 
 include_directories(
     src

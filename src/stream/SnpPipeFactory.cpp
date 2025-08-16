@@ -25,7 +25,9 @@
 #include "util/PropertyUtil.h"
 #include "stream/video/SnpEncoderAmfH264.h"
 #include "stream/video/SnpDecoderAmfH264.h"
+#ifdef HAVE_DDA
 #include "stream/video/SnpSourceDda.h"
+#endif //HAVE_DDA
 
 
 std::vector<SnpPipe*> SnpPipeFactory::createPipes(PipeMap& pipeMap, SnpContext* context) {
@@ -53,12 +55,14 @@ SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Comp
                 options.boxSpeed = PropertyUtil::getPropertyUint(component, "boxSpeed", 1);
                 snpComponent = new SnpSourceDummy(options);
             } break;
-//            case snp::COMPONENT_CAPTURE_DDA: {
-//                SnpSourceDdaOptions options;
-//                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
-//                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
-//                snpComponent = new SnpSourceDda(options);
-//            } break;
+            #ifdef HAVE_DDA
+            case snp::COMPONENT_CAPTURE_DDA: {
+                SnpSourceDdaOptions options;
+                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
+                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
+                snpComponent = new SnpSourceDda(options);
+            } break;
+            #endif //HAVE_DDA
             case snp::COMPONENT_ENCODER_OPENH264: {
                 SnpEncoderOpenH264Options options;
                 options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
