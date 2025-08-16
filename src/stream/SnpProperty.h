@@ -1,6 +1,7 @@
 #ifndef SNPSERVER_SNPPROPERTY_H
 #define SNPSERVER_SNPPROPERTY_H
 
+#include <cstdint>
 #include <string>
 
 enum PropertyType {

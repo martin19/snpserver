@@ -1,6 +1,7 @@
 #ifndef SNPSERVER_SNPPORT_H
 #define SNPSERVER_SNPPORT_H
 
+#include <cstdint>
 #include <functional>
 #include <map>
 #include "stream/data/SnpData.h"
