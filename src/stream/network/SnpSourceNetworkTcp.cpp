@@ -1,6 +1,7 @@
 #include <mutex>
 #include "SnpSourceNetworkTcp.h"
 #include "network/snp.pb.h"
+#include "stream/data/SnpDataRam.h"
 
 #define SNP_SOURCE_RECV_BUFFER_SIZE 500000
 #define SNP_SOURCE_NETWORK_BUFFER_SIZE 500000
@@ -10,7 +11,7 @@ SnpSourceNetworkTcp::SnpSourceNetworkTcp(const SnpSourceNetworkTcpOptions &optio
     port = options.port;
     handleCapabilitiesMessageCb = options.handleCapabilitiesMessageCb;
     connected = false;
-    addOutputPort(new SnpPort(PORT_TYPE_BOTH, PORT_STREAM_TYPE_GENERIC));
+    addOutputPort(new SnpPort(PORT_STREAM_TYPE_GENERIC));
 }
 
 SnpSourceNetworkTcp::~SnpSourceNetworkTcp() {
@@ -91,10 +92,9 @@ bool SnpSourceNetworkTcp::dispatch() {
     if(!result) return false;
     switch(message.type()) {
         case snp::MESSAGE_TYPE_DATA: {
-            getOutputPort(0)->onData(message.data().pipe_id(),
-               (const uint8_t*)message.data().dataraw().payload().c_str(),
-               message.data().dataraw().payload().size(),
-               true);
+            SnpDataRam ram((uint8_t*)message.data().dataraw().payload().c_str(),
+                           message.data().dataraw().payload().size(), true);
+            getOutputPort(0)->onData(message.data().pipe_id(), &ram);
             return true;
         }
         case snp::MESSAGE_TYPE_CAPABILITIES:

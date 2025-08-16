@@ -49,10 +49,11 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
     * ✅ DONE: find problem with openh264, amf decoder cannot handle stream created by openh264 encoder  
     * -> despite initializing with 1080 height openh264 encodes to 1088 height which amf decoder does not like.  
   * ✅ DONE: implement AMF decoder, **encoder** cpu usage is really low (while openh264 exeeds 50%)  
+  * ✅ TODO: implement VAAPI (intel) encoder
+  * 
+  * 🟦 TODO: implement different VAAPI inputs (dx11, ram, ..?) 
+  * 🟦 TODO: implement VAAPI (intel) decoder  
   
-
-  * 🟦 TODO: implement VAAPI (intel) encoder/decoder
-
 
   * 🟦 TODO: consider using c++ smart pointers, to avoid memory leaks, e.g. pipe factory.
   * 🟦 TODO: compile and make run release mode with optimizations

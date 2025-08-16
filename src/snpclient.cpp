@@ -9,8 +9,10 @@
 #include "stream/output/SnpSinkDisplay.h"
 #include "stream/SnpComponentRegistry.h"
 #include "config/SnpConfig.h"
+#include "stream/data/SnpDataRam.h"
 
 
+SnpContext snpContext;
 SnpPipe *videoPipe = nullptr;
 SnpCanvas *canvas = nullptr;
 SnpConfig* config;
@@ -37,10 +39,10 @@ void handleCapabilitiesMessageCb(snp::Message* message) {
 
 int runClient() {
     componentRegistry = new SnpComponentRegistry();
-    config = new SnpConfig(R"(C:\Users\martin\CLionProjects\snpserver\snp.ini)");
+    config = new SnpConfig(R"(P:\snp\snpserver\snp.ini)");
 
     //setup local pipes
-    std::vector<SnpPipe*> localPipes = SnpPipeFactory::createPipes(config->getLocalPipes());
+    std::vector<SnpPipe*> localPipes = SnpPipeFactory::createPipes(config->getLocalPipes(), &snpContext);
 
     //add network source component
     SnpSourceNetworkTcpOptions sourceOptions = {};
@@ -57,10 +59,12 @@ int runClient() {
 
     //paint on every frame
     auto* sinkDisplay = dynamic_cast<SnpSinkDisplay *>(localPipes[0]->getComponents().back());
-    sinkDisplay->getInputPort(0)->setOnDataCb([](auto pipeId, auto && data, auto && len, auto && PH3) {
-        QImage* qImage = canvas->getQImage();
-        memcpy(qImage->bits(), data, len);
-        canvas->update();
+    sinkDisplay->getInputPort(0)->setOnDataCb([](uint32_t pipeId, SnpData *data) {
+        if (auto* ramData = dynamic_cast<SnpDataRam*>(data)) {
+            QImage *qImage = canvas->getQImage();
+            memcpy(qImage->bits(), ramData->getData(), ramData->getLen());
+            canvas->update();
+        }
     });
 
     return 0;

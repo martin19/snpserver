@@ -88,13 +88,14 @@ if(MMALH264_FOUND)
     )
 endif(MMALH264_FOUND)
 
-#if(DDA_FOUND)
-    add_definitions(-DHAVE_DDA)
-    set(DDA_SOURCES
-            src/stream/video/SnpSourceDda.cpp
-            src/context/Dx11DeviceManager.cpp
-    )
-#endif(DDA_FOUND)
+#find_package(DDA)
+##if(DDA_FOUND)
+#    add_definitions(-DHAVE_DDA)
+#    set(DDA_SOURCES
+#            src/stream/video/SnpSourceDda.cpp
+#            src/context/Dx11DeviceManager.cpp
+#    )
+##endif(DDA_FOUND)
 
 include_directories(
     src
@@ -282,6 +283,12 @@ add_executable(snpclient
     src/stream/network/SnpSinkNetworkTcp.cpp
     # file sink/source
     src/stream/file/SnpSinkFile.cpp
+    # data
+    src/stream/data/SnpData.cpp
+    src/stream/data/SnpDataDx11.cpp
+    src/stream/data/SnpDataRam.cpp
+    # context
+    src/context/SnpContext.cpp
     ${X11_SOURCES}
     ${DRM_SOURCES}
     ${GL_SOURCES}
