@@ -16,20 +16,14 @@ SnpComponentRegistry::SnpComponentRegistry() {
             {"COMPONENT_OUTPUT_KEYBOARD_X11", 9},
             {"COMPONENT_OUTPUT_POINTER_X11", 10},
             {"COMPONENT_OUTPUT_CURSOR_X11", 11},
-            {"COMPONENT_ENCODER_OPENH264", 12},
-            {"COMPONENT_DECODER_OPENH264", 13},
-            {"COMPONENT_ENCODER_INTEL", 14},
-            {"COMPONENT_DECODER_INTEL", 15},
-            {"COMPONENT_ENCODER_AMD", 16},
-            {"COMPONENT_DECODER_AMD", 17},
-            {"COMPONENT_OUTPUT_FILE", 18},
-            {"COMPONENT_OUTPUT_TCP", 19},
-            {"COMPONENT_INPUT_TCP", 20},
-            {"COMPONENT_OUTPUT_WEBSOCKET", 21},
-            {"COMPONENT_INPUT_WEBSOCKET", 22},
-            {"COMPONENT_ENCODER_MMAL", 23},
-            {"COMPONENT_DECODER_MMAL", 24},
-            {"COMPONENT_CAPTURE_GL", 25}
+            {"COMPONENT_ENCODER_FFMPEG", 12},
+            {"COMPONENT_DECODER_FFMPEG", 13},
+            {"COMPONENT_OUTPUT_FILE", 14},
+            {"COMPONENT_OUTPUT_TCP", 15},
+            {"COMPONENT_INPUT_TCP", 16},
+            {"COMPONENT_OUTPUT_WEBSOCKET", 17},
+            {"COMPONENT_INPUT_WEBSOCKET", 18},
+            {"COMPONENT_CAPTURE_GL", 19}
     };
 
     registerLocalComponents();
@@ -93,24 +87,6 @@ void SnpComponentRegistry::registerLocalComponents() {
 #endif
 //    registerComponent(snp::COMPONENT_CAPTURE_VIDEO_WAYLAND);
 //    registerComponent(snp::COMPONENT_CAPTURE_VIDEO_V4L);
-#ifdef HAVE_LIBOPENH264
-    {
-        auto c = new snp::Component();
-        c->set_componenttype(snp::COMPONENT_ENCODER_OPENH264);
-        registerLocalComponent(c);
-    }
-    {
-        auto c = new snp::Component();
-        c->set_componenttype(snp::COMPONENT_DECODER_OPENH264);
-        registerLocalComponent(c);
-    }
-#endif
-#ifdef HAVE_LIBVA
-    registerComponent(snp::COMPONENT_ENCODER_INTEL);
-    registerComponent(snp::COMPONENT_DECODER_INTEL);
-#endif
-//    registerComponent(snp::COMPONENT_ENCODER_AMD );
-//    registerComponent(snp::COMPONENT_DECODER_AMD );
 }
 
 void SnpComponentRegistry::registerLocalComponent(snp::Component* component) {

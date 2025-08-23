@@ -60,4 +60,6 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
   * 🟦 TODO: think about porttype (both, copy, mmap) - the idea is good, is the implementation
   * 🟦 TODO: fix temporarily deactivated websocket sink (marked usages with "TODO: websocket")
  
+libavcodec is a collection of software/hardware encoders/decoders
+
 🔲✅❎❌🟩

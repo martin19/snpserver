@@ -7,9 +7,6 @@
 #ifdef HAVE_LIBGL
     #include <stream/video/SnpSourceGL.h>
 #endif //HAVE_LIBGL
-#ifdef HAVE_LIBVA
-    #include <stream/video/SnpEncoderVaH264.h>
-#endif //HAVE_LIBVA
 #ifdef HAVE_LIBX11
     #include <stream/video/SnpSourceX11.h>
     #include <stream/input/SnpSinkX11Mouse.h>
@@ -19,12 +16,8 @@
 #ifdef HAVE_LIBWEBSOCKETS
 #include <stream/network/SnpSinkNetworkWebsocket.h>
 #endif //HAVE_LIBWEBSOCKETS
-#include <stream/video/SnpEncoderOpenH264.h>
-#include <stream/video/SnpDecoderOpenH264.h>
 #include "SnpPipeFactory.h"
 #include "util/PropertyUtil.h"
-#include "stream/video/SnpEncoderAmfH264.h"
-#include "stream/video/SnpDecoderAmfH264.h"
 #ifdef HAVE_DDA
 #include "stream/video/SnpSourceDda.h"
 #endif //HAVE_DDA
@@ -63,48 +56,27 @@ SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Comp
                 snpComponent = new SnpSourceDda(options);
             } break;
             #endif //HAVE_DDA
-            case snp::COMPONENT_ENCODER_OPENH264: {
-                SnpEncoderOpenH264Options options;
-                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
-                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
-                options.fps = PropertyUtil::getPropertyDouble(component, "fps", 20.0);
-                options.qp = PropertyUtil::getPropertyUint(component, "qp", 30);
-                snpComponent = new SnpEncoderOpenH264(options);
-            } break;
-            case snp::COMPONENT_DECODER_OPENH264: {
-                SnpDecoderOpenH264Options options = {};
-                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
-                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
-                options.qp = PropertyUtil::getPropertyUint(component, "qp", 30);
-                snpComponent = new SnpDecoderOpenH264(options);
-            } break;
+//            case snp::COMPONENT_ENCODER_OPENH264: {
+//                SnpEncoderOpenH264Options options;
+//                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
+//                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
+//                options.fps = PropertyUtil::getPropertyDouble(component, "fps", 20.0);
+//                options.qp = PropertyUtil::getPropertyUint(component, "qp", 30);
+//                snpComponent = new SnpEncoderOpenH264(options);
+//            } break;
+//            case snp::COMPONENT_DECODER_OPENH264: {
+//                SnpDecoderOpenH264Options options = {};
+//                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
+//                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
+//                options.qp = PropertyUtil::getPropertyUint(component, "qp", 30);
+//                snpComponent = new SnpDecoderOpenH264(options);
+//            } break;
             case snp::COMPONENT_OUTPUT_VIDEO_DISPLAY: {
                 SnpSinkDisplayOptions options = {};
                 options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
                 options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
                 snpComponent = new SnpSinkDisplay(options);
             } break;
-            case snp::COMPONENT_ENCODER_AMD: {
-                SnpEncoderAmfH264Options options = {};
-                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
-                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
-                options.fps = PropertyUtil::getPropertyDouble(component, "fps", 30.0);
-                snpComponent = new SnpEncoderAmfH264(options);
-            } break;
-            case snp::COMPONENT_DECODER_AMD: {
-                SnpDecoderAmfH264Options options = {};
-                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
-                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
-                snpComponent = new SnpDecoderAmfH264(options);
-            } break;
-            #ifdef HAVE_LIBVA
-            case snp::COMPONENT_ENCODER_INTEL: {
-                SnpEncoderVaH264Options options = {};
-                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
-                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
-                snpComponent = new SnpEncoderVaH264(options);
-            } break;
-            #endif //HAVE_LIBVA
             case snp::COMPONENT_DECODER_INTEL:
             case snp::COMPONENT_CAPTURE_VIDEO_DRM:
             case snp::COMPONENT_CAPTURE_VIDEO_X11:

@@ -2,16 +2,16 @@
 #define SNPSERVER_SNPCONTEXT_H
 
 
-#include "Dx11DeviceManager.h"
+//#include "Dx11DeviceManager.h"
 
 class SnpContext {
 public:
     SnpContext();
     virtual ~SnpContext();
 private:
-    Dx11DeviceManager *dx11DeviceManager;
+//    Dx11DeviceManager *dx11DeviceManager;
 public:
-    [[nodiscard]] Dx11DeviceManager *getDx11DeviceManager() const;
+//    [[nodiscard]] Dx11DeviceManager *getDx11DeviceManager() const;
 };
 
 

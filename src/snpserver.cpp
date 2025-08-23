@@ -3,13 +3,9 @@
 #include "stream/SnpPipe.h"
 #include "network/snp.pb.h"
 #include "stream/SnpPipeFactory.h"
-#include "stream/video/SnpEncoderAmfH264.h"
 #include "stream/video/SnpSourceDummy.h"
 #include "stream/file/SnpSinkFile.h"
-#include "stream/video/SnpEncoderOpenH264.h"
-#include "stream/video/SnpSourceDda.h"
 #include "context/SnpContext.h"
-//#include "stream/video/SnpEncoderVaH264.h"
 
 SnpContext snpContext;
 SnpSinkNetworkTcp* snpSinkNetworkTcp;
@@ -56,30 +52,30 @@ int main() {
     pipeOptions.name = "amd";
     SnpPipe pipe(pipeOptions, 0, &snpContext);
 
-    SnpSourceDdaOptions sourceDdaOptions = {};
-    sourceDdaOptions.width = 1920;
-    sourceDdaOptions.height = 1080;
-    SnpSourceDda snpSourceDda(sourceDdaOptions);
-
-    SnpEncoderAmfH264Options amfH264Options = {};
-    amfH264Options.width = 1920;
-    amfH264Options.height = 1080;
-    amfH264Options.qp = 10.0;
-    SnpEncoderAmfH264 snpEncoder(amfH264Options);
+//    SnpSourceDdaOptions sourceDdaOptions = {};
+//    sourceDdaOptions.width = 1920;
+//    sourceDdaOptions.height = 1080;
+//    SnpSourceDda snpSourceDda(sourceDdaOptions);
+//
+//    SnpEncoderAmfH264Options amfH264Options = {};
+//    amfH264Options.width = 1920;
+//    amfH264Options.height = 1080;
+//    amfH264Options.qp = 10.0;
+//    SnpEncoderAmfH264 snpEncoder(amfH264Options);
 //
     SnpSinkFileOptions sinkFileOptions = {};
     sinkFileOptions.fileName = "test1dda.h264";
     SnpSinkFile snpSinkFile(sinkFileOptions);
 
     //TODO: every component needs a pipeId (verify this) maybe a constructor parameter is necessary
-    snpSourceDda.setPipeId(0);
-    snpEncoder.setPipeId(0);
-    snpSinkFile.setPipeId(0);
-    pipe.addComponentEnd(&snpSourceDda);
-    pipe.addComponentEnd(&snpEncoder);
-    pipe.addComponentEnd(&snpSinkFile);
-
-    pipe.start();
+//    snpSourceDda.setPipeId(0);
+//    snpEncoder.setPipeId(0);
+//    snpSinkFile.setPipeId(0);
+//    pipe.addComponentEnd(&snpSourceDda);
+//    pipe.addComponentEnd(&snpEncoder);
+//    pipe.addComponentEnd(&snpSinkFile);
+//
+//    pipe.start();
 
     while(TRUE) {
         Sleep(100);

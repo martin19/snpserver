@@ -29,74 +29,6 @@ if(LIBWEBSOCKETS_FOUND)
     add_definitions(-DHAVE_LIBWEBSOCKETS)
 endif(LIBWEBSOCKETS_FOUND)
 
-find_package(OPENH264 REQUIRED)
-if(OPENH264_FOUND)
-    add_definitions(-DHAVE_LIBOPENH264)
-    include_directories(
-            /usr/include
-            ${OPENH264_INCLUDE_DIR}
-            /usr/include/libdrm #todo move this
-    )
-    set(OPENH264_SOURCES
-        src/stream/video/SnpDecoderOpenH264.cpp
-        src/stream/video/SnpEncoderOpenH264.cpp
-    )
-endif(OPENH264_FOUND)
-
-include_directories(
-    extern/amf
-)
-set(AMF_SOURCES
-    extern/amf/public/common/AMFFactory.cpp
-    extern/amf/public/common/Thread.cpp
-    extern/amf/public/common/Linux/ThreadLinux.cpp
-    extern/amf/public/common/Windows/ThreadWindows.cpp
-    src/stream/video/SnpEncoderAmfH264.cpp
-    src/stream/video/SnpDecoderAmfH264.cpp
-)
-
-#find_package(VA)
-#if(VA_FOUND)
-if(FALSE)
-    add_definitions(-DHAVE_LIBVA)
-    set(VA_INCLUDE_DIRS
-        extern/libva/x64/include/
-        extern/libva/x64/include/directx
-    )
-    include_directories(${VA_INCLUDE_DIRS})
-    set(VA_SOURCES
-        src/stream/video/SnpEncoderVaH264.cpp
-        src/stream/video/h264/VaBitstream.cpp
-        src/stream/video/h264/VaUtils.cpp
-    )
-    set(VA_LIBRARIES
-        ${CMAKE_CURRENT_SOURCE_DIR}/extern/libva/x64/lib/libva.dll.a
-        ${CMAKE_CURRENT_SOURCE_DIR}/extern/libva/x64/lib/libva_win32.dll.a
-    )
-endif(FALSE)
-
-find_package(MMALH264)
-if(MMALH264_FOUND)
-    add_definitions(-DHAVE_LIBMMALH264)
-    include_directories(
-            /usr/include
-            ${MMALH264_INCLUDE_DIR}
-            /usr/include/libdrm #todo move this
-    )
-    set(MMALH264_SOURCES
-        src/stream/video/SnpEncoderMmalH264.cpp
-    )
-endif(MMALH264_FOUND)
-
-find_package(DDA)
-if(DDA_FOUND)
-    add_definitions(-DHAVE_DDA)
-    set(DDA_SOURCES
-        src/stream/video/SnpSourceDda.cpp
-        src/context/Dx11DeviceManager.cpp
-    )
-endif(DDA_FOUND)
-
 include_directories(
     src
     extern/openh264/include
@@ -123,7 +55,6 @@ if(LIBX11_FOUND)
     set(X11_SOURCES
         src/stream/input/SnpSinkX11Mouse.cpp
         src/stream/input/SnpSinkX11Keyboard.cpp
-        src/stream/video/SnpSourceX11.cpp
         src/stream/input/SnpSourceX11Cursor.cpp
     )
 endif(LIBX11_FOUND)
@@ -198,11 +129,6 @@ add_executable(snpserver
     ${X11_SOURCES}
     ${DRM_SOURCES}
     ${GL_SOURCES}
-    ${MMALH264_SOURCES}
-    ${OPENH264_SOURCES}
-    ${AMF_SOURCES}
-    ${VA_SOURCES}
-    ${DDA_SOURCES}
 )
 
 target_compile_options(
@@ -212,17 +138,9 @@ target_compile_options(
     $<$<CONFIG:Release>:-O3>     # Add optimization in Release mode
 )
 
-if(VA_FOUND)
-    target_link_libraries(snpserver ${VA_LIBRARIES})
-endif(VA_FOUND)
-
 if(LIBWEBSOCKETS_FOUND)
     target_link_libraries(snpserver ${LIBWEBSOCKETS_LIBRARIES})
 endif(LIBWEBSOCKETS_FOUND)
-
-if(MMALH264_FOUND)
-    target_link_libraries(snpserver ${MMALH264_LIBRARIES})
-endif(MMALH264_FOUND)
 
 if(LIBDRM_FOUND)
     target_link_libraries(snpserver libdrm)
@@ -243,8 +161,6 @@ endif(WIN32)
 
 # server app
 target_link_libraries(snpserver
-    ${OPENH264_LIBRARIES}
-    ${VA_LIBRARIES}
     ${SOCKET_LIBRARIES}
     ${WIN32_LIBRARIES}
     pthread
@@ -292,15 +208,11 @@ add_executable(snpclient
     ${X11_SOURCES}
     ${DRM_SOURCES}
     ${GL_SOURCES}
-    ${MMALH264_SOURCES}
-    ${OPENH264_SOURCES}
-    ${AMF_SOURCES}
-    ${VA_SOURCES})
+)
 target_link_libraries(snpclient
     Qt::Core
     Qt::Gui
     Qt::Widgets
-    ${OPENH264_LIBRARIES}
     ${SOCKET_LIBRARIES}
     ${WIN32_LIBRARIES}
     pthread
