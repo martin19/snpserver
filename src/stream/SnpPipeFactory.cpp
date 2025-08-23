@@ -18,10 +18,8 @@
 #endif //HAVE_LIBWEBSOCKETS
 #include "SnpPipeFactory.h"
 #include "util/PropertyUtil.h"
-#ifdef HAVE_DDA
-#include "stream/video/SnpSourceDda.h"
-#endif //HAVE_DDA
-
+#include "stream/video/SnpDecoderFFmpeg.h"
+#include "stream/video/SnpEncoderFFmpeg.h"
 
 std::vector<SnpPipe*> SnpPipeFactory::createPipes(PipeMap& pipeMap, SnpContext* context) {
     std::vector<SnpPipe*> pipes;
@@ -56,15 +54,15 @@ SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Comp
                 snpComponent = new SnpSourceDda(options);
             } break;
             #endif //HAVE_DDA
-//            case snp::COMPONENT_ENCODER_OPENH264: {
-//                SnpEncoderOpenH264Options options;
-//                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
-//                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
-//                options.fps = PropertyUtil::getPropertyDouble(component, "fps", 20.0);
-//                options.qp = PropertyUtil::getPropertyUint(component, "qp", 30);
-//                snpComponent = new SnpEncoderOpenH264(options);
-//            } break;
-//            case snp::COMPONENT_DECODER_OPENH264: {
+            case snp::COMPONENT_ENCODER_FFMPEG: {
+                SnpEncoderFFmpegOptions options;
+                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
+                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
+                options.fps = PropertyUtil::getPropertyDouble(component, "fps", 20.0);
+                options.qp = PropertyUtil::getPropertyUint(component, "qp", 30);
+                snpComponent = new SnpEncoderFFmpeg(options);
+            } break;
+//            case snp::COMPONENT_DECODER_FFMPEG: {
 //                SnpDecoderOpenH264Options options = {};
 //                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
 //                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
@@ -77,7 +75,6 @@ SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Comp
                 options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
                 snpComponent = new SnpSinkDisplay(options);
             } break;
-            case snp::COMPONENT_DECODER_INTEL:
             case snp::COMPONENT_CAPTURE_VIDEO_DRM:
             case snp::COMPONENT_CAPTURE_VIDEO_X11:
             case snp::COMPONENT_CAPTURE_VIDEO_WAYLAND:

@@ -122,6 +122,8 @@ add_executable(snpserver
     # video stream
     src/stream/video/SnpSourceDummy.cpp
     src/stream/output/SnpSinkDisplay.cpp
+    src/stream/video/SnpEncoderFFmpeg.cpp
+    src/stream/video/SnpDecoderFFmpeg.cpp
     # input stream
     src/stream/input/keymap_atset1_linux.c
     # network sink/source
@@ -201,6 +203,8 @@ add_executable(snpclient
     # video stream
     src/stream/video/SnpSourceDummy.cpp
     src/stream/output/SnpSinkDisplay.cpp
+    src/stream/video/SnpEncoderFFmpeg.cpp
+    src/stream/video/SnpDecoderFFmpeg.cpp
     # input stream
     src/stream/input/keymap_atset1_linux.c
     # network sink/source
