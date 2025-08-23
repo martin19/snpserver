@@ -1,136 +1,106 @@
 #include "SnpDecoderFFmpeg.h"
+#include "stream/data/SnpDataRam.h"
 
-//#include "util/assert.h"
-//#ifdef _WIN32
-//#include "windows.h"
-//#include "libloaderapi.h"
-//#include "util/VideoUtil.h"
-//#include "util/loguru.h"
-//#include "stream/data/SnpDataRam.h"
-//
-//#endif
-//
-//
-//SnpDecoderOpenH264::SnpDecoderOpenH264(const SnpDecoderOpenH264Options &options) : SnpComponent(options, "COMPONENT_DECODER_OPENH264") {
-//#ifdef _WIN32
-//    HMODULE hDLL = LoadLibraryA("openh264-2.1.1-win64.dll");
-//    if(hDLL == nullptr) {
-//        LOG_F(ERROR, "could not load openh264-2.1.1-win64.dll.");
-//        exit(-1);
-//    }
-//
-//    openH264Api.welsCreateDecoderFunc = (WelsCreateDecoderFunc)GetProcAddress(hDLL, "WelsCreateDecoder");
-//    openH264Api.welsDestroyDecoderFunc = (WelsDestroyDecoderFunc) GetProcAddress(hDLL, "WelsDestroyDecoder");
-//#else
-//    openH264Api.welsCreateSvcEncoderFunc = WelsCreateSVCEncoder;
-//    openH264Api.welsDestroySvcEncoderFunc = WelsDestroySVGEncoder;
-//#endif //_WIN32
-//
-//    decoder = nullptr;
-//    yuvBuffer[0] = nullptr;
-//    yuvBuffer[1] = nullptr;
-//    yuvBuffer[2] = nullptr;
-//    rgbBuffer = nullptr;
-//
-//    addInputPort(new SnpPort(PORT_STREAM_TYPE_VIDEO_H264));
-//    addOutputPort(new SnpPort(PORT_STREAM_TYPE_VIDEO_RGBA));
-//    addProperty(new SnpProperty("width", options.width));
-//    addProperty(new SnpProperty("height", options.height));
+extern "C" {
+#include <libavcodec/avcodec.h>
+#include <libavutil/imgutils.h>
+#include <libavutil/opt.h>
+}
+
+SnpDecoderFFmpeg::SnpDecoderFFmpeg(const SnpDecoderFFmpegOptions &options) : SnpComponent(options, "COMPONENT_DECODER_FFMPEG") {
+    addInputPort(new SnpPort(PORT_STREAM_TYPE_VIDEO_H264));
+    addOutputPort(new SnpPort(PORT_STREAM_TYPE_VIDEO_RGBA));
+    addProperty(new SnpProperty("width", options.width));
+    addProperty(new SnpProperty("height", options.height));
 //    addProperty(new SnpProperty("qp", options.qp));
-//    getInputPort(0)->setOnDataCb(std::bind(&SnpDecoderOpenH264::onInputData, this, std::placeholders::_1,
-//                                           std::placeholders::_2));
-//}
-//
-//SnpDecoderOpenH264::~SnpDecoderOpenH264() {
-//    openH264DecoderDestroy();
-//}
-//
-//bool SnpDecoderOpenH264::start() {
-//    SnpComponent::start();
-//    openH264DecoderInit();
-//    return true;
-//}
-//
-//void SnpDecoderOpenH264::stop() {
-//    SnpComponent::stop();
-//    openH264DecoderDestroy();
-//}
-//
-//void SnpDecoderOpenH264::onInputData(uint32_t pipeId, SnpData* data) {
-//    if(!isRunning()) return;
-//    if(auto* ram = dynamic_cast<SnpDataRam*>(data)) {
-//        this->openH264DecoderDecode(ram->getData(), ram->getLen());
-//    }
-//}
-//
-//bool SnpDecoderOpenH264::openH264DecoderInit() {
-//    uint32_t width = getProperty("width")->getValueUint32();
-//    uint32_t height = getProperty("height")->getValueUint32();
-//    uint32_t bpp = getProperty("qp")->getValueUint32();
-//
-//    SDecodingParam sDecodingParam = {0};
-//    bool result = true;
-//    int res;
-//    res = openH264Api.welsCreateDecoderFunc(&decoder);
-//    ASSERT(res == 0);
-//    ASSERT(decoder != nullptr);
-//
-//    sDecodingParam.sVideoProperty.eVideoBsType = VIDEO_BITSTREAM_SVC;
-//    sDecodingParam.bParseOnly = false;
-//
-//    res = decoder->Initialize(&sDecodingParam);
-//    ASSERT(res == 0);
-//
-//    yuvBuffer[0] = (uint8_t*)calloc(width*height,1);
-//    yuvBuffer[1] = (uint8_t*)calloc(width*height/4,1);
-//    yuvBuffer[2] = (uint8_t*)calloc(width*height/4,1);
-//    rgbBuffer = (uint8_t*)calloc(width * height * bpp, 1);
-//
-//    return result;
-//    error:
-//    return result;
-//}
-//
-//bool SnpDecoderOpenH264::openH264DecoderDecode(const uint8_t *srcBuffer, int srcLen) {
-//    uint32_t width = getProperty("width")->getValueUint32();
-//    uint32_t height = getProperty("height")->getValueUint32();
-//    uint32_t bpp = 4;
-//
-//    bool result = true;
-//    int res;
-//    SnpPort *outputPort = this->getOutputPort(0);
-//
-//    LOG_F(INFO, "received data len=%d", srcLen);
-//    SBufferInfo sBufferInfo;
-//    //res = decoder->DecodeFrame2(srcBuffer, srcLen, yuvBuffer, &sBufferInfo);
-//    res = decoder->DecodeFrameNoDelay(srcBuffer, srcLen, yuvBuffer, &sBufferInfo);
-//    if(sBufferInfo.iBufferStatus != 1) {
-//        LOG_F(WARNING, "DecodeFrame2 failed. decoding-state=%d", res);
-//        return false;
-//    }
-//    LOG_F(INFO, "DecodeFrame2 success.");
-//
-//    VideoUtil::yuv420ToRgba(rgbBuffer, yuvBuffer, width, height,
-//                            sBufferInfo.UsrData.sSystemBuffer.iStride[0],
-//                            sBufferInfo.UsrData.sSystemBuffer.iStride[1]);
-//
-//    SnpDataRam ram(rgbBuffer, width * height * bpp, true);
-//    outputPort->onData(getPipeId(), &ram);
-//
-//    return result;
-//    error:
-//    return result;
-//}
-//
-//void SnpDecoderOpenH264::openH264DecoderDestroy() {
-//    if(decoder) {
-//        decoder->Uninitialize();
-//        openH264Api.welsDestroyDecoderFunc(decoder);
-//    }
-//
-//    free(yuvBuffer[0]);
-//    free(yuvBuffer[1]);
-//    free(yuvBuffer[2]);
-//    free(rgbBuffer);
-//}
+    getInputPort(0)->setOnDataCb(std::bind(&SnpDecoderFFmpeg::onInputData, this, std::placeholders::_1,
+                                           std::placeholders::_2));
+}
+
+SnpDecoderFFmpeg::~SnpDecoderFFmpeg() {
+    ffmpegDecoderDestroy();
+}
+
+bool SnpDecoderFFmpeg::start() {
+    SnpComponent::start();
+    return ffmpegDecoderInit();
+}
+
+void SnpDecoderFFmpeg::stop() {
+    SnpComponent::stop();
+    ffmpegDecoderDestroy();
+}
+
+void SnpDecoderFFmpeg::onInputData(uint32_t pipeId, SnpData* data) {
+    if (!isRunning()) return;
+    if (auto* ram = dynamic_cast<SnpDataRam*>(data)) {
+        ffmpegDecoderDecode(ram->getData(), ram->getLen());
+    }
+}
+
+bool SnpDecoderFFmpeg::ffmpegDecoderInit() {
+    width = getProperty("width")->getValueUint32();
+    height = getProperty("height")->getValueUint32();
+
+    const AVCodec *codec = avcodec_find_decoder(AV_CODEC_ID_H264);
+    if (!codec) {
+        LOG_F(ERROR, "H264 decoder not found");
+        return false;
+    }
+
+    dec_ctx = avcodec_alloc_context3(codec);
+    if (!dec_ctx) return false;
+
+    if (avcodec_open2(dec_ctx, codec, nullptr) < 0) {
+        avcodec_free_context(&dec_ctx);
+        return false;
+    }
+
+    frame = av_frame_alloc();
+    pkt = av_packet_alloc();
+
+    return frame && pkt;
+}
+
+void SnpDecoderFFmpeg::ffmpegDecoderDestroy() {
+    if (sws_ctx) sws_freeContext(sws_ctx);
+    if (pkt) av_packet_free(&pkt);
+    if (frame) av_frame_free(&frame);
+    if (dec_ctx) avcodec_free_context(&dec_ctx);
+}
+
+void SnpDecoderFFmpeg::ffmpegDecoderDecode(const uint8_t *packetData, uint32_t len) {
+
+
+    av_packet_unref(pkt);
+    av_new_packet(pkt, (int)len);
+    memcpy(pkt->data, packetData, len);
+
+    if (avcodec_send_packet(dec_ctx, pkt) < 0) {
+        LOG_F(ERROR, "Error sending packet to decoder");
+        return;
+    }
+
+    while (avcodec_receive_frame(dec_ctx, frame) == 0) {
+        // convert YUV420P → RGBA
+        uint8_t *dst_data[4];
+        int dst_linesize[4];
+        av_image_alloc(dst_data, dst_linesize, (int)width, (int)height, AV_PIX_FMT_RGBA, 1);
+
+        if (!sws_ctx) {
+            sws_ctx = sws_getContext(
+                    (int)width, (int)height, (AVPixelFormat)frame->format,
+                    (int)width, (int)height, AV_PIX_FMT_RGBA,
+                    SWS_BILINEAR, nullptr, nullptr, nullptr
+            );
+        }
+
+        sws_scale(sws_ctx, frame->data, frame->linesize, 0, (int)height, dst_data, dst_linesize);
+
+        SnpDataRam out(dst_data[0], width * height * 4, true);
+        getOutputPort(0)->onData(getPipeId(), &out);
+
+        av_freep(&dst_data[0]);
+    }
+}
 

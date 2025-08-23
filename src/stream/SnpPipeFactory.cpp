@@ -46,14 +46,6 @@ SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Comp
                 options.boxSpeed = PropertyUtil::getPropertyUint(component, "boxSpeed", 1);
                 snpComponent = new SnpSourceDummy(options);
             } break;
-            #ifdef HAVE_DDA
-            case snp::COMPONENT_CAPTURE_DDA: {
-                SnpSourceDdaOptions options;
-                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
-                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
-                snpComponent = new SnpSourceDda(options);
-            } break;
-            #endif //HAVE_DDA
             case snp::COMPONENT_ENCODER_FFMPEG: {
                 SnpEncoderFFmpegOptions options;
                 options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
@@ -62,13 +54,13 @@ SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Comp
                 options.qp = PropertyUtil::getPropertyUint(component, "qp", 30);
                 snpComponent = new SnpEncoderFFmpeg(options);
             } break;
-//            case snp::COMPONENT_DECODER_FFMPEG: {
-//                SnpDecoderOpenH264Options options = {};
-//                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
-//                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
+            case snp::COMPONENT_DECODER_FFMPEG: {
+                SnpDecoderFFmpegOptions options = {};
+                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
+                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
 //                options.qp = PropertyUtil::getPropertyUint(component, "qp", 30);
-//                snpComponent = new SnpDecoderOpenH264(options);
-//            } break;
+                snpComponent = new SnpDecoderFFmpeg(options);
+            } break;
             case snp::COMPONENT_OUTPUT_VIDEO_DISPLAY: {
                 SnpSinkDisplayOptions options = {};
                 options.width = PropertyUtil::getPropertyUint(component, "width", 1920);

@@ -32,7 +32,7 @@ void handleSetupMessageCb(snp::Message* message) {
     }
 }
 
-int main2() {
+int main() {
     SnpSinkNetworkTcpOptions sinkOptions = {};
     sinkOptions.port = 9000;
     //sinkOptions.host = "192.168.3.21";
@@ -48,7 +48,7 @@ int main2() {
     return 0;
 }
 
-int main() {
+int main2() {
     SnpPipeOptions pipeOptions = {};
     pipeOptions.name = "ffmpeg";
     SnpPipe pipe(pipeOptions, 0, &snpContext);
