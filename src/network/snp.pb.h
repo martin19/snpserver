@@ -156,12 +156,13 @@ enum ComponentType : int {
   COMPONENT_OUTPUT_WEBSOCKET = 17,
   COMPONENT_INPUT_WEBSOCKET = 18,
   COMPONENT_CAPTURE_GL = 19,
+  COMPONENT_CAPTURE_VIDEO_DDA = 20,
   ComponentType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
   ComponentType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
 bool ComponentType_IsValid(int value);
 constexpr ComponentType ComponentType_MIN = COMPONENT_CAPTURE_VIDEO_DRM;
-constexpr ComponentType ComponentType_MAX = COMPONENT_CAPTURE_GL;
+constexpr ComponentType ComponentType_MAX = COMPONENT_CAPTURE_VIDEO_DDA;
 constexpr int ComponentType_ARRAYSIZE = ComponentType_MAX + 1;
 
 const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* ComponentType_descriptor();

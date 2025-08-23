@@ -126,6 +126,7 @@ add_executable(snpserver
     src/stream/SnpPipeFactory.cpp
     # video stream
     src/stream/video/SnpSourceDummy.cpp
+    src/stream/video/SnpSourceDda.cpp
     src/stream/output/SnpSinkDisplay.cpp
     src/stream/video/SnpEncoderFFmpeg.cpp
     src/stream/video/SnpDecoderFFmpeg.cpp
@@ -207,6 +208,7 @@ add_executable(snpclient
     src/stream/SnpPipeFactory.cpp
     # video stream
     src/stream/video/SnpSourceDummy.cpp
+    src/stream/video/SnpSourceDda.cpp
     src/stream/output/SnpSinkDisplay.cpp
     src/stream/video/SnpEncoderFFmpeg.cpp
     src/stream/video/SnpDecoderFFmpeg.cpp

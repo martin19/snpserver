@@ -20,6 +20,7 @@
 #include "util/PropertyUtil.h"
 #include "stream/video/SnpDecoderFFmpeg.h"
 #include "stream/video/SnpEncoderFFmpeg.h"
+#include "stream/video/SnpSourceDda.h"
 
 std::vector<SnpPipe*> SnpPipeFactory::createPipes(PipeMap& pipeMap, SnpContext* context) {
     std::vector<SnpPipe*> pipes;
@@ -45,6 +46,13 @@ SnpPipe *SnpPipeFactory::createPipe(uint32_t pipeId, const std::vector<snp::Comp
                 options.boxCount = PropertyUtil::getPropertyUint(component, "boxCount", 3);
                 options.boxSpeed = PropertyUtil::getPropertyUint(component, "boxSpeed", 1);
                 snpComponent = new SnpSourceDummy(options);
+            } break;
+            case snp::COMPONENT_CAPTURE_VIDEO_DDA: {
+                SnpSourceDdaOptions options;
+                options.width = PropertyUtil::getPropertyUint(component, "width", 1920);
+                options.height = PropertyUtil::getPropertyUint(component, "height", 1080);
+                options.fps = PropertyUtil::getPropertyDouble(component, "fps", 30.0);
+                snpComponent = new SnpSourceDda(options);
             } break;
             case snp::COMPONENT_ENCODER_FFMPEG: {
                 SnpEncoderFFmpegOptions options;

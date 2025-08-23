@@ -23,7 +23,8 @@ SnpComponentRegistry::SnpComponentRegistry() {
             {"COMPONENT_INPUT_TCP", 16},
             {"COMPONENT_OUTPUT_WEBSOCKET", 17},
             {"COMPONENT_INPUT_WEBSOCKET", 18},
-            {"COMPONENT_CAPTURE_GL", 19}
+            {"COMPONENT_CAPTURE_GL", 19},
+            {"COMPONENT_CAPTURE_VIDEO_DDA", 20}
     };
 
     registerLocalComponents();
