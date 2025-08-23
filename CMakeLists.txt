@@ -24,6 +24,14 @@ find_package(Qt6 COMPONENTS
     REQUIRED
 )
 
+# ffmpeg 8.0
+set(FFMPEG_DIR "extern/ffmpeg")
+set(FFMPEG_INCLUDE_DIR "${FFMPEG_DIR}/include")
+set(FFMPEG_LIB_DIR "${FFMPEG_DIR}/lib")
+set(FFMPEG_LIBRARIES avcodec avformat avutil swscale)
+include_directories(${FFMPEG_INCLUDE_DIR})
+link_directories(${FFMPEG_LIB_DIR})
+
 find_package(LibWebSockets)
 if(LIBWEBSOCKETS_FOUND)
     add_definitions(-DHAVE_LIBWEBSOCKETS)
@@ -32,6 +40,7 @@ endif(LIBWEBSOCKETS_FOUND)
 include_directories(
     src
     extern/openh264/include
+    ${FFMPEG_INCLUDE_DIR}
     extern/protobuf-3.21.12/src
     LIBWEBSOCKETS_INCLUDE_DIR
 )
@@ -165,7 +174,7 @@ target_link_libraries(snpserver
     ${WIN32_LIBRARIES}
     pthread
     libprotobuf
-    #dl
+    ${FFMPEG_LIBRARIES}
 )
 
 ###############################################################################
@@ -217,6 +226,7 @@ target_link_libraries(snpclient
     ${WIN32_LIBRARIES}
     pthread
     libprotobuf
+    ${FFMPEG_LIBRARIES}
 )
 
 target_compile_options(
