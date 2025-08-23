@@ -4,6 +4,11 @@
 #include <stream/SnpComponent.h>
 #include <string>
 
+extern "C" {
+#include "libavcodec/avcodec.h"
+#include "libswscale/swscale.h"
+}
+
 struct SnpEncoderFFmpegOptions : public SnpComponentOptions {
     uint32_t width;
     uint32_t height;
@@ -24,12 +29,16 @@ private:
     uint32_t height;
     uint32_t bpp;
 
-    void onInputData(uint32_t pipeId, SnpData* data);
+    AVCodecContext *enc_ctx = nullptr;
+    AVFrame *frame = nullptr;
+    AVPacket *pkt = nullptr;
+    SwsContext *sws_ctx = nullptr;
+    int64_t pts = 0;
 
-//    bool openH264EncoderInit();
-//    bool openH264EncoderEncode(const uint8_t *framebuffer, uint32_t len);
-//    void openH264EncoderDestroy();
-//    uint8_t *yuvBuffer;
+    void onInputData(uint32_t pipeId, SnpData* data);
+    bool ffmpegEncoderInit();
+    void ffmpegEncoderDestroy();
+    void ffmpegEncoderEncode(const uint8_t *framebuffer, uint32_t len);
 };
 
 #endif //SNPSERVER_SNPENCODERFFMPEG_H

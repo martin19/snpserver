@@ -25,12 +25,17 @@ find_package(Qt6 COMPONENTS
 )
 
 # ffmpeg 8.0
-set(FFMPEG_DIR "extern/ffmpeg")
+set(FFMPEG_DIR "${CMAKE_SOURCE_DIR}/extern/ffmpeg")
 set(FFMPEG_INCLUDE_DIR "${FFMPEG_DIR}/include")
 set(FFMPEG_LIB_DIR "${FFMPEG_DIR}/lib")
-set(FFMPEG_LIBRARIES avcodec avformat avutil swscale)
-include_directories(${FFMPEG_INCLUDE_DIR})
+set(FFMPEG_LIBRARIES
+    avcodec
+    avutil
+    swscale
+    avformat
+)
 link_directories(${FFMPEG_LIB_DIR})
+include_directories(${FFMPEG_INCLUDE_DIR})
 
 find_package(LibWebSockets)
 if(LIBWEBSOCKETS_FOUND)

@@ -6,6 +6,7 @@
 #include "stream/video/SnpSourceDummy.h"
 #include "stream/file/SnpSinkFile.h"
 #include "context/SnpContext.h"
+#include "stream/video/SnpEncoderFFmpeg.h"
 
 SnpContext snpContext;
 SnpSinkNetworkTcp* snpSinkNetworkTcp;
@@ -49,33 +50,37 @@ int main2() {
 
 int main() {
     SnpPipeOptions pipeOptions = {};
-    pipeOptions.name = "amd";
+    pipeOptions.name = "ffmpeg";
     SnpPipe pipe(pipeOptions, 0, &snpContext);
 
-//    SnpSourceDdaOptions sourceDdaOptions = {};
-//    sourceDdaOptions.width = 1920;
-//    sourceDdaOptions.height = 1080;
-//    SnpSourceDda snpSourceDda(sourceDdaOptions);
-//
-//    SnpEncoderAmfH264Options amfH264Options = {};
-//    amfH264Options.width = 1920;
-//    amfH264Options.height = 1080;
-//    amfH264Options.qp = 10.0;
-//    SnpEncoderAmfH264 snpEncoder(amfH264Options);
-//
+    SnpSourceDummyOptions sourceDummyOptions = {};
+    sourceDummyOptions.width = 1920;
+    sourceDummyOptions.height = 1080;
+    sourceDummyOptions.fps = 30.0;
+    sourceDummyOptions.boxCount = 3;
+    sourceDummyOptions.boxSpeed = 10;
+    SnpSourceDummy snpSourceDummy(sourceDummyOptions);
+
+    SnpEncoderFFmpegOptions encoderFFmpegOptions = {};
+    encoderFFmpegOptions.width = 1920;
+    encoderFFmpegOptions.height = 1080;
+    encoderFFmpegOptions.fps = 30.0;
+    encoderFFmpegOptions.qp = 10;
+    SnpEncoderFFmpeg snpEncoderFFmpeg(encoderFFmpegOptions);
+
     SnpSinkFileOptions sinkFileOptions = {};
-    sinkFileOptions.fileName = "test1dda.h264";
+    sinkFileOptions.fileName = "test1ffmpeg.h264";
     SnpSinkFile snpSinkFile(sinkFileOptions);
 
     //TODO: every component needs a pipeId (verify this) maybe a constructor parameter is necessary
-//    snpSourceDda.setPipeId(0);
-//    snpEncoder.setPipeId(0);
-//    snpSinkFile.setPipeId(0);
-//    pipe.addComponentEnd(&snpSourceDda);
-//    pipe.addComponentEnd(&snpEncoder);
-//    pipe.addComponentEnd(&snpSinkFile);
-//
-//    pipe.start();
+    snpSourceDummy.setPipeId(0);
+    snpEncoderFFmpeg.setPipeId(0);
+    snpSinkFile.setPipeId(0);
+    pipe.addComponentEnd(&snpSourceDummy);
+    pipe.addComponentEnd(&snpEncoderFFmpeg);
+    pipe.addComponentEnd(&snpSinkFile);
+
+    pipe.start();
 
     while(TRUE) {
         Sleep(100);
