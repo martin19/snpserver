@@ -2,6 +2,7 @@
 
 #include <utility>
 
+
 SnpProperty::SnpProperty(std::string name, PropertyType type) {
     this->name = std::move(name);
     this->type = type;

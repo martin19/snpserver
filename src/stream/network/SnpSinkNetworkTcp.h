@@ -7,6 +7,7 @@
 #include <condition_variable>
 #include "sockets.h"
 #include "network/snp.pb.h"
+#include <thread>
 
 typedef void (*HandleSetupMessageCb)(snp::Message* message);
 

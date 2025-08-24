@@ -2,6 +2,7 @@
 #define SNPSERVER_SNPPROPERTY_H
 
 #include <string>
+#include <cstdint>
 
 enum PropertyType {
     PROPERTY_TYPE_STRING = 0,

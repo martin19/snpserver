@@ -71,6 +71,7 @@ int runClient() {
 }
 
 int main(int argc, char *argv[]) {
+    SetDllDirectoryA(".");
     QApplication app(argc, argv);
     QMainWindow window;
     window.setWindowTitle("SnpClient");

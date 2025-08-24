@@ -57,8 +57,35 @@ cd extern/protobuf-3.21.12
 unzip protobuf-cpp-3.21.12.zip
 ```
 
-3. libva library environment variables
-see https://www.nuget.org/packages/Microsoft.Direct3D.VideoAccelerationCompatibilityPack/
+3. download ffmpeg 7.1.1
+4. Follow https://github.com/GPUOpen-LibrariesAndSDKs/AMF/wiki/Build-FFmpeg-with-AMF-Support strictly!
+6. build ffmpeg
+```sh
+pacman -S make pkgconf diffutils mingw-w64-x86_64-nasm mingw-w64-x86_64-gcc mingw-w64-x86_64-SDL2 mingw-w64-x86_64-gdb mingw-w64-x86_64-dlfcn git
+pacman -S mingw-w64-x86_64-ffnvcodec-headers
+
+./configure \
+  --enable-shared \
+  --enable-libx264 \
+  --enable-gpl \
+  --enable-nonfree \
+  --enable-dxva2 \
+  --enable-d3d11va \
+  --enable-libvpl \
+  --enable-ffnvcodec \
+  --enable-amf \
+  --enable-w32threads \
+  --enable-libx264 \
+  --enable-encoder=libx264 \
+  --enable-libzvbi \
+  --enable-ffplay \
+  --enable-sdl2 \
+  --enable-d3d11va \
+  --enable-lavfi \
+  --enable-indev=lavfi \  
+  --enable-filter=ddagrab \
+  --extra-cflags="-I/usr/local/include/amd"
+```
 
 #### Common pitfalls
 

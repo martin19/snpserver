@@ -62,4 +62,6 @@ GOAL: ✨ simplify server development via mock environment (create 30 and 60 fps
  
 libavcodec is a collection of software/hardware encoders/decoders
 
+ffmpeg -f lavfi -i "ddagrab=output_idx=1:framerate=60,hwdownload,format=bgra" -c:v libx264 out.mp4
+
 🔲✅❎❌🟩

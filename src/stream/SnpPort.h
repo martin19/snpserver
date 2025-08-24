@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <map>
+#include <cstdint>
 #include "stream/data/SnpData.h"
 
 class SnpComponent;

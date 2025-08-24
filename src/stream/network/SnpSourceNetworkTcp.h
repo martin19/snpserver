@@ -7,6 +7,7 @@
 #include "sockets.h"
 #include "network/snp.pb.h"
 #include "config/SnpConfig.h"
+#include <thread>
 
 typedef void (*HandleCapabilitiesMessageCb)(snp::Message* message);
 

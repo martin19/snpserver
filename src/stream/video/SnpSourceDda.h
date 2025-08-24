@@ -7,6 +7,7 @@ extern "C" {
 #include <libavformat/avformat.h>
 #include <libavcodec/avcodec.h>
 #include <libavutil/frame.h>
+#include <libavdevice/avdevice.h>
 }
 
 struct SnpSourceDdaOptions : public SnpComponentOptions {
@@ -28,7 +29,8 @@ private:
     int video_stream_index;
 
     std::thread worker;   // background capture thread
-    std::atomic<bool> running {false};  // thread-safe flag
+    bool running = false;
+    void captureLoop();
 };
 
 #endif //SNPSERVER_SNPSOURCEDDA_H

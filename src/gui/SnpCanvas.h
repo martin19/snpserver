@@ -2,7 +2,6 @@
 #define SNPCLIENT_SNPCANVAS_H
 
 #include <QWidget>
-#include <QPainter>
 
 class SnpCanvas : public QWidget {
 public:

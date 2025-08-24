@@ -1,5 +1,6 @@
 #include "SnpCanvas.h"
 #include "util/TimeUtil.h"
+#include <QPainter>
 
 SnpCanvas::SnpCanvas(QWidget *parent) : QWidget(parent) {
     setMinimumSize(400, 300);

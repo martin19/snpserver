@@ -13,8 +13,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Mo
 set(protobuf_BUILD_TESTS OFF)
 add_subdirectory("extern/protobuf-3.21.12")
 
-# library: QT 6.7.2+
-set(QT_VERSION 6.7.2)
+# library: QT 6.9.1+
+set(QT_VERSION 6.9.1)
 set(Qt6_DIR C:/Qt/${QT_VERSION}/mingw_64/lib/cmake/Qt6/)
 set(CMAKE_PREFIX_PATH C:/Qt/${QT_VERSION}/mingw_64/lib/cmake)
 find_package(Qt6 COMPONENTS
@@ -24,15 +24,16 @@ find_package(Qt6 COMPONENTS
     REQUIRED
 )
 
-# ffmpeg 8.0
+# ffmpeg 7.1.1
 set(FFMPEG_DIR "${CMAKE_SOURCE_DIR}/extern/ffmpeg")
 set(FFMPEG_INCLUDE_DIR "${FFMPEG_DIR}/include")
 set(FFMPEG_LIB_DIR "${FFMPEG_DIR}/lib")
 set(FFMPEG_LIBRARIES
-    avcodec
-    avutil
-    swscale
-    avformat
+    ${FFMPEG_LIB_DIR}/libavcodec.dll.a
+    ${FFMPEG_LIB_DIR}/libavutil.dll.a
+    ${FFMPEG_LIB_DIR}/libswscale.dll.a
+    ${FFMPEG_LIB_DIR}/libavformat.dll.a
+    ${FFMPEG_LIB_DIR}/libavdevice.dll.a
 )
 link_directories(${FFMPEG_LIB_DIR})
 include_directories(${FFMPEG_INCLUDE_DIR})
@@ -57,7 +58,7 @@ if(UNIX)
     set(LIBDRM_FOUND TRUE)
     set(LIBX11_FOUND TRUE)
     set(LIBGL_FOUND TRUE)
-    add_library(libdrm SHARED IMPORTED src/stream/video/h264/OpenH264Api.h src/stream/output/SnpSinkDisplay.cpp src/stream/output/SnpSinkDisplay.h src/stream/video/va/DXUtil.cpp src/stream/video/va/DXUtil.h)
+    add_library(libdrm SHARED IMPORTED src/stream/output/SnpSinkDisplay.cpp src/stream/output/SnpSinkDisplay.h src/stream/video/va/DXUtil.cpp src/stream/video/va/DXUtil.h)
     #raspberry
     #set_target_properties(libdrm PROPERTIES IMPORTED_LOCATION /usr/local/lib/arm-linux-gnueabihf/libdrm.so.2)
     #set_target_properties(libdrm PROPERTIES VERSION 2 SOVERSION 2.4)

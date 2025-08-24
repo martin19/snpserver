@@ -33,6 +33,7 @@ void handleSetupMessageCb(snp::Message* message) {
 }
 
 int main() {
+    SetDllDirectoryA(".");
     SnpSinkNetworkTcpOptions sinkOptions = {};
     sinkOptions.port = 9000;
     //sinkOptions.host = "192.168.3.21";

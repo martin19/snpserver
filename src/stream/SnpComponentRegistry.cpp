@@ -95,7 +95,7 @@ void SnpComponentRegistry::registerLocalComponent(snp::Component* component) {
 }
 
 bool SnpComponentRegistry::hasLocalComponent(snp::Component* component) {
-    return localComponents.contains(component);
+    return localComponents.find(component) != localComponents.end();
 }
 
 std::set<snp::Component*> SnpComponentRegistry::getLocalComponents() {
@@ -111,7 +111,7 @@ void SnpComponentRegistry::registerRemoteComponent(snp::Component *component) {
 }
 
 bool SnpComponentRegistry::hasRemoteComponent(snp::Component *component) {
-    return remoteComponents.contains(component);
+    return remoteComponents.find(component) != remoteComponents.end();
 }
 
 void SnpComponentRegistry::registerRemoteComponents(snp::Message *message) {
